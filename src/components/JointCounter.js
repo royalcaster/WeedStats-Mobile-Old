@@ -5,7 +5,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LevelImage from "./LevelImage";
 import { ImageBackgroundComponent, StyleSheet, Text, TouchableWithoutFeedbackBase, View, Image, Pressable } from 'react-native';
 
-const JointCounter = ({ counter, level, level_status, level_index, bg_color }) => {
+const JointCounter = ({ counter, level, level_status, level_index, bg_color, toggleCounter }) => {
 
     const [loaded] = useFonts({
         PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
@@ -35,7 +35,7 @@ const JointCounter = ({ counter, level, level_status, level_index, bg_color }) =
             <Text style={styles.counter_number}>{counter}</Text>
             <Statusbar status={level_status}/>
             <Text style={styles.level_label}>{level}</Text>
-            <Pressable style={styles.add_pressable}>
+            <Pressable onPress={() => toggleCounter(1)} style={styles.add_pressable}>
                 <FontAwesome name='fire' style={styles.fire_icon}/>
             </Pressable>
         </View>

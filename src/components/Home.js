@@ -10,7 +10,7 @@ import Account from './Account';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-export default function Home({ user, statConfig, toggleConfig }) {
+export default function Home({ user, statConfig, toggleConfig,  handleLogOut, toggleCounter }) {
 
 
   const [view, setView] = useState("stats");
@@ -28,18 +28,18 @@ export default function Home({ user, statConfig, toggleConfig }) {
     <View style={styles.container}>
 
       <View style={styles.content_container}>
-        {view == "stats" ? <Stats user={user} statConfig={statConfig} /> : null}
+        {view == "stats" ? <Stats user={user} statConfig={statConfig} toggleCounter={toggleCounter}/> : null}
         {view == "levels" ? <Levels /> : null}
         {view == "config" ? <Config statConfig={statConfig} toggleConfig={toggleConfig}/> : null}
-        {view == "account" ? <Account user={user} /> : null}
+        {view == "account" ? <Account user={user} handleLogOut={handleLogOut} /> : null}
       </View>
 
       <View style={styles.footer_container}>
       <View style={styles.options_container}>
-        <Pressable onPress={() => {setView("stats")}} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : (view == "stats" ? "#1E1E1E" : "#171717") }, styles.options_pressable]}><Image style={styles.pressable_profileimg} source={require('./img/logo.png')}/></Pressable>
-        <Pressable onPress={() => {setView("levels")}} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : (view == "levels" ? "#1E1E1E" : "#171717") }, styles.options_pressable]}><FontAwesome name='trophy' style={styles.settings_icon}/></Pressable>
-        <Pressable onPress={() => {setView("config")}} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : (view == "config" ? "#1E1E1E" : "#171717") }, styles.options_pressable]}><FontAwesome name='sliders' style={styles.settings_icon}/></Pressable>
-        <Pressable onPress={() => {setView("account")}} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : (view == "account" ? "#1E1E1E" : "#171717") }, styles.options_pressable]}><Image style={styles.pressable_profileimg} source={require('./img/profile_4.png')}/></Pressable>
+        <Pressable onPress={() => {setView("stats")}} style={styles.options_pressable}><Image style={styles.pressable_profileimg} source={view == "stats" ? require('./img/logo.png') : require('./img/logo_bw.png')}/></Pressable>
+        <Pressable onPress={() => {setView("levels")}} style={styles.options_pressable}><FontAwesome name='trophy' style={[{color: view == "levels" ? "#e0e0e0" : "#8f8f8f"}, styles.settings_icon]}/></Pressable>
+        <Pressable onPress={() => {setView("config")}} style={styles.options_pressable}><FontAwesome name='sliders' style={[{color: view == "config" ? "#e0e0e0" : "#8f8f8f"}, styles.settings_icon]}/></Pressable>
+        <Pressable onPress={() => {setView("account")}} style={styles.options_pressable}><FontAwesome name='user' style={[{color: view == "account" ? "#e0e0e0" : "#8f8f8f"}, styles.settings_icon]}/></Pressable>
       </View>
       </View>
 
@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
       paddingRight: 20,
     },
     settings_icon: {
-      color: "#c9c9c9",
       fontSize: 25,
       textAlign: "center",
       paddingBottom: 0,
@@ -107,7 +106,7 @@ const styles = StyleSheet.create({
       position: "absolute",
       flexDirection: "row",
       maxWidth: 700,
-      height: "100%"
+      height: "100%",
     },
     pressable_logo: {
       height: 30,
@@ -122,7 +121,9 @@ const styles = StyleSheet.create({
       alignSelf: "center",
       justifyContent: "center",
       height: "100%",
-      paddingTop: 5
+      paddingTop: 5,
+      backgroundColor: "#1E1E1E",
+      paddingBottom: 10
     },
     options_pressable_close: {
       backgroundColor: "#962020",

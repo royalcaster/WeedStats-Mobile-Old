@@ -12,14 +12,7 @@ const Levels = () => {
     return (
         <View style={styles.container}>
 
-            <View style={{height: 50}}></View>
-            <Text style={{
-                color: "#a1a1a1",
-                fontSize: 25,
-                fontFamily: "PoppinsBlack",
-                marginLeft: 30
-            }}>Level</Text>
-            <View style={{height: 10}}></View>
+        <View style={{height: 50}}></View>
 
             <View style={{
                 alignSelf: "center",
@@ -160,6 +153,7 @@ const styles = StyleSheet.create({
         marginTop: 0,
         width: "100%",
         height: "95%",
+        justifyContent: "center"
     },
     lvl_img: {
         height: 80,

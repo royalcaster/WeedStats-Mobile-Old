@@ -6,7 +6,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import { StyleSheet, Text, TouchableWithoutFeedbackBase, View, Image, ScrollView, Pressable } from 'react-native';
 
-const Stats = ({ user, statConfig }) => {
+const Stats = ({ user, statConfig, toggleCounter }) => {
     return (
         <ScrollView style={styles.counters_container}>
 
@@ -24,13 +24,13 @@ const Stats = ({ user, statConfig }) => {
                     <Text style={styles.blank_text}>Konfiguriere deine Ansicht in den <FontAwesome style={{fontSize: 20}} name="sliders" /> Einstellungen.</Text>
                 </View> : <>
               {
-              statConfig.joint ? <JointCounter counter={user.joint_counter} level_status={calcLevelStatus(user.joint_counter)} level={calcLevelName(user.joint_counter)} level_index={Math.ceil(user.joint_counter / 70)} bg_color={calcLevelColor(user.joint_counter)}></JointCounter> : null
+              statConfig.joint ? <JointCounter counter={user.joint_counter} toggleCounter={toggleCounter} level_status={calcLevelStatus(user.joint_counter)} level={calcLevelName(user.joint_counter)} level_index={Math.ceil(user.joint_counter / 70)} bg_color={calcLevelColor(user.joint_counter)}></JointCounter> : null
             }
             {
-              statConfig.bong ? <BongCounter counter={user.bong_counter} level_status={calcLevelStatus(user.bong_counter)} level={calcLevelName(user.bong_counter)} level_index={Math.ceil(user.bong_counter / 70)} bg_color={calcLevelColor(user.bong_counter)}></BongCounter> : null
+              statConfig.bong ? <BongCounter counter={user.bong_counter} toggleCounter={toggleCounter} level_status={calcLevelStatus(user.bong_counter)} level={calcLevelName(user.bong_counter)} level_index={Math.ceil(user.bong_counter / 70)} bg_color={calcLevelColor(user.bong_counter)}></BongCounter> : null
             }
             {
-              statConfig.vape ? <VapeCounter counter={user.vape_counter} level_status={calcLevelStatus(user.vape_counter)} level={calcLevelName(user.vape_counter)} level_index={Math.ceil(user.vape_counter / 70)} bg_color={calcLevelColor(user.vape_counter)}></VapeCounter> : null
+              statConfig.vape ? <VapeCounter counter={user.vape_counter} toggleCounter={toggleCounter} level_status={calcLevelStatus(user.vape_counter)} level={calcLevelName(user.vape_counter)} level_index={Math.ceil(user.vape_counter / 70)} bg_color={calcLevelColor(user.vape_counter)}></VapeCounter> : null
             }</>
             }
             

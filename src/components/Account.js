@@ -1,8 +1,8 @@
 import React from "react";
-import { View, Image, StyleSheet, Text } from 'react-native';
+import { View, Image, StyleSheet, Text, Pressable } from 'react-native';
 import { useFonts } from 'expo-font';
 
-const Account = ({ user}) => {
+const Account = ({ user, handleLogOut }) => {
 
     const [loaded] = useFonts({
         PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
@@ -11,22 +11,30 @@ const Account = ({ user}) => {
 
     return (
         <View style={styles.container}>
-            <View style={{
-                height: 50
-            }}></View>
+            <View style={{height: 50}}></View>
 
             <View style={{
                 alignItems: "center"
             }}>
-                <Image style={styles.profile_img} source={require('./img/profile_4.png')}></Image>
+                <Image style={styles.profile_img} source={{uri: user.photoUrl}}></Image>
                 <Text style={styles.username}>{user.username}</Text>
                 <Text style={styles.email}>{user.email}</Text>
-
-                <Text style={{
-                    fontFamily: "PopppinsLight"
-                }}></Text>
             </View>
             
+            <Pressable onPress={handleLogOut} style={{
+                backgroundColor: "#eb4034",
+                width: "80%",
+                alignSelf: "center",
+                height: 50,
+                borderRadius: 5,
+                justifyContent: "center",
+                marginTop: 20
+            }}><Text style={{
+                color: "white",
+                fontSize: 18,
+                fontFamily: "PoppinsLight",
+                alignSelf: "center"
+            }}>Abmelden</Text></Pressable>
 
         </View>
     );
