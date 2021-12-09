@@ -51,12 +51,11 @@ export default function App() {
   };
 
   const app = initializeApp(firebaseConfig);
-  const database = getDatabase(app);
+  const db = getDatabase(app);
   const firestore = getFirestore();
 
   // Hiermit habe ich Klaus hinzugefügt
   /*   function storeHighScore(userId, score) {
-    const db = getDatabase();
     const reference = ref(db, "users/" + userId);
     set(reference, {
       highscore: score,
