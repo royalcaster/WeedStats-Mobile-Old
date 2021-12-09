@@ -1,21 +1,94 @@
-import React from "react";
+import React, { useState } from "react";
+import { useEffect, useRef } from "react";
 import JointCounter from './JointCounter';
 import BongCounter from './BongCounter';
 import VapeCounter from './VapeCounter';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import moment from "moment";
 
-import { StyleSheet, Text, TouchableWithoutFeedbackBase, View, Image, ScrollView, Pressable } from 'react-native';
+import { StyleSheet, Text, TouchableWithoutFeedbackBase, View, Image, ScrollView, Pressable, Animated, Easing } from 'react-native';
 
 const Stats = ({ user, statConfig, toggleCounter }) => {
+
+  const headingAnim = useRef(new Animated.Value(-70)).current;
+
+  const leftAnim = useRef(new Animated.Value(-70)).current;
+  const rightAnim = useRef(new Animated.Value(70)).current;
+
+  useEffect(() => {
+    Animated.timing(
+      headingAnim,
+      {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+        easing : Easing.bezier(.07, 1, .33, .89),
+      }
+    ).start();
+
+    Animated.timing(
+      leftAnim,
+      {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+        easing : Easing.bezier(.07, 1, .33, .89),
+      }
+    ).start();
+    
+    Animated.timing(
+      rightAnim,
+      {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+        easing : Easing.bezier(.07, 1, .33, .89),
+      }
+    ).start();
+  }, [])
+
+  const [countdown, setCountDown] = useState(0);
+
+  var target = "";
+  useEffect(() => {
+    //Idee: Prüfe, ob es am Tag vor 4:20 ist, oder nach 4:20. Wenn vor, berechne countdown von jetzt bis 4:20, wenn nach, berechne countdown von jetzt bis 4:20 des nächsten tages
+    let now = new Date();
+    let ft_current_year = new Date(now.getFullYear(), 3,20,0,0);
+
+    if (now.getTime() < ft_current_year.getTime()) {
+      let a = moment(now);
+      let b = moment(ft_current_year);
+      target = b.diff(a, 'days');
+    }
+    else {
+      let ft_next_year = new Date(ft_current_year.setFullYear(ft_current_year.getFullYear()+1));
+      let a = moment(now);
+      let b = moment(ft_next_year);
+      target = b.diff(a, 'days');
+    }
+    setCountDown(target);
+  });
+    
     return (
-        <ScrollView style={styles.counters_container}>
+        
+            <>
+            <View style={{height: 50}}></View>
 
-            <View style={styles.header_container}>
-              <Text style={styles.main_heading}>WeedStats</Text>
-            </View>
+            <View style={{width: "100%", flexDirection: "row"}}>
+                <Animated.View style={{paddingLeft: 15, flex: 1, top: 10, transform: [{translateX: leftAnim}]}}>
+                  <Text style={{color: "#919191", fontFamily: "PoppinsLight", marginBottom: -10, fontSize: 12}}>Gesamt</Text>
+                  <Text style={{fontFamily: "PoppinsBlack", fontSize: 25, color: "#919191"}}>{user.main_counter}</Text>
+                </Animated.View>
+                <View>
+                <Animated.Text style={[{transform: [{translateY: headingAnim}]},styles.main_heading]}>WeedStats</Animated.Text>
+                </View>
+                <Animated.View style={{paddingRight: 15, flex: 1, top: 10, transform: [{translateX: rightAnim}]}}>
+                 <Text style={{textAlign: "right", color: "#919191", fontFamily: "PoppinsLight", marginBottom: -10, fontSize: 12}}>Tage bis 420</Text>
+                 <Text style={{textAlign: "right",fontFamily: "PoppinsBlack", fontSize: 25, color: "#919191"}}>{countdown}</Text>
+                </Animated.View>
+            </View> 
 
-            <View style={{height: 15}}></View>
-            
+            <ScrollView style={styles.counters_container}>
             {
               !statConfig.joint && !statConfig.bong && !statConfig.vape ? 
                 <View style={{justifyContent: "center"}}>
@@ -31,10 +104,12 @@ const Stats = ({ user, statConfig, toggleCounter }) => {
             }
             {
               statConfig.vape ? <VapeCounter counter={user.vape_counter} toggleCounter={toggleCounter} level_status={calcLevelStatus(user.vape_counter)} level={calcLevelName(user.vape_counter)} level_index={Math.ceil(user.vape_counter / 70)} bg_color={calcLevelColor(user.vape_counter)}></VapeCounter> : null
-            }</>
+            }
+            </>
             }
             
         </ScrollView>
+        </>
     );
 }
 
@@ -127,7 +202,6 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 30,
         fontFamily: "PoppinsBlack",
-        marginTop: 20,
         position: "relative"
     },
 });

@@ -17,6 +17,16 @@ import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import * as Google from "expo-google-app-auth";
 
+//sonstiges
+import { LogBox } from 'react-native';
+try {
+  LogBox.ignoreLogs(['Setting a timer for a long period of time'])
+}
+catch(e) {
+  console.log("Error", e);
+}
+
+
 export default function App() {
 
 
@@ -90,6 +100,8 @@ const refreshUser = async (user) => {
       joint_counter: docSnap.data().joint_counter,
       bong_counter: docSnap.data().bong_counter,
       vape_counter: docSnap.data().vape_counter,
+      member_since: docSnap.data().member_since,
+      main_counter: docSnap.data().joint_counter + docSnap.data().bong_counter + docSnap.data().vape_counter
     });
     setStatConfig({
       joint: docSnap.data().show_joint,
@@ -109,6 +121,8 @@ const refreshUser = async (user) => {
           show_joint: true,
           show_bong: true,
           show_vape: true,
+          member_since: new Date().toISOString().slice(0, 10),
+          main_counter: 0
           
         });
         console.log(user.photoUrl);
@@ -121,6 +135,8 @@ const refreshUser = async (user) => {
             joint_counter: docSnap.data().joint_counter,
             bong_counter: docSnap.data().bong_counter,
             vape_counter: docSnap.data().vape_counter,
+            member_since: docSnap.data().member_since,
+            main_counter: docSnap.data().joint_counter + docSnap.data().bong_counter + docSnap.data().vape_counter
           });
           setStatConfig({
             joint: docSnap.data().show_joint,
@@ -160,24 +176,30 @@ const toggleCounter = async (index) => {
         await updateDoc(docRef, {
           joint_counter: docSnap.data().joint_counter + 1,
         });
-        const docSnap_1 = await getDoc(docRef);
-        setUser({...user, joint_counter: docSnap_1.data().joint_counter});
       break;
       case 2:
         await updateDoc(docRef, {
           bong_counter: docSnap.data().bong_counter + 1,
-        });
-        const docSnap_2 = await getDoc(docRef);
-        setUser({...user, bong_counter: docSnap_2.data().bong_counter});  
+        }); 
       break;
       case 3: 
         await updateDoc(docRef, {
           vape_counter: docSnap.data().vape_counter + 1,
         });
-        const docSnap_3 = await getDoc(docRef);
-        setUser({...user, vape_counter: docSnap_3.data().vape_counter});
       break;
     }
+
+    await updateDoc(docRef, {
+      main_counter: docSnap.data().main_counter + 1
+    });
+    const docSnap_new = await getDoc(docRef);
+    setUser({...user, 
+      main_counter: docSnap_new.data().main_counter,
+      joint_counter: docSnap_new.data().joint_counter,
+      bong_counter: docSnap_new.data().bong_counter,
+      vape_counter: docSnap_new.data().vape_counter
+    });
+
 }
 
 //user-objekt, hier backend anknüpfen

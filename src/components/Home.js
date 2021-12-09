@@ -1,7 +1,8 @@
 import React from 'react';
-import { Animated, StyleSheet, Text, TouchableWithoutFeedbackBase, View, Image, ScrollView, Pressable } from 'react-native';
+import { Animated, StyleSheet, Text, TouchableWithoutFeedbackBase, View, Image, ScrollView, Pressable, Dimensions } from 'react-native';
 import { useFonts } from 'expo-font';
 import { useState, useRef } from 'react';
+import { Appearance, useColorScheme } from 'react-native';
 
 import Stats from './Stats';
 import Levels from './Levels';
@@ -12,7 +13,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function Home({ user, statConfig, toggleConfig,  handleLogOut, toggleCounter }) {
 
-
+  const device_width = Dimensions.get('window').width;
+  
   const [view, setView] = useState("stats");
 
   const [loaded] = useFonts({
@@ -36,10 +38,10 @@ export default function Home({ user, statConfig, toggleConfig,  handleLogOut, to
 
       <View style={styles.footer_container}>
       <View style={styles.options_container}>
-        <Pressable onPress={() => {setView("stats")}} style={styles.options_pressable}><Image style={styles.pressable_profileimg} source={view == "stats" ? require('./img/logo.png') : require('./img/logo_bw.png')}/></Pressable>
-        <Pressable onPress={() => {setView("levels")}} style={styles.options_pressable}><FontAwesome name='trophy' style={[{color: view == "levels" ? "#e0e0e0" : "#8f8f8f"}, styles.settings_icon]}/></Pressable>
-        <Pressable onPress={() => {setView("config")}} style={styles.options_pressable}><FontAwesome name='sliders' style={[{color: view == "config" ? "#e0e0e0" : "#8f8f8f"}, styles.settings_icon]}/></Pressable>
-        <Pressable onPress={() => {setView("account")}} style={styles.options_pressable}><FontAwesome name='user' style={[{color: view == "account" ? "#e0e0e0" : "#8f8f8f"}, styles.settings_icon]}/></Pressable>
+        <Pressable onPress={() => {setView("stats")}} style={({pressed}) => [{backgroundColor: pressed ? "#292929" : "#1E1E1E"},styles.options_pressable]}><Image style={styles.pressable_profileimg} source={view == "stats" ? require('./img/logo.png') : require('./img/logo_bw.png')}/><Text style={[{color: view == "stats" ? "white" : "#4a4a4a"},styles.options_pressable_label]}>Stats</Text></Pressable>
+        <Pressable onPress={() => {setView("levels")}} style={({pressed}) => [{backgroundColor: pressed ? "#292929" : "#1E1E1E"},styles.options_pressable]}><FontAwesome name='trophy' style={[{color: view == "levels" ? "#e0e0e0" : "#4a4a4a"}, styles.settings_icon]}/><Text style={[{color: view == "levels" ? "white" : "#4a4a4a"},styles.options_pressable_label]}>Level</Text></Pressable>
+        <Pressable onPress={() => {setView("config")}} style={({pressed}) => [{backgroundColor: pressed ? "#292929" : "#1E1E1E"},styles.options_pressable]}><FontAwesome name='sliders' style={[{color: view == "config" ? "#e0e0e0" : "#4a4a4a"}, styles.settings_icon]}/><Text style={[{color: view == "config" ? "white" : "#4a4a4a"},styles.options_pressable_label]}>Settings</Text></Pressable>
+        <Pressable onPress={() => {setView("account")}} style={({pressed}) => [{backgroundColor: pressed ? "#292929" : "#1E1E1E"},styles.options_pressable]}><FontAwesome name='user' style={[{color: view == "account" ? "#e0e0e0" : "#4a4a4a"}, styles.settings_icon]}/><Text style={[{color: view == "account" ? "white" : "#4a4a4a"},styles.options_pressable_label]}>Account</Text></Pressable>
       </View>
       </View>
 
@@ -70,7 +72,7 @@ const styles = StyleSheet.create({
     content_container: {
       width: "100%",
       position: "relative",
-      height: "93%",
+      height: "90%",
     },
     counters_container: {
         flex: 5,
@@ -107,6 +109,7 @@ const styles = StyleSheet.create({
       flexDirection: "row",
       maxWidth: 700,
       height: "100%",
+      backgroundColor: "#1E1E1E"
     },
     pressable_logo: {
       height: 30,
@@ -121,25 +124,16 @@ const styles = StyleSheet.create({
       alignSelf: "center",
       justifyContent: "center",
       height: "100%",
-      paddingTop: 5,
-      backgroundColor: "#1E1E1E",
-      paddingBottom: 10
-    },
-    options_pressable_close: {
-      backgroundColor: "#962020",
-      height: 70,
-      alignSelf: "center",
-      justifyContent: "center",
-      borderBottomColor: "#7d7d7d",
-      borderBottomWidth: 0.5,
-      width: "100%"
+      borderRadius: 100,
+      padding: -15,
     },
     options_pressable_text: {
       alignSelf: "center",
       justifyContent: "center",
       fontSize: 16,
       fontFamily: "PoppinsLight",
-      color: "#b8b8b8"
+      color: "#b8b8b8",
+      marginBottom: 10
     },
     close_icon: {
       color: "white",
@@ -159,11 +153,17 @@ const styles = StyleSheet.create({
     },
     footer_container: {
       width: "100%",
-      height: "7%",
+      height: "8%",
       bottom: 0,
       position: "absolute",
       flexDirection: "row",
       backgroundColor: "#171717",
       justifyContent: "center"
+    },
+    options_pressable_label: {
+      fontFamily: "PoppinsLight",
+      fontSize: 12,
+      alignSelf: "center",
+      marginTop: -7
     }
 });

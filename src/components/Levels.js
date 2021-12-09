@@ -1,8 +1,22 @@
 import React from "react";
-import { View, Image, StyleSheet, Text } from 'react-native';
+import { useEffect, useRef } from "react";
+import { View, Image, StyleSheet, Text, Animated } from 'react-native';
 import { useFonts } from 'expo-font';
 
 const Levels = () => {
+
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    React.useEffect(() => {
+        Animated.timing(
+          fadeAnim,
+          {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+          }
+        ).start();
+      }, [fadeAnim])
 
     const [loaded] = useFonts({
         PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
@@ -10,7 +24,7 @@ const Levels = () => {
     });
 
     return (
-        <View style={styles.container}>
+        <Animated.View style={[{opacity: fadeAnim},styles.container]}>
 
         <View style={{height: 50}}></View>
 
@@ -142,7 +156,7 @@ const Levels = () => {
                 </View>
             </View>
 
-        </View>
+        </Animated.View>
     );
 }
 

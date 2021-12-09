@@ -1,12 +1,26 @@
 import React from "react";
+import { useEffect, useRef } from "react";
 import { useFonts } from 'expo-font';
-import { StyleSheet, View, Text, Switch, TouchableWithoutFeedbackBase, Image } from 'react-native'
+import { StyleSheet, View, Text, Switch, TouchableWithoutFeedbackBase, Image, Animated, Easing } from 'react-native'
 
 import JointConfigItem from "./JointConfigItem";
 import BongConfigItem from "./BongConfigItem";
 import VapeConfigItem from "./VapeConfigItem";
 
 const Config = ( { statConfig, toggleConfig }) => {
+
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        Animated.timing(
+          fadeAnim,
+          {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+          }
+        ).start();
+      }, [fadeAnim])
 
     const [loaded] = useFonts({
         PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
@@ -18,11 +32,11 @@ const Config = ( { statConfig, toggleConfig }) => {
       }
 
     return (
-    <View style={styles.container}>
+    <Animated.View style={[{opacity: fadeAnim},styles.container]}>
         <JointConfigItem config={statConfig.joint} onToggle={toggleConfig}></JointConfigItem>
         <BongConfigItem config={statConfig.bong} onToggle={toggleConfig}></BongConfigItem>
         <VapeConfigItem config={statConfig.vape} onToggle={toggleConfig}></VapeConfigItem>
-    </View>
+    </Animated.View>
     );
 }
 
