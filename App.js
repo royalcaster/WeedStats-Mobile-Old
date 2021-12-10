@@ -31,6 +31,7 @@ import * as Google from "expo-google-app-auth";
 
 //sonstiges
 import { LogBox } from "react-native";
+
 try {
   LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
 } catch (e) {
