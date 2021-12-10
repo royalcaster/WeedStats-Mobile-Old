@@ -5,11 +5,13 @@ import { useState, useRef } from 'react';
 import { Appearance, useColorScheme } from 'react-native';
 
 import Stats from './Stats';
+import Main from './Main';
 import Levels from './Levels';
 import Config from './Config';
 import Account from './Account';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 export default function Home({ user, statConfig, toggleConfig,  handleLogOut, toggleCounter }) {
 
@@ -30,7 +32,8 @@ export default function Home({ user, statConfig, toggleConfig,  handleLogOut, to
     <View style={styles.container}>
 
       <View style={styles.content_container}>
-        {view == "stats" ? <Stats user={user} statConfig={statConfig} toggleCounter={toggleCounter}/> : null}
+        {view == "main" ? <Main user={user} statConfig={statConfig} toggleCounter={toggleCounter}/> : null}
+        {view == "stats" ? <Stats /> : null}
         {view == "levels" ? <Levels /> : null}
         {view == "config" ? <Config statConfig={statConfig} toggleConfig={toggleConfig}/> : null}
         {view == "account" ? <Account user={user} handleLogOut={handleLogOut} /> : null}
@@ -38,8 +41,9 @@ export default function Home({ user, statConfig, toggleConfig,  handleLogOut, to
 
       <View style={styles.footer_container}>
       <View style={styles.options_container}>
-        <Pressable onPress={() => {setView("stats")}} style={({pressed}) => [{backgroundColor: pressed ? "#292929" : "#1E1E1E"},styles.options_pressable]}><Image style={styles.pressable_profileimg} source={view == "stats" ? require('./img/logo.png') : require('./img/logo_bw.png')}/><Text style={[{color: view == "stats" ? "white" : "#4a4a4a"},styles.options_pressable_label]}>Stats</Text></Pressable>
+        <Pressable onPress={() => {setView("stats")}} style={({pressed}) => [{backgroundColor: pressed ? "#292929" : "#1E1E1E"},styles.options_pressable]}><Entypo name='area-graph' style={[{color: view == "stats" ? "#e0e0e0" : "#4a4a4a"}, styles.settings_icon]}/><Text style={[{color: view == "stats" ? "white" : "#4a4a4a"},styles.options_pressable_label]}>Stats</Text></Pressable>
         <Pressable onPress={() => {setView("levels")}} style={({pressed}) => [{backgroundColor: pressed ? "#292929" : "#1E1E1E"},styles.options_pressable]}><FontAwesome name='trophy' style={[{color: view == "levels" ? "#e0e0e0" : "#4a4a4a"}, styles.settings_icon]}/><Text style={[{color: view == "levels" ? "white" : "#4a4a4a"},styles.options_pressable_label]}>Level</Text></Pressable>
+        <Pressable onPress={() => {setView("main")}} style={({pressed}) => [{backgroundColor: pressed ? "#292929" : "#1E1E1E"},styles.options_pressable]}><Image style={styles.pressable_profileimg} source={view == "main" ? require('./img/logo.png') : require('./img/logo_bw.png')}/></Pressable>
         <Pressable onPress={() => {setView("config")}} style={({pressed}) => [{backgroundColor: pressed ? "#292929" : "#1E1E1E"},styles.options_pressable]}><FontAwesome name='sliders' style={[{color: view == "config" ? "#e0e0e0" : "#4a4a4a"}, styles.settings_icon]}/><Text style={[{color: view == "config" ? "white" : "#4a4a4a"},styles.options_pressable_label]}>Settings</Text></Pressable>
         <Pressable onPress={() => {setView("account")}} style={({pressed}) => [{backgroundColor: pressed ? "#292929" : "#1E1E1E"},styles.options_pressable]}><FontAwesome name='user' style={[{color: view == "account" ? "#e0e0e0" : "#4a4a4a"}, styles.settings_icon]}/><Text style={[{color: view == "account" ? "white" : "#4a4a4a"},styles.options_pressable_label]}>Account</Text></Pressable>
       </View>
