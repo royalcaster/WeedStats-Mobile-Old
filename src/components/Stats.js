@@ -3,6 +3,14 @@ import { useEffect, useRef } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import moment from "moment";
 
+//Unterkomponenten
+import StatsDashboard from "./StatsDashboard";
+import StatsGraphs from "./StatsGraphs";
+import StatsHistory from "./StatsHistory";
+
+//TabView
+import Swiper from 'react-native-swiper'
+
 import {
   StyleSheet,
   Text,
@@ -13,67 +21,65 @@ import {
   Pressable,
   Animated,
   Easing,
+  SafeAreaView,
+  FlatList,
 } from "react-native";
 
 const Stats = ({ user, statConfig, toggleCounter }) => {
-  const headingAnim = useRef(new Animated.Value(-70)).current;
 
-  const leftAnim = useRef(new Animated.Value(-70)).current;
-  const rightAnim = useRef(new Animated.Value(70)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(headingAnim, {
-      toValue: 0,
+    Animated.timing(fadeAnim, {
+      toValue: 1,
       duration: 200,
-      useNativeDriver: true,
-      easing: Easing.bezier(0.07, 1, 0.33, 0.89),
-    }).start();
-
-    Animated.timing(leftAnim, {
-      toValue: 0,
-      duration: 400,
-      useNativeDriver: true,
-      easing: Easing.bezier(0.07, 1, 0.33, 0.89),
-    }).start();
-
-    Animated.timing(rightAnim, {
-      toValue: 0,
-      duration: 400,
       useNativeDriver: true,
       easing: Easing.bezier(0.07, 1, 0.33, 0.89),
     }).start();
   }, []);
 
-  const [countdown, setCountDown] = useState(0);
-
-  var target = "";
-  useEffect(() => {
-    //Idee: Prüfe, ob es am Tag vor 4:20 ist, oder nach 4:20. Wenn vor, berechne countdown von jetzt bis 4:20, wenn nach, berechne countdown von jetzt bis 4:20 des nächsten tages
-    let now = new Date();
-    let ft_current_year = new Date(now.getFullYear(), 3, 20, 0, 0);
-
-    if (now.getTime() < ft_current_year.getTime()) {
-      let a = moment(now);
-      let b = moment(ft_current_year);
-      target = b.diff(a, "days");
-    } else {
-      let ft_next_year = new Date(
-        ft_current_year.setFullYear(ft_current_year.getFullYear() + 1)
-      );
-      let a = moment(now);
-      let b = moment(ft_next_year);
-      target = b.diff(a, "days");
-    }
-    setCountDown(target);
-  });
-
   return (
-    <>
-      <ScrollView></ScrollView>
-    </>
+    <Animated.View style={[{opacity: fadeAnim}, styles.container]}>
+
+      <View style={{height: 50}}></View>
+      <View style={styles.navbar}>
+        <Text></Text>
+      </View>
+      
+      <Swiper style={styles.wrapper} showsButtons={true}>
+        <View style={styles.slide}>
+          <StatsDashboard />
+        </View>
+        <View style={styles.slide}>
+          <StatsGraphs />
+        </View>
+        <View style={styles.slide}>
+          <StatsHistory />
+        </View>
+      </Swiper>
+
+    </Animated.View>
   );
 };
 
 export default Stats;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  //Tab-View
+  wrapper: {},
+  slide: {
+    flex: 1,
+    width: "100%",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1E1E1E'
+  },
+  text: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold'
+  }
+});
