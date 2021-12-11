@@ -17,7 +17,7 @@ export default function Home({ user, statConfig, toggleConfig,  handleLogOut, to
 
   const device_width = Dimensions.get('window').width;
   
-  const [view, setView] = useState("stats");
+  const [view, setView] = useState("main");
 
   const [loaded] = useFonts({
     PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
