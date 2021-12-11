@@ -204,19 +204,19 @@ export default function App() {
     //Snapshot von diesem Dokument zum Lesen
     const docSnap = await getDoc(docRef);
     switch (index) {
-      case 1:
+      case "joint":
         await updateDoc(docRef, {
           joint_counter: docSnap.data().joint_counter + 1,
         });
         writeDb("joint");
         break;
-      case 2:
+      case "bong":
         await updateDoc(docRef, {
           bong_counter: docSnap.data().bong_counter + 1,
         });
         writeDb("bong");
         break;
-      case 3:
+      case "vape":
         await updateDoc(docRef, {
           vape_counter: docSnap.data().vape_counter + 1,
         });
