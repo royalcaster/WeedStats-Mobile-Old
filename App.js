@@ -35,7 +35,7 @@ import * as Google from "expo-google-app-auth";
 //sonstiges
 import { LogBox } from "react-native";
 import { getIosPushNotificationServiceEnvironmentAsync } from "expo-application";
-import Geolocation from 'react-native-geolocation-service';
+import Geolocation from "react-native-geolocation-service";
 
 try {
   LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
@@ -44,7 +44,6 @@ try {
 }
 
 export default function App() {
-
   const [user, setUser] = useState(null);
   const [statConfig, setStatConfig] = useState(null);
 
@@ -58,44 +57,17 @@ export default function App() {
     messagingSenderId: "158741630717",
     appId: "1:158741630717:android:81d5c7ffc951c450c6f894",
   };
-  
+
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const firestore = getFirestore();
 
-  const handleLogin = async () => {
-    try {
-      const result = await Google.logInAsync({
-        androidClientId:
-          "31827165734-rdbihglcac1juesc6fkjd4bgp1c1oj2s.apps.googleusercontent.com",
-        scopes: ["profile", "email"],
-      });
-  
-      if (result.type === "success") {
-        try {
-          await refreshUser(result.user);
-          /* setUser({
-          username: result.user.name
-        }); */
-        } catch (e) {
-          console.log("Error:", e);
-        }
-  
-        return result.accessToken;
-      } else {
-        return { cancelled: true };
-      }
-    } catch (e) {
-      return { error: true };
-    }
-  };
-
   const refreshUser = async (user) => {
     //Referenz zu Nutzerdokument, durch Google-Username identifiziert
     const docRef = doc(firestore, "users", user.name);
     //Snapshot von diesem Dokument zum Lesen
     const docSnap = await getDoc(docRef);
-  
+
     if (docSnap.exists()) {
       setUser({
         username: docSnap.data().username,
@@ -197,88 +169,6 @@ export default function App() {
     } catch (e) {
       return { error: true };
     }
-  };
-
-  const refreshUser = async (user) => {
-    //Referenz zu Nutzerdokument, durch Google-Username identifiziert
-    const docRef = doc(firestore, "users", user.name);
-    //Snapshot von diesem Dokument zum Lesen
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      setUser({
-        username: docSnap.data().username,
-        email: docSnap.data().email,
-        photoUrl: docSnap.data().photoUrl,
-        joint_counter: docSnap.data().joint_counter,
-        bong_counter: docSnap.data().bong_counter,
-        vape_counter: docSnap.data().vape_counter,
-        member_since: docSnap.data().member_since,
-        main_counter:
-          docSnap.data().joint_counter +
-          docSnap.data().bong_counter +
-          docSnap.data().vape_counter,
-      });
-      setStatConfig({
-        joint: docSnap.data().show_joint,
-        bong: docSnap.data().show_bong,
-        vape: docSnap.data().show_vape,
-      });
-    } else {
-      //nutzer loggt sich erstmalig ein -> dokument erstellen
-      try {
-        await setDoc(doc(firestore, "users", user.name), {
-          username: user.name,
-          email: user.email,
-          photoUrl: user.photoUrl,
-          joint_counter: 0,
-          bong_counter: 0,
-          vape_counter: 0,
-          show_joint: true,
-          show_bong: true,
-          show_vape: true,
-          member_since: new Date().toISOString().slice(0, 10),
-          main_counter: 0,
-        });
-        console.log(user.photoUrl);
-        const docSnap = await getDoc(doc(firestore, "users", user.name));
-        if (docSnap.exists()) {
-          setUser({
-            username: docSnap.data().username,
-            email: docSnap.data().email,
-            photoUrl: docSnap.data().photoUrl,
-            joint_counter: docSnap.data().joint_counter,
-            bong_counter: docSnap.data().bong_counter,
-            vape_counter: docSnap.data().vape_counter,
-            member_since: docSnap.data().member_since,
-            main_counter:
-              docSnap.data().joint_counter +
-              docSnap.data().bong_counter +
-              docSnap.data().vape_counter,
-          });
-          setStatConfig({
-            joint: docSnap.data().show_joint,
-            bong: docSnap.data().show_bong,
-            vape: docSnap.data().show_vape,
-          });
-        }
-      } catch (e) {
-        console.log("Error:", e);
-      }
-    }
-  };
-
-  const handleLogOut = async () => {
-    try {
-      await Google.logOutAsync({
-        androidClientId:
-          "31827165734-rdbihglcac1juesc6fkjd4bgp1c1oj2s.apps.googleusercontent.com",
-        scopes: ["profile", "email"],
-      });
-    } catch (e) {
-      console.log("Error:", e);
-    }
-    setUser(null);
   };
 
   function writeDb(type) {
@@ -330,16 +220,14 @@ export default function App() {
       bong_counter: docSnap_new.data().bong_counter,
       vape_counter: docSnap_new.data().vape_counter,
     });
-
-    
   };
 
   function writeToDb(type) {
-    set(ref(db, 'users/' + user.email), {
+    set(ref(db, "users/" + user.email), {
       type: type,
       timestamp: now(),
       latitude: "42",
-      longitude: "69"
+      longitude: "69",
     });
   }
 
