@@ -255,21 +255,21 @@ export default function App() {
     const docSnap = await getDoc(docRef);
     try {
       switch (index) {
-        case 1:
+        case "joint":
           await updateDoc(docRef, {
             show_joint: !docSnap.data().show_joint,
           });
           const docSnap_1 = await getDoc(docRef);
           setStatConfig({ ...statConfig, joint: docSnap_1.data().show_joint });
           break;
-        case 2:
+        case "bong":
           await updateDoc(docRef, {
             show_bong: !docSnap.data().show_bong,
           });
           const docSnap_2 = await getDoc(docRef);
           setStatConfig({ ...statConfig, bong: docSnap_2.data().show_bong });
           break;
-        case 3:
+        case "vape":
           await updateDoc(docRef, {
             show_vape: !docSnap.data().show_vape,
           });
