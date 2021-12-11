@@ -29,13 +29,13 @@ import { Linking } from "expo";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import * as Google from "expo-google-app-auth";
+import * as Location from "expo-location";
 
 //import getUser from './FirebaseConfig
 
 //sonstiges
 import { LogBox } from "react-native";
 import { getIosPushNotificationServiceEnvironmentAsync } from "expo-application";
-import Geolocation from "react-native-geolocation-service";
 
 try {
   LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
@@ -171,23 +171,33 @@ export default function App() {
     }
   };
 
-  function writeDb(type) {
+  const writeDb = async (type) => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Permission to access location was denied");
+      return;
+    }
+    let location = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.Highest,
+    });
+
     set(
       ref(db, "users/" + user.username + "/entry_" + (user.main_counter + 1)),
       {
         type: type,
         timestamp: Timestamp.now().seconds,
-        latitude: "TODO",
-        longitude: "TODO",
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
       }
     );
-  }
+  };
 
   const toggleCounter = async (index) => {
     //Referenz zu Nutzerdokument, durch Google-Username identifiziert
     const docRef = doc(firestore, "users", user.username);
     //Snapshot von diesem Dokument zum Lesen
     const docSnap = await getDoc(docRef);
+
     switch (index) {
       case "joint":
         await updateDoc(docRef, {
