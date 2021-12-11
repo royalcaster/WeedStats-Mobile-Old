@@ -1,4 +1,4 @@
-import React from "react";
+/* import React from "react";
 
 import { initializeApp } from "firebase/app";
 import {
@@ -40,7 +40,7 @@ const handleLogin = async () => {
         await refreshUser(result.user);
         /* setUser({
         username: result.user.name
-      }); */
+      }); 
       } catch (e) {
         console.log("Error:", e);
       }
@@ -137,3 +137,4 @@ const handleLogOut = async () => {
 };
 
 export { db, firestore, handleLogin, handleLogOut };
+ */

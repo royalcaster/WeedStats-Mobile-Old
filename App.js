@@ -30,8 +30,12 @@ import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import * as Google from "expo-google-app-auth";
 
+//import getUser from './FirebaseConfig
+
 //sonstiges
 import { LogBox } from "react-native";
+import { getIosPushNotificationServiceEnvironmentAsync } from "expo-application";
+import Geolocation from 'react-native-geolocation-service';
 
 try {
   LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
@@ -40,7 +44,10 @@ try {
 }
 
 export default function App() {
-  // Initialize Firebase
+
+  const [user, setUser] = useState(null);
+  const [statConfig, setStatConfig] = useState(null);
+
   const firebaseConfig = {
     apiKey: "AIzaSyBAlbSfcLmsqz9S_W4J_TCsX_i481My9MM",
     authDomain: "weedstats-1a033.firebaseapp.com",
@@ -51,31 +58,119 @@ export default function App() {
     messagingSenderId: "158741630717",
     appId: "1:158741630717:android:81d5c7ffc951c450c6f894",
   };
-
+  
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const firestore = getFirestore();
 
-  // Hiermit habe ich Klaus hinzugefügt
-  /*   function storeHighScore(userId, score) {
-    const reference = ref(db, "users/" + userId);
-    set(reference, {
-      highscore: score,
-    });
-  }
-  storeHighScore("klaus", 1337); */
-
-  /* useEffect(() => {
-  (async () => {
-    let cachedAuth = await getCachedAuthAsync();
-    if (cachedAuth && !authState) {
-      setAuthState(cachedAuth);
+  const handleLogin = async () => {
+    try {
+      const result = await Google.logInAsync({
+        androidClientId:
+          "31827165734-rdbihglcac1juesc6fkjd4bgp1c1oj2s.apps.googleusercontent.com",
+        scopes: ["profile", "email"],
+      });
+  
+      if (result.type === "success") {
+        try {
+          await refreshUser(result.user);
+          /* setUser({
+          username: result.user.name
+        }); */
+        } catch (e) {
+          console.log("Error:", e);
+        }
+  
+        return result.accessToken;
+      } else {
+        return { cancelled: true };
+      }
+    } catch (e) {
+      return { error: true };
     }
-  })();
-}, []); */
+  };
 
-  const [user, setUser] = useState(null);
-  const [statConfig, setStatConfig] = useState(null);
+  const refreshUser = async (user) => {
+    //Referenz zu Nutzerdokument, durch Google-Username identifiziert
+    const docRef = doc(firestore, "users", user.name);
+    //Snapshot von diesem Dokument zum Lesen
+    const docSnap = await getDoc(docRef);
+  
+    if (docSnap.exists()) {
+      setUser({
+        username: docSnap.data().username,
+        email: docSnap.data().email,
+        photoUrl: docSnap.data().photoUrl,
+        joint_counter: docSnap.data().joint_counter,
+        bong_counter: docSnap.data().bong_counter,
+        vape_counter: docSnap.data().vape_counter,
+        member_since: docSnap.data().member_since,
+        main_counter:
+          docSnap.data().joint_counter +
+          docSnap.data().bong_counter +
+          docSnap.data().vape_counter,
+      });
+      setStatConfig({
+        joint: docSnap.data().show_joint,
+        bong: docSnap.data().show_bong,
+        vape: docSnap.data().show_vape,
+      });
+    } else {
+      //nutzer loggt sich erstmalig ein -> dokument erstellen
+      try {
+        await setDoc(doc(firestore, "users", user.name), {
+          username: user.name,
+          email: user.email,
+          photoUrl: user.photoUrl,
+          joint_counter: 0,
+          bong_counter: 0,
+          vape_counter: 0,
+          show_joint: true,
+          show_bong: true,
+          show_vape: true,
+          member_since: new Date().toISOString().slice(0, 10),
+          main_counter: 0,
+        });
+        console.log(user.photoUrl);
+        const docSnap = await getDoc(doc(firestore, "users", user.name));
+        if (docSnap.exists()) {
+          setUser({
+            username: docSnap.data().username,
+            email: docSnap.data().email,
+            photoUrl: docSnap.data().photoUrl,
+            joint_counter: docSnap.data().joint_counter,
+            bong_counter: docSnap.data().bong_counter,
+            vape_counter: docSnap.data().vape_counter,
+            member_since: docSnap.data().member_since,
+            main_counter:
+              docSnap.data().joint_counter +
+              docSnap.data().bong_counter +
+              docSnap.data().vape_counter,
+          });
+          setStatConfig({
+            joint: docSnap.data().show_joint,
+            bong: docSnap.data().show_bong,
+            vape: docSnap.data().show_vape,
+          });
+        }
+      } catch (e) {
+        console.log("Error:", e);
+      }
+    }
+  };
+
+  const handleLogOut = async () => {
+    try {
+      await Google.logOutAsync({
+        androidClientId:
+          "31827165734-rdbihglcac1juesc6fkjd4bgp1c1oj2s.apps.googleusercontent.com",
+        scopes: ["profile", "email"],
+      });
+    } catch (e) {
+      console.log("Error:", e);
+    }
+    setUser(null);
+  };
 
   const handleLogin = async () => {
     try {
@@ -235,18 +330,18 @@ export default function App() {
       bong_counter: docSnap_new.data().bong_counter,
       vape_counter: docSnap_new.data().vape_counter,
     });
+
+    
   };
 
-  //user-objekt, hier backend anknüpfen
-  /* const [user, setUser] = useState({
-  username: "royalcaster",
-  email: "gabriel.pechstein@schneeberg.km3.de",
-  membersince: "21. August 2021",
-  joint_counter: 28,
-  bong_counter: 305,
-  vape_counter: 420,
-  photoUrl: ''
-}); */
+  function writeToDb(type) {
+    set(ref(db, 'users/' + user.email), {
+      type: type,
+      timestamp: now(),
+      latitude: "42",
+      longitude: "69"
+    });
+  }
 
   const toggleConfig = async (index) => {
     //Referenz zu Nutzerdokument, durch Google-Username identifiziert
@@ -281,12 +376,6 @@ export default function App() {
       console.log("Error", e);
     }
   };
-
-  /* useEffect(() => { 
-  firebase.auth().onAuthStateChanged((user) => {
-    ladeNutzerDaten()!!!
-  })
-}, []); */
 
   const [loaded] = useFonts({
     PoppinsBlack: require("./assets/fonts/Poppins-Black.ttf"),

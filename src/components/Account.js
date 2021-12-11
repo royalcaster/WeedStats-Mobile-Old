@@ -87,7 +87,6 @@ const Account = ({ user, handleLogOut }) => {
 
         </Animated.View>
         }
-
         </>
     );
 }
