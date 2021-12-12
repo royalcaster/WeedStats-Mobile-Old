@@ -1,6 +1,14 @@
 import React from "react";
 import { useFonts } from "expo-font";
-import { StyleSheet, Image, View, Text, Pressable, ScrollView} from 'react-native';
+import { StyleSheet, Image, View, Text, Pressable, ScrollView, Dimensions} from 'react-native';
+import {
+    LineChart,
+    BarChart,
+    PieChart,
+    ProgressChart,
+    ContributionGraph,
+    StackedBarChart,
+  } from "react-native-chart-kit";
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -16,9 +24,13 @@ const StatsGraphs = () => {
         <View style={{alignItems: "center"}}>
             <FontAwesome name="bar-chart" style={{fontSize: 60, color: "white", marginBottom: 5}}/><Text style={styles.heading}>Grafiken</Text>
         </View>
+
+        <View style={{height: 20}}></View>
         
         <View style={{alignItems: "center", flex: 1}}>
-            <Text>(Content)</Text>
+            
+            
+
         </View>
     </ScrollView>
     )

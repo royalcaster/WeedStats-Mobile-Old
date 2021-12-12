@@ -46,7 +46,7 @@ const Stats = ({ user, statConfig, toggleCounter }) => {
         <Text></Text>
       </View>
       
-      <Swiper style={styles.wrapper} showsButtons={true}>
+      <Swiper style={styles.wrapper} showsButtons={false}>
         <View style={styles.slide}>
           <StatsDashboard />
         </View>
@@ -66,13 +66,16 @@ export default Stats;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    borderBottomColor: "green",
+    borderBottomWidth: 2,
+    width: "100%",
+    height: "105%"
   },
   //Tab-View
   wrapper: {},
   slide: {
-    flex: 1,
     width: "100%",
+    height: "92%",
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#1E1E1E'
