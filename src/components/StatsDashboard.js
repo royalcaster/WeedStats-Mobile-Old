@@ -1,6 +1,7 @@
 import React from "react";
+import { useState } from "react";
 import { useFonts } from "expo-font";
-import { StyleSheet, Image, View, Text, Pressable, ScrollView, Dimensions} from 'react-native';
+import { StyleSheet, Image, View, Text, Pressable, ScrollView, Dimensions, Picker} from 'react-native';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -20,6 +21,8 @@ const StatsDashboard = () => {
         PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
         PoppinsLight: require("./fonts/Poppins-Light.ttf"),
       });
+
+    const [selectedValue, setSelectedValue] = useState("main");
 
     return (
     <ScrollView style={styles.container}>
@@ -75,6 +78,25 @@ const StatsDashboard = () => {
 
         <Text style={[styles.card_value, {borderTopColor: "#0080FF", borderTopWidth: 2, paddingRight: 10, paddingLeft: 10}]}>248,7</Text>
         <Text style={[styles.card_label, {marginTop: -15}]}>Label 6</Text>
+
+        <View style={{height: 20}}></View>
+
+        <View style={{flexDirection: "row", width: "95%", justifyContent: "center"}}>
+            <Pressable style={selectedValue == "main" ? styles.switch_item_active : styles.switch_item} onPress={() => setSelectedValue("main")}>
+                <Text style={selectedValue == "main" ? styles.switch_text_active : styles.text_item}>Gesamt</Text>
+            </Pressable>
+            <Pressable style={selectedValue == "joint" ? styles.switch_item_active : styles.switch_item} onPress={() => setSelectedValue("joint")}>
+                <Text style={selectedValue == "joint" ? styles.switch_text_active : styles.text_item}>Joint</Text>
+            </Pressable>
+            <Pressable style={selectedValue == "bong" ? styles.switch_item_active : styles.switch_item} onPress={() => setSelectedValue("bong")}>
+             <Text style={selectedValue == "bong" ? styles.switch_text_active : styles.text_item}>Bong</Text>
+            </Pressable>
+            <Pressable style={selectedValue == "vape" ? styles.switch_item_active : styles.switch_item} onPress={() => setSelectedValue("vape")}>
+                <Text style={selectedValue == "vape" ? styles.switch_text_active : styles.text_item}>Vape</Text>
+            </Pressable>
+        </View>
+
+        <View style={{height: 20}}></View>
 
         <LineChart
             data={{
@@ -315,5 +337,48 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         borderTopColor: "#0080FF",
         borderTopWidth: 2,
+    },
+    switch_item: {
+        backgroundColor: "#171717",
+        margin: 3,
+        padding: 3,
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingRight: 20,
+        borderRadius: 20,
+        flex: 1,
+        paddingTop: 5,
+        borderColor: "#171717",
+        borderWidth: 1,
+        paddingTop: 8,
+        paddingBottom: 8
+    },
+    switch_item_active: {
+        backgroundColor: "#171717",
+        margin: 3,
+        padding: 3,
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingRight: 20,
+        borderRadius: 20,
+        flex: 1,
+        borderColor: "#0080FF",
+        borderWidth: 1,
+        paddingTop: 8,
+        paddingBottom: 8
+    },
+    text_item: {
+        color: "#808080",
+        fontFamily: "PoppinsLight",
+        textAlignVertical: "center",
+        textAlign: "center",
+        fontSize: 12
+    },
+    switch_text_active: {
+        fontFamily: "PoppinsLight",
+        color: "#0080FF",
+        textAlignVertical: "center",
+        textAlign: "center",
+        fontSize: 12,
     }
 });

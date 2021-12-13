@@ -5,7 +5,7 @@ import moment from "moment";
 
 //Unterkomponenten
 import StatsDashboard from "./StatsDashboard";
-import StatsGraphs from "./StatsGraphs";
+import StatsMap from "./StatsMap";
 import StatsHistory from "./StatsHistory";
 
 //TabView
@@ -51,7 +51,7 @@ const Stats = ({ user, statConfig, toggleCounter }) => {
           <StatsDashboard />
         </View>
         <View style={styles.slide}>
-          <StatsGraphs />
+          <StatsMap />
         </View>
         <View style={styles.slide}>
           <StatsHistory />
