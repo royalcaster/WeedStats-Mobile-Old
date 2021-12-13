@@ -9,7 +9,7 @@ import StatsGraphs from "./StatsGraphs";
 import StatsHistory from "./StatsHistory";
 
 //TabView
-import Swiper from 'react-native-swiper'
+import Swiper from "react-native-swiper";
 
 import {
   StyleSheet,
@@ -26,7 +26,6 @@ import {
 } from "react-native";
 
 const Stats = ({ user, statConfig, toggleCounter }) => {
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -39,13 +38,12 @@ const Stats = ({ user, statConfig, toggleCounter }) => {
   }, []);
 
   return (
-    <Animated.View style={[{opacity: fadeAnim}, styles.container]}>
-
-      <View style={{height: 50}}></View>
+    <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
+      <View style={{ height: 50 }}></View>
       <View style={styles.navbar}>
         <Text></Text>
       </View>
-      
+
       <Swiper style={styles.wrapper} showsButtons={false}>
         <View style={styles.slide}>
           <StatsDashboard />
@@ -54,10 +52,9 @@ const Stats = ({ user, statConfig, toggleCounter }) => {
           <StatsGraphs />
         </View>
         <View style={styles.slide}>
-          <StatsHistory />
+          <StatsHistory user={user} />
         </View>
       </Swiper>
-
     </Animated.View>
   );
 };
@@ -69,20 +66,20 @@ const styles = StyleSheet.create({
     borderBottomColor: "green",
     borderBottomWidth: 2,
     width: "100%",
-    height: "105%"
+    height: "105%",
   },
   //Tab-View
   wrapper: {},
   slide: {
     width: "100%",
     height: "92%",
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#1E1E1E'
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#1E1E1E",
   },
   text: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 30,
-    fontWeight: 'bold'
-  }
+    fontWeight: "bold",
+  },
 });

@@ -13,16 +13,10 @@ import Home from "./src/components/Home";
 import Login from "./src/components/Login";
 
 //Firebase
-import { initializeApp } from "firebase/app";
-import {
-  getFirestore,
-  setDoc,
-  doc,
-  getDoc,
-  updateDoc,
-  Timestamp,
-} from "firebase/firestore";
-import { getDatabase, ref, onValue, set } from "firebase/database";
+import { setDoc, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
+import { ref, onValue, set } from "firebase/database";
+
+import { db, firestore } from "./src/components/FirebaseConfig";
 
 //Expo
 import { Linking } from "expo";
@@ -46,21 +40,6 @@ try {
 export default function App() {
   const [user, setUser] = useState(null);
   const [statConfig, setStatConfig] = useState(null);
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyBAlbSfcLmsqz9S_W4J_TCsX_i481My9MM",
-    authDomain: "weedstats-1a033.firebaseapp.com",
-    databaseURL:
-      "https://weedstats-1a033-default-rtdb.europe-west1.firebasedatabase.app/",
-    projectId: "weedstats-1a033",
-    storageBucket: "weedstats-1a033.appspot.com",
-    messagingSenderId: "158741630717",
-    appId: "1:158741630717:android:81d5c7ffc951c450c6f894",
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const firestore = getFirestore();
 
   const refreshUser = async (user) => {
     //Referenz zu Nutzerdokument, durch Google-Username identifiziert
@@ -231,15 +210,6 @@ export default function App() {
       vape_counter: docSnap_new.data().vape_counter,
     });
   };
-
-  function writeToDb(type) {
-    set(ref(db, "users/" + user.email), {
-      type: type,
-      timestamp: now(),
-      latitude: "42",
-      longitude: "69",
-    });
-  }
 
   const toggleConfig = async (index) => {
     //Referenz zu Nutzerdokument, durch Google-Username identifiziert
