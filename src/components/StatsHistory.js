@@ -13,7 +13,7 @@ import HistoryTable from "./HistoryTable";
 
 import AntDesign from "react-native-vector-icons/AntDesign";
 
-const StatsHistory = (user) => {
+const StatsHistory = ({ user }) => {
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),

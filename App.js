@@ -14,7 +14,7 @@ import Login from "./src/components/Login";
 
 //Firebase
 import { setDoc, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
-import { ref, onValue, set } from "firebase/database";
+import { ref, push } from "firebase/database";
 
 import { db, firestore } from "./src/components/FirebaseConfig";
 
@@ -160,15 +160,14 @@ export default function App() {
       accuracy: Location.Accuracy.Highest,
     });
 
-    set(
-      ref(db, "users/" + user.username + "/entry_" + (user.main_counter + 1)),
-      {
-        type: type,
-        timestamp: Timestamp.now().seconds,
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      }
-    );
+    const userListRef = ref(db, "users/" + user.username);
+    const newEntryRef = push(userListRef, {
+      number: user.main_counter + 1,
+      type: type,
+      timestamp: Timestamp.now().seconds,
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    });
   };
 
   const toggleCounter = async (index) => {
