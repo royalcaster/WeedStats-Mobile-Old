@@ -164,7 +164,7 @@ export default function App() {
     const newEntryRef = push(userListRef, {
       number: user.main_counter + 1,
       type: type,
-      timestamp: Timestamp.now().seconds,
+      timestamp: Date.now(),
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     });

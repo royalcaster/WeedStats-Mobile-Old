@@ -4,6 +4,7 @@ import { SnapshotViewIOSBase, StyleSheet, View } from "react-native";
 
 import { ref, onValue, query, limitToLast } from "firebase/database";
 import { db } from "./FirebaseConfig";
+import { Timestamp } from "firebase/firestore";
 import {
   Table,
   TableWrapper,
@@ -15,16 +16,16 @@ import {
 } from "react-native-table-component";
 
 let data = [
-  ["-", "-", "-", "[X]"],
-  ["-", "-", "-", "[X]"],
-  ["-", "-", "-", "[X]"],
-  ["-", "-", "-", "[X]"],
-  ["-", "-", "-", "[X]"],
-  ["-", "-", "-", "[X]"],
-  ["-", "-", "-", "[X]"],
-  ["-", "-", "-", "[X]"],
-  ["-", "-", "-", "[X]"],
-  ["-", "-", "-", "[X]"],
+  ["-", "-", "-", "-", "[X]"],
+  ["-", "-", "-", "-", "[X]"],
+  ["-", "-", "-", "-", "[X]"],
+  ["-", "-", "-", "-", "[X]"],
+  ["-", "-", "-", "-", "[X]"],
+  ["-", "-", "-", "-", "[X]"],
+  ["-", "-", "-", "-", "[X]"],
+  ["-", "-", "-", "-", "[X]"],
+  ["-", "-", "-", "-", "[X]"],
+  ["-", "-", "-", "-", "[X]"],
 ];
 
 const HistoryTable = ({ user }) => {
@@ -36,12 +37,13 @@ const HistoryTable = ({ user }) => {
     snapshot.forEach((daten) => {
       data[i][0] = daten.val().number;
       data[i][1] = daten.val().type;
-      data[i][2] = daten.val().timestamp;
+      data[i][2] = new Date(daten.val().timestamp).toLocaleDateString("de-DE");
+      data[i][3] = new Date(daten.val().timestamp).toLocaleTimeString("de-DE");
       i > 0 ? i-- : (i = 9);
     });
   });
 
-  const headData = ["Nr.", "Typ", "Uhrzeit", "Löschen"];
+  const headData = ["Nr.", "Typ", "Datum", "Uhrzeit", "Löschen"];
 
   return (
     <>
