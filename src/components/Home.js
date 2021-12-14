@@ -16,9 +16,9 @@ import { Appearance, useColorScheme } from "react-native";
 
 import Stats from "./Stats";
 import Main from "./Main";
-import Levels from "./Levels";
+import Map from './Map';
 import Config from "./Config";
-import Account from "./Account";
+import Friends from "./Friends";
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Entypo from "react-native-vector-icons/Entypo";
@@ -54,12 +54,12 @@ export default function Home({
           />
         ) : null}
         {view == "stats" ? <Stats user={user} /> : null}
-        {view == "levels" ? <Levels /> : null}
+        {view == "map" ? <Map /> : null}
         {view == "config" ? (
           <Config statConfig={statConfig} toggleConfig={toggleConfig} />
         ) : null}
-        {view == "account" ? (
-          <Account user={user} handleLogOut={handleLogOut} />
+        {view == "friends" ? (
+          <Friends user={user} handleLogOut={handleLogOut} />
         ) : null}
       </View>
 
@@ -92,7 +92,7 @@ export default function Home({
           </Pressable>
           <Pressable
             onPress={() => {
-              setView("levels");
+              setView("map");
             }}
             style={({ pressed }) => [
               { backgroundColor: pressed ? "#292929" : "#1E1E1E" },
@@ -100,19 +100,19 @@ export default function Home({
             ]}
           >
             <FontAwesome
-              name="trophy"
+              name="map-marker"
               style={[
-                { color: view == "levels" ? "#e0e0e0" : "#4a4a4a" },
+                { color: view == "map" ? "#e0e0e0" : "#4a4a4a" },
                 styles.settings_icon,
               ]}
             />
             <Text
               style={[
-                { color: view == "levels" ? "white" : "#4a4a4a" },
+                { color: view == "map" ? "white" : "#4a4a4a" },
                 styles.options_pressable_label,
               ]}
             >
-              Level
+              Karte
             </Text>
           </Pressable>
           <Pressable
@@ -160,7 +160,7 @@ export default function Home({
           </Pressable>
           <Pressable
             onPress={() => {
-              setView("account");
+              setView("friends");
             }}
             style={({ pressed }) => [
               { backgroundColor: pressed ? "#292929" : "#1E1E1E" },
@@ -170,17 +170,17 @@ export default function Home({
             <FontAwesome
               name="user"
               style={[
-                { color: view == "account" ? "#e0e0e0" : "#4a4a4a" },
+                { color: view == "friends" ? "#e0e0e0" : "#4a4a4a" },
                 styles.settings_icon,
               ]}
             />
             <Text
               style={[
-                { color: view == "account" ? "white" : "#4a4a4a" },
+                { color: view == "friends" ? "white" : "#4a4a4a" },
                 styles.options_pressable_label,
               ]}
             >
-              Account
+              Freunde
             </Text>
           </Pressable>
         </View>
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   content_container: {
     width: "100%",
     position: "relative",
-    height: "90%",
+    height: "92%",
   },
   counters_container: {
     flex: 5,
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textAlign: "center",
     paddingBottom: 0,
-    paddingTop: 5,
+    paddingTop: 0,
     marginBottom: 10,
   },
   options_container: {
@@ -286,10 +286,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   pressable_profileimg: {
-    height: 40,
-    width: 40,
+    height: 50,
+    width: 50,
     alignSelf: "center",
-    marginBottom: 10,
+    marginBottom: 15,
   },
   footer_container: {
     width: "100%",

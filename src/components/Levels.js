@@ -1,9 +1,11 @@
 import React from "react";
 import { useEffect, useRef } from "react";
-import { View, Image, StyleSheet, Text, Animated } from 'react-native';
+import { View, Image, StyleSheet, Text, Animated, Pressable } from 'react-native';
 import { useFonts } from 'expo-font';
 
-const Levels = () => {
+import Feather from 'react-native-vector-icons/Feather';
+
+const Levels = ({onexit}) => {
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -156,6 +158,17 @@ const Levels = () => {
                 </View>
             </View>
 
+            <Pressable onPress={onexit} style={ ({pressed}) => [{backgroundColor: pressed ? "#b32d24" : "#eb4034"},styles.cancelButton]}>
+                    <Text style={{
+                    color: "white",
+                    fontSize: 18,
+                    fontFamily: "PoppinsLight",
+                    alignSelf: "center"
+                    }}>
+                        <Feather name="arrow-left" style={styles.cancel_icon}/>Zurück
+                    </Text>
+                </Pressable>
+
         </Animated.View>
     );
 }
@@ -186,5 +199,22 @@ const styles = StyleSheet.create({
         fontSize:18,
         marginTop: -5,
         color: "white"
+    },
+    
+    cancelButton: { 
+        width: "80%",
+        alignSelf: "center",
+        height: 50,
+        borderRadius: 100,
+        justifyContent: "center",
+        marginTop: 20,
+        bottom: 20,
+        flexDirection: "row"
+    },
+    cancel_icon: {
+        fontSize: 25,
+        color: "white",
+        textAlignVertical: "center",
+        top: 5
     }
 });

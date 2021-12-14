@@ -15,6 +15,7 @@ import {
   Animated,
 } from "react-native";
 
+
 const CounterItem = ({
   type,
   counter,

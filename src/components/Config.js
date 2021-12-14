@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEffect, useRef } from "react";
+import { Pressable } from "react-native";
 import { useFonts } from "expo-font";
 import {
   StyleSheet,
@@ -12,9 +13,18 @@ import {
   Easing,
 } from "react-native";
 
+import Levels from './Levels'
+
 import ConfigItem from "./ConfigItem";
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const Config = ({ statConfig, toggleConfig }) => {
+
+  const [showLevels, setShowLevels] = useState(false);
+  const hideLevels = () => {
+    setShowLevels(false);
+  }
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -35,7 +45,8 @@ const Config = ({ statConfig, toggleConfig }) => {
   }
 
   return (
-    <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
+    <>
+    {showLevels ? <Levels onexit={hideLevels}></Levels> : <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
       <ConfigItem
         type="joint"
         config={statConfig.joint}
@@ -51,7 +62,19 @@ const Config = ({ statConfig, toggleConfig }) => {
         config={statConfig.vape}
         onToggle={toggleConfig}
       ></ConfigItem>
-    </Animated.View>
+
+            <Pressable onPress={() => setShowLevels(true)} style={ ({pressed}) => [{backgroundColor: pressed ? "#404040" : "#4a4a4a"},styles.signOutButton]}>
+              <FontAwesome name="trophy" style={styles.money_icon} />
+                <Text style={{
+                color: "white",
+                fontSize: 18,
+                fontFamily: "PoppinsLight",
+                textAlign: "center",
+                top: 2,
+                textAlignVertical: "center"
+            }}>  Levelübersicht</Text></Pressable>
+    </Animated.View>}
+    </>
   );
 };
 
@@ -79,4 +102,19 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     paddingLeft: 20,
   },
+  signOutButton: { 
+    width: "80%",
+    alignSelf: "center",
+    height: 50,
+    borderRadius: 100,
+    justifyContent: "center",
+    marginTop: 20,
+    bottom: 20,
+    flexDirection: "row"
+  },
+  money_icon: {
+    fontSize: 25,
+    color: "white",
+    textAlignVertical: "center"
+}
 });

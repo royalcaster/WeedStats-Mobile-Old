@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         fontFamily: "PoppinsLight",
         marginTop: 0
     },
-    signOutButton: { 
+    signOutButton: {
         width: "80%",
         alignSelf: "center",
         height: 50,

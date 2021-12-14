@@ -26,6 +26,9 @@ const StatsDashboard = () => {
 
     return (
     <ScrollView style={styles.container}>
+
+        <View style={{height: 50}}></View>
+
         <View style={{alignItems: "center", flexDirection: "row"}}>
             <MaterialCommunityIcons name="monitor-dashboard" style={{fontSize: 30, color: "#c4c4c4", marginLeft: 20}}/><Text style={styles.heading}>Dashboard</Text>
         </View>
