@@ -39,6 +39,7 @@ import {
 
 const Stats = ({ user }) => {
   const [view, setView] = useState("dashboard");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -47,31 +48,9 @@ const Stats = ({ user }) => {
       useNativeDriver: true,
       easing: Easing.bezier(0.07, 1, 0.33, 0.89),
     }).start();
-    getHistory();
   }, []);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  const [loading, setLoading] = useState(true);
-
-  //History auslesen
-  const dbUserRef = query(ref(db, "users/" + user.username), limitToLast(10));
-
-  const [history, setHistory] = useState([]);
-
-  const getHistory = async () => {
-    onChildAdded(dbUserRef, (snapshot) => {
-      history.unshift({
-        key: snapshot.key,
-        number: snapshot.val().number, // dieser Eintrag in der DB wird wahrscheinlich nicht mehr benötigt.
-        type: snapshot.val().type,
-        date: new Date(snapshot.val().timestamp).toLocaleDateString("de-DE"),
-        time: new Date(snapshot.val().timestamp).toLocaleTimeString("de-DE"),
-      });
-    });
-    setLoading(false);
-    console.log("Verlauf geladen!-----------");
-  };
 
   return (
     <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
@@ -144,9 +123,7 @@ const Stats = ({ user }) => {
       </Swiper> */}
 
       {view == "dashboard" ? <StatsDashboard /> : null}
-      {view == "history" ? (
-        <StatsHistory user={user} history={history} />
-      ) : null}
+      {view == "history" ? <StatsHistory user={user} /> : null}
     </Animated.View>
   );
 };
