@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     alignSelf: "center",
-    marginBottom: 15,
+    marginBottom: 5,
   },
   footer_container: {
     width: "100%",

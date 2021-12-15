@@ -1,7 +1,7 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useFonts } from "expo-font";
-import { StyleSheet, Image, View, Text, Pressable, ScrollView, Dimensions, Picker} from 'react-native';
+import { StyleSheet, Image, View, Text, Pressable, ScrollView, Dimensions, Picker, Animated, Easing} from 'react-native';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -22,17 +22,22 @@ const StatsDashboard = () => {
         PoppinsLight: require("./fonts/Poppins-Light.ttf"),
       });
 
+      const fadeAnim = useRef(new Animated.Value(0)).current;
+      useEffect(() => {
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+          easing: Easing.bezier(0.07, 1, 0.33, 0.89),
+        }).start();
+      }, []);
+
+
     const [selectedValue, setSelectedValue] = useState("main");
 
     return (
     <ScrollView style={styles.container}>
-
-        <View style={{height: 50}}></View>
-
-        <View style={{alignItems: "center", flexDirection: "row"}}>
-            <MaterialCommunityIcons name="monitor-dashboard" style={{fontSize: 30, color: "#c4c4c4", marginLeft: 20}}/><Text style={styles.heading}>Dashboard</Text>
-        </View>
-
+    <Animated.View style={{opacity: fadeAnim}}>
         <View style={{height: 10}}></View>
         
         <View style={{alignItems: "center", flex: 1}}>
@@ -292,7 +297,7 @@ const StatsDashboard = () => {
         /> */}
 
         </View>
-
+    </Animated.View>
     </ScrollView>
     )
 }

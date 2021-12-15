@@ -1,4 +1,5 @@
 import React from "react";
+import { useRef, useEffect } from "react";
 import { useFonts } from "expo-font";
 import {
   StyleSheet,
@@ -7,29 +8,38 @@ import {
   Text,
   Pressable,
   ScrollView,
+  Animated, Easing
 } from "react-native";
 
 import HistoryTable from "./HistoryTable";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-const StatsHistory = ({ user }) => {
+const StatsHistory = ({ user, history }) => {
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
   });
 
-  return (
-    <ScrollView style={styles.container}>
-      <View style={{ alignItems: "center" }}>
-        <AntDesign
-          name="clockcircleo"
-          style={{ fontSize: 60, color: "white", marginBottom: 5 }}
-        />
-        <Text style={styles.heading}>Verlauf</Text>
-      </View>
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+      easing: Easing.bezier(0.07, 1, 0.33, 0.89),
+    }).start();
+  }, []);
 
-      <HistoryTable user={user} />
+  return (
+    
+    <ScrollView style={styles.container}>
+      <Animated.View style={{opacity: fadeAnim}}>
+
+        <View style={{height: 10}}></View>
+
+        <HistoryTable user={user} history={history}/>
+      </Animated.View>
     </ScrollView>
   );
 };
@@ -46,4 +56,10 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
   },
+  heading: {
+    fontFamily: "PoppinsBlack",
+    color: "#c4c4c4",
+    fontSize: 20,
+    marginLeft: 10
+},
 });
