@@ -4,7 +4,14 @@ import { SnapshotViewIOSBase, StyleSheet, View, Text, Image, Pressable } from "r
 
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
-import { ref, onValue, query, limitToLast } from "firebase/database";
+import {
+  ref,
+  onChildAdded,
+  get,
+  child,
+  query,
+  limitToLast,
+} from "firebase/database";
 import { db } from "./FirebaseConfig";
 import { Timestamp } from "firebase/firestore";
 import {
@@ -34,6 +41,18 @@ let data = [
 ];
 
 const HistoryTable = ({ user, history }) => {
+/* let data = Array.from(Array(10), () => new Array(5)); */
+
+  useEffect(() => {
+    try{
+      getHistory();
+    }
+    catch(e) {
+      console.log("Error:", e);
+    }
+    
+  },[]);
+
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
@@ -42,7 +61,21 @@ const HistoryTable = ({ user, history }) => {
   /*
   const dbUserRef = query(ref(db, "users/" + user.username), limitToLast(10));
 
-  let i = 9;
+  get(dbUserRef, (snapshot) => {
+    if (snapshot.exists()) {
+      data.unshift([
+        snapshot.val().number,
+        snapshot.val().type,
+        new Date(snapshot.val().timestamp).toLocaleDateString("de-DE"),
+        new Date(snapshot.val().timestamp).toLocaleTimeString("de-DE"),
+        "[X]",
+      ]);
+    } else {
+      console.log("No data available");
+    }
+  }).catch((error) => {
+    console.error("Error bei HistoryTable");
+  });
 
   //Orignal
    onValue(dbUserRef, (snapshot) => {
@@ -54,8 +87,11 @@ const HistoryTable = ({ user, history }) => {
       i > 0 ? i-- : (i = 9);
     });
   }); 
+*/
 
-   onValue(dbUserRef, (snapshot) => {
+  //Das hab ich heute geschrieben -> einfach deine version kopiert und bisschen varriiert, statt mit 2-dimensionalem array halt objekte benutzt
+const getHistory = () => {
+  onValue(dbUserRef, (snapshot) => {
     snapshot.forEach((daten) => {
       history.push({
         number: daten.val().number,
@@ -65,10 +101,22 @@ const HistoryTable = ({ user, history }) => {
       });
     });
   });
+}
+  
 
   const headData = ["Nr.", "Typ", "Datum", "Uhrzeit", "Löschen"];
-*/
 
+
+/*   onChildAdded(dbUserRef, (snapshot) => {
+    data.unshift([
+      snapshot.val().number,
+      snapshot.val().type,
+      new Date(snapshot.val().timestamp).toLocaleDateString("de-DE"),
+      new Date(snapshot.val().timestamp).toLocaleTimeString("de-DE"),
+      "[X]",
+    ]);
+    data.pop();
+  }); */
 
   return (
     <>
@@ -101,6 +149,12 @@ const HistoryTable = ({ user, history }) => {
           data={headData}
           style={styles.HeadStyle}
           textStyle={styles.TableText}
+          flexArr={[1, 2, 2, 2, 1]}
+        />
+        <Rows
+          data={data}
+          textStyle={styles.TableText}
+          flexArr={[1, 2, 2, 2, 1]}
         />
         <Rows data={data} textStyle={styles.TableText} />
       </Table> */}
@@ -114,10 +168,12 @@ const styles = StyleSheet.create({
   HeadStyle: {
     height: 50,
     alignContent: "center",
+    backgroundColor: "#2b2b2b",
   },
   TableText: {
     margin: 10,
     color: "white",
+    fontFamily: "PoppinsLight",
   },
   j_img: {
     height: 50,
