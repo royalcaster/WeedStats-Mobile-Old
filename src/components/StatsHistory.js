@@ -21,6 +21,7 @@ const StatsHistory = ({ user }) => {
 
   return (
     <ScrollView style={styles.container}>
+      <View style={{ height: 50 }}></View>
       <View style={{ alignItems: "center" }}>
         <AntDesign
           name="clockcircleo"
@@ -28,7 +29,7 @@ const StatsHistory = ({ user }) => {
         />
         <Text style={styles.heading}>Verlauf</Text>
       </View>
-
+      <View style={{ height: 30 }}></View>
       <HistoryTable user={user} />
     </ScrollView>
   );
