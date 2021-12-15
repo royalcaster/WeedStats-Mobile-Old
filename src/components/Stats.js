@@ -3,7 +3,15 @@ import { useEffect, useRef } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import moment from "moment";
 
-import { ref, onValue, query, limitToLast } from "firebase/database";
+import {
+  ref,
+  onValue,
+  query,
+  limitToLast,
+  onChildAdded,
+  onChildRemoved,
+  get,
+} from "firebase/database";
 import { db } from "./FirebaseConfig";
 
 //Unterkomponenten
@@ -26,11 +34,10 @@ import {
   SafeAreaView,
   FlatList,
   ActivityIndicator,
-  TextBase
+  TextBase,
 } from "react-native";
 
 const Stats = ({ user }) => {
-
   const [view, setView] = useState("dashboard");
 
   useEffect(() => {
@@ -40,53 +47,93 @@ const Stats = ({ user }) => {
       useNativeDriver: true,
       easing: Easing.bezier(0.07, 1, 0.33, 0.89),
     }).start();
-    getHistoy();
+    getHistory();
   }, []);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const [loading, setLoading] = useState(true);
-  
-//History auslesen
-const dbUserRef = query(ref(db, "users/" + user.username), limitToLast(10));
 
-const [history, setHistory] = useState([]); 
- 
-const getHistoy = async () => {
-  onValue(dbUserRef, (snapshot) => {
-    snapshot.forEach((daten) => {
-      history.push({ 
-        number: daten.val().number,
-        type: daten.val().type,
-        date: new Date(daten.val().timestamp).toLocaleDateString("de-DE"),
-        time: new Date(daten.val().timestamp).toLocaleTimeString("de-DE")
+  //History auslesen
+  const dbUserRef = query(ref(db, "users/" + user.username), limitToLast(10));
+
+  const [history, setHistory] = useState([]);
+
+  const getHistory = async () => {
+    onChildAdded(dbUserRef, (snapshot) => {
+      history.unshift({
+        key: snapshot.key,
+        number: snapshot.val().number, // dieser Eintrag in der DB wird wahrscheinlich nicht mehr benötigt.
+        type: snapshot.val().type,
+        date: new Date(snapshot.val().timestamp).toLocaleDateString("de-DE"),
+        time: new Date(snapshot.val().timestamp).toLocaleTimeString("de-DE"),
       });
     });
-  });
-  setLoading(false);
-  console.log("Verlauf geladen!-----------")
-}
+    setLoading(false);
+    console.log("Verlauf geladen!-----------");
+  };
 
   return (
     <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
-      <View style={{height: 50}}></View>
-      <View style={{flexDirection: "row"}}>
-
-        <Pressable onPress={() => setView("dashboard")} style={({pressed}) => [{
-          borderTopColor: view == "dashboard" ? "#0080FF" : "#171717", borderTopWidth: 2, backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E"
-        },styles.nav_pressable]}>
-          <Text style={[{color: view == "dashboard" ? "#0080FF" : "#c4c4c4"},styles.nav_text]}>Dashboard</Text>
+      <View style={{ height: 50 }}></View>
+      <View style={{ flexDirection: "row" }}>
+        <Pressable
+          onPress={() => setView("dashboard")}
+          style={({ pressed }) => [
+            {
+              borderTopColor: view == "dashboard" ? "#0080FF" : "#171717",
+              borderTopWidth: 2,
+              backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E",
+            },
+            styles.nav_pressable,
+          ]}
+        >
+          <Text
+            style={[
+              { color: view == "dashboard" ? "#0080FF" : "#c4c4c4" },
+              styles.nav_text,
+            ]}
+          >
+            Dashboard
+          </Text>
         </Pressable>
 
-        <Pressable onPress={() => setView("history")} style={({pressed}) => [{
-          borderTopColor: view == "history" ? "#0080FF" : "#171717", borderTopWidth: 2, backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E"
-        },styles.nav_pressable]}>
-          <Text style={[{color: view == "history" ? "#0080FF" : "#c4c4c4"},styles.nav_text]}>Verlauf</Text>
+        <Pressable
+          onPress={() => setView("history")}
+          style={({ pressed }) => [
+            {
+              borderTopColor: view == "history" ? "#0080FF" : "#171717",
+              borderTopWidth: 2,
+              backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E",
+            },
+            styles.nav_pressable,
+          ]}
+        >
+          <Text
+            style={[
+              { color: view == "history" ? "#0080FF" : "#c4c4c4" },
+              styles.nav_text,
+            ]}
+          >
+            Verlauf
+          </Text>
         </Pressable>
-
       </View>
 
-    {loading ? <View style={{backgroundColor: "#1E1E1E", justifyContent: "center", height: "100%", zIndex: 10, position: "absolute", width: "100%"}}><ActivityIndicator size="large" color="#0080FF"/></View> : null }
+      {loading ? (
+        <View
+          style={{
+            backgroundColor: "#1E1E1E",
+            justifyContent: "center",
+            height: "100%",
+            zIndex: 10,
+            position: "absolute",
+            width: "100%",
+          }}
+        >
+          <ActivityIndicator size="large" color="#0080FF" />
+        </View>
+      ) : null}
       {/* <Swiper style={styles.wrapper} showsButtons={false}>
         <View style={styles.slide}>
           <StatsDashboard />
@@ -97,8 +144,9 @@ const getHistoy = async () => {
       </Swiper> */}
 
       {view == "dashboard" ? <StatsDashboard /> : null}
-      {view == "history" ? <StatsHistory user={user} history={history.reverse()}/> : null}
-      
+      {view == "history" ? (
+        <StatsHistory user={user} history={history} />
+      ) : null}
     </Animated.View>
   );
 };
@@ -134,6 +182,6 @@ const styles = StyleSheet.create({
     fontFamily: "PoppinsLight",
     fontSize: 18,
     marginTop: 15,
-    marginBottom: 15
-  }
+    marginBottom: 15,
+  },
 });
