@@ -6,6 +6,8 @@ import {
   Text,
   TouchableWithoutFeedbackBase,
   View,
+  Modal,
+  Pressable,
 } from "react-native";
 
 //Components
@@ -40,6 +42,7 @@ try {
 export default function App() {
   const [user, setUser] = useState(null);
   const [statConfig, setStatConfig] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const refreshUser = async (user) => {
     //Referenz zu Nutzerdokument, durch Google-Username identifiziert
@@ -168,6 +171,8 @@ export default function App() {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     });
+
+    return newEntryRef;
   };
 
   const toggleCounter = async (index) => {
@@ -180,26 +185,26 @@ export default function App() {
       case "joint":
         await updateDoc(docRef, {
           joint_counter: docSnap.data().joint_counter + 1,
+          main_counter: docSnap.data().main_counter + 1,
         });
-        writeDb("joint");
+        await writeDb("joint");
         break;
       case "bong":
         await updateDoc(docRef, {
           bong_counter: docSnap.data().bong_counter + 1,
+          main_counter: docSnap.data().main_counter + 1,
         });
-        writeDb("bong");
+        await writeDb("bong");
         break;
       case "vape":
         await updateDoc(docRef, {
           vape_counter: docSnap.data().vape_counter + 1,
+          main_counter: docSnap.data().main_counter + 1,
         });
-        writeDb("vape");
+        await writeDb("vape");
         break;
     }
 
-    await updateDoc(docRef, {
-      main_counter: docSnap.data().main_counter + 1,
-    });
     const docSnap_new = await getDoc(docRef);
     setUser({
       ...user,
@@ -208,6 +213,8 @@ export default function App() {
       bong_counter: docSnap_new.data().bong_counter,
       vape_counter: docSnap_new.data().vape_counter,
     });
+
+    setModalVisible(true);
   };
 
   const toggleConfig = async (index) => {
@@ -254,6 +261,32 @@ export default function App() {
 
   return (
     <>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalBigText}>Erfolg!</Text>
+            <Text style={styles.modalSmallText}>
+              Hier werden später einfallsreiche Sprüche auftauchen.
+            </Text>
+            <Pressable
+              style={({ pressed }) => [
+                { backgroundColor: pressed ? "#2b2b2b" : "#383838" },
+                styles.button,
+              ]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.buttonText}>OK</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
       {user ? (
         <Home
           user={user}
@@ -273,5 +306,51 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#1E1E1E",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    //marginTop: 5,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "#1E1E1E",
+    borderRadius: 20,
+    padding: 15,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.51,
+    shadowRadius: 13.16,
+    elevation: 20,
+  },
+  modalBigText: {
+    textAlign: "center",
+    color: "white",
+    fontFamily: "PoppinsBlack",
+    fontSize: 45,
+    paddingBottom: 20,
+  },
+  modalSmallText: {
+    textAlign: "center",
+    color: "white",
+    fontFamily: "PoppinsBlack",
+    fontSize: 20,
+    marginBottom: 30,
+  },
+  buttonText: {
+    textAlign: "center",
+    color: "white",
+    fontFamily: "PoppinsBlack",
+    fontSize: 30,
+  },
+  button: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
   },
 });
