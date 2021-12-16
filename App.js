@@ -3,6 +3,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import {
   StyleSheet,
+  ActivityIndicator,
   Text,
   TouchableWithoutFeedbackBase,
   View,
@@ -43,6 +44,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [statConfig, setStatConfig] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [writeComplete, setWriteComplete] = useState(false);
 
   const refreshUser = async (user) => {
     //Referenz zu Nutzerdokument, durch Google-Username identifiziert
@@ -176,6 +178,7 @@ export default function App() {
   };
 
   const toggleCounter = async (index) => {
+    setModalVisible(true);
     //Referenz zu Nutzerdokument, durch Google-Username identifiziert
     const docRef = doc(firestore, "users", user.username);
     //Snapshot von diesem Dokument zum Lesen
@@ -214,7 +217,7 @@ export default function App() {
       vape_counter: docSnap_new.data().vape_counter,
     });
 
-    setModalVisible(true);
+    setWriteComplete(true);
   };
 
   const toggleConfig = async (index) => {
@@ -267,23 +270,37 @@ export default function App() {
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
+          setWriteComplete(false);
         }}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalBigText}>Erfolg!</Text>
-            <Text style={styles.modalSmallText}>
-              Hier werden später einfallsreiche Sprüche auftauchen.
-            </Text>
-            <Pressable
-              style={({ pressed }) => [
-                { backgroundColor: pressed ? "#2b2b2b" : "#383838" },
-                styles.button,
-              ]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.buttonText}>OK</Text>
-            </Pressable>
+            {writeComplete ? (
+              <>
+                <Text style={styles.modalBigText}>Erfolg!</Text>
+                <Text style={styles.modalSmallText}>
+                  Hier werden später einfallsreiche Sprüche auftauchen.
+                </Text>
+                <Pressable
+                  style={({ pressed }) => [
+                    { backgroundColor: pressed ? "#2b2b2b" : "#383838" },
+                    styles.button,
+                  ]}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                    setWriteComplete(false);
+                  }}
+                >
+                  <Text style={styles.buttonText}>OK</Text>
+                </Pressable>
+              </>
+            ) : (
+              <ActivityIndicator
+                animating={true}
+                size="large"
+                color="#0080FF"
+              />
+            )}
           </View>
         </View>
       </Modal>
