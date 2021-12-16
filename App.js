@@ -14,6 +14,7 @@ import {
 //Components
 import Home from "./src/components/Home";
 import Login from "./src/components/Login";
+import getRandomSaying from "./src/Sayings";
 
 //Firebase
 import { setDoc, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
@@ -256,6 +257,7 @@ export default function App() {
 
   const [loaded] = useFonts({
     PoppinsBlack: require("./assets/fonts/Poppins-Black.ttf"),
+    PoppinsLight: require("./assets/fonts/Poppins-Light.ttf"),
   });
 
   if (!loaded) {
@@ -278,9 +280,7 @@ export default function App() {
             {writeComplete ? (
               <>
                 <Text style={styles.modalBigText}>Erfolg!</Text>
-                <Text style={styles.modalSmallText}>
-                  Hier werden später einfallsreiche Sprüche auftauchen.
-                </Text>
+                <Text style={styles.modalSmallText}>{getRandomSaying()}</Text>
                 <Pressable
                   style={({ pressed }) => [
                     { backgroundColor: pressed ? "#2b2b2b" : "#383838" },
@@ -355,8 +355,8 @@ const styles = StyleSheet.create({
   modalSmallText: {
     textAlign: "center",
     color: "white",
-    fontFamily: "PoppinsBlack",
-    fontSize: 20,
+    fontFamily: "PoppinsLight",
+    fontSize: 18,
     marginBottom: 30,
   },
   buttonText: {
