@@ -18,7 +18,7 @@ import Stats from "./Stats";
 import Main from "./Main";
 import Map from './Map';
 import Config from "./Config";
-import Friends from "./Friends";
+import Groups from "./Groups";
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Entypo from "react-native-vector-icons/Entypo";
@@ -58,8 +58,8 @@ export default function Home({
         {view == "config" ? (
           <Config statConfig={statConfig} toggleConfig={toggleConfig} />
         ) : null}
-        {view == "friends" ? (
-          <Friends user={user} handleLogOut={handleLogOut} />
+        {view == "groups" ? (
+          <Groups user={user} handleLogOut={handleLogOut} />
         ) : null}
       </View>
 
@@ -160,7 +160,7 @@ export default function Home({
           </Pressable>
           <Pressable
             onPress={() => {
-              setView("friends");
+              setView("groups");
             }}
             style={({ pressed }) => [
               { backgroundColor: pressed ? "#292929" : "#1E1E1E" },
@@ -170,17 +170,17 @@ export default function Home({
             <FontAwesome
               name="user"
               style={[
-                { color: view == "friends" ? "#e0e0e0" : "#4a4a4a" },
+                { color: view == "groups" ? "#e0e0e0" : "#4a4a4a" },
                 styles.settings_icon,
               ]}
             />
             <Text
               style={[
-                { color: view == "friends" ? "white" : "#4a4a4a" },
+                { color: view == "groups" ? "white" : "#4a4a4a" },
                 styles.options_pressable_label,
               ]}
             >
-              Freunde
+              Social
             </Text>
           </Pressable>
         </View>
