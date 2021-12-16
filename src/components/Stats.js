@@ -3,15 +3,6 @@ import { useEffect, useRef } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import moment from "moment";
 
-import {
-  ref,
-  onValue,
-  query,
-  limitToLast,
-  onChildAdded,
-  onChildRemoved,
-  get,
-} from "firebase/database";
 import { db } from "./FirebaseConfig";
 
 //Unterkomponenten
@@ -37,23 +28,59 @@ import {
   TextBase,
 } from "react-native";
 
+import {
+  ref,
+  onChildAdded,
+  get,
+  remove,
+  child,
+  query,
+  limitToLast,
+} from "firebase/database";
+
 const Stats = ({ user }) => {
-  const [view, setView] = useState("dashboard");
-  const [loading, setLoading] = useState(false);
+  const [view, setView] = useState();
 
   useEffect(() => {
+    getHistory();
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
       useNativeDriver: true,
       easing: Easing.bezier(0.07, 1, 0.33, 0.89),
     }).start();
+    setView("dashboard")
   }, []);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
+  const [history, setHistory] = useState([]);
+  const dbUserRef = query(ref(db, "users/" + user.username), limitToLast(10));
+
+
+  const deleteEntry = (key) => {
+    const entryRef = ref(db, "users/" + user.username + "/" + key);
+    remove(entryRef);
+    setHistory(history.filter((entry) => entry.key != key));
+  };
+
+  const getHistory = () => {
+    onChildAdded(dbUserRef, (snapshot) => {
+      history.unshift({
+        key: snapshot.key,
+        number: snapshot.val().number, // dieser Eintrag in der DB wird wahrscheinlich nicht mehr benötigt.
+        type: snapshot.val().type,
+        date: new Date(snapshot.val().timestamp).toLocaleDateString("de-DE"),
+        time: new Date(snapshot.val().timestamp).toLocaleTimeString("de-DE"),
+      });
+    });
+    console.log(history);
+  };
+
+
   return (
     <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
+
       <View style={{ height: 50 }}></View>
       <View style={{ flexDirection: "row" }}>
         <Pressable
@@ -99,31 +126,8 @@ const Stats = ({ user }) => {
         </Pressable>
       </View>
 
-      {loading ? (
-        <View
-          style={{
-            backgroundColor: "#1E1E1E",
-            justifyContent: "center",
-            height: "100%",
-            zIndex: 10,
-            position: "absolute",
-            width: "100%",
-          }}
-        >
-          <ActivityIndicator size="large" color="#0080FF" />
-        </View>
-      ) : null}
-      {/* <Swiper style={styles.wrapper} showsButtons={false}>
-        <View style={styles.slide}>
-          <StatsDashboard />
-        </View>
-        <View style={styles.slide}>
-          <StatsHistory user={user} history={history}/>
-        </View>
-      </Swiper> */}
-
       {view == "dashboard" ? <StatsDashboard /> : null}
-      {view == "history" ? <StatsHistory user={user} /> : null}
+      {view == "history" ? <StatsHistory user={user} history={history} ondelete={deleteEntry}/> : null}
     </Animated.View>
   );
 };

@@ -15,7 +15,7 @@ import HistoryTable from "./HistoryTable";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-const StatsHistory = ({ user, history }) => {
+const StatsHistory = ({ user, history, ondelete }) => {
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
@@ -38,7 +38,7 @@ const StatsHistory = ({ user, history }) => {
 
         <View style={{height: 10}}></View>
 
-        <HistoryTable user={user} history={history}/>
+        <HistoryTable user={user} history={history} ondelete={ondelete}/>
       </Animated.View>
     </ScrollView>
   );

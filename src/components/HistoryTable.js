@@ -26,57 +26,23 @@ import { db } from "./FirebaseConfig";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-const HistoryTable = ({ user }) => {
+const HistoryTable = ({ user, history, ondelete }) => {
+
+  const [loading, setLoading] = useState();
+
   useEffect(() => {
-    getHistory();
+    setLoading(true)
   }, []);
 
-  const [loading, setLoading] = useState(true);
-  const [history, setHistory] = useState([]);
-  const dbUserRef = query(ref(db, "users/" + user.username), limitToLast(10));
 
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
   });
 
-  const deleteEntry = (key) => {
-    const entryRef = ref(db, "users/" + user.username + "/" + key);
-    remove(entryRef);
-    setHistory(history.filter((entry) => entry.key != key));
-  };
-
-  const getHistory = async () => {
-    onChildAdded(dbUserRef, (snapshot) => {
-      history.unshift({
-        key: snapshot.key,
-        number: snapshot.val().number, // dieser Eintrag in der DB wird wahrscheinlich nicht mehr benötigt.
-        type: snapshot.val().type,
-        date: new Date(snapshot.val().timestamp).toLocaleDateString("de-DE"),
-        time: new Date(snapshot.val().timestamp).toLocaleTimeString("de-DE"),
-      });
-    });
-    setLoading(false);
-    console.log("Verlauf geladen!-----------");
-  };
 
   return (
     <>
-      {loading ? (
-        <View
-          style={{
-            backgroundColor: "#1E1E1E",
-            justifyContent: "center",
-            height: "100%",
-            zIndex: 10,
-            position: "absolute",
-            width: "100%",
-          }}
-        >
-          <ActivityIndicator size="large" color="#0080FF" />
-        </View>
-      ) : null}
-
       {history.map((event) => (
         <View
           key={Math.random()}
@@ -89,7 +55,6 @@ const HistoryTable = ({ user }) => {
             borderTopWidth: 0,
           }}
         >
-          {/*  <Text style={{flex: 1}}>{event.number}</Text> */}
           <View style={{ flex: 1 }}>
             {event.type == "joint" ? (
               <Image style={styles.j_img} source={require("./img/joint.png")} />
@@ -125,7 +90,7 @@ const HistoryTable = ({ user }) => {
                   borderRadius: 30,
                 },
               ]}
-              onPress={() => deleteEntry(event.key)}
+              onPress={() => ondelete(event.key)}
             >
               <AntDesign
                 name="delete"
