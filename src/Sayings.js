@@ -30,7 +30,7 @@ const sayings = [
 ];
 
 const getRandomSaying = () => {
-  return sayings[Math.round(Math.random() * (sayings.length - 1))];
+  return sayings[Math.floor(Math.random() * sayings.length)];
 };
 
 export default getRandomSaying;

@@ -286,6 +286,7 @@ export default function App() {
                     { backgroundColor: pressed ? "#2b2b2b" : "#383838" },
                     styles.button,
                   ]}
+                  hitSlop={50}
                   onPress={() => {
                     setModalVisible(!modalVisible);
                     setWriteComplete(false);
