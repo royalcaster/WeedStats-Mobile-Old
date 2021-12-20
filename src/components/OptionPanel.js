@@ -4,7 +4,7 @@ import { View, Text, Pressable, StyleSheet, Animated } from 'react-native'
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-const OptionPanel = ({onexit}) => {
+const OptionPanel = ({onShowCreate, onexit}) => {
 
     const slideAnim = useRef(new Animated.Value(0)).current;
     useEffect(() => {
@@ -20,22 +20,22 @@ const OptionPanel = ({onexit}) => {
 
     return (
     <Animated.View style={[{opacity: slideAnim},styles.container]}>
-        <Pressable style={({pressed}) => [{backgroundColor: pressed ? "#333333" : "#2b2b2b"},styles.pressable]}>
+        <Pressable onPress={() => {onShowCreate(); onexit();}} style={({pressed}) => [{backgroundColor: pressed ? "#333333" : "#2b2b2b"},styles.pressable]}>
             <FontAwesome name="plus" style={styles.icon}/>
             <Text style={styles.text}>Gruppe erstellen</Text>
         </Pressable>
 
-        <Pressable style={({pressed}) => [{backgroundColor: pressed ? "#333333" : "#2b2b2b"},styles.pressable]}>
+        <Pressable onPress={() => {onexit();}} style={({pressed}) => [{backgroundColor: pressed ? "#333333" : "#2b2b2b"},styles.pressable]}>
             <FontAwesome name="share" style={styles.icon}/>
             <Text style={styles.text}>Gruppe beitreten</Text>
         </Pressable>
 
-        <Pressable style={({pressed}) => [{backgroundColor: pressed ? "#333333" : "#2b2b2b"},styles.pressable]}>
+        <Pressable onPress={() => {onexit();}} style={({pressed}) => [{backgroundColor: pressed ? "#333333" : "#2b2b2b"},styles.pressable]}>
             <FontAwesome name="group" style={styles.icon}/>
             <Text style={styles.text}>Freundesliste</Text>
         </Pressable>
 
-        <Pressable onPress={onexit} style={({pressed}) => [{backgroundColor: pressed ? "#333333" : "#2b2b2b", justifyContent: "center"},styles.pressable]}>
+        <Pressable onPress={() => {onexit();}} onPress={onexit} style={({pressed}) => [{backgroundColor: pressed ? "#333333" : "#2b2b2b", justifyContent: "center"},styles.pressable]}>
             <FontAwesome name="times" style={[styles.icon,{marginLeft: 0}]}/>
         </Pressable>
     </Animated.View>)

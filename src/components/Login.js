@@ -17,7 +17,7 @@ const Login = ({ handleLogin }) => {
     return (
         <View style={styles.login_container}>
 
-            <Image style={styles.login_logo} source={require('./img/logo.png')}/>
+            <Image style={styles.login_logo} source={require('./img/logo_glow.png')}/>
 
             <Text style={styles.login_heading}>WeedStats</Text>
             <Pressable style={({pressed}) => [{backgroundColor: pressed ? "#c9c9c9" : "white"},styles.login_pressable]} onPress={handleLogin}>
@@ -59,8 +59,8 @@ const styles = StyleSheet.create({
         color: "#1E1E1E"
     },
     login_logo: {
-        width: 150,
-        height: 150
+        width: 280,
+        height: 280
     }
 });
 

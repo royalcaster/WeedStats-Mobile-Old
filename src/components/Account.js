@@ -2,20 +2,11 @@ import React, { useState } from "react";
 import { useEffect, useRef } from 'react'
 import { View, Image, StyleSheet, Text, Pressable, Animated, Easing } from 'react-native';
 import { useFonts } from 'expo-font';
-import Donation from "./Donation";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const Account = ({ user, handleLogOut }) => {
+const Account = ({ user, handleLogOut, onexit, onShowDonation }) => {
 
-    const [showDonation, setShowDonation] = useState(false);
-
-    const displayDonation = () => {
-        setShowDonation(true);
-    }
-
-    const hideDonation = () => {
-        setShowDonation(false);
-    }
+    
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -36,9 +27,12 @@ const Account = ({ user, handleLogOut }) => {
     });
 
     return (<>
-        { showDonation ? <Donation onexit={hideDonation} /> : 
             <Animated.View style={[{opacity: fadeAnim},styles.container]}>
             <View style={{height: 50}}></View>
+
+            <Pressable onPress={onexit} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : "#1E1E1E+", width: 80, padding: 10, borderRadius: 25, marginLeft: 10}]}>
+                <MaterialIcons name="arrow-back" style={{color: "white", fontSize: 30, left: 5}}/>
+            </Pressable>
 
             <View style={{
                 alignItems: "center",
@@ -65,7 +59,7 @@ const Account = ({ user, handleLogOut }) => {
                 </View>
             </View>
 
-            <Pressable onPress={displayDonation} style={ ({pressed}) => [{backgroundColor: pressed ? "#404040" : "#4a4a4a"},styles.signOutButton]}>
+            <Pressable onPress={onShowDonation} style={ ({pressed}) => [{backgroundColor: pressed ? "#404040" : "#4a4a4a"},styles.signOutButton]}>
             <MaterialIcons name="euro" style={styles.money_icon} />
                 <Text style={{
                 color: "white",
@@ -86,7 +80,6 @@ const Account = ({ user, handleLogOut }) => {
             }}> Abmelden</Text></Pressable>
 
         </Animated.View>
-        }
         </>
     );
 }

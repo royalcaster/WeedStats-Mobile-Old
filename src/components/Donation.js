@@ -49,7 +49,9 @@ const styles = StyleSheet.create({
         height: "100%",
         backgroundColor: "#1E1E1E",
         flexDirection: "column",
-        flex: 1
+        flex: 1,
+        position: "absolute",
+        zIndex: 10
     },
     text: {
         alignSelf: "center",
