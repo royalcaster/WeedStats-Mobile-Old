@@ -286,6 +286,7 @@ export default function App() {
                     { backgroundColor: pressed ? "#2b2b2b" : "#383838" },
                     styles.button,
                   ]}
+                  hitSlop={50}
                   onPress={() => {
                     setModalVisible(!modalVisible);
                     setWriteComplete(false);
@@ -334,6 +335,8 @@ const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: "#1E1E1E",
     borderRadius: 20,
+    borderWidth: 5,
+    borderColor: "white",
     padding: 15,
     alignItems: "center",
     shadowColor: "#000",
