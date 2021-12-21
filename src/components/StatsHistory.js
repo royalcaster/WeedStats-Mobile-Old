@@ -8,7 +8,8 @@ import {
   Text,
   Pressable,
   ScrollView,
-  Animated, Easing
+  Animated,
+  Easing,
 } from "react-native";
 
 import HistoryTable from "./HistoryTable";
@@ -32,13 +33,11 @@ const StatsHistory = ({ user, history, ondelete }) => {
   }, []);
 
   return (
-    
     <ScrollView style={styles.container}>
-      <Animated.View style={{opacity: fadeAnim}}>
+      <Animated.View style={{ opacity: fadeAnim }}>
+        <View style={{ height: 10 }}></View>
 
-        <View style={{height: 10}}></View>
-
-        <HistoryTable user={user} history={history} ondelete={ondelete}/>
+        <HistoryTable user={user} history={history} ondelete={ondelete} />
       </Animated.View>
     </ScrollView>
   );
@@ -60,6 +59,6 @@ const styles = StyleSheet.create({
     fontFamily: "PoppinsBlack",
     color: "#c4c4c4",
     fontSize: 20,
-    marginLeft: 10
-},
+    marginLeft: 10,
+  },
 });
