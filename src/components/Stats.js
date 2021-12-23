@@ -39,24 +39,30 @@ import {
 } from "firebase/database";
 
 const Stats = ({ user }) => {
-  const [view, setView] = useState();
+  const [view, setView] = useState("dashboard");
 
   useEffect(() => {
     getHistory();
+    getDbData();
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
       useNativeDriver: true,
       easing: Easing.bezier(0.07, 1, 0.33, 0.89),
     }).start();
-    setView("dashboard")
   }, []);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const [history, setHistory] = useState([]);
-  const dbUserRef = query(ref(db, "users/" + user.username), limitToLast(10));
-
+  const [dbData, setDbData] = useState([]);
+  const [dbDataLoaded, setDbDataLoaded] = useState(false);
+  const [historyLoaded, setHistoryLoaded] = useState(false);
+  const dbHistoryRef = query(
+    ref(db, "users/" + user.username),
+    limitToLast(10)
+  );
+  const dbUserRef = ref(db, "users/" + user.username);
 
   const deleteEntry = (key) => {
     const entryRef = ref(db, "users/" + user.username + "/" + key);
@@ -64,8 +70,32 @@ const Stats = ({ user }) => {
     setHistory(history.filter((entry) => entry.key != key));
   };
 
+  /*   const getDbData = async () => {
+    await get(dbUserRef, (snapshot) => {
+      dbData.push({
+        type: snapshot.val().type,
+        timestamp: snapshot.val().timestamp,
+        latitude: snapshot.val().latitude,
+        longitude: snapshot.val().longitude,
+      });
+    });
+  }; */
+
+  const getDbData = async () => {
+    const snapshot = await get(dbUserRef);
+    snapshot.forEach((childSnapshot) => {
+      dbData.push({
+        type: childSnapshot.val().type,
+        timestamp: childSnapshot.val().timestamp,
+        latitude: childSnapshot.val().latitude,
+        longitude: childSnapshot.val().longitude,
+      });
+    });
+    setDbDataLoaded(true);
+  };
+
   const getHistory = () => {
-    onChildAdded(dbUserRef, (snapshot) => {
+    onChildAdded(dbHistoryRef, (snapshot) => {
       history.unshift({
         key: snapshot.key,
         number: snapshot.val().number, // dieser Eintrag in der DB wird wahrscheinlich nicht mehr benötigt.
@@ -74,13 +104,11 @@ const Stats = ({ user }) => {
         time: new Date(snapshot.val().timestamp).toLocaleTimeString("de-DE"),
       });
     });
-    console.log(history);
+    setHistoryLoaded(true);
   };
-
 
   return (
     <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
-
       <View style={{ height: 50 }}></View>
       <View style={{ flexDirection: "row" }}>
         <Pressable
@@ -126,8 +154,12 @@ const Stats = ({ user }) => {
         </Pressable>
       </View>
 
-      {view == "dashboard" ? <StatsDashboard /> : null}
-      {view == "history" ? <StatsHistory user={user} history={history} ondelete={deleteEntry}/> : null}
+      {dbDataLoaded && view == "dashboard" ? (
+        <StatsDashboard user={user} dbData={dbData} />
+      ) : null}
+      {historyLoaded && view == "history" ? (
+        <StatsHistory user={user} history={history} ondelete={deleteEntry} />
+      ) : null}
     </Animated.View>
   );
 };
@@ -164,5 +196,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: 15,
     marginBottom: 15,
+  },
+  loading_text: {
+    fontFamily: "PoppinsLight",
+    fontSize: 18,
+    color: "#c4c4c4",
+    textAlign: "center",
   },
 });

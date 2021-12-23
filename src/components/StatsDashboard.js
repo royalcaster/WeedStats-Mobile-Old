@@ -29,7 +29,7 @@ import {
   graphStyle,
 } from "react-native-chart-kit";
 
-const StatsDashboard = ({ user }) => {
+const StatsDashboard = ({ user, dbData }) => {
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
@@ -38,9 +38,6 @@ const StatsDashboard = ({ user }) => {
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
-    if (!dataLoaded) {
-      loadData();
-    }
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
@@ -48,67 +45,45 @@ const StatsDashboard = ({ user }) => {
       easing: Easing.bezier(0.07, 1, 0.33, 0.89),
     }).start();
 
-    console.log("Anzahl der heruntergeladenen Einträge: " + dataArray.length);
-    if (dataArray.length != 0) {
-      console.log("Gesamt: " + calcDailyAverage("total"));
-      console.log("Joint: " + calcDailyAverage("joint"));
-      console.log("Bong: " + calcDailyAverage("bong"));
-      console.log("Vape: " + calcDailyAverage("vape"));
+    console.log("Anzahl der heruntergeladenen Einträge: " + dbData.length);
+    if (dbData.length != 0) {
+      console.log(
+        "Gesamt: Durchschnittlich " +
+          calcDailyAverage("total") +
+          " mal am Tag konsumiert."
+      );
+      console.log(
+        "Joint: Durchschnittlich " +
+          calcDailyAverage("joint") +
+          " mal am Tag konsumiert."
+      );
+      console.log(
+        "Bong: Durchschnittlich " +
+          calcDailyAverage("bong") +
+          " mal am Tag konsumiert."
+      );
+      console.log(
+        "Vape: Durchschnittlich " +
+          calcDailyAverage("vape") +
+          " mal am Tag konsumiert."
+      );
     }
   }, []);
-
-  let dataArray = [];
-  //const [dataArray, setDataArray] = useState([]);
-  const [dataLoaded, setDataLoaded] = useState(false);
-
-  const dbUserRef = query(ref(db, "users/" + user.username));
-
-  const loadData = () => {
-    onChildAdded(dbUserRef, (snapshot) => {
-      dataArray.push({
-        type: snapshot.val().type,
-        timestamp: snapshot.val().timestamp,
-        latitude: snapshot.val().latitude,
-        longitude: snapshot.val().longitude,
-      });
-    });
-    setDataLoaded(true);
-  };
 
   const calcDailyAverage = (type) => {
     switch (type) {
       case "total":
         return (
-          dataArray.length /
-          ((dataArray[dataArray.length - 1].timestamp -
-            dataArray[0].timestamp) /
+          dbData.length /
+          ((dbData[dbData.length - 1].timestamp - dbData[0].timestamp) /
             (60 * 60 * 24 * 1000))
         );
-      case "joint":
+      default:
         return (
-          dataArray.filter((entry) => {
-            return entry.type === "joint";
+          dbData.filter((entry) => {
+            return entry.type === type;
           }).length /
-          ((dataArray[dataArray.length - 1].timestamp -
-            dataArray[0].timestamp) /
-            (60 * 60 * 24 * 1000))
-        );
-      case "bong":
-        return (
-          dataArray.filter((entry) => {
-            return entry.type === "bong";
-          }).length /
-          ((dataArray[dataArray.length - 1].timestamp -
-            dataArray[0].timestamp) /
-            (60 * 60 * 24 * 1000))
-        );
-      case "vape":
-        return (
-          dataArray.filter((entry) => {
-            return entry.type === "vape";
-          }).length /
-          ((dataArray[dataArray.length - 1].timestamp -
-            dataArray[0].timestamp) /
+          ((dbData[dbData.length - 1].timestamp - dbData[0].timestamp) /
             (60 * 60 * 24 * 1000))
         );
     }
