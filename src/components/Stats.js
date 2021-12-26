@@ -40,20 +40,6 @@ import {
 
 const Stats = ({ user }) => {
   const [view, setView] = useState("dashboard");
-
-  useEffect(() => {
-    getHistory();
-    getDbData();
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-      easing: Easing.bezier(0.07, 1, 0.33, 0.89),
-    }).start();
-  }, []);
-
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
   const [history, setHistory] = useState([]);
   const [dbData, setDbData] = useState([]);
   const [dbDataLoaded, setDbDataLoaded] = useState(false);
@@ -64,22 +50,24 @@ const Stats = ({ user }) => {
   );
   const dbUserRef = ref(db, "users/" + user.username);
 
+  useEffect(() => {
+    dbDataLoaded ? null : getDbData();
+    historyLoaded ? null : getHistory();
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+      easing: Easing.bezier(0.07, 1, 0.33, 0.89),
+    }).start();
+  }, []);
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
   const deleteEntry = (key) => {
     const entryRef = ref(db, "users/" + user.username + "/" + key);
     remove(entryRef);
     setHistory(history.filter((entry) => entry.key != key));
   };
-
-  /*   const getDbData = async () => {
-    await get(dbUserRef, (snapshot) => {
-      dbData.push({
-        type: snapshot.val().type,
-        timestamp: snapshot.val().timestamp,
-        latitude: snapshot.val().latitude,
-        longitude: snapshot.val().longitude,
-      });
-    });
-  }; */
 
   const getDbData = async () => {
     const snapshot = await get(dbUserRef);
@@ -91,6 +79,7 @@ const Stats = ({ user }) => {
         longitude: childSnapshot.val().longitude,
       });
     });
+    console.log("dbData geladen!");
     setDbDataLoaded(true);
   };
 
@@ -104,55 +93,60 @@ const Stats = ({ user }) => {
         time: new Date(snapshot.val().timestamp).toLocaleTimeString("de-DE"),
       });
     });
+    console.log("history geladen!");
     setHistoryLoaded(true);
   };
 
   return (
     <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
       <View style={{ height: 50 }}></View>
-      <View style={{ flexDirection: "row" }}>
-        <Pressable
-          onPress={() => setView("dashboard")}
-          style={({ pressed }) => [
-            {
-              borderTopColor: view == "dashboard" ? "#0080FF" : "#171717",
-              borderTopWidth: 2,
-              backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E",
-            },
-            styles.nav_pressable,
-          ]}
-        >
-          <Text
-            style={[
-              { color: view == "dashboard" ? "#0080FF" : "#c4c4c4" },
-              styles.nav_text,
+      {!(dbDataLoaded && historyLoaded) ? (
+        <ActivityIndicator animating={true} size="large" color="#0080FF" />
+      ) : (
+        <View style={{ flexDirection: "row" }}>
+          <Pressable
+            onPress={() => setView("dashboard")}
+            style={({ pressed }) => [
+              {
+                borderTopColor: view == "dashboard" ? "#0080FF" : "#171717",
+                borderTopWidth: 2,
+                backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E",
+              },
+              styles.nav_pressable,
             ]}
           >
-            Dashboard
-          </Text>
-        </Pressable>
+            <Text
+              style={[
+                { color: view == "dashboard" ? "#0080FF" : "#c4c4c4" },
+                styles.nav_text,
+              ]}
+            >
+              Dashboard
+            </Text>
+          </Pressable>
 
-        <Pressable
-          onPress={() => setView("history")}
-          style={({ pressed }) => [
-            {
-              borderTopColor: view == "history" ? "#0080FF" : "#171717",
-              borderTopWidth: 2,
-              backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E",
-            },
-            styles.nav_pressable,
-          ]}
-        >
-          <Text
-            style={[
-              { color: view == "history" ? "#0080FF" : "#c4c4c4" },
-              styles.nav_text,
+          <Pressable
+            onPress={() => setView("history")}
+            style={({ pressed }) => [
+              {
+                borderTopColor: view == "history" ? "#0080FF" : "#171717",
+                borderTopWidth: 2,
+                backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E",
+              },
+              styles.nav_pressable,
             ]}
           >
-            Verlauf
-          </Text>
-        </Pressable>
-      </View>
+            <Text
+              style={[
+                { color: view == "history" ? "#0080FF" : "#c4c4c4" },
+                styles.nav_text,
+              ]}
+            >
+              Verlauf
+            </Text>
+          </Pressable>
+        </View>
+      )}
 
       {dbDataLoaded && view == "dashboard" ? (
         <StatsDashboard user={user} dbData={dbData} />
@@ -171,6 +165,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "green",
     borderBottomWidth: 2,
     width: "100%",
+    justifyContent: "center",
     height: "102%",
   },
   //Tab-View
