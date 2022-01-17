@@ -44,12 +44,9 @@ const StatsDashboard = ({ user, dbData }) => {
       useNativeDriver: true,
       easing: Easing.bezier(0.07, 1, 0.33, 0.89),
     }).start();
-
-    console.log("Anzahl der heruntergeladenen Einträge: " + dbData.length);
   }, []);
 
   const calcDailyAverage = (array) => {
-    console.log("Funktion ausgeführt!");
     return (
       array.length /
       ((dbData[dbData.length - 1].timestamp - dbData[0].timestamp) /

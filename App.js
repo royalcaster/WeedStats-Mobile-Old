@@ -10,6 +10,7 @@ import {
   Modal,
   Pressable,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //Components
 import Home from "./src/components/Home";
@@ -43,9 +44,29 @@ try {
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const [userLoaded, setUserLoaded] = useState(false);
   const [statConfig, setStatConfig] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [writeComplete, setWriteComplete] = useState(false);
+
+  //Sucht im AsyncStorage nach dem letzten User der sich eingeloggt hat und loggt sich bei Erfolg automatisch ein
+  useEffect(async () => {
+    if (!userLoaded) {
+      const current_user = await getCurrentUser();
+      current_user != null ? refreshUser(current_user) : null;
+      setUserLoaded(true);
+    }
+  }, []);
+
+  // Lädt das User-Objekt aus dem AsyncStorage
+  const getCurrentUser = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("current_user");
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      console.log("Error:", e);
+    }
+  };
 
   const refreshUser = async (user) => {
     //Referenz zu Nutzerdokument, durch Google-Username identifiziert
@@ -140,9 +161,13 @@ export default function App() {
       if (result.type === "success") {
         try {
           await refreshUser(result.user);
-          /* setUser({
-          username: result.user.name
-        }); */
+
+          try {
+            const jsonValue = JSON.stringify(result.user);
+            await AsyncStorage.setItem("current_user", jsonValue);
+          } catch (e) {
+            console.log("Error:", e);
+          }
         } catch (e) {
           console.log("Error:", e);
         }
