@@ -4,6 +4,8 @@ import CounterItem from "./CounterItem";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import moment from "moment";
 
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
 import {
   StyleSheet,
   Text,
@@ -16,12 +18,19 @@ import {
   Easing,
 } from "react-native";
 
+import CounterPage from "./CounterPage";
+
 const Main = ({ user, statConfig, toggleCounter }) => {
-  const headingAnim = useRef(new Animated.Value(-70)).current;
+  const headingAnim = useRef(new Animated.Value(-100)).current;
 
   const leftAnim = useRef(new Animated.Value(-70)).current;
   const rightAnim = useRef(new Animated.Value(70)).current;
 
+  const Tab = createMaterialTopTabNavigator();
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  
   useEffect(() => {
     Animated.timing(headingAnim, {
       toValue: 0,
@@ -68,8 +77,22 @@ const Main = ({ user, statConfig, toggleCounter }) => {
     setCountDown(target);
   });
 
+  const getGradientColors = ( x ) => {
+    var colors;
+    x == 0 ? colors = {c1: "#50d036", c2: "#2f831e"} : null;
+    x == 1 ? colors = {c1: "#50d036", c2: "#2f831e"} : null;
+    x == 2 ? colors = {c1: "#c5680f", c2: "#673608"} : null;
+    x == 3 ? colors = {c1: "#f8b127", c2: "#b47805"} : null;
+    x == 4 ? colors = {c1: "#279cf8", c2: "#0567b4"} : null;
+    x == 5 ? colors = {c1: "#6236d0", c2: "#3b1e83"} : null;
+    x == 6 ? colors = {c1: "#dc27f8", c2: "#9c05b4"} : null;
+    x == 7 ? colors = {c1: "#f02e2e", c2: "#ad0c0c"} : null;
+    return colors;
+  }
+  
+
   return (
-    <>
+      <>
       <View style={{ height: 50 }}></View>
 
       <View style={{ width: "100%", flexDirection: "row" }}>
@@ -142,6 +165,7 @@ const Main = ({ user, statConfig, toggleCounter }) => {
           </Text>
         </Animated.View>
       </View>
+      <View style={{height: 10}}></View>
 
       <ScrollView style={styles.counters_container}>
         {!statConfig.joint && !statConfig.bong && !statConfig.vape ? (
@@ -172,7 +196,7 @@ const Main = ({ user, statConfig, toggleCounter }) => {
                 level_status={calcLevelStatus(user.joint_counter)}
                 level={calcLevelName(user.joint_counter)}
                 level_index={Math.ceil(user.joint_counter / 70)}
-                bg_color={calcLevelColor(user.joint_counter)}
+                bg_colors={getGradientColors(Math.ceil(user.joint_counter / 70))}
               ></CounterItem>
             ) : null}
             {statConfig.bong ? (
@@ -183,7 +207,7 @@ const Main = ({ user, statConfig, toggleCounter }) => {
                 level_status={calcLevelStatus(user.bong_counter)}
                 level={calcLevelName(user.bong_counter)}
                 level_index={Math.ceil(user.bong_counter / 70)}
-                bg_color={calcLevelColor(user.bong_counter)}
+                bg_colors={getGradientColors(Math.ceil(user.bong_counter / 70))}
               ></CounterItem>
             ) : null}
             {statConfig.vape ? (
@@ -194,15 +218,14 @@ const Main = ({ user, statConfig, toggleCounter }) => {
                 level_status={calcLevelStatus(user.vape_counter)}
                 level={calcLevelName(user.vape_counter)}
                 level_index={Math.ceil(user.vape_counter / 70)}
-                bg_color={calcLevelColor(user.vape_counter)}
+                bg_colors={getGradientColors(Math.ceil(user.vape_counter / 70))}
               ></CounterItem>
             ) : null}
           </>
         )}
       </ScrollView>
-    </>
-  );
-};
+    </> 
+  )};
 
 export default Main;
 
@@ -320,7 +343,7 @@ const calcLevelStatus = (counter) => {
 const styles = StyleSheet.create({
   counters_container: {
     flex: 5,
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#171717",
     width: "100%",
     height: 200,
   },

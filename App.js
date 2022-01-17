@@ -1,15 +1,16 @@
 //React
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   StyleSheet,
   ActivityIndicator,
   Text,
-  TouchableWithoutFeedbackBase,
   View,
   Modal,
   Pressable,
 } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { LogBox } from "react-native";
 
 //Components
 import Home from "./src/components/Home";
@@ -19,21 +20,12 @@ import getRandomSaying from "./src/Sayings";
 //Firebase
 import { setDoc, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
 import { ref, push } from "firebase/database";
-
 import { db, firestore } from "./src/components/FirebaseConfig";
 
 //Expo
-import { Linking } from "expo";
-import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import * as Google from "expo-google-app-auth";
 import * as Location from "expo-location";
-
-//import getUser from './FirebaseConfig
-
-//sonstiges
-import { LogBox } from "react-native";
-import { getIosPushNotificationServiceEnvironmentAsync } from "expo-application";
 
 try {
   LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
@@ -48,12 +40,11 @@ export default function App() {
   const [writeComplete, setWriteComplete] = useState(false);
 
   const refreshUser = async (user) => {
-    //Referenz zu Nutzerdokument, durch Google-Username identifiziert
     const docRef = doc(firestore, "users", user.name);
-    //Snapshot von diesem Dokument zum Lesen
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
+      //Nutzerdokument existiert -> Nutzer-State mit Daten füllen
       setUser({
         username: docSnap.data().username,
         email: docSnap.data().email,
@@ -73,7 +64,7 @@ export default function App() {
         vape: docSnap.data().show_vape,
       });
     } else {
-      //nutzer loggt sich erstmalig ein -> dokument erstellen
+      //Nutzer-Dokument existiert nicht -> loggt sich erstmalig ein -> Dokument erstellen
       try {
         await setDoc(doc(firestore, "users", user.name), {
           username: user.name,
@@ -140,9 +131,6 @@ export default function App() {
       if (result.type === "success") {
         try {
           await refreshUser(result.user);
-          /* setUser({
-          username: result.user.name
-        }); */
         } catch (e) {
           console.log("Error:", e);
         }
@@ -180,9 +168,7 @@ export default function App() {
 
   const toggleCounter = async (index) => {
     setModalVisible(true);
-    //Referenz zu Nutzerdokument, durch Google-Username identifiziert
     const docRef = doc(firestore, "users", user.username);
-    //Snapshot von diesem Dokument zum Lesen
     const docSnap = await getDoc(docRef);
 
     switch (index) {
@@ -222,9 +208,7 @@ export default function App() {
   };
 
   const toggleConfig = async (index) => {
-    //Referenz zu Nutzerdokument, durch Google-Username identifiziert
     const docRef = doc(firestore, "users", user.username);
-    //Snapshot von diesem Dokument zum Lesen
     const docSnap = await getDoc(docRef);
     try {
       switch (index) {
@@ -266,6 +250,7 @@ export default function App() {
 
   return (
     <>
+    <NavigationContainer>
       <Modal
         animationType="fade"
         transparent={true}
@@ -316,6 +301,7 @@ export default function App() {
       ) : (
         <Login handleLogin={handleLogin} />
       )}
+      </NavigationContainer>
     </>
   );
 }
@@ -329,7 +315,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    //marginTop: 5,
   },
   modalView: {
     margin: 20,

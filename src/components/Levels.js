@@ -1,13 +1,15 @@
 import React from "react";
 import { useEffect, useRef } from "react";
-import { View, Image, StyleSheet, Text, Animated, Pressable } from 'react-native';
+import { View, Image, StyleSheet, Text, Animated, Pressable, Easing } from 'react-native';
 import { useFonts } from 'expo-font';
 
 import Feather from 'react-native-vector-icons/Feather';
+import Button from "./Button";
 
 const Levels = ({onexit}) => {
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
+    const scaleAnim = useRef(new Animated.Value(0)).current;
 
     React.useEffect(() => {
         Animated.timing(
@@ -15,10 +17,20 @@ const Levels = ({onexit}) => {
           {
             toValue: 1,
             duration: 200,
+            easing: Easing.bezier(0,1.02,.21,.97),
             useNativeDriver: true,
           }
         ).start();
-      }, [fadeAnim])
+        Animated.timing(
+            scaleAnim,
+            {
+              toValue: 1,
+              duration: 400,
+              easing: Easing.bezier(0,1.02,.21,.97),
+              useNativeDriver: true,
+            }
+          ).start();
+      }, [fadeAnim, scaleAnim])
 
     const [loaded] = useFonts({
         PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
@@ -26,7 +38,7 @@ const Levels = ({onexit}) => {
     });
 
     return (
-        <Animated.View style={[{opacity: fadeAnim},styles.container]}>
+        <Animated.View style={[{transform: [{scale: scaleAnim}],opacity: fadeAnim},styles.container]}>
 
         <View style={{height: 50}}></View>
 
@@ -158,16 +170,7 @@ const Levels = ({onexit}) => {
                 </View>
             </View>
 
-            <Pressable onPress={onexit} style={ ({pressed}) => [{backgroundColor: pressed ? "#b32d24" : "#eb4034"},styles.cancelButton]}>
-                    <Text style={{
-                    color: "white",
-                    fontSize: 18,
-                    fontFamily: "PoppinsLight",
-                    alignSelf: "center"
-                    }}>
-                        <Feather name="arrow-left" style={styles.cancel_icon}/>Zurück
-                    </Text>
-                </Pressable>
+            <Button title={"Zurück"} icon={<Feather name="arrow-left" style={styles.cancel_icon}/>} color={"#eb4034"} fontColor={"white"} onPress={onexit} borderradius={100}/>
 
         </Animated.View>
     );
@@ -215,6 +218,7 @@ const styles = StyleSheet.create({
         fontSize: 25,
         color: "white",
         textAlignVertical: "center",
-        top: 5
+        position: "relative",
+        marginTop: 20
     }
 });

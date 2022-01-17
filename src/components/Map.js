@@ -56,6 +56,6 @@ const styles = StyleSheet.create({
     map: {
         width: "100%",
         position: "relative",
-        top: -30
+        top: -20
     }
 });

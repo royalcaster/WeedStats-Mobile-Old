@@ -1,37 +1,51 @@
-import React, { useState } from "react";
-import { useEffect, useRef } from 'react'
-import { View, Image, StyleSheet, Text, Pressable, Animated, Easing } from 'react-native';
+import React from "react";
+import { useRef } from 'react'
+import { View, Image, StyleSheet, Text, Pressable, Animated, Easing, Dimensions } from 'react-native';
 import { useFonts } from 'expo-font';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import Button from "./Button";
+
 const Account = ({ user, handleLogOut, onexit, onShowDonation }) => {
 
-    
+    const window_height = Dimensions.get("window").height;
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
+    const opacityAnim = useRef(new Animated.Value(0)).current;
 
     React.useEffect(() => {
         Animated.timing(
           fadeAnim,
           {
             toValue: 1,
-            duration: 200,
+            duration: 500,
+            easing: Easing.bezier(0,1.02,.21,.97),
             useNativeDriver: true,
           }
         ).start();
-      }, [fadeAnim])
+        Animated.timing(
+            opacityAnim,
+            {
+              toValue: 1,
+              duration: 100,
+              easing: Easing.bezier(0,1.08,.99,1),
+              useNativeDriver: true,
+            }
+          ).start();
+      }, [fadeAnim, opacityAnim])
 
     const [loaded] = useFonts({
         PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
         PoppinsLight: require('./fonts/Poppins-Light.ttf')
     });
 
-    return (<>
-            <Animated.View style={[{opacity: fadeAnim},styles.container]}>
+    return (
+        <>
+        <Animated.View style={[{transform: [{scale: fadeAnim}], opacity: opacityAnim, height: window_height + 20},styles.container]}>
             <View style={{height: 50}}></View>
 
-            <Pressable onPress={onexit} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : "#1E1E1E+", width: 80, padding: 10, borderRadius: 25, marginLeft: 10}]}>
-                <MaterialIcons name="arrow-back" style={{color: "white", fontSize: 30, left: 5}}/>
+            <Pressable onPress={onexit} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : "#1E1E1E+"}, styles.pressable_back]}>
+                <MaterialIcons name="arrow-back" style={styles.icon_back}/>
             </Pressable>
 
             <View style={{
@@ -44,40 +58,18 @@ const Account = ({ user, handleLogOut, onexit, onShowDonation }) => {
                 <Text style={styles.email}>{user.email}</Text>
 
                 <View style={{flexDirection: "row"}}>
-                <Text style={{
-                    color: "#797a7a",
-                    fontSize: 18,
-                    fontFamily: "PoppinsLight",
-                    marginTop: 20,
-                    }}>Mitglied seit:</Text><View style={{width: 20}}/>
-                <Text style={{
-                    color: "#797a7a",
-                    fontSize: 18,
-                    fontFamily: "PoppinsBlack",
-                    marginTop: 20,
-                    }}>{user.member_since}</Text>
+                    <Text style={styles.member_text}>Mitglied seit:</Text><View style={{width: 20}}/>
+                    <Text style={[styles.member_text,{fontFamily: "PoppinsBlack"}]}>{user.member_since}</Text>
                 </View>
             </View>
 
-            <Pressable onPress={onShowDonation} style={ ({pressed}) => [{backgroundColor: pressed ? "#404040" : "#4a4a4a"},styles.signOutButton]}>
-            <MaterialIcons name="euro" style={styles.money_icon} />
-                <Text style={{
-                color: "white",
-                fontSize: 18,
-                fontFamily: "PoppinsLight",
-                textAlign: "center",
-                top: 2,
-                textAlignVertical: "center"
-            }}> WeedStats unterstützen</Text></Pressable>
+            <Button onPress={onShowDonation} title={"WeedStats unterstützen"} icon={<MaterialIcons name="euro" style={styles.money_icon} />} borderradius={100} color={"#4a4a4a"} fontColor={"white"}/> 
             
-            <Pressable onPress={handleLogOut} style={ ({pressed}) => [{backgroundColor: pressed ? "#b32d24" : "#eb4034"},styles.signOutButton]}>
-            <MaterialIcons name="logout" style={styles.money_icon} />
-                <Text style={{
-                color: "white",
-                fontSize: 18,
-                fontFamily: "PoppinsLight",
-                alignSelf: "center"
-            }}> Abmelden</Text></Pressable>
+            <View style={{height: 15}}></View>
+
+            <Button onPress={handleLogOut} title={"Abmelden"} icon={<MaterialIcons name="logout" style={styles.money_icon} />} borderradius={100} color={"#eb4034"} fontColor={"white"}/> 
+
+            <View style={{height: 15}}></View>
 
         </Animated.View>
         </>
@@ -88,7 +80,9 @@ export default Account
 
 const styles = StyleSheet.create({
     container: {
-        height: "100%"
+        width: "100%",
+        zIndex: 21,
+        backgroundColor: "#1E1E1E"
     },
     profile_img: {
         height: 120,
@@ -119,6 +113,31 @@ const styles = StyleSheet.create({
     money_icon: {
         fontSize: 25,
         color: "white",
+        textAlignVertical: "center"
+    },
+    pressable_back: {
+        width: 80, 
+        padding: 10, 
+        borderRadius: 25, 
+        marginLeft: 10
+    },
+    icon_back: {
+        color: "white", 
+        fontSize: 30, 
+        left: 5
+    },
+    member_text: {
+        color: "#797a7a",
+        fontSize: 18,
+        fontFamily: "PoppinsLight",
+        marginTop: 20,
+    },
+    button_text: {
+        color: "white",
+        fontSize: 18,
+        fontFamily: "PoppinsLight",
+        textAlign: "center",
+        top: 2,
         textAlignVertical: "center"
     }
 });

@@ -3,6 +3,7 @@ import { useState, useRef } from "react";
 import { Pressable, View, Text, StyleSheet, Animated, Easing, ScrollView, Dimensions } from "react-native";
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import { useFonts } from 'expo-font';
+import uuid from 'react-native-uuid'
 
 const MemberList = ({ members, show, onHide }) => {
 
@@ -22,7 +23,7 @@ const MemberList = ({ members, show, onHide }) => {
               toValue: 0,
               duration: 300,
               useNativeDriver: true,
-              easing: Easing.bezier(0,1.08,.99,1),
+              easing: Easing.bezier(0,1.02,.21,.97),
             }
           ).start()
     : 
@@ -32,7 +33,7 @@ const MemberList = ({ members, show, onHide }) => {
           toValue: -windowHeight,
           duration: 300,
           useNativeDriver: true,
-          easing: Easing.bezier(0,1.08,.99,1),
+          easing: Easing.bezier(0,1.02,.21,.97),
         }
       ).start();
 
@@ -43,8 +44,8 @@ const MemberList = ({ members, show, onHide }) => {
             
             <ScrollView style={styles.scrollview}>
                 {members.map((member) => {
-                    return  <View key={member} style={styles.member_container}>
-                                <Text style={styles.member_text}>{member}</Text>
+                    return  <View key={uuid.v4()} style={styles.member_container}>
+                                <Text style={styles.member_text}>{member.name}</Text>
                             </View>
                 })}
                 
@@ -72,15 +73,17 @@ const styles = StyleSheet.create({
         height: "100%"
     },
     scrollview: {
-        width: "80%",
-        alignSelf: "center"
+        width: "100%",
+        alignSelf: "center",
+        backgroundColor: "#1E1E1E",
+        borderRadius: 25
     },
     close_button: {
         height: 100,
         justifyContent: "center",
         bottom: 50,
         position: "relative",
-        bottom: 80
+        bottom: 0
     },
     close: {
         fontSize: 60,
@@ -88,10 +91,9 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     member_container: {
-        backgroundColor: "#1E1E1E",
         paddingLeft: 20,
         paddingBottom: 20,
-        paddingTop: 20
+        paddingTop: 20,
     },
     member_text: {
         color: "white",

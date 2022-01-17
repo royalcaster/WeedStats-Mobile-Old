@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFonts } from "expo-font";
 import Statusbar from "./Statusbar";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -15,6 +15,8 @@ import {
   Animated,
 } from "react-native";
 
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 const CounterItem = ({
   type,
@@ -22,10 +24,33 @@ const CounterItem = ({
   level,
   level_status,
   level_index,
-  bg_color,
+  bg_colors,
   toggleCounter,
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const [buttonPressed, setButtonPressed] = useState(false);
+
+  const buttonFill = useRef(new Animated.Value(0)).current;
+
+  buttonPressed ? 
+  Animated.timing(
+      buttonFill,
+      {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+      }
+  ).start()
+  : 
+  Animated.timing(
+      buttonFill,
+      {
+      toValue: 0,
+      duration: 50,
+      useNativeDriver: true,
+      }
+  ).start()
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -48,7 +73,20 @@ const CounterItem = ({
   }
 
   return (
-    <Animated.View
+    <View>
+    <LinearGradient colors={
+      [bg_colors.c1, bg_colors.c2]} style={{
+    width: "80%",
+    alignSelf: "center",
+    /* backgroundColor: bg_color, */
+    alignItems: "center",
+    borderRadius: 30,
+    marginTop: 20,
+    marginBottom: 20,
+    maxWidth: 700,
+    /* opacity: fadeAnim, */
+  }}>
+    {/* <Animated.View
       id="joint_container"
       style={{
         width: "80%",
@@ -61,7 +99,8 @@ const CounterItem = ({
         maxWidth: 700,
         opacity: fadeAnim,
       }}
-    >
+    > */}
+    
       {type === "joint" ? (
         <Image style={styles.joint_img} source={require("./img/joint.png")} />
       ) : null}
@@ -73,20 +112,27 @@ const CounterItem = ({
       ) : null}
       <LevelImage index={level_index} />
       <Text style={styles.counter_number}>{counter}</Text>
-      <Statusbar status={level_status} />
+      <Statusbar status={level_status}></Statusbar>
       <Text style={styles.level_label}>{level}</Text>
       <Pressable
-        onPress={() => toggleCounter(type)}
+        onPressIn={() => setButtonPressed(true)} onPressOut={() => setButtonPressed(false)} onLongPress={() => {toggleCounter(type.toLowerCase()); setButtonPressed(false);}}
         style={({ pressed }) => [
           { backgroundColor: pressed ? "#2b2b2b" : "#383838" },
           styles.add_pressable,
         ]}
       >
         <FontAwesome name="fire" style={styles.fire_icon} />
+        <Animated.View style={{transform: [{scaleY: buttonFill}] ,height: 220, width: 200, backgroundColor: "#0080FF", zIndex: 9, borderRadius: 0, top: 0, left: 0, position: "absolute"}}>
+            </Animated.View>
       </Pressable>
-    </Animated.View>
+      
+    {/* </Animated.View> */}
+    </LinearGradient>
+    </View>
   );
 };
+
+export default CounterItem;
 
 const styles = StyleSheet.create({
   counter_number: {
@@ -99,8 +145,9 @@ const styles = StyleSheet.create({
   level_label: {
     color: "white",
     fontFamily: "PoppinsLight",
-    fontSize: 20,
+    fontSize:  16,
     marginBottom: 3,
+    marginTop: 5
   },
   bong_img: {
     width: 100,
@@ -127,17 +174,19 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   add_pressable: {
-    padding: 20,
+    padding: 30,
+    paddingTop: 40,
+    paddingBottom: 40,
     position: "absolute",
     alignSelf: "flex-end",
     borderRadius: 20,
-    marginTop: 50,
-    right: -10,
+    marginTop: 35,
+    right: -25,
+    overflow: "hidden"
   },
   fire_icon: {
     color: "white",
     fontSize: 30,
+    zIndex: 10
   },
 });
-
-export default CounterItem;

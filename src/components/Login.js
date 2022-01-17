@@ -1,9 +1,12 @@
 import React from "react";
-import { ImageBackgroundBase, StyleSheet, Text, TouchableWithoutFeedbackBase, View, Button, Pressable, Image } from 'react-native';
+import { ImageBackgroundBase, StyleSheet, Text, TouchableNativeFeedback, View, Pressable, Image } from 'react-native';
 import { useFonts } from 'expo-font';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Button from "./Button";
 
 const Login = ({ handleLogin }) => {
+
+    const icon = <FontAwesome name="google" style={{fontSize: 30}}/>
 
     const [loaded] = useFonts({
         PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
@@ -20,9 +23,8 @@ const Login = ({ handleLogin }) => {
             <Image style={styles.login_logo} source={require('./img/logo_glow.png')}/>
 
             <Text style={styles.login_heading}>WeedStats</Text>
-            <Pressable style={({pressed}) => [{backgroundColor: pressed ? "#c9c9c9" : "white"},styles.login_pressable]} onPress={handleLogin}>
-                <FontAwesome name="google" style={{fontSize: 30}}/><View style={{width: 10}}/><Text style={styles.login_pressable_text}> Mit Google anmelden</Text>
-            </Pressable>
+                <View style={{height: 100}}></View>
+            <Button fontColor={"#1E1E1E"} icon={icon} title={"Mit Google Anmelden"} borderradius={100} color={"white"} onPress={handleLogin} hovercolor={"rgba(0,0,0,0.3)"}/>
         </View>
     );
 }
@@ -39,7 +41,7 @@ const styles = StyleSheet.create({
         fontSize: 50,
         fontFamily: "PoppinsBlack",
         textAlign: "center",
-        marginTop: 20
+        marginTop: -30
     },
     login_pressable: {
         borderWidth: 2,
@@ -49,7 +51,9 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         marginTop: 20,
         flexDirection: "row",
-        alignItems: "center"
+        alignItems: "center",
+        backgroundColor: "white",
+        overflow: "hidden"
     },
     login_pressable_text: {
         color: "white",

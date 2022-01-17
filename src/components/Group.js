@@ -1,67 +1,89 @@
 import React, { useEffect } from "react";
-import { Pressable, View, Text, StyleSheet, ScrollView, Animated, Dimensions, Easing, Image } from "react-native";
+import { Pressable, View, Text, StyleSheet, ScrollView, Animated, Dimensions, Easing, Image, FlatList, TouchableNativeFeedback } from "react-native";
 import { useState, useRef } from "react";
 
+import app from '@react-native-firebase/app'
+import storage, { firebase } from '@react-native-firebase/storage'
+import uuid from 'react-native-uuid'
+
+import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
 
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
+import BigPicture from "./BigPicture";
+
 import MemberList from "./MemberList";
 
 import { useFonts } from 'expo-font';
 import CameraPanel from "./CameraPanel";
+import { db } from "./FirebaseConfig";
+import { onValue, update, ref as reff, set, onChildAdded } from "firebase/database";
+
+import ChatMessage from "./ChatMessage";
 
 
-const Group = ({show, user, group, onExit}) => {
+const Group = ({show, user, group, onExit, onRefresh }) => {
 
     const [showCamera, setShowCamera] = useState(false);
-
     const windowWidth = Dimensions.get('window').width;
-    const windowHeight = Dimensions.get('window').height;
-
     const [showMemberList, setShowMemberList] = useState(false);
-
+    const [uploadingImage, setUploadingImage] = useState(false);
     const [loaded] = useFonts({
         PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
         PoppinsLight: require('./fonts/Poppins-Light.ttf')
     });
 
-    const slideAnim = useRef(new Animated.Value(windowWidth)).current;
-    const fadeOutAnim = useRef(new Animated.Value(0)).current;
+    const [rippleColor, setRippleColor] = useState("rgba(255,255,255,0.15)");
+    const [rippleOverflow, setRippleOverflow] = useState(false);
 
-    show ? Animated.timing(
-        slideAnim,
-        {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-          easing: Easing.bezier(0,1.08,.99,1),
-        }
-      ).start() 
-    : Animated.timing(
-        slideAnim,
-        {
-          toValue: windowWidth,
-          duration: 300,
-          useNativeDriver: true,
-          easing: Easing.bezier(0,1.08,.99,1),
-        }
-      ).start();
-    
+    const [bigPicture, setBigPicture] = useState({
+        date: {
+            day: " ",
+            time: " "
+        },
+        download_uri: " ",
+        sender: " ",
+        mood: " ",
+        img_id: " "
+    });
+    const [showBigPicture, setShowBigPicture] = useState(false);
+
+    const [messages, setMessages] = useState("");
+
+    const scrollRef = useRef();
+
     useEffect(() => {
-        if (user.username == group.admin) {
+        setMessages(getMessageList(group.id));
+        console.log(group.id);
+
+        Animated.timing(
+            slideAnim,
+            {
+              toValue: 0,
+              duration: 500,
+              useNativeDriver: true,
+              easing: Easing.bezier(0,1.02,.21,.97),
+            }
+          ).start();
+          if (user.username == group.admin) {
             setUserIsAdmin(true);
         }
     },[]);
 
+    const slideAnim = useRef(new Animated.Value(windowWidth)).current;
 
     const [userIsAdmin, setUserIsAdmin] = useState(false);
 
+    /* useEffect(() => {
+        scrollRef.current.scrollToEnd({ animated: false });
+    },[messages]); */
+
     const chopTitle = (title, n) => {
         if (title.length > n) {
-            return title.substring(0,n) + "...";
+            return title.substring(0,n) + " ...";
         }
         else {
             return title;
@@ -69,45 +91,167 @@ const Group = ({show, user, group, onExit}) => {
     }
 
     const chopMembers = (members) => {
-        let result = "";
-        members.forEach((member) => {
-            result = result + member + ", "
-        });
-        return chopTitle(result, 35);
+
+        if (members.length == 1) {
+            return members[0].name
+        }
+
+        let result = members[0].name;
+
+        for (var i = 1; i<members.length; i++) {
+            result = result +  ", " + members[i].name
+        }
+
+        return chopTitle(result, 50);
     }
 
     const hideMemberList = () => {
         setShowMemberList(false);
-        console.log("test")
     }
+
+const uploadImageAsync = async (uri, mood) => {
+    try {
+        const blob = await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.onload = function () {
+            resolve(xhr.response);
+          };
+          xhr.onerror = function (e) {
+            console.log(e);
+            reject(new TypeError("Network request failed"));
+          };
+          xhr.responseType = "blob";
+          xhr.open("GET", uri, true);
+          xhr.send(null);
+        });
+      
+        var img_id = uuid.v4();
+        const fileRef = ref(getStorage(), img_id);
+        const result = await uploadBytes(fileRef, blob);
+        blob.close(); //Upload fertig
+      
+        const url = await getDownloadURL(fileRef);
+
+        var date = new Date();
+        var id = uuid.v4();
+
+        var counter;
+        const counterRef = reff(db, "groups/" + group.id + "/counter");
+        onValue(counterRef,(snapshot)=>{counter = snapshot.val()});
+    
+        const messageRef = reff(db, "groups/" + group.id + "/messages/" + (counter + 1));
+        set(messageRef,{
+            type: "img",
+            sender: user.username,
+            download_uri: url,
+            img_id: img_id,
+            mood: mood,
+            date: {
+                day: date.toDateString(),
+                time: date.toTimeString()
+            }
+        });
+
+        set(counterRef,counter + 1);
+    }
+    catch(e) {
+        console.log("lul", e);
+    }
+    onRefresh();
+    setMessages(getMessageList(group.id));
+}
+
+const data = [{
+    img_id: 1,
+    sender: "etst"
+},
+{
+    img_id: 2,
+    sender: "asdadasd"
+}
+]
+
+const getMessageList = (group) => {
+    var messages_buffer = [];
+    const messageRef = reff(db, "groups/" + group + "/messages");
+    onChildAdded(messageRef, (snapshot) => {
+        messages_buffer.push({
+            type: snapshot.val().type,
+            date: snapshot.val().date,
+            sender: snapshot.val().sender,
+            download_uri: snapshot.val().download_uri,
+            mood: snapshot.val().mood,
+            img_id: snapshot.val().img_id
+        });
+    });
+    return messages_buffer;
+    console.log(group);
+}
+
+const renderItem = ({ item }) => {
+   return <ChatMessage user={user} type={item.type} sender={item.sender} img_uri={item.download_uri} mood={item.mood} onPress={() => {setBigPicture(item); setShowBigPicture(true)}}/>
+}
 
     return (
         <Animated.View style={[{transform: [{translateX: slideAnim}]},styles.container]}>
+
+            <BigPicture user={user} message={bigPicture} show={showBigPicture} onExit={() => setShowBigPicture(false)}/>
 
             <View style={{height: 40}}></View>
 
             <MemberList show={showMemberList} members={group.members} onHide={hideMemberList}/>
 
             <View style={{flexDirection: "row", width: "100%", zIndex: 1, backgroundColor: "#1E1E1E"}}>
-                <Pressable onPress={onExit} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : "#1E1E1E", paddingLeft: 10, paddingRight: 10, zIndex: 1},styles.button_back]}><Ionicons name="chevron-back" style={styles.icon}/></Pressable>
-                <Pressable onPress={() => setShowMemberList(true)} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : "#1E1E1E"},styles.header]}>
-                    <Text style={styles.heading}>{chopTitle(group.title, 20)}</Text>
-                    <Text style={styles.members}>{chopMembers(group.members)}</Text>
-                </Pressable>
+
+            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(rippleColor, rippleOverflow)} onPress={onExit}>
+                <View style={styles.touchable}>
+                    <Ionicons name="chevron-back" style={styles.icon}/>
+                </View>
+            </TouchableNativeFeedback>
+            
+            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(rippleColor, rippleOverflow)} onPress={() => setShowMemberList(true)}>
+                <View style={[styles.touchable,{flex: 3, height: 70}]}>
+                    <View>
+                        <Text style={styles.heading}>{chopTitle(group.title, 20)}</Text>
+                        <Text style={styles.members}>{chopMembers(group.members)}</Text>
+                    </View>
+                </View>
+            </TouchableNativeFeedback>
+
                 {group.admin == user.username ? <>
-                    <AntDesign style={styles.icon} name="adduser"/>
-                    <MaterialCommunityIcons style={styles.icon} name="delete"/></>
+                    <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(rippleColor, rippleOverflow)} onPress={onExit}>
+                        <View style={styles.touchable}>
+                            <AntDesign style={styles.icon} name="adduser"/>
+                        </View>
+                    </TouchableNativeFeedback>
+                    <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(rippleColor, rippleOverflow)} onPress={onExit}>
+                        <View style={styles.touchable}>
+                            <MaterialCommunityIcons style={styles.icon} name="delete"/>
+                        </View>
+                    </TouchableNativeFeedback>
+                    </>
                     : null}
                 
             </View>
-            <ScrollView style={styles.content}>
 
-            </ScrollView>
-
-            <CameraPanel show={showCamera} onExit={() => setShowCamera(false)}/>
+            <View style={styles.content}>
+                
+             {
+                 messages ? <FlatList
+                 ref={scrollRef}
+                 data={messages}
+                 renderItem={renderItem}
+                 keyExtractor={(item) => item.img_id}
+                 onContentSizeChange={() => scrollRef.current.scrollToEnd({ animated: false })}
+             /> : null
+             }   
+            
+            </View>
+             {showCamera ? <CameraPanel show={showCamera} onExit={() => setShowCamera(false)} group={group} onSend={uploadImageAsync} status={uploadingImage}/> : null}
+            
 
             <View style={{position: "absolute", zIndex: 0, height: "100%", width: "100%", backgroundColor: "#171717", justifyContent: "center"}}>
-                <Image source={require('./img/logo_glow.png')} style={styles.background_img}/>
+                <Image source={require('./img/logo_bw.png')} style={styles.background_img}/>
             </View>
             <Pressable onPress={() => setShowCamera(true)} style={({pressed}) => [{backgroundColor: pressed ? "#0072e3" : "#0080FF"},styles.add_button]}>
                 <MaterialIcons style={styles.camera} name="camera" />
@@ -136,13 +280,13 @@ const styles = StyleSheet.create({
         color: "white",
         fontFamily: "PoppinsBlack",
         fontSize: 20,
-        marginLeft: 10
+        marginLeft: -20
     },
     members: {
         color: "white",
         fontFamily: "PoppinsLight",
         fontSize: 13,
-        marginLeft: 10
+        marginLeft: -20
     },
     icon: {
         color: "white",
@@ -154,7 +298,8 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
-        zIndex: 1
+        zIndex: 1,
+        paddingTop: 0
     },
     add_button: {
         borderRadius: 100,
@@ -183,5 +328,12 @@ const styles = StyleSheet.create({
         zIndex: 20,
         top: 110,
         position: "absolute"
-    }
+    },
+    touchable: {
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "column",
+        backgroundColor: "#1E1E1E",
+        flex: 1
+      }
 });

@@ -4,16 +4,13 @@ import { Pressable } from "react-native";
 import { useFonts } from "expo-font";
 import {
   StyleSheet,
-  View,
   Text,
-  Switch,
-  TouchableWithoutFeedbackBase,
-  Image,
   Animated,
-  Easing,
 } from "react-native";
 
 import Levels from './Levels'
+
+import Button from "./Button";
 
 import ConfigItem from "./ConfigItem";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -63,16 +60,8 @@ const Config = ({ statConfig, toggleConfig }) => {
         onToggle={toggleConfig}
       ></ConfigItem>
 
-            <Pressable onPress={() => setShowLevels(true)} style={ ({pressed}) => [{backgroundColor: pressed ? "#404040" : "#4a4a4a"},styles.signOutButton]}>
-              <FontAwesome name="trophy" style={styles.money_icon} />
-                <Text style={{
-                color: "white",
-                fontSize: 18,
-                fontFamily: "PoppinsLight",
-                textAlign: "center",
-                top: 2,
-                textAlignVertical: "center"
-            }}>  Levelübersicht</Text></Pressable>
+            <Button fontColor={"white"} onPress={() => setShowLevels(true)} borderradius={100} color={"#4a4a4a"} title={" Levelübersicht"} icon={<FontAwesome name="trophy" style={styles.money_icon} />}/>
+
     </Animated.View>}
     </>
   );
@@ -85,7 +74,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     backgroundColor: "#1E1E1E",
-    marginTop: 30,
+    marginTop: 0,
     justifyContent: "center",
   },
   config_text: {
