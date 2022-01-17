@@ -44,54 +44,105 @@ const StatsDashboard = ({ user, dbData }) => {
       useNativeDriver: true,
       easing: Easing.bezier(0.07, 1, 0.33, 0.89),
     }).start();
-
-    console.log("Anzahl der heruntergeladenen Einträge: " + dbData.length);
-    if (dbData.length != 0) {
-      console.log(
-        "Gesamt: Durchschnittlich " +
-          calcDailyAverage("total") +
-          " mal am Tag konsumiert."
-      );
-      console.log(
-        "Joint: Durchschnittlich " +
-          calcDailyAverage("joint") +
-          " mal am Tag konsumiert."
-      );
-      console.log(
-        "Bong: Durchschnittlich " +
-          calcDailyAverage("bong") +
-          " mal am Tag konsumiert."
-      );
-      console.log(
-        "Vape: Durchschnittlich " +
-          calcDailyAverage("vape") +
-          " mal am Tag konsumiert."
-      );
-    }
   }, []);
 
-  const calcDailyAverage = (type) => {
-    switch (type) {
-      case "total":
-        return (
-          dbData.length /
-          ((dbData[dbData.length - 1].timestamp - dbData[0].timestamp) /
-            (60 * 60 * 24 * 1000))
-        );
-      default:
-        return (
-          dbData.filter((entry) => {
-            return entry.type === type;
-          }).length /
-          ((dbData[dbData.length - 1].timestamp - dbData[0].timestamp) /
-            (60 * 60 * 24 * 1000))
-        );
-    }
+  const calcDailyAverage = (array) => {
+    return (
+      array.length /
+      ((dbData[dbData.length - 1].timestamp - dbData[0].timestamp) /
+        (60 * 60 * 24 * 1000))
+    );
+  };
+
+  const filterByType = (array, type) => {
+    return array.filter((entry) => {
+      return entry.type === type;
+    });
   };
 
   return (
     <ScrollView style={styles.container}>
-      <Animated.View style={{ opacity: fadeAnim }}>
+      <Animated.View style={{ opacity: fadeAnim, alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            width: "98%",
+            justifyContent: "center",
+          }}
+        >
+          <Pressable
+            style={
+              selectedValue == "main"
+                ? styles.switch_item_active
+                : styles.switch_item
+            }
+            onPress={() => setSelectedValue("main")}
+          >
+            <Text
+              style={
+                selectedValue == "main"
+                  ? styles.switch_text_active
+                  : styles.text_item
+              }
+            >
+              Gesamt
+            </Text>
+          </Pressable>
+          <Pressable
+            style={
+              selectedValue == "joint"
+                ? styles.switch_item_active
+                : styles.switch_item
+            }
+            onPress={() => setSelectedValue("joint")}
+          >
+            <Text
+              style={
+                selectedValue == "joint"
+                  ? styles.switch_text_active
+                  : styles.text_item
+              }
+            >
+              Joint
+            </Text>
+          </Pressable>
+          <Pressable
+            style={
+              selectedValue == "bong"
+                ? styles.switch_item_active
+                : styles.switch_item
+            }
+            onPress={() => setSelectedValue("bong")}
+          >
+            <Text
+              style={
+                selectedValue == "bong"
+                  ? styles.switch_text_active
+                  : styles.text_item
+              }
+            >
+              Bong
+            </Text>
+          </Pressable>
+          <Pressable
+            style={
+              selectedValue == "vape"
+                ? styles.switch_item_active
+                : styles.switch_item
+            }
+            onPress={() => setSelectedValue("vape")}
+          >
+            <Text
+              style={
+                selectedValue == "vape"
+                  ? styles.switch_text_active
+                  : styles.text_item
+              }
+            >
+              Vape
+            </Text>
+          </Pressable>
+        </View>
         <View style={{ height: 10 }}></View>
 
         <View style={{ alignItems: "center", flex: 1 }}>
@@ -103,7 +154,24 @@ const StatsDashboard = ({ user, dbData }) => {
               marginBottom: -25,
             }}
           >
-            44,2
+            {selectedValue === "main"
+              ? Math.round(calcDailyAverage(dbData) * 100) / 100
+              : null}
+            {selectedValue === "joint"
+              ? Math.round(
+                  calcDailyAverage(filterByType(dbData, "joint")) * 100
+                ) / 100
+              : null}
+            {selectedValue === "bong"
+              ? Math.round(
+                  calcDailyAverage(filterByType(dbData, "bong")) * 100
+                ) / 100
+              : null}
+            {selectedValue === "vape"
+              ? Math.round(
+                  calcDailyAverage(filterByType(dbData, "vape")) * 100
+                ) / 100
+              : null}
           </Text>
           <Text
             style={{
@@ -112,7 +180,7 @@ const StatsDashboard = ({ user, dbData }) => {
               fontFamily: "PoppinsLight",
             }}
           >
-            Einträge
+            Ø Tag
           </Text>
 
           <View style={{ height: 10 }}></View>
@@ -125,27 +193,92 @@ const StatsDashboard = ({ user, dbData }) => {
             }}
           >
             <View style={styles.card_container}>
-              <Text style={styles.card_label}>Label 1</Text>
-              <Text style={styles.card_value}>43,6</Text>
+              <Text style={styles.card_label}>Ø Woche</Text>
+              <Text style={styles.card_value}>
+                {selectedValue === "main"
+                  ? Math.round(calcDailyAverage(dbData) * 7 * 100) / 100
+                  : null}
+                {selectedValue === "joint"
+                  ? Math.round(
+                      calcDailyAverage(filterByType(dbData, "joint")) * 7 * 100
+                    ) / 100
+                  : null}
+                {selectedValue === "bong"
+                  ? Math.round(
+                      calcDailyAverage(filterByType(dbData, "bong")) * 7 * 100
+                    ) / 100
+                  : null}
+                {selectedValue === "vape"
+                  ? Math.round(
+                      calcDailyAverage(filterByType(dbData, "vape")) * 7 * 100
+                    ) / 100
+                  : null}
+              </Text>
             </View>
 
             <View style={styles.card_container}>
-              <Text style={styles.card_label}>Label 2</Text>
-              <Text style={styles.card_value}>87,2</Text>
+              <Text style={styles.card_label}>Ø Monat</Text>
+              <Text style={styles.card_value}>
+                {selectedValue === "main"
+                  ? Math.round(calcDailyAverage(dbData) * 30.5 * 100) / 100
+                  : null}
+                {selectedValue === "joint"
+                  ? Math.round(
+                      calcDailyAverage(filterByType(dbData, "joint")) *
+                        30.5 *
+                        100
+                    ) / 100
+                  : null}
+                {selectedValue === "bong"
+                  ? Math.round(
+                      calcDailyAverage(filterByType(dbData, "bong")) *
+                        30.5 *
+                        100
+                    ) / 100
+                  : null}
+                {selectedValue === "vape"
+                  ? Math.round(
+                      calcDailyAverage(filterByType(dbData, "vape")) *
+                        30.5 *
+                        100
+                    ) / 100
+                  : null}
+              </Text>
             </View>
 
             <View style={styles.card_container}>
-              <Text style={styles.card_label}>Label 3</Text>
-              <Text style={styles.card_value}>31,5</Text>
+              <Text style={styles.card_label}>Ø Jahr</Text>
+              <Text style={styles.card_value}>
+                {selectedValue === "main"
+                  ? Math.round(calcDailyAverage(dbData) * 365 * 100) / 100
+                  : null}
+                {selectedValue === "joint"
+                  ? Math.round(
+                      calcDailyAverage(filterByType(dbData, "joint")) *
+                        365 *
+                        100
+                    ) / 100
+                  : null}
+                {selectedValue === "bong"
+                  ? Math.round(
+                      calcDailyAverage(filterByType(dbData, "bong")) * 365 * 100
+                    ) / 100
+                  : null}
+                {selectedValue === "vape"
+                  ? Math.round(
+                      calcDailyAverage(filterByType(dbData, "vape")) * 365 * 100
+                    ) / 100
+                  : null}
+              </Text>
             </View>
           </View>
 
           <View style={{ height: 10 }}></View>
 
           <View style={styles.card_container_wide}>
-            <Text style={styles.card_label}>Hier könnte etwas stehen</Text>
+            <Text style={styles.card_label}>Längster Streak</Text>
             <Text style={[styles.card_value, { fontSize: 25 }]}>
-              Hier natürlich auch
+              X Tage (TT.MM.JJJJ - TT.MM.JJJJ)
             </Text>
           </View>
 
@@ -201,87 +334,6 @@ const StatsDashboard = ({ user, dbData }) => {
           <Text style={[styles.card_label, { marginTop: -15 }]}>Label 6</Text>
 
           <View style={{ height: 20 }}></View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              width: "95%",
-              justifyContent: "center",
-            }}
-          >
-            <Pressable
-              style={
-                selectedValue == "main"
-                  ? styles.switch_item_active
-                  : styles.switch_item
-              }
-              onPress={() => setSelectedValue("main")}
-            >
-              <Text
-                style={
-                  selectedValue == "main"
-                    ? styles.switch_text_active
-                    : styles.text_item
-                }
-              >
-                Gesamt
-              </Text>
-            </Pressable>
-            <Pressable
-              style={
-                selectedValue == "joint"
-                  ? styles.switch_item_active
-                  : styles.switch_item
-              }
-              onPress={() => setSelectedValue("joint")}
-            >
-              <Text
-                style={
-                  selectedValue == "joint"
-                    ? styles.switch_text_active
-                    : styles.text_item
-                }
-              >
-                Joint
-              </Text>
-            </Pressable>
-            <Pressable
-              style={
-                selectedValue == "bong"
-                  ? styles.switch_item_active
-                  : styles.switch_item
-              }
-              onPress={() => setSelectedValue("bong")}
-            >
-              <Text
-                style={
-                  selectedValue == "bong"
-                    ? styles.switch_text_active
-                    : styles.text_item
-                }
-              >
-                Bong
-              </Text>
-            </Pressable>
-            <Pressable
-              style={
-                selectedValue == "vape"
-                  ? styles.switch_item_active
-                  : styles.switch_item
-              }
-              onPress={() => setSelectedValue("vape")}
-            >
-              <Text
-                style={
-                  selectedValue == "vape"
-                    ? styles.switch_text_active
-                    : styles.text_item
-                }
-              >
-                Vape
-              </Text>
-            </Pressable>
-          </View>
 
           <View style={{ height: 20 }}></View>
 
