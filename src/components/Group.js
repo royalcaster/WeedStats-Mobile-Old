@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Pressable, View, Text, StyleSheet, ScrollView, Animated, Dimensions, Easing, Image, FlatList, TouchableNativeFeedback } from "react-native";
+import { Pressable, View, Text, StyleSheet, ScrollView, Animated, Dimensions, StatusBar, Easing, Image, FlatList, TouchableNativeFeedback,Modal } from "react-native";
 import { useState, useRef } from "react";
 
 import app from '@react-native-firebase/app'
@@ -12,6 +12,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { RecyclerListView } from "recyclerlistview";
 
 import BigPicture from "./BigPicture";
 
@@ -21,11 +22,11 @@ import { useFonts } from 'expo-font';
 import CameraPanel from "./CameraPanel";
 import { db } from "./FirebaseConfig";
 import { onValue, update, ref as reff, set, onChildAdded } from "firebase/database";
+import DeleteGroup from "./DeleteGroup";
 
 import ChatMessage from "./ChatMessage";
 
-
-const Group = ({show, user, group, onExit, onRefresh }) => {
+const Group = ({show, user, group, onExit, onRefresh, onDelete, refresh }) => {
 
     const [showCamera, setShowCamera] = useState(false);
     const windowWidth = Dimensions.get('window').width;
@@ -38,6 +39,12 @@ const Group = ({show, user, group, onExit, onRefresh }) => {
 
     const [rippleColor, setRippleColor] = useState("rgba(255,255,255,0.15)");
     const [rippleOverflow, setRippleOverflow] = useState(false);
+
+    const [deleteVisible, setDeleteVisible] = useState(false);
+
+    const screenHeight = Dimensions.get('screen').height;
+    const windowHeight = Dimensions.get('window').height;
+    const navbarHeight = screenHeight - windowHeight + StatusBar.currentHeight;
 
     const [bigPicture, setBigPicture] = useState({
         date: {
@@ -52,8 +59,6 @@ const Group = ({show, user, group, onExit, onRefresh }) => {
     const [showBigPicture, setShowBigPicture] = useState(false);
 
     const [messages, setMessages] = useState("");
-
-    const scrollRef = useRef();
 
     useEffect(() => {
         setMessages(getMessageList(group.id));
@@ -77,7 +82,9 @@ const Group = ({show, user, group, onExit, onRefresh }) => {
 
     const [userIsAdmin, setUserIsAdmin] = useState(false);
 
-    /* useEffect(() => {
+    const scrollRef = useRef(null);
+
+   /*  useEffect(() => {
         scrollRef.current.scrollToEnd({ animated: false });
     },[messages]); */
 
@@ -188,12 +195,23 @@ const getMessageList = (group) => {
     console.log(group);
 }
 
+const hide = () => {
+    Animated.timing(slideAnim, {
+        toValue: windowWidth,
+        duration: 500,
+        useNativeDriver: true,
+        easing: Easing.bezier(0,1.02,.21,.97),
+    }).start(({finished}) => {
+        if (finished) {onExit()};
+    });
+}
+
 const renderItem = ({ item }) => {
    return <ChatMessage user={user} type={item.type} sender={item.sender} img_uri={item.download_uri} mood={item.mood} onPress={() => {setBigPicture(item); setShowBigPicture(true)}}/>
 }
 
     return (
-        <Animated.View style={[{transform: [{translateX: slideAnim}]},styles.container]}>
+        <Animated.View style={[{transform: [{translateX: slideAnim}], height: screenHeight - (screenHeight - windowHeight) + StatusBar.currentHeight},styles.container]}>
 
             <BigPicture user={user} message={bigPicture} show={showBigPicture} onExit={() => setShowBigPicture(false)}/>
 
@@ -203,15 +221,15 @@ const renderItem = ({ item }) => {
 
             <View style={{flexDirection: "row", width: "100%", zIndex: 1, backgroundColor: "#1E1E1E"}}>
 
-            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(rippleColor, rippleOverflow)} onPress={onExit}>
+            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(rippleColor, true)} onPress={() => {refresh; hide()}}>
                 <View style={styles.touchable}>
                     <Ionicons name="chevron-back" style={styles.icon}/>
                 </View>
             </TouchableNativeFeedback>
             
             <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(rippleColor, rippleOverflow)} onPress={() => setShowMemberList(true)}>
-                <View style={[styles.touchable,{flex: 3, height: 70}]}>
-                    <View>
+                <View style={[styles.touchable,{flex: 4, height: 70}]}>
+                    <View style={{width: "100%", padding: 15}}>
                         <Text style={styles.heading}>{chopTitle(group.title, 20)}</Text>
                         <Text style={styles.members}>{chopMembers(group.members)}</Text>
                     </View>
@@ -224,19 +242,20 @@ const renderItem = ({ item }) => {
                             <AntDesign style={styles.icon} name="adduser"/>
                         </View>
                     </TouchableNativeFeedback>
-                    <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(rippleColor, rippleOverflow)} onPress={onExit}>
+                    <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(rippleColor, rippleOverflow)} onPress={() => setDeleteVisible(true)}>
                         <View style={styles.touchable}>
                             <MaterialCommunityIcons style={styles.icon} name="delete"/>
                         </View>
                     </TouchableNativeFeedback>
                     </>
-                    : null}
+                    : 
+                    <View style={{flex: 2}}></View>}
                 
             </View>
 
             <View style={styles.content}>
                 
-             {
+             {/* {
                  messages ? <FlatList
                  ref={scrollRef}
                  data={messages}
@@ -244,11 +263,22 @@ const renderItem = ({ item }) => {
                  keyExtractor={(item) => item.img_id}
                  onContentSizeChange={() => scrollRef.current.scrollToEnd({ animated: false })}
              /> : null
-             }   
+             } */}  
+
+             {
+                 messages ? <RecyclerListView 
+                    
+                 /> : null
+             } 
+
+             
             
             </View>
              {showCamera ? <CameraPanel show={showCamera} onExit={() => setShowCamera(false)} group={group} onSend={uploadImageAsync} status={uploadingImage}/> : null}
             
+            {deleteVisible ?
+                <DeleteGroup onExit={() => setDeleteVisible(false)} group={group} onDelete={onDelete}/>
+            : null}
 
             <View style={{position: "absolute", zIndex: 0, height: "100%", width: "100%", backgroundColor: "#171717", justifyContent: "center"}}>
                 <Image source={require('./img/logo_bw.png')} style={styles.background_img}/>
@@ -267,8 +297,8 @@ const styles = StyleSheet.create({
     container: {
         position: "absolute",
         width: "100%",
-        height: "100%",
-        zIndex: 10
+        zIndex: 20,
+        marginTop: 0,
     },
     header: {
         flex: 4, 
@@ -280,13 +310,13 @@ const styles = StyleSheet.create({
         color: "white",
         fontFamily: "PoppinsBlack",
         fontSize: 20,
-        marginLeft: -20
+
     },
     members: {
         color: "white",
         fontFamily: "PoppinsLight",
-        fontSize: 13,
-        marginLeft: -20
+        fontSize: 11,
+        marginTop: -5
     },
     icon: {
         color: "white",

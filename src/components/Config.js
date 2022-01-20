@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useEffect, useRef } from "react";
-import { Pressable } from "react-native";
+import { View } from "react-native";
 import { useFonts } from "expo-font";
 import {
   StyleSheet,
@@ -44,6 +44,7 @@ const Config = ({ statConfig, toggleConfig }) => {
   return (
     <>
     {showLevels ? <Levels onexit={hideLevels}></Levels> : <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
+      <View style={{height: 50}}></View>
       <ConfigItem
         type="joint"
         config={statConfig.joint}

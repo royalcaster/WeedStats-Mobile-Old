@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     title: {
-        fontSize: 18,
+        fontSize: 16,
         fontFamily: "PoppinsLight",
         zIndex: 6,
         marginTop: 3

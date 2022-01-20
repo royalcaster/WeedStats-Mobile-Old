@@ -3,7 +3,7 @@ import { View, Pressable, Text, ScrollView, Image, StyleSheet, ActivityIndicator
 import { useFonts } from "expo-font";
 
 import { setDoc, doc, getDoc, updateDoc, Timestamp, addDoc, limitToLast, query } from "firebase/firestore";
-import { ref , push, getDatabase, set, onValue, onChildAdded } from "firebase/database";
+import { ref , push, getDatabase, set, onValue, onChildAdded, remove } from "firebase/database";
 import { db, firestore } from "./FirebaseConfig";
 
 import { useState, useEffect, useRef } from "react";
@@ -12,7 +12,6 @@ import uuid from 'react-native-uuid'
 import Account from './Account'
 import OptionPanel from "./OptionPanel";
 import Donation from "./Donation";
-import CreateGroup from "./CreateGroup";
 import Group from "./Group";
 import GroupListItem from "./GroupListItem";
 
@@ -38,7 +37,6 @@ const Groups = ({ user, handleLogOut }) => {
     const [showMenu, setShowMenu] = useState(false);
     const [showDonation, setShowDonation] = useState(false);
     const [showAccount, setShowAccount] = useState(false);
-    const [showCreateGroup, setShowCreateGroup] = useState(false);
     const [showGroup, setShowGroup] = useState(false);
     const [activeGroup, setActiveGroup] = useState(defaultGroup); 
  
@@ -71,10 +69,6 @@ const Groups = ({ user, handleLogOut }) => {
         getGroupList();
     },[])
 
-    const hideCreateGroup = () => {
-        setShowCreateGroup(false);
-    }
-
     const hideDonation = () => {
         setShowDonation(false);
     }
@@ -89,7 +83,6 @@ const Groups = ({ user, handleLogOut }) => {
 
     const hideGroup = () => {
         setShowGroup(false);
-        getGroupList();
     }
 
     const [loaded] = useFonts({
@@ -151,7 +144,7 @@ const getGroupList = async () => {
     setLoading(false);
 }
 
-const createGroup = async (  groupData  ) => {
+/* const createGroup = async (  groupData  ) => {
     //Gruppe mit Datum und kurzer ID versehen
     groupData = {...groupData, createdon: new Date().toLocaleDateString("de-DE"), id: uuid.v4().substring(0,8)}
 
@@ -175,7 +168,7 @@ const createGroup = async (  groupData  ) => {
     });
 
     getGroupList();
-};
+}; */
 
 const toggleLatestOnline = ( group ) => {
         console.log(group.id);
@@ -204,21 +197,26 @@ const toggleLatestOnline = ( group ) => {
         }
 }
 
+const deleteGroup = (id) => {
+
+    const groupRef = ref(db, "groups/" + id);
+    remove(groupRef);
+    console.log(id);
+}
+
     return (
     <>
         {showAccount ? <Account user={user} handleLogOut={handleLogOut} onexit={hideAccount} onShowDonation={() => {setShowDonation(true);hideAccount()}}/> : null}
         {showDonation ? <Donation onexit={() => {setShowAccount(true);hideDonation()}}></Donation> : null}
-        {showCreateGroup ? <CreateGroup user={user} onCreate={createGroup} onexit={hideCreateGroup}></CreateGroup> : null}
-        {showGroup ? <Group show={showGroup} user={user} group={activeGroup} onExit={hideGroup} onRefresh={() => toggleLatestOnline(activeGroup)} /> : null}
+        {/* {showCreateGroup ? <CreateGroup user={user} onCreate={createGroup} onexit={hideCreateGroup}></CreateGroup> : null} */}
+       {/*  {showGroup ? <Group onDelete={deleteGroup} show={showGroup} user={user} group={activeGroup} onExit={hideGroup} onRefresh={() => toggleLatestOnline(activeGroup)} refresh={refresh}/> : null} */}
         
-
-        {showMenu ? <OptionPanel onShowCreate={() => setShowCreateGroup(true)} onexit={hideMenu}/> : null}
         
         <Animated.View style={[{opacity: fadeAnim},styles.container]}>
             <View style={{height: 50}}></View>
             <View style={{alignItems: "center", flexDirection: "row"}}>                 
-                <FontAwesome5 name="user-friends" style={{fontSize: 25, color: "white", marginLeft: 20}}/>
-                <Text style={styles.heading}>Gruppen</Text>
+                {/* <FontAwesome5 name="user-friends" style={{fontSize: 25, color: "white", marginLeft: 20}}/> */}
+                <Text style={styles.heading}>Freunde</Text>
                 <View style={{flexDirection: "row", right: 0, position: "absolute"}}>
 
                     <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(rippleColor, true)} onPress={() => setShowCreateGroup(true)}>
@@ -231,7 +229,7 @@ const toggleLatestOnline = ( group ) => {
 
                     <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(rippleColor, true)} /* onPress={onExit} */>
                         <View style={[styles.touchable,{height: 50, backgroundColor: "#171717", width: 50}]}>
-                            <FontAwesome name="group" style={styles.icon}/> 
+                            <FontAwesome5 name="user-check" style={styles.icon}/> 
                         </View>
                     </TouchableNativeFeedback>
 
@@ -242,7 +240,7 @@ const toggleLatestOnline = ( group ) => {
 
             <View style={{height: 20}}></View>
 
-            {loading ? 
+            {/* {loading ? 
             <View style={{justifyContent: "center", height: "75%"}}><ActivityIndicator size="large" color="#0080FF"/></View>
                  : 
                  <>{groupList.map((group) =>
@@ -251,7 +249,9 @@ const toggleLatestOnline = ( group ) => {
                         <View style={{width: "100%", height: 1, backgroundColor: "rgba(255,255,255,0.05)", bottom: 0, position: "absolute"}}></View>
                     </View>
                 )}</>
-            }   
+            }  */} 
+
+            
 
             <View style={{height: 20}}></View>
   
@@ -262,8 +262,8 @@ const toggleLatestOnline = ( group ) => {
                             <Image source={{uri: user.photoUrl}} style={{height: "100%", width: "100%"}}></Image>
                         </View>
                         <View style={{flex: 4, justifyContent: "center"}}>
-                            <Text style={{left: 15, fontFamily: "PoppinsBlack", color: "white", fontSize: 16}}>{user.username}</Text>
-                            <Text style={{left: 15, fontFamily: "PoppinsLight", color: "#c4c4c4", fontSize: 12, marginTop: -3}}>Bong-Main</Text>
+                            <Text style={{left: 15, fontFamily: "PoppinsBlack", color: "white", fontSize: 14}}>{user.username}</Text>
+                            <Text style={{left: 15, fontFamily: "PoppinsLight", color: "#c4c4c4", fontSize: 11, marginTop: -5}}>Bong-Main</Text>
                         </View>
                     </View>
                 </TouchableNativeFeedback>
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
         fontFamily: "PoppinsBlack",
         color: "white",
         fontSize: 20,
-        marginLeft: 10
+        marginLeft: 25
     },
     account_button: {
         width: 20,

@@ -30,7 +30,7 @@ const MemberList = ({ members, show, onHide }) => {
     Animated.timing(
         fadeDown,
         {
-          toValue: -windowHeight,
+          toValue: -windowHeight - 80,
           duration: 300,
           useNativeDriver: true,
           easing: Easing.bezier(0,1.02,.21,.97),

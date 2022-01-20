@@ -12,7 +12,7 @@ const MenuButton = ({type, url, icon, title, color, hovercolor, borderradius, on
         onPress={() => {
           onPress();
         }}
-        background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", rippleOverflow)}
+        background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", true)}
         style={{height: "100%"}}
       >
 
@@ -23,8 +23,7 @@ const MenuButton = ({type, url, icon, title, color, hovercolor, borderradius, on
             </View>
             :   <View style={styles.touchable}>
                     {icon}
-                <Text style={[{color: selected ? "white" : "#4a4a4a"},styles.title]}>{title}</Text>
-        </View>
+                </View>
         }
             
       </TouchableNativeFeedback>
@@ -65,9 +64,8 @@ const styles = StyleSheet.create({
       justifyContent: "center",
     },
     image: {
-        height: 70,
-        width: 70,
+        height: 60,
+        width: 60,
         alignSelf: "center",
-        marginBottom: 5,
       },
 });

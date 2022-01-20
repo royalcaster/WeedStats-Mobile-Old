@@ -22,7 +22,11 @@ const Account = ({ user, handleLogOut, onexit, onShowDonation }) => {
             easing: Easing.bezier(0,1.02,.21,.97),
             useNativeDriver: true,
           }
-        ).start();
+        ).start(({finished}) => {
+            if (finished) {
+                console.log("fertig");
+            }
+        });
         Animated.timing(
             opacityAnim,
             {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Animated,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   ScrollView,
   Pressable,
   Dimensions,
+  Easing
 } from "react-native";
 import { useFonts } from "expo-font";
 import { useState, useRef } from "react";
@@ -47,7 +48,7 @@ export default function Home({
   }
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={[{opacity: 1},styles.container]}>
       <View style={styles.content_container}>
         {view == "main" ? (
           <Main
@@ -75,7 +76,7 @@ export default function Home({
           <MenuButton onPress={() => {setView("groups");}} selected={view == "groups"} title={"Social"} icon={<FontAwesome name="user" style={[{ color: view == "groups" ? "#e0e0e0" : "#4a4a4a" }, styles.settings_icon,]}/>}/>
         </View>
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
@@ -130,7 +131,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingBottom: 0,
     paddingTop: 0,
-    marginBottom: 10,
   },
   options_container: {
     width: "100%",
@@ -189,6 +189,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#171717",
     justifyContent: "center",
+    zIndex:10
   },
   options_pressable_label: {
     fontFamily: "PoppinsLight",

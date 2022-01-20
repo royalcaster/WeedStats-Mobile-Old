@@ -59,6 +59,7 @@ const  GroupListItem = ({ onPress, group, username }) => {
     }
 
     const getNews = () => {
+        
         var n;
         group.members.forEach((member) => {
             if (member.name == username) {
@@ -85,7 +86,7 @@ const  GroupListItem = ({ onPress, group, username }) => {
             case "img": result2 = "Bild"; break;
         }
 
-        return <View style={{alignContent: "center"}}><Text style={{fontFamily: "PoppinsLight", color: "#969696", fontSize: 13}}>{result1}<MaterialCommunityIcons style={{fontSize: 13, position: "relative", transform: [{scale: 1.2}]}} name="folder-image"/> {result2}</Text></View>;
+        return <View style={{alignContent: "center"}}><Text style={{fontFamily: "PoppinsLight", color: "#969696", fontSize: 12}}>{result1}<MaterialCommunityIcons style={{fontSize: 13, position: "relative", transform: [{scale: 1.2}]}} name="folder-image"/> {result2}</Text></View>;
     }
 
 
@@ -95,7 +96,7 @@ const  GroupListItem = ({ onPress, group, username }) => {
                 <View style={styles.touchable}>
                     <View style={{flexDirection: "row"}}>
                         <View style={{width: "80%", alignSelf: "center", marginBottom: 0, borderTopColor: "#2b2b2b", borderTopWidth: 0}}>
-                            <Text style={{fontFamily: "PoppinsMedium", color: "white", fontSize: 20, marginBottom: -5}}>{chopTitle(group.title,25)}</Text>
+                            <Text style={{fontFamily: "PoppinsMedium", color: "rgba(255,255,255,0.85)", fontSize: 18, marginBottom: -4}}>{chopTitle(group.title,25)}</Text>
                         {getLastMessageLine()}
                         </View>
                         <View style={{flexDirection: "column"}}>
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
     },
     date: {
         color: "#969696",
-        fontSize: 13,
+        fontSize: 12,
         textAlignVertical: "center"
     },
     touchable: {
@@ -138,6 +139,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         flexDirection: "column",
         backgroundColor: "#171717",
-        height: 85
+        height: 80
       }
 });

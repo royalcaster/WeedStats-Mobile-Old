@@ -1,6 +1,6 @@
 //React
-import React from "react";
-import { useState } from "react";
+import React, { useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   StyleSheet,
   ActivityIndicator,
@@ -8,6 +8,8 @@ import {
   View,
   Modal,
   Pressable,
+  Animated,
+  Easing
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { LogBox } from "react-native";
@@ -17,6 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Home from "./src/components/Home";
 import Login from "./src/components/Login";
 import getRandomSaying from "./src/Sayings";
+import Splash from "./src/components/Splash";
 
 //Firebase
 import { setDoc, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
@@ -40,6 +43,15 @@ export default function App() {
   const [statConfig, setStatConfig] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [writeComplete, setWriteComplete] = useState(false);
+
+  const [showSplash, setShowSplash] = useState(true);
+
+  /* useEffect(() => {
+    fadeSplash();
+    setTimeout(() => hideSplash(),3000);
+  },[]); */
+
+  
 
   //Sucht im AsyncStorage nach dem letzten User der sich eingeloggt hat und loggt sich bei Erfolg automatisch ein
   useEffect(async () => {
@@ -318,17 +330,21 @@ export default function App() {
           </View>
         </View>
       </Modal>
-      {user ? (
-        <Home
-          user={user}
-          statConfig={statConfig}
-          toggleConfig={toggleConfig}
-          handleLogOut={handleLogOut}
-          toggleCounter={toggleCounter}
-        />
-      ) : (
-        <Login handleLogin={handleLogin} />
-      )}
+      <View style={{flex: 1, backgroundColor: "#171717"}}>
+        {showSplash ? <Splash onExit={() => setShowSplash(false)}/> : null}
+
+        {user ? (
+          <Home
+            user={user}
+            statConfig={statConfig}
+            toggleConfig={toggleConfig}
+            handleLogOut={handleLogOut}
+            toggleCounter={toggleCounter}
+          />
+        ) : (
+          <Login handleLogin={handleLogin} />
+        )}
+      </View>
       </NavigationContainer>
     </>
   );

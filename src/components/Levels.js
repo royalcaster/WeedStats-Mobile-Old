@@ -40,7 +40,7 @@ const Levels = ({onexit}) => {
     return (
         <Animated.View style={[{transform: [{scale: scaleAnim}],opacity: fadeAnim},styles.container]}>
 
-        <View style={{height: 50}}></View>
+        <View style={{height: 60}}></View>
 
             <View style={{
                 alignSelf: "center",
