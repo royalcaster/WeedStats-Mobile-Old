@@ -60,6 +60,85 @@ const StatsDashboard = ({ user, localData }) => {
     });
   };
 
+  const calcLongestStreak = (array) => {
+    const monat31 = [1, 3, 5, 7, 8, 10, 12];
+    const monat30 = [4, 6, 9, 11];
+
+    let current = 1;
+    let longest = 1;
+
+    let endDate = new Date(array[0].timestamp);
+    let startDate = endDate;
+
+    array.forEach((entry, i) => {
+      if (i >= 1) {
+        let daysDiff =
+          new Date(entry.timestamp).getDate() -
+          new Date(array[i - 1].timestamp).getDate();
+        let absDiff = entry.timestamp - array[i - 1].timestamp;
+        let monat = new Date(array[i - 1].timestamp).getMonth();
+        let jahr = new Date(entry.timestamp).getFullYear();
+
+        if (daysDiff == 1 && absDiff <= 2 * 1000 * 60 * 60 * 24) {
+          // Tage folgen aufeinander, gleicher Monat
+          current++;
+        } else if (
+          daysDiff == 30 &&
+          absDiff <= 2 * 1000 * 60 * 60 * 24 &&
+          monat31.includes(monat)
+        ) {
+          // Tage folgen aufeinander, monatsübergreifend (31 Tage)
+          current++;
+        } else if (
+          daysDiff == 29 &&
+          absDiff <= 2 * 1000 * 60 * 60 * 24 &&
+          monat30.includes(monat)
+        ) {
+          // Tage folgen aufeinander, monatsübergreifend (30 Tage)
+          current++;
+        } else if (
+          daysDiff == 28 &&
+          absDiff <= 2 * 1000 * 60 * 60 * 24 &&
+          monat == 2 &&
+          jahr % 4 == 0
+        ) {
+          // Tage folgen aufeinander, monatsübergreifend (Februar, Schaltjahr)
+          current++;
+        } else if (
+          daysDiff == 27 &&
+          absDiff <= 2 * 1000 * 60 * 60 * 24 &&
+          monat == 2 &&
+          jahr % 4 != 0
+        ) {
+          // Tage folgen aufeinander, monatsübergreifend (Februar, kein Schaltjahr)
+          current++;
+        } else if (daysDiff > 1) {
+          // Tage folgen nicht aufeinander, Abbruch
+          if (current > longest) {
+            longest = current;
+            endDate = new Date(array[i - 1].timestamp);
+          }
+          current = 1;
+        }
+      }
+    });
+
+    if (current > longest) {
+      longest = current;
+      endDate = new Date(array[array.length - 1].timestamp);
+    }
+
+    if (longest > 1) {
+      startDate = endDate - (longest - 1) * 1000 * 60 * 60 * 24;
+    }
+
+    return [
+      longest,
+      startDate.toLocaleDateString("de-DE"),
+      endDate.toLocaleDateString("de-DE"),
+    ];
+  };
+
   return (
     <ScrollView style={styles.container}>
       <Animated.View style={{ opacity: fadeAnim, alignItems: "center" }}>
@@ -288,7 +367,11 @@ const StatsDashboard = ({ user, localData }) => {
           <View style={styles.card_container_wide}>
             <Text style={styles.card_label}>Längster Streak</Text>
             <Text style={[styles.card_value, { fontSize: 25 }]}>
-              X Tage (TT.MM.JJJJ - TT.MM.JJJJ)
+              {calcLongestStreak(localData)[0]} Tage
+            </Text>
+            <Text style={[styles.card_value, { fontSize: 20 }]}>
+              ({calcLongestStreak(localData)[1]} -
+              {calcLongestStreak(localData)[2]})
             </Text>
           </View>
 
