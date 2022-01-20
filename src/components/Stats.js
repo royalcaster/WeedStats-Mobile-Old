@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useEffect, useRef } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import moment from "moment";
 
 import { db } from "./FirebaseConfig";
 
@@ -28,31 +27,15 @@ import {
   TextBase,
 } from "react-native";
 
-import {
-  ref,
-  onChildAdded,
-  get,
-  remove,
-  child,
-  query,
-  limitToLast,
-} from "firebase/database";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stats = ({ user }) => {
   const [view, setView] = useState("dashboard");
-  const [history, setHistory] = useState([]);
-  const [dbData, setDbData] = useState([]);
-  const [dbDataLoaded, setDbDataLoaded] = useState(false);
-  const [historyLoaded, setHistoryLoaded] = useState(false);
-  const dbHistoryRef = query(
-    ref(db, "users/" + user.username),
-    limitToLast(10)
-  );
-  const dbUserRef = ref(db, "users/" + user.username);
+  const [localData, setLocalData] = useState([]);
+  const [localDataLoaded, setLocalDataLoaded] = useState(false);
 
   useEffect(() => {
-    dbDataLoaded ? null : getDbData();
-    historyLoaded ? null : getHistory();
+    localDataLoaded ? null : getLocalData();
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
@@ -63,24 +46,66 @@ const Stats = ({ user }) => {
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const deleteEntry = (key) => {
-    const entryRef = ref(db, "users/" + user.username + "/" + key);
-    remove(entryRef);
-    setHistory(history.filter((entry) => entry.key != key));
+  // Zum Löschen einzelner Daten aus der History. Erstmal entfernt, da die Konsistenz der Daten nach aktuellem Stand darunter leidet
+  const deleteEntry = async (delEntry) => {
+    console.log(
+      "Die Lösch-Funktion wurde temporär deaktiviert, bis ein sicheres Verfahren gefunden wurde."
+    );
+    /* try {
+      console.log(delEntry.number);
+      await AsyncStorage.removeItem(user.id + "_entry_" + delEntry.number);
+      setLocalData(
+        localData.filter((entry) => entry.number != delEntry.number)
+      );
+      if (delEntry.number == user.main_counter) {
+        await deleteEntryGlobally(
+          delEntry.type,
+          localData[user.main_counter - 1]
+        );
+      } else {
+        await deleteEntryGlobally(delEntry.type);
+      }
+    } catch (e) {
+      console.log("Error:", e);
+    } */
   };
 
-  const getDbData = async () => {
+  const getRelevantKeys = async () => {
+    let keys = [];
+    try {
+      keys = await AsyncStorage.getAllKeys();
+    } catch (e) {
+      console.log("Error:", e);
+    }
+
+    return keys.filter((key) => key.includes(user.id + "_entry_"));
+  };
+
+  const getLocalData = async () => {
+    try {
+      const jsonData = await AsyncStorage.multiGet(await getRelevantKeys());
+      jsonData.forEach((entry) => localData.push(JSON.parse(entry[1])));
+      localData.sort((a, b) => {
+        return a.number - b.number;
+      });
+      setLocalDataLoaded(true);
+    } catch (e) {
+      console.log("Error:", e);
+    }
+  };
+
+  /*     const dbData = async () => {
     const snapshot = await get(dbUserRef);
     snapshot.forEach((childSnapshot) => {
-      dbData.push({
+      localData.push({
         type: childSnapshot.val().type,
         timestamp: childSnapshot.val().timestamp,
         latitude: childSnapshot.val().latitude,
         longitude: childSnapshot.val().longitude,
       });
     });
-    console.log("dbData geladen!");
-    setDbDataLoaded(true);
+    console.log("localData geladen!");
+    setLocalDataLoaded(true);
   };
 
   const getHistory = () => {
@@ -95,12 +120,12 @@ const Stats = ({ user }) => {
     });
     console.log("history geladen!");
     setHistoryLoaded(true);
-  };
+  }; */
 
   return (
     <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
       <View style={{ height: 50 }}></View>
-      {!(dbDataLoaded && historyLoaded) ? (
+      {!localDataLoaded ? (
         <ActivityIndicator animating={true} size="large" color="#0080FF" />
       ) : (
         <View style={{ flexDirection: "row" }}>
@@ -148,11 +173,11 @@ const Stats = ({ user }) => {
         </View>
       )}
 
-      {dbDataLoaded && view == "dashboard" ? (
-        <StatsDashboard user={user} dbData={dbData} />
+      {localDataLoaded && view == "dashboard" ? (
+        <StatsDashboard user={user} localData={localData} />
       ) : null}
-      {historyLoaded && view == "history" ? (
-        <StatsHistory user={user} history={history} ondelete={deleteEntry} />
+      {localDataLoaded && view == "history" ? (
+        <StatsHistory user={user} history={localData} ondelete={deleteEntry} />
       ) : null}
     </Animated.View>
   );

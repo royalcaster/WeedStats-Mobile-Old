@@ -37,7 +37,11 @@ const StatsHistory = ({ user, history, ondelete }) => {
       <Animated.View style={{ opacity: fadeAnim }}>
         <View style={{ height: 10 }}></View>
 
-        <HistoryTable user={user} history={history} ondelete={ondelete} />
+        <HistoryTable
+          user={user}
+          history={history.slice().reverse()}
+          ondelete={ondelete}
+        />
       </Animated.View>
     </ScrollView>
   );
