@@ -3,11 +3,13 @@ import React from "react";
 import { useState, useEffect } from "react";
 import {
   StyleSheet,
+  Platform,
   ActivityIndicator,
   Text,
   View,
   Modal,
   Pressable,
+  Vibration,
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { LogBox } from "react-native";
@@ -273,6 +275,8 @@ export default function App() {
  */
 
   const toggleCounter = async (index) => {
+    Platform.OS === "android" ? Vibration.vibrate(50) : null;
+
     setModalVisible(true);
 
     // Die Bestimmung der Position dauert von den Schritten in der Funktion toggleCounter() mit Abstand am längsten
