@@ -12,17 +12,6 @@ import {
 
 import AntDesign from "react-native-vector-icons/AntDesign";
 
-import {
-  ref,
-  onChildAdded,
-  get,
-  remove,
-  child,
-  query,
-  limitToLast,
-} from "firebase/database";
-import { db } from "./FirebaseConfig";
-
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
 

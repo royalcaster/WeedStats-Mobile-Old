@@ -68,7 +68,6 @@ const StatsDashboard = ({ user, localData }) => {
     let longest = 1;
 
     let endDate = new Date(array[0].timestamp);
-    let startDate = endDate;
 
     array.forEach((entry, i) => {
       if (i >= 1) {
@@ -128,9 +127,7 @@ const StatsDashboard = ({ user, localData }) => {
       endDate = new Date(array[array.length - 1].timestamp);
     }
 
-    if (longest > 1) {
-      startDate = endDate - (longest - 1) * 1000 * 60 * 60 * 24;
-    }
+    const startDate = new Date(endDate - (longest - 1) * 1000 * 60 * 60 * 24);
 
     return [
       longest,
