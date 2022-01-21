@@ -10,6 +10,8 @@ import {
   Pressable,
 } from "react-native";
 
+import toGermanDate from "../DateConversion";
+
 import AntDesign from "react-native-vector-icons/AntDesign";
 
 import Fontisto from "react-native-vector-icons/Fontisto";
@@ -56,7 +58,7 @@ const HistoryTable = ({ user, history, ondelete }) => {
             <Text style={styles.date}>
               {" "}
               <Fontisto name="date" style={styles.icon_date} />{" "}
-              {new Date(event.timestamp).toLocaleDateString("de-DE")}
+              {toGermanDate(new Date(event.timestamp))}
             </Text>
           </View>
           <View style={{ flex: 2, justifyContent: "center" }}>
