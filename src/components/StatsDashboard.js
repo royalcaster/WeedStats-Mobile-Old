@@ -173,6 +173,28 @@ const StatsDashboard = ({ user, localData }) => {
     ];
   };
 
+  const countEntriesInTimeframe = (array) => {
+    let count1d = 0;
+    let count7d = 0;
+    let count30d = 0;
+    const now = Date.now();
+
+    array.forEach((entry) => {
+      if (now - entry.timestamp <= 1000 * 60 * 60 * 24) {
+        count1d++;
+        count7d++;
+        count30d++;
+      } else if (now - entry.timestamp <= 7 * 1000 * 60 * 60 * 24) {
+        count7d++;
+        count30d++;
+      } else if (now - entry.timestamp <= 30 * 1000 * 60 * 60 * 24) {
+        count30d++;
+      }
+    });
+
+    return [count1d, count7d, count30d];
+  };
+
   // Berechne Statistiken
   const [averageMain, setAverageMain] = useState(calcDailyAverage(localData));
   const [averageJoint, setAverageJoint] = useState(
@@ -183,6 +205,18 @@ const StatsDashboard = ({ user, localData }) => {
   );
   const [averageVape, setAverageVape] = useState(
     calcDailyAverage(filterByType(localData, "vape"))
+  );
+  const [lastDaysMainAmount, setLastDaysMainAmount] = useState(
+    countEntriesInTimeframe(localData)
+  );
+  const [lastDaysJointAmount, setLastDaysJointAmount] = useState(
+    countEntriesInTimeframe(filterByType(localData, "joint"))
+  );
+  const [lastDaysBongAmount, setLastDaysBongAmount] = useState(
+    countEntriesInTimeframe(filterByType(localData, "bong"))
+  );
+  const [lastDaysVapeAmount, setLastDaysVapeAmount] = useState(
+    countEntriesInTimeframe(filterByType(localData, "vape"))
   );
   const [streakData, setStreakData] = useState(calcStreak(localData));
 
@@ -309,7 +343,7 @@ const StatsDashboard = ({ user, localData }) => {
             style={{
               flexDirection: "row",
               width: "100%",
-              justifyContent: "center",
+              justifyContent: "space-evenly",
             }}
           >
             <View style={styles.card_container}>
@@ -352,114 +386,171 @@ const StatsDashboard = ({ user, localData }) => {
               <Text style={styles.card_label}>Ø Jahr</Text>
               <Text style={styles.card_value}>
                 {selectedValue === "main"
-                  ? Math.round(averageMain * 365 * 10) / 10
+                  ? Math.round(averageMain * 365)
                   : null}
                 {selectedValue === "joint"
-                  ? Math.round(averageJoint * 365 * 10) / 10
+                  ? Math.round(averageJoint * 365)
                   : null}
                 {selectedValue === "bong"
-                  ? Math.round(averageBong * 365 * 10) / 10
+                  ? Math.round(averageBong * 365)
                   : null}
                 {selectedValue === "vape"
-                  ? Math.round(averageVape * 365 * 10) / 10
+                  ? Math.round(averageVape * 365)
                   : null}
               </Text>
             </View>
           </View>
 
-          <View style={{ height: 10 }}></View>
-
-          <View style={styles.card_container_wide}>
-            <Text style={styles.card_label}>Längster Streak</Text>
-            <Text style={[styles.card_value, { fontSize: 25 }]}>
-              {streakData[0]} Tage
-            </Text>
-            <Text style={[styles.card_value, { fontSize: 20 }]}>
-              ({streakData[1]} -{streakData[2]})
-            </Text>
-          </View>
-
-          <View style={{ height: 10 }}></View>
-
-          <View style={styles.card_container_wide}>
-            <Text style={styles.card_label}>Aktueller Streak</Text>
-            {streakData[5] ? (
-              <Text style={[styles.card_value, { fontSize: 25 }]}>
-                {streakData[3]} Tage
-              </Text>
-            ) : (
+          <Text
+            style={[
+              styles.card_label,
+              { marginTop: 15, fontSize: 18, color: "#c4c4c4" },
+            ]}
+          >
+            {selectedValue === "main" ? "Einträge" : null}
+            {selectedValue === "joint" ? "Joints" : null}
+            {selectedValue === "bong" ? "Bongs" : null}
+            {selectedValue === "vape" ? "Vapes" : null} in den letzten
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              width: "98%",
+              flex: 1,
+              justifyContent: "space-evenly",
+            }}
+          >
+            <View>
               <Text
-                style={[styles.card_value, { fontSize: 25, color: "#D0342C" }]}
+                style={[
+                  styles.card_label,
+                  { marginTop: 0, textAlign: "center" },
+                ]}
               >
-                {streakData[3]} Tage
+                24 Stunden
               </Text>
-            )}
-            <Text style={[styles.card_value, { fontSize: 20 }]}>
-              (seit {streakData[4]})
-            </Text>
+              <Text
+                style={[
+                  styles.card_value,
+                  {
+                    borderTopColor: "#0080FF",
+                    borderTopWidth: 2,
+                    marginTop: 0,
+                    textAlign: "center",
+                  },
+                ]}
+              >
+                {selectedValue === "main" ? lastDaysMainAmount[0] : null}
+                {selectedValue === "joint" ? lastDaysJointAmount[0] : null}
+                {selectedValue === "bong" ? lastDaysBongAmount[0] : null}
+                {selectedValue === "vape" ? lastDaysVapeAmount[0] : null}
+              </Text>
+            </View>
+            <View>
+              <Text
+                style={[
+                  styles.card_label,
+                  { marginTop: 0, textAlign: "center" },
+                ]}
+              >
+                7 Tagen
+              </Text>
+              <Text
+                style={[
+                  styles.card_value,
+                  {
+                    borderTopColor: "#0080FF",
+                    borderTopWidth: 2,
+                    paddingRight: 10,
+                    paddingLeft: 10,
+                    marginTop: 0,
+                    textAlign: "center",
+                  },
+                ]}
+              >
+                {selectedValue === "main" ? lastDaysMainAmount[1] : null}
+                {selectedValue === "joint" ? lastDaysJointAmount[1] : null}
+                {selectedValue === "bong" ? lastDaysBongAmount[1] : null}
+                {selectedValue === "vape" ? lastDaysVapeAmount[1] : null}
+              </Text>
+            </View>
+            <View>
+              <Text
+                style={[
+                  styles.card_label,
+                  { marginTop: 0, textAlign: "center" },
+                ]}
+              >
+                30 Tagen
+              </Text>
+              <Text
+                style={[
+                  styles.card_value,
+                  {
+                    borderTopColor: "#0080FF",
+                    borderTopWidth: 2,
+                    paddingRight: 10,
+                    paddingLeft: 10,
+                    marginTop: 0,
+                    textAlign: "center",
+                  },
+                ]}
+              >
+                {selectedValue === "main" ? lastDaysMainAmount[2] : null}
+                {selectedValue === "joint" ? lastDaysJointAmount[2] : null}
+                {selectedValue === "bong" ? lastDaysBongAmount[2] : null}
+                {selectedValue === "vape" ? lastDaysVapeAmount[2] : null}
+              </Text>
+            </View>
           </View>
 
-          <View style={{ height: 40 }}></View>
+          {selectedValue === "main" ? (
+            <>
+              <View style={{ height: 10 }}></View>
 
-          <Text
-            style={[
-              styles.card_value,
-              {
-                borderTopColor: "#0080FF",
-                borderTopWidth: 2,
-                paddingRight: 10,
-                paddingLeft: 10,
-              },
-            ]}
-          >
-            28,4
-          </Text>
-          <Text style={[styles.card_label, { marginTop: -15 }]}>Label 4</Text>
-
-          <View style={{ height: 20 }}></View>
-
-          <Text
-            style={[
-              styles.card_value,
-              {
-                borderTopColor: "#0080FF",
-                borderTopWidth: 2,
-                paddingRight: 10,
-                paddingLeft: 10,
-              },
-            ]}
-          >
-            59,1
-          </Text>
-          <Text style={[styles.card_label, { marginTop: -15 }]}>Label 5</Text>
-
-          <View style={{ height: 20 }}></View>
-
-          <Text
-            style={[
-              styles.card_value,
-              {
-                borderTopColor: "#0080FF",
-                borderTopWidth: 2,
-                paddingRight: 10,
-                paddingLeft: 10,
-              },
-            ]}
-          >
-            248,7
-          </Text>
-          <Text style={[styles.card_label, { marginTop: -15 }]}>Label 6</Text>
-
-          <View style={{ height: 20 }}></View>
+              <View style={styles.card_container_wide}>
+                <Text style={styles.card_label}>Aktueller Streak</Text>
+                {streakData[5] ? (
+                  <Text style={[styles.card_value, { fontSize: 25 }]}>
+                    {streakData[3]} Tage
+                  </Text>
+                ) : (
+                  <Text
+                    style={[
+                      styles.card_value,
+                      { fontSize: 25, color: "#D0342C" },
+                    ]}
+                  >
+                    {streakData[3]} Tage
+                  </Text>
+                )}
+                {streakData[4] ? (
+                  <Text style={[styles.card_value, { fontSize: 20 }]}>
+                    (seit {streakData[4]})
+                  </Text>
+                ) : null}
+                <Text style={styles.card_label}>Längster Streak</Text>
+                <Text style={[styles.card_value, { fontSize: 25 }]}>
+                  {streakData[0]} Tage
+                </Text>
+                <Text style={[styles.card_value, { fontSize: 20 }]}>
+                  ({streakData[1]} -{streakData[2]})
+                </Text>
+              </View>
+            </>
+          ) : null}
 
           <View style={{ height: 20 }}></View>
 
           <LineChart
             data={{
-              labels: ["1", "2", "3", "4", "5", "6"],
+              labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
               datasets: [
                 {
                   data: [
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
                     Math.random() * 100,
                     Math.random() * 100,
                     Math.random() * 100,
@@ -470,21 +561,15 @@ const StatsDashboard = ({ user, localData }) => {
                 },
               ],
             }}
-            width={(Dimensions.get("window").width / 10) * 9} // from react-native
-            height={200}
-            yAxisLabel="$"
-            yAxisSuffix="k"
+            width={Dimensions.get("window").width} // from react-native
+            height={250}
             yAxisInterval={1} // optional, defaults to 1
             chartConfig={{
-              backgroundColor: "#1E1E1E",
               backgroundGradientFrom: "#171717",
-              backgroundGradientTo: "#171717",
-              decimalPlaces: 2, // optional, defaults to 2dp
+              backgroundGradientTo: "#1E1E1E",
+              decimalPlaces: 0, // optional, defaults to 2dp
               color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 50,
-              },
               propsForDots: {
                 r: "2",
                 strokeWidth: "5",
@@ -494,7 +579,7 @@ const StatsDashboard = ({ user, localData }) => {
             bezier
             style={{
               marginVertical: 8,
-              borderRadius: 16,
+              borderRadius: 0,
             }}
           />
 
@@ -658,8 +743,8 @@ const styles = StyleSheet.create({
   },
   card_container: {
     backgroundColor: "#171717",
-    width: "25%",
-    margin: 10,
+    width: "30%",
+    margin: 5,
     padding: 15,
     borderRadius: 25,
     borderTopColor: "#0080FF",
