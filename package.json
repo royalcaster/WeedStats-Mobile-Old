@@ -41,6 +41,7 @@
     "react-native-material-buttons": "^0.6.0",
     "react-native-material-ripple": "^0.9.1",
     "react-native-pager-view": "^5.4.9",
+    "react-native-skeleton-content": "^1.0.24",
     "react-native-svg": "^12.1.1",
     "react-native-swipe-tabs": "^1.0.7",
     "react-native-swiper": "^1.6.0",
