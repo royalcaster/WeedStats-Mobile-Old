@@ -10,18 +10,9 @@ import {
   Pressable,
 } from "react-native";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
+import toGermanDate from "../DateConversion";
 
-import {
-  ref,
-  onChildAdded,
-  get,
-  remove,
-  child,
-  query,
-  limitToLast,
-} from "firebase/database";
-import { db } from "./FirebaseConfig";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -67,7 +58,7 @@ const HistoryTable = ({ user, history, ondelete }) => {
             <Text style={styles.date}>
               {" "}
               <Fontisto name="date" style={styles.icon_date} />{" "}
-              {new Date(event.timestamp).toLocaleDateString("de-DE")}
+              {toGermanDate(new Date(event.timestamp))}
             </Text>
           </View>
           <View style={{ flex: 2, justifyContent: "center" }}>

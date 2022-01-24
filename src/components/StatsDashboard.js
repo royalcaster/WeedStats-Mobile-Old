@@ -17,6 +17,8 @@ import {
 import { ref, query, onChildAdded } from "firebase/database";
 import { db } from "./FirebaseConfig";
 
+import toGermanDate from "../DateConversion";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import {
@@ -59,6 +61,164 @@ const StatsDashboard = ({ user, localData }) => {
       return entry.type === type;
     });
   };
+
+  const isNextDay = (daysDiff, absDiff, monat, jahr) => {
+    const monat31 = [1, 3, 5, 7, 8, 10, 12];
+    const monat30 = [4, 6, 9, 11];
+
+    if (daysDiff == 1 && absDiff <= 2 * 1000 * 60 * 60 * 24) {
+      // Tage folgen aufeinander, gleicher Monat
+      return 1;
+    } else if (
+      daysDiff == 30 &&
+      absDiff <= 2 * 1000 * 60 * 60 * 24 &&
+      monat31.includes(monat)
+    ) {
+      // Tage folgen aufeinander, monatsübergreifend (31 Tage)
+      return 1;
+    } else if (
+      daysDiff == 29 &&
+      absDiff <= 2 * 1000 * 60 * 60 * 24 &&
+      monat30.includes(monat)
+    ) {
+      // Tage folgen aufeinander, monatsübergreifend (30 Tage)
+      return 1;
+    } else if (
+      daysDiff == 28 &&
+      absDiff <= 2 * 1000 * 60 * 60 * 24 &&
+      monat == 2 &&
+      jahr % 4 == 0
+    ) {
+      // Tage folgen aufeinander, monatsübergreifend (Februar, Schaltjahr)
+      return 1;
+    } else if (
+      daysDiff == 27 &&
+      absDiff <= 2 * 1000 * 60 * 60 * 24 &&
+      monat == 2 &&
+      jahr % 4 != 0
+    ) {
+      // Tage folgen aufeinander, monatsübergreifend (Februar, kein Schaltjahr)
+      return 1;
+    } else if (daysDiff > 1) {
+      // Tage folgen nicht aufeinander
+      return 2;
+    }
+    // Ansonsten: Tage sind identisch (irrelevant)
+    return 3;
+  };
+
+  const calcStreak = (array) => {
+    let current = 1;
+    let longest = 1;
+    let smokedToday = false;
+
+    let endDate = new Date(array[0].timestamp);
+
+    array.forEach((entry, i) => {
+      if (i >= 1) {
+        let daysDiff =
+          new Date(entry.timestamp).getDate() -
+          new Date(array[i - 1].timestamp).getDate();
+        let absDiff = entry.timestamp - array[i - 1].timestamp;
+        let monat = new Date(array[i - 1].timestamp).getMonth();
+        let jahr = new Date(entry.timestamp).getFullYear();
+
+        if (isNextDay(daysDiff, absDiff, monat, jahr) == 1) {
+          current++;
+        } else if (isNextDay(daysDiff, absDiff, monat, jahr) == 2) {
+          if (current > longest) {
+            longest = current;
+            endDate = new Date(array[i - 1].timestamp);
+          }
+          current = 1;
+        }
+      }
+    });
+
+    if (current > longest) {
+      longest = current;
+      endDate = new Date(array[array.length - 1].timestamp);
+    }
+
+    const startDateLongest = new Date(
+      endDate - (longest - 1) * 1000 * 60 * 60 * 24
+    );
+    let startDateCurrent = new Date(
+      new Date(array[array.length - 1].timestamp) -
+        (current - 1) * 1000 * 60 * 60 * 24
+    );
+
+    const daysDiffLast =
+      new Date(Date.now()).getDate() -
+      new Date(array[array.length - 1].timestamp).getDate();
+    const absDiffLast = Date.now() - array[array.length - 1].timestamp;
+    const monatLast = new Date(array[array.length - 1].timestamp).getMonth();
+    const jahrLast = new Date(Date.now()).getFullYear();
+
+    // Checkt, ob der letzte Eintrag weder heute noch gestern passiert ist
+    if (isNextDay(daysDiffLast, absDiffLast, monatLast, jahrLast) == 2) {
+      current = 0;
+      startDateCurrent = null;
+    } else if (isNextDay(daysDiffLast, absDiffLast, monatLast, jahrLast) == 3) {
+      smokedToday = true;
+    }
+
+    return [
+      longest,
+      toGermanDate(startDateLongest),
+      toGermanDate(endDate),
+      current,
+      toGermanDate(startDateCurrent),
+      smokedToday,
+    ];
+  };
+
+  const countEntriesInTimeframe = (array) => {
+    let count1d = 0;
+    let count7d = 0;
+    let count30d = 0;
+    const now = Date.now();
+
+    array.forEach((entry) => {
+      if (now - entry.timestamp <= 1000 * 60 * 60 * 24) {
+        count1d++;
+        count7d++;
+        count30d++;
+      } else if (now - entry.timestamp <= 7 * 1000 * 60 * 60 * 24) {
+        count7d++;
+        count30d++;
+      } else if (now - entry.timestamp <= 30 * 1000 * 60 * 60 * 24) {
+        count30d++;
+      }
+    });
+
+    return [count1d, count7d, count30d];
+  };
+
+  // Berechne Statistiken
+  const [averageMain, setAverageMain] = useState(calcDailyAverage(localData));
+  const [averageJoint, setAverageJoint] = useState(
+    calcDailyAverage(filterByType(localData, "joint"))
+  );
+  const [averageBong, setAverageBong] = useState(
+    calcDailyAverage(filterByType(localData, "bong"))
+  );
+  const [averageVape, setAverageVape] = useState(
+    calcDailyAverage(filterByType(localData, "vape"))
+  );
+  const [lastDaysMainAmount, setLastDaysMainAmount] = useState(
+    countEntriesInTimeframe(localData)
+  );
+  const [lastDaysJointAmount, setLastDaysJointAmount] = useState(
+    countEntriesInTimeframe(filterByType(localData, "joint"))
+  );
+  const [lastDaysBongAmount, setLastDaysBongAmount] = useState(
+    countEntriesInTimeframe(filterByType(localData, "bong"))
+  );
+  const [lastDaysVapeAmount, setLastDaysVapeAmount] = useState(
+    countEntriesInTimeframe(filterByType(localData, "vape"))
+  );
+  const [streakData, setStreakData] = useState(calcStreak(localData));
 
   return (
     <ScrollView style={styles.container}>
@@ -155,22 +315,16 @@ const StatsDashboard = ({ user, localData }) => {
             }}
           >
             {selectedValue === "main"
-              ? Math.round(calcDailyAverage(localData) * 100) / 100
+              ? Math.round(averageMain * 100) / 100
               : null}
             {selectedValue === "joint"
-              ? Math.round(
-                  calcDailyAverage(filterByType(localData, "joint")) * 100
-                ) / 100
+              ? Math.round(averageJoint * 100) / 100
               : null}
             {selectedValue === "bong"
-              ? Math.round(
-                  calcDailyAverage(filterByType(localData, "bong")) * 100
-                ) / 100
+              ? Math.round(averageBong * 100) / 100
               : null}
             {selectedValue === "vape"
-              ? Math.round(
-                  calcDailyAverage(filterByType(localData, "vape")) * 100
-                ) / 100
+              ? Math.round(averageVape * 100) / 100
               : null}
           </Text>
           <Text
@@ -189,35 +343,23 @@ const StatsDashboard = ({ user, localData }) => {
             style={{
               flexDirection: "row",
               width: "100%",
-              justifyContent: "center",
+              justifyContent: "space-evenly",
             }}
           >
             <View style={styles.card_container}>
               <Text style={styles.card_label}>Ø Woche</Text>
               <Text style={styles.card_value}>
                 {selectedValue === "main"
-                  ? Math.round(calcDailyAverage(localData) * 7 * 100) / 100
+                  ? Math.round(averageMain * 7 * 10) / 10
                   : null}
                 {selectedValue === "joint"
-                  ? Math.round(
-                      calcDailyAverage(filterByType(localData, "joint")) *
-                        7 *
-                        100
-                    ) / 100
+                  ? Math.round(averageJoint * 7 * 10) / 10
                   : null}
                 {selectedValue === "bong"
-                  ? Math.round(
-                      calcDailyAverage(filterByType(localData, "bong")) *
-                        7 *
-                        100
-                    ) / 100
+                  ? Math.round(averageBong * 7 * 10) / 10
                   : null}
                 {selectedValue === "vape"
-                  ? Math.round(
-                      calcDailyAverage(filterByType(localData, "vape")) *
-                        7 *
-                        100
-                    ) / 100
+                  ? Math.round(averageVape * 7 * 10) / 10
                   : null}
               </Text>
             </View>
@@ -226,28 +368,16 @@ const StatsDashboard = ({ user, localData }) => {
               <Text style={styles.card_label}>Ø Monat</Text>
               <Text style={styles.card_value}>
                 {selectedValue === "main"
-                  ? Math.round(calcDailyAverage(localData) * 30.5 * 100) / 100
+                  ? Math.round(averageMain * 30.5 * 10) / 10
                   : null}
                 {selectedValue === "joint"
-                  ? Math.round(
-                      calcDailyAverage(filterByType(localData, "joint")) *
-                        30.5 *
-                        100
-                    ) / 100
+                  ? Math.round(averageJoint * 30.5 * 10) / 10
                   : null}
                 {selectedValue === "bong"
-                  ? Math.round(
-                      calcDailyAverage(filterByType(localData, "bong")) *
-                        30.5 *
-                        100
-                    ) / 100
+                  ? Math.round(averageBong * 30.5 * 10) / 10
                   : null}
                 {selectedValue === "vape"
-                  ? Math.round(
-                      calcDailyAverage(filterByType(localData, "vape")) *
-                        30.5 *
-                        100
-                    ) / 100
+                  ? Math.round(averageVape * 30.5 * 10) / 10
                   : null}
               </Text>
             </View>
@@ -256,103 +386,171 @@ const StatsDashboard = ({ user, localData }) => {
               <Text style={styles.card_label}>Ø Jahr</Text>
               <Text style={styles.card_value}>
                 {selectedValue === "main"
-                  ? Math.round(calcDailyAverage(localData) * 365 * 100) / 100
+                  ? Math.round(averageMain * 365)
                   : null}
                 {selectedValue === "joint"
-                  ? Math.round(
-                      calcDailyAverage(filterByType(localData, "joint")) *
-                        365 *
-                        100
-                    ) / 100
+                  ? Math.round(averageJoint * 365)
                   : null}
                 {selectedValue === "bong"
-                  ? Math.round(
-                      calcDailyAverage(filterByType(localData, "bong")) *
-                        365 *
-                        100
-                    ) / 100
+                  ? Math.round(averageBong * 365)
                   : null}
                 {selectedValue === "vape"
-                  ? Math.round(
-                      calcDailyAverage(filterByType(localData, "vape")) *
-                        365 *
-                        100
-                    ) / 100
+                  ? Math.round(averageVape * 365)
                   : null}
               </Text>
             </View>
           </View>
 
-          <View style={{ height: 10 }}></View>
-
-          <View style={styles.card_container_wide}>
-            <Text style={styles.card_label}>Längster Streak</Text>
-            <Text style={[styles.card_value, { fontSize: 25 }]}>
-              X Tage (TT.MM.JJJJ - TT.MM.JJJJ)
-            </Text>
+          <Text
+            style={[
+              styles.card_label,
+              { marginTop: 15, fontSize: 18, color: "#c4c4c4" },
+            ]}
+          >
+            {selectedValue === "main" ? "Einträge" : null}
+            {selectedValue === "joint" ? "Joints" : null}
+            {selectedValue === "bong" ? "Bongs" : null}
+            {selectedValue === "vape" ? "Vapes" : null} in den letzten
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              width: "98%",
+              flex: 1,
+              justifyContent: "space-evenly",
+            }}
+          >
+            <View>
+              <Text
+                style={[
+                  styles.card_label,
+                  { marginTop: 0, textAlign: "center" },
+                ]}
+              >
+                24 Stunden
+              </Text>
+              <Text
+                style={[
+                  styles.card_value,
+                  {
+                    borderTopColor: "#0080FF",
+                    borderTopWidth: 2,
+                    marginTop: 0,
+                    textAlign: "center",
+                  },
+                ]}
+              >
+                {selectedValue === "main" ? lastDaysMainAmount[0] : null}
+                {selectedValue === "joint" ? lastDaysJointAmount[0] : null}
+                {selectedValue === "bong" ? lastDaysBongAmount[0] : null}
+                {selectedValue === "vape" ? lastDaysVapeAmount[0] : null}
+              </Text>
+            </View>
+            <View>
+              <Text
+                style={[
+                  styles.card_label,
+                  { marginTop: 0, textAlign: "center" },
+                ]}
+              >
+                7 Tagen
+              </Text>
+              <Text
+                style={[
+                  styles.card_value,
+                  {
+                    borderTopColor: "#0080FF",
+                    borderTopWidth: 2,
+                    paddingRight: 10,
+                    paddingLeft: 10,
+                    marginTop: 0,
+                    textAlign: "center",
+                  },
+                ]}
+              >
+                {selectedValue === "main" ? lastDaysMainAmount[1] : null}
+                {selectedValue === "joint" ? lastDaysJointAmount[1] : null}
+                {selectedValue === "bong" ? lastDaysBongAmount[1] : null}
+                {selectedValue === "vape" ? lastDaysVapeAmount[1] : null}
+              </Text>
+            </View>
+            <View>
+              <Text
+                style={[
+                  styles.card_label,
+                  { marginTop: 0, textAlign: "center" },
+                ]}
+              >
+                30 Tagen
+              </Text>
+              <Text
+                style={[
+                  styles.card_value,
+                  {
+                    borderTopColor: "#0080FF",
+                    borderTopWidth: 2,
+                    paddingRight: 10,
+                    paddingLeft: 10,
+                    marginTop: 0,
+                    textAlign: "center",
+                  },
+                ]}
+              >
+                {selectedValue === "main" ? lastDaysMainAmount[2] : null}
+                {selectedValue === "joint" ? lastDaysJointAmount[2] : null}
+                {selectedValue === "bong" ? lastDaysBongAmount[2] : null}
+                {selectedValue === "vape" ? lastDaysVapeAmount[2] : null}
+              </Text>
+            </View>
           </View>
 
-          <View style={{ height: 40 }}></View>
+          {selectedValue === "main" ? (
+            <>
+              <View style={{ height: 10 }}></View>
 
-          <Text
-            style={[
-              styles.card_value,
-              {
-                borderTopColor: "#0080FF",
-                borderTopWidth: 2,
-                paddingRight: 10,
-                paddingLeft: 10,
-              },
-            ]}
-          >
-            28,4
-          </Text>
-          <Text style={[styles.card_label, { marginTop: -15 }]}>Label 4</Text>
-
-          <View style={{ height: 20 }}></View>
-
-          <Text
-            style={[
-              styles.card_value,
-              {
-                borderTopColor: "#0080FF",
-                borderTopWidth: 2,
-                paddingRight: 10,
-                paddingLeft: 10,
-              },
-            ]}
-          >
-            59,1
-          </Text>
-          <Text style={[styles.card_label, { marginTop: -15 }]}>Label 5</Text>
-
-          <View style={{ height: 20 }}></View>
-
-          <Text
-            style={[
-              styles.card_value,
-              {
-                borderTopColor: "#0080FF",
-                borderTopWidth: 2,
-                paddingRight: 10,
-                paddingLeft: 10,
-              },
-            ]}
-          >
-            248,7
-          </Text>
-          <Text style={[styles.card_label, { marginTop: -15 }]}>Label 6</Text>
-
-          <View style={{ height: 20 }}></View>
+              <View style={styles.card_container_wide}>
+                <Text style={styles.card_label}>Aktueller Streak</Text>
+                {streakData[5] ? (
+                  <Text style={[styles.card_value, { fontSize: 25 }]}>
+                    {streakData[3]} Tage
+                  </Text>
+                ) : (
+                  <Text
+                    style={[
+                      styles.card_value,
+                      { fontSize: 25, color: "#D0342C" },
+                    ]}
+                  >
+                    {streakData[3]} Tage
+                  </Text>
+                )}
+                {streakData[4] ? (
+                  <Text style={[styles.card_value, { fontSize: 20 }]}>
+                    (seit {streakData[4]})
+                  </Text>
+                ) : null}
+                <Text style={styles.card_label}>Längster Streak</Text>
+                <Text style={[styles.card_value, { fontSize: 25 }]}>
+                  {streakData[0]} Tage
+                </Text>
+                <Text style={[styles.card_value, { fontSize: 20 }]}>
+                  ({streakData[1]} -{streakData[2]})
+                </Text>
+              </View>
+            </>
+          ) : null}
 
           <View style={{ height: 20 }}></View>
 
           <LineChart
             data={{
-              labels: ["1", "2", "3", "4", "5", "6"],
+              labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
               datasets: [
                 {
                   data: [
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
                     Math.random() * 100,
                     Math.random() * 100,
                     Math.random() * 100,
@@ -363,21 +561,15 @@ const StatsDashboard = ({ user, localData }) => {
                 },
               ],
             }}
-            width={(Dimensions.get("window").width / 10) * 9} // from react-native
-            height={200}
-            yAxisLabel="$"
-            yAxisSuffix="k"
+            width={Dimensions.get("window").width} // from react-native
+            height={250}
             yAxisInterval={1} // optional, defaults to 1
             chartConfig={{
-              backgroundColor: "#1E1E1E",
               backgroundGradientFrom: "#171717",
-              backgroundGradientTo: "#171717",
-              decimalPlaces: 2, // optional, defaults to 2dp
+              backgroundGradientTo: "#1E1E1E",
+              decimalPlaces: 0, // optional, defaults to 2dp
               color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 50,
-              },
               propsForDots: {
                 r: "2",
                 strokeWidth: "5",
@@ -387,7 +579,7 @@ const StatsDashboard = ({ user, localData }) => {
             bezier
             style={{
               marginVertical: 8,
-              borderRadius: 16,
+              borderRadius: 0,
             }}
           />
 
@@ -551,8 +743,8 @@ const styles = StyleSheet.create({
   },
   card_container: {
     backgroundColor: "#171717",
-    width: "25%",
-    margin: 10,
+    width: "30%",
+    margin: 5,
     padding: 15,
     borderRadius: 25,
     borderTopColor: "#0080FF",
