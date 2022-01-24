@@ -81,7 +81,7 @@ const FriendRequests = ({user, onExit}) => {
         setModalVisible(false);
     }
 
-    loadRequests = () => {
+    loadRequests = async () => {
         const docRef = doc(firestore, "users", user.id);
         const docSnap = await getDoc(docRef);
 
