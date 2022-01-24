@@ -36,7 +36,8 @@ const StatsDashboard = ({ user, localData }) => {
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
   });
-  const [selectedValue, setSelectedValue] = useState("main");
+  const [selectedType, setSelectedType] = useState("main");
+  const [selectedTime, setSelectedTime] = useState(0);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -49,6 +50,7 @@ const StatsDashboard = ({ user, localData }) => {
   }, []);
 
   const calcDailyAverage = (array) => {
+    console.log("Daily Average");
     return (
       array.length /
       ((localData[localData.length - 1].timestamp - localData[0].timestamp) /
@@ -57,8 +59,23 @@ const StatsDashboard = ({ user, localData }) => {
   };
 
   const filterByType = (array, type) => {
+    if (type === "main") {
+      return array;
+    }
     return array.filter((entry) => {
       return entry.type === type;
+    });
+  };
+
+  const filterByMostRecent = (array, days) => {
+    if (days === 0) {
+      return array;
+    }
+
+    const now = Date.now();
+
+    return array.filter((entry) => {
+      return now - entry.timestamp <= days * 1000 * 60 * 60 * 24;
     });
   };
 
@@ -173,51 +190,44 @@ const StatsDashboard = ({ user, localData }) => {
     ];
   };
 
-  const countEntriesInTimeframe = (array) => {
-    let count1d = 0;
-    let count7d = 0;
-    let count30d = 0;
-    const now = Date.now();
+  const createLineChartData = (array, datapoints) => {
+    const first = array[0].timestamp;
+    const step = (Date.now() - first) / datapoints;
+    let chartData = new Array(datapoints).fill(0);
+    let chartLabels = new Array(datapoints);
 
     array.forEach((entry) => {
-      if (now - entry.timestamp <= 1000 * 60 * 60 * 24) {
-        count1d++;
-        count7d++;
-        count30d++;
-      } else if (now - entry.timestamp <= 7 * 1000 * 60 * 60 * 24) {
-        count7d++;
-        count30d++;
-      } else if (now - entry.timestamp <= 30 * 1000 * 60 * 60 * 24) {
-        count30d++;
+      for (let i = 0; i < datapoints; i++) {
+        if (
+          first + i * step <= entry.timestamp &&
+          entry.timestamp < first + (i + 1) * step
+        ) {
+          chartData[i]++;
+          break;
+        }
       }
     });
 
-    return [count1d, count7d, count30d];
+    for (let i = 0; i < datapoints; i++) {
+      chartLabels[i] = toGermanDate(new Date(first + (i + 0.5) * step));
+    }
+
+    return [chartLabels, chartData];
   };
 
-  // Berechne Statistiken
-  const [averageMain, setAverageMain] = useState(calcDailyAverage(localData));
-  const [averageJoint, setAverageJoint] = useState(
-    calcDailyAverage(filterByType(localData, "joint"))
-  );
-  const [averageBong, setAverageBong] = useState(
-    calcDailyAverage(filterByType(localData, "bong"))
-  );
-  const [averageVape, setAverageVape] = useState(
-    calcDailyAverage(filterByType(localData, "vape"))
-  );
-  const [lastDaysMainAmount, setLastDaysMainAmount] = useState(
-    countEntriesInTimeframe(localData)
-  );
-  const [lastDaysJointAmount, setLastDaysJointAmount] = useState(
-    countEntriesInTimeframe(filterByType(localData, "joint"))
-  );
-  const [lastDaysBongAmount, setLastDaysBongAmount] = useState(
-    countEntriesInTimeframe(filterByType(localData, "bong"))
-  );
-  const [lastDaysVapeAmount, setLastDaysVapeAmount] = useState(
-    countEntriesInTimeframe(filterByType(localData, "vape"))
-  );
+  const createBarChartData = (array) => {
+    let chartData = new Array(7).fill(0);
+    let i;
+
+    array.forEach((entry) => {
+      i = new Date(entry.timestamp).getDay();
+      i == 0 ? (i = 6) : (i = i - 1);
+      chartData[i]++;
+    });
+
+    return chartData;
+  };
+
   const [streakData, setStreakData] = useState(calcStreak(localData));
 
   return (
@@ -232,17 +242,20 @@ const StatsDashboard = ({ user, localData }) => {
         >
           <Pressable
             style={
-              selectedValue == "main"
+              selectedType == "main"
                 ? styles.switch_item_active
                 : styles.switch_item
             }
-            onPress={() => setSelectedValue("main")}
+            onPress={() => setSelectedType("main")}
           >
             <Text
               style={
-                selectedValue == "main"
-                  ? styles.switch_text_active
-                  : styles.text_item
+                selectedType == "main"
+                  ? [
+                      styles.switch_text_active,
+                      { textDecorationLine: "underline" },
+                    ]
+                  : [styles.text_item, { textDecorationLine: "underline" }]
               }
             >
               Gesamt
@@ -250,15 +263,15 @@ const StatsDashboard = ({ user, localData }) => {
           </Pressable>
           <Pressable
             style={
-              selectedValue == "joint"
+              selectedType == "joint"
                 ? styles.switch_item_active
                 : styles.switch_item
             }
-            onPress={() => setSelectedValue("joint")}
+            onPress={() => setSelectedType("joint")}
           >
             <Text
               style={
-                selectedValue == "joint"
+                selectedType == "joint"
                   ? styles.switch_text_active
                   : styles.text_item
               }
@@ -268,15 +281,15 @@ const StatsDashboard = ({ user, localData }) => {
           </Pressable>
           <Pressable
             style={
-              selectedValue == "bong"
+              selectedType == "bong"
                 ? styles.switch_item_active
                 : styles.switch_item
             }
-            onPress={() => setSelectedValue("bong")}
+            onPress={() => setSelectedType("bong")}
           >
             <Text
               style={
-                selectedValue == "bong"
+                selectedType == "bong"
                   ? styles.switch_text_active
                   : styles.text_item
               }
@@ -286,15 +299,15 @@ const StatsDashboard = ({ user, localData }) => {
           </Pressable>
           <Pressable
             style={
-              selectedValue == "vape"
+              selectedType == "vape"
                 ? styles.switch_item_active
                 : styles.switch_item
             }
-            onPress={() => setSelectedValue("vape")}
+            onPress={() => setSelectedType("vape")}
           >
             <Text
               style={
-                selectedValue == "vape"
+                selectedType == "vape"
                   ? styles.switch_text_active
                   : styles.text_item
               }
@@ -314,22 +327,13 @@ const StatsDashboard = ({ user, localData }) => {
               marginBottom: -25,
             }}
           >
-            {selectedValue === "main"
-              ? Math.round(averageMain * 100) / 100
-              : null}
-            {selectedValue === "joint"
-              ? Math.round(averageJoint * 100) / 100
-              : null}
-            {selectedValue === "bong"
-              ? Math.round(averageBong * 100) / 100
-              : null}
-            {selectedValue === "vape"
-              ? Math.round(averageVape * 100) / 100
-              : null}
+            {Math.round(
+              calcDailyAverage(filterByType(localData, selectedType)) * 100
+            ) / 100}
           </Text>
           <Text
             style={{
-              fontSize: 13,
+              fontSize: 18,
               color: "#0080FF",
               fontFamily: "PoppinsLight",
             }}
@@ -349,54 +353,31 @@ const StatsDashboard = ({ user, localData }) => {
             <View style={styles.card_container}>
               <Text style={styles.card_label}>Ø Woche</Text>
               <Text style={styles.card_value}>
-                {selectedValue === "main"
-                  ? Math.round(averageMain * 7 * 10) / 10
-                  : null}
-                {selectedValue === "joint"
-                  ? Math.round(averageJoint * 7 * 10) / 10
-                  : null}
-                {selectedValue === "bong"
-                  ? Math.round(averageBong * 7 * 10) / 10
-                  : null}
-                {selectedValue === "vape"
-                  ? Math.round(averageVape * 7 * 10) / 10
-                  : null}
+                {Math.round(
+                  calcDailyAverage(filterByType(localData, selectedType)) *
+                    7 *
+                    10
+                ) / 10}
               </Text>
             </View>
 
             <View style={styles.card_container}>
               <Text style={styles.card_label}>Ø Monat</Text>
               <Text style={styles.card_value}>
-                {selectedValue === "main"
-                  ? Math.round(averageMain * 30.5 * 10) / 10
-                  : null}
-                {selectedValue === "joint"
-                  ? Math.round(averageJoint * 30.5 * 10) / 10
-                  : null}
-                {selectedValue === "bong"
-                  ? Math.round(averageBong * 30.5 * 10) / 10
-                  : null}
-                {selectedValue === "vape"
-                  ? Math.round(averageVape * 30.5 * 10) / 10
-                  : null}
+                {Math.round(
+                  calcDailyAverage(filterByType(localData, selectedType)) *
+                    30.5 *
+                    10
+                ) / 10}
               </Text>
             </View>
 
             <View style={styles.card_container}>
               <Text style={styles.card_label}>Ø Jahr</Text>
               <Text style={styles.card_value}>
-                {selectedValue === "main"
-                  ? Math.round(averageMain * 365)
-                  : null}
-                {selectedValue === "joint"
-                  ? Math.round(averageJoint * 365)
-                  : null}
-                {selectedValue === "bong"
-                  ? Math.round(averageBong * 365)
-                  : null}
-                {selectedValue === "vape"
-                  ? Math.round(averageVape * 365)
-                  : null}
+                {Math.round(
+                  calcDailyAverage(filterByType(localData, selectedType)) * 365
+                )}
               </Text>
             </View>
           </View>
@@ -407,10 +388,10 @@ const StatsDashboard = ({ user, localData }) => {
               { marginTop: 15, fontSize: 18, color: "#c4c4c4" },
             ]}
           >
-            {selectedValue === "main" ? "Einträge" : null}
-            {selectedValue === "joint" ? "Joints" : null}
-            {selectedValue === "bong" ? "Bongs" : null}
-            {selectedValue === "vape" ? "Vapes" : null} in den letzten
+            {selectedType === "main" ? "Einträge" : null}
+            {selectedType === "joint" ? "Joints" : null}
+            {selectedType === "bong" ? "Bongs" : null}
+            {selectedType === "vape" ? "Vapes" : null} in den letzten
           </Text>
           <View
             style={{
@@ -440,10 +421,10 @@ const StatsDashboard = ({ user, localData }) => {
                   },
                 ]}
               >
-                {selectedValue === "main" ? lastDaysMainAmount[0] : null}
-                {selectedValue === "joint" ? lastDaysJointAmount[0] : null}
-                {selectedValue === "bong" ? lastDaysBongAmount[0] : null}
-                {selectedValue === "vape" ? lastDaysVapeAmount[0] : null}
+                {
+                  filterByMostRecent(filterByType(localData, selectedType), 1)
+                    .length
+                }
               </Text>
             </View>
             <View>
@@ -468,10 +449,10 @@ const StatsDashboard = ({ user, localData }) => {
                   },
                 ]}
               >
-                {selectedValue === "main" ? lastDaysMainAmount[1] : null}
-                {selectedValue === "joint" ? lastDaysJointAmount[1] : null}
-                {selectedValue === "bong" ? lastDaysBongAmount[1] : null}
-                {selectedValue === "vape" ? lastDaysVapeAmount[1] : null}
+                {
+                  filterByMostRecent(filterByType(localData, selectedType), 7)
+                    .length
+                }
               </Text>
             </View>
             <View>
@@ -496,15 +477,15 @@ const StatsDashboard = ({ user, localData }) => {
                   },
                 ]}
               >
-                {selectedValue === "main" ? lastDaysMainAmount[2] : null}
-                {selectedValue === "joint" ? lastDaysJointAmount[2] : null}
-                {selectedValue === "bong" ? lastDaysBongAmount[2] : null}
-                {selectedValue === "vape" ? lastDaysVapeAmount[2] : null}
+                {
+                  filterByMostRecent(filterByType(localData, selectedType), 30)
+                    .length
+                }
               </Text>
             </View>
           </View>
 
-          {selectedValue === "main" ? (
+          {selectedType === "main" ? (
             <>
               <View style={{ height: 10 }}></View>
 
@@ -542,28 +523,120 @@ const StatsDashboard = ({ user, localData }) => {
 
           <View style={{ height: 20 }}></View>
 
+          <View
+            style={{
+              flexDirection: "row",
+              width: "98%",
+              justifyContent: "center",
+            }}
+          >
+            <Pressable
+              style={
+                selectedTime == 0
+                  ? styles.switch_item_active
+                  : styles.switch_item
+              }
+              onPress={() => setSelectedTime(0)}
+            >
+              <Text
+                style={
+                  selectedTime == 0
+                    ? [
+                        styles.switch_text_active,
+                        { textDecorationLine: "underline" },
+                      ]
+                    : [styles.text_item, { textDecorationLine: "underline" }]
+                }
+              >
+                Gesamt
+              </Text>
+            </Pressable>
+            <Pressable
+              style={
+                selectedTime == 7
+                  ? styles.switch_item_active
+                  : styles.switch_item
+              }
+              onPress={() => setSelectedTime(7)}
+            >
+              <Text
+                style={
+                  selectedTime == 7
+                    ? styles.switch_text_active
+                    : styles.text_item
+                }
+              >
+                letzte Woche
+              </Text>
+            </Pressable>
+            <Pressable
+              style={
+                selectedTime == 30
+                  ? styles.switch_item_active
+                  : styles.switch_item
+              }
+              onPress={() => setSelectedTime(30)}
+            >
+              <Text
+                style={
+                  selectedTime == 30
+                    ? styles.switch_text_active
+                    : styles.text_item
+                }
+              >
+                letzter Monat
+              </Text>
+            </Pressable>
+            <Pressable
+              style={
+                selectedTime == 365
+                  ? styles.switch_item_active
+                  : styles.switch_item
+              }
+              onPress={() => setSelectedTime(365)}
+            >
+              <Text
+                style={
+                  selectedTime == 365
+                    ? styles.switch_text_active
+                    : styles.text_item
+                }
+              >
+                letztes Jahr
+              </Text>
+            </Pressable>
+          </View>
+
+          <View style={{ height: 20 }}></View>
+
           <LineChart
+            style={{
+              marginVertical: 10,
+            }}
             data={{
-              labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+              labels: createLineChartData(
+                filterByMostRecent(
+                  filterByType(localData, selectedType),
+                  selectedTime
+                ),
+                7
+              )[0],
               datasets: [
                 {
-                  data: [
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                  ],
+                  data: createLineChartData(
+                    filterByMostRecent(
+                      filterByType(localData, selectedType),
+                      selectedTime
+                    ),
+                    7
+                  )[1],
                 },
               ],
             }}
             width={Dimensions.get("window").width} // from react-native
             height={250}
             yAxisInterval={1} // optional, defaults to 1
+            verticalLabelRotation={20}
             chartConfig={{
               backgroundGradientFrom: "#171717",
               backgroundGradientTo: "#1E1E1E",
@@ -571,157 +644,91 @@ const StatsDashboard = ({ user, localData }) => {
               color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               propsForDots: {
-                r: "2",
+                r: "1",
                 strokeWidth: "5",
                 stroke: "#0080FF",
               },
             }}
             bezier
-            style={{
-              marginVertical: 8,
-              borderRadius: 0,
-            }}
           />
-
-          <View style={{ height: 10 }}></View>
 
           <BarChart
             style={{
-              marginVertical: 8,
-              borderRadius: 16,
+              marginVertical: 10,
             }}
             data={{
-              labels: ["January", "February", "March", "April", "May", "June"],
+              labels: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
               datasets: [
                 {
-                  data: [20, 45, 28, 80, 99, 43],
+                  data: createBarChartData(
+                    filterByMostRecent(
+                      filterByType(localData, selectedType),
+                      selectedTime
+                    )
+                  ),
                 },
               ],
             }}
-            width={(Dimensions.get("window").width / 10) * 9}
-            height={220}
-            yAxisLabel="$"
+            width={Dimensions.get("window").width}
+            height={250}
             chartConfig={{
-              backgroundColor: "#1E1E1E",
               backgroundGradientFrom: "#171717",
-              backgroundGradientTo: "#171717",
-              decimalPlaces: 2, // optional, defaults to 2dp
+              backgroundGradientTo: "#1E1E1E",
+              decimalPlaces: 0, // optional, defaults to 2dp
               color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 50,
-              },
-              propsForDots: {
-                r: "2",
-                strokeWidth: "5",
-                stroke: "#0080FF",
-              },
-            }}
-            verticalLabelRotation={30}
-          />
-
-          <View style={{ height: 20 }}></View>
-
-          <ContributionGraph
-            values={[
-              { date: "2017-01-02", count: 1 },
-              { date: "2017-01-03", count: 2 },
-              { date: "2017-01-04", count: 3 },
-              { date: "2017-01-05", count: 4 },
-              { date: "2017-01-06", count: 5 },
-              { date: "2017-01-30", count: 2 },
-              { date: "2017-01-31", count: 3 },
-              { date: "2017-03-01", count: 2 },
-              { date: "2017-04-02", count: 4 },
-              { date: "2017-03-05", count: 2 },
-              { date: "2017-02-30", count: 4 },
-            ]}
-            endDate={new Date("2017-04-01")}
-            numDays={105}
-            width={(Dimensions.get("window").width / 10) * 9}
-            height={220}
-            chartConfig={{
-              backgroundColor: "#1E1E1E",
-              backgroundGradientFrom: "#171717",
-              backgroundGradientTo: "#171717",
-              decimalPlaces: 2, // optional, defaults to 2dp
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 20,
-              },
-              propsForDots: {
-                r: "2",
-                strokeWidth: "5",
-                stroke: "#0080FF",
-              },
             }}
           />
 
-          <View style={{ height: 20 }}></View>
-
-          {/* <PieChart
-            data={[
+          {selectedType === "main" ? (
+            <PieChart
+              style={{
+                marginVertical: 10,
+              }}
+              data={[
                 {
-                  name: "Seoul",
-                  population: 21500000,
-                  color: "rgba(131, 167, 234, 1)",
+                  name: "Joint",
+                  count: filterByMostRecent(
+                    filterByType(localData, "joint"),
+                    selectedTime
+                  ).length,
+                  color: "#c4c4c4",
                   legendFontColor: "#7F7F7F",
-                  legendFontSize: 15
+                  legendFontSize: 15,
                 },
                 {
-                  name: "Toronto",
-                  population: 2800000,
-                  color: "#F00",
+                  name: "Bong",
+                  count: filterByMostRecent(
+                    filterByType(localData, "bong"),
+                    selectedTime
+                  ).length,
+                  color: "gray",
                   legendFontColor: "#7F7F7F",
-                  legendFontSize: 15
+                  legendFontSize: 15,
                 },
                 {
-                  name: "Beijing",
-                  population: 527612,
-                  color: "red",
+                  name: "Vape",
+                  count: filterByMostRecent(
+                    filterByType(localData, "vape"),
+                    selectedTime
+                  ).length,
+                  color: "black",
                   legendFontColor: "#7F7F7F",
-                  legendFontSize: 15
+                  legendFontSize: 15,
                 },
-                {
-                  name: "New York",
-                  population: 8538000,
-                  color: "#ffffff",
-                  legendFontColor: "#7F7F7F",
-                  legendFontSize: 15
-                },
-                {
-                  name: "Moscow",
-                  population: 11920000,
-                  color: "rgb(0, 0, 255)",
-                  legendFontColor: "#7F7F7F",
-                  legendFontSize: 15
-                }
               ]}
-            width={Dimensions.get("window").width / 10 * 9}
-            height={220}
-            chartConfig={{
-                backgroundColor: "#1E1E1E",
-                backgroundGradientFrom: "#171717",
-                backgroundGradientTo: "#171717",
-                decimalPlaces: 2, // optional, defaults to 2dp
+              width={Dimensions.get("window").width}
+              height={250}
+              backgroundColor={"#171717"}
+              chartConfig={{
                 color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                 labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                style: {
-                    borderRadius: 20
-                },
-                propsForDots: {
-                    r: "2",
-                    strokeWidth: "5",
-                    stroke: "#0080FF"
-                }
-                }}
-            accessor={"population"}
-            backgroundColor={"transparent"}
-            paddingLeft={"15"}
-            center={[10, 50]}
-            absolute
-        /> */}
+              }}
+              accessor={"count"}
+              paddingLeft={"15"}
+              avoidFalseZero={true}
+            />
+          ) : null}
         </View>
       </Animated.View>
     </ScrollView>
