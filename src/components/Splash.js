@@ -54,7 +54,7 @@ const  Splash = ({onExit}) => {
     return (
         <Animated.View style={[{opacity: fadeAnim}, styles.container]}>
             <Animated.View style={{transform: [{translateY: slideAnim}]}}>
-                <Image style={styles.image} source={require('./img/logo_1E.png')}/>
+                <Image style={styles.image} source={require('./img/logo.png')}/>
             </Animated.View>
         </Animated.View>
     )
@@ -64,7 +64,7 @@ export default Splash
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#0080FF",
+        backgroundColor: "#1E1E1E",
         height: "100%",
         width: "100%",
         justifyContent: "center",

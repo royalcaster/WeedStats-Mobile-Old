@@ -49,6 +49,10 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import FriendListItem from "./FriendListItem";
 import SearchPanel from './SearchPanel'
 
+import Feather from 'react-native-vector-icons/Feather'
+import Antdesign from 'react-native-vector-icons/AntDesign'
+import FriendRequests from "./FriendRequests";
+
 const Groups = ({ user, handleLogOut }) => {
   const defaultGroup = {
     title: "",
@@ -74,6 +78,7 @@ const Groups = ({ user, handleLogOut }) => {
   const [showAccount, setShowAccount] = useState(false);
   const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [showGroup, setShowGroup] = useState(false);
+  const [showRequests, setShowRequests] = useState();
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -267,6 +272,7 @@ const Groups = ({ user, handleLogOut }) => {
       ) : null}
 
       {showAddFriend ? <SearchPanel user={user} onExit={() => setShowAddFriend(false)}/> : null}
+      {showRequests ? <FriendRequests user={user} onExit={() => setShowRequests(false)}/> : null}
       
       <FriendPage show={showFriend} userid={activeFriend} onExit={() => {setShowFriend(false); setActiveFriend(null)}}/>
 
@@ -287,7 +293,7 @@ const Groups = ({ user, handleLogOut }) => {
                   { height: 50, backgroundColor: "#171717", width: 50 },
                 ]}
               >
-                <FontAwesome name="plus" style={styles.icon} />
+                <Feather name="plus" style={styles.icon} />
               </View>
             </TouchableNativeFeedback>
 
@@ -297,7 +303,7 @@ const Groups = ({ user, handleLogOut }) => {
               background={TouchableNativeFeedback.Ripple(
                 rippleColor,
                 true
-              )} /* onPress={onExit} */
+              )} onPress={() => setShowRequests(true)}
             >
               <View
                 style={[
@@ -305,7 +311,7 @@ const Groups = ({ user, handleLogOut }) => {
                   { height: 50, backgroundColor: "#171717", width: 50 },
                 ]}
               >
-                <FontAwesome name="group" style={styles.icon} />
+                <Feather name="user-check" style={styles.icon} />
               </View>
             </TouchableNativeFeedback>
 
