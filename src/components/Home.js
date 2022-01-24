@@ -17,7 +17,7 @@ import { Appearance, useColorScheme } from "react-native";
 
 import Stats from "./Stats";
 import Main from "./Main";
-import Map from './Map';
+import Map from "./Map";
 import Config from "./Config";
 import Groups from "./Groups";
 
@@ -69,11 +69,81 @@ export default function Home({
 
       <View style={styles.footer_container}>
         <View style={styles.options_container}>
-          <MenuButton onPress={() => {setView("stats");}} selected={view == "stats"} title={"Stats"} icon={<Entypo name="area-graph" style={[{ color: view == "stats" ? "#e0e0e0" : "#4a4a4a" },styles.settings_icon]}/>}/>
-          <MenuButton onPress={() => {setView("map");}} selected={view == "map"} title={"Karte"} icon={<FontAwesome name="map-marker" style={[{ color: view == "map" ? "#e0e0e0" : "#4a4a4a" }, styles.settings_icon,]}/>}/>
-          <MenuButton type={"img"} url={view == "main" ? require("./img/logo.png") : require("./img/logo_bw.png")} onPress={() => {setView("main");}}/>
-          <MenuButton onPress={() => {setView("config");}} selected={view == "config"} title={"Settings"} icon={<FontAwesome name="sliders" style={[{ color: view == "config" ? "#e0e0e0" : "#4a4a4a" }, styles.settings_icon,]}/>}/>
-          <MenuButton onPress={() => {setView("groups");}} selected={view == "groups"} title={"Social"} icon={<FontAwesome name="user" style={[{ color: view == "groups" ? "#e0e0e0" : "#4a4a4a" }, styles.settings_icon,]}/>}/>
+          <MenuButton
+            onPress={() => {
+              setView("stats");
+            }}
+            selected={view == "stats"}
+            title={"Stats"}
+            icon={
+              <Entypo
+                name="area-graph"
+                style={[
+                  { color: view == "stats" ? "#e0e0e0" : "#4a4a4a" },
+                  styles.settings_icon,
+                ]}
+              />
+            }
+          />
+          <MenuButton
+            onPress={() => {
+              setView("map");
+            }}
+            selected={view == "map"}
+            title={"Karte"}
+            icon={
+              <FontAwesome
+                name="map-marker"
+                style={[
+                  { color: view == "map" ? "#e0e0e0" : "#4a4a4a" },
+                  styles.settings_icon,
+                ]}
+              />
+            }
+          />
+          <MenuButton
+            type={"img"}
+            url={
+              view == "main"
+                ? require("./img/logo.png")
+                : require("./img/logo_bw.png")
+            }
+            onPress={() => {
+              setView("main");
+            }}
+          />
+          <MenuButton
+            onPress={() => {
+              setView("config");
+            }}
+            selected={view == "config"}
+            title={"Settings"}
+            icon={
+              <FontAwesome
+                name="sliders"
+                style={[
+                  { color: view == "config" ? "#e0e0e0" : "#4a4a4a" },
+                  styles.settings_icon,
+                ]}
+              />
+            }
+          />
+          <MenuButton
+            onPress={() => {
+              setView("groups");
+            }}
+            selected={view == "groups"}
+            title={"Social"}
+            icon={
+              <FontAwesome
+                name="user"
+                style={[
+                  { color: view == "groups" ? "#e0e0e0" : "#4a4a4a" },
+                  styles.settings_icon,
+                ]}
+              />
+            }
+          />
         </View>
       </View>
     </Animated.View>

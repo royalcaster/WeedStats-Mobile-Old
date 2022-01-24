@@ -29,7 +29,7 @@ import {
   graphStyle,
 } from "react-native-chart-kit";
 
-const StatsDashboard = ({ user, dbData }) => {
+const StatsDashboard = ({ user, localData }) => {
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
@@ -49,7 +49,7 @@ const StatsDashboard = ({ user, dbData }) => {
   const calcDailyAverage = (array) => {
     return (
       array.length /
-      ((dbData[dbData.length - 1].timestamp - dbData[0].timestamp) /
+      ((localData[localData.length - 1].timestamp - localData[0].timestamp) /
         (60 * 60 * 24 * 1000))
     );
   };
@@ -155,21 +155,21 @@ const StatsDashboard = ({ user, dbData }) => {
             }}
           >
             {selectedValue === "main"
-              ? Math.round(calcDailyAverage(dbData) * 100) / 100
+              ? Math.round(calcDailyAverage(localData) * 100) / 100
               : null}
             {selectedValue === "joint"
               ? Math.round(
-                  calcDailyAverage(filterByType(dbData, "joint")) * 100
+                  calcDailyAverage(filterByType(localData, "joint")) * 100
                 ) / 100
               : null}
             {selectedValue === "bong"
               ? Math.round(
-                  calcDailyAverage(filterByType(dbData, "bong")) * 100
+                  calcDailyAverage(filterByType(localData, "bong")) * 100
                 ) / 100
               : null}
             {selectedValue === "vape"
               ? Math.round(
-                  calcDailyAverage(filterByType(dbData, "vape")) * 100
+                  calcDailyAverage(filterByType(localData, "vape")) * 100
                 ) / 100
               : null}
           </Text>
@@ -196,21 +196,27 @@ const StatsDashboard = ({ user, dbData }) => {
               <Text style={styles.card_label}>Ø Woche</Text>
               <Text style={styles.card_value}>
                 {selectedValue === "main"
-                  ? Math.round(calcDailyAverage(dbData) * 7 * 100) / 100
+                  ? Math.round(calcDailyAverage(localData) * 7 * 100) / 100
                   : null}
                 {selectedValue === "joint"
                   ? Math.round(
-                      calcDailyAverage(filterByType(dbData, "joint")) * 7 * 100
+                      calcDailyAverage(filterByType(localData, "joint")) *
+                        7 *
+                        100
                     ) / 100
                   : null}
                 {selectedValue === "bong"
                   ? Math.round(
-                      calcDailyAverage(filterByType(dbData, "bong")) * 7 * 100
+                      calcDailyAverage(filterByType(localData, "bong")) *
+                        7 *
+                        100
                     ) / 100
                   : null}
                 {selectedValue === "vape"
                   ? Math.round(
-                      calcDailyAverage(filterByType(dbData, "vape")) * 7 * 100
+                      calcDailyAverage(filterByType(localData, "vape")) *
+                        7 *
+                        100
                     ) / 100
                   : null}
               </Text>
@@ -220,25 +226,25 @@ const StatsDashboard = ({ user, dbData }) => {
               <Text style={styles.card_label}>Ø Monat</Text>
               <Text style={styles.card_value}>
                 {selectedValue === "main"
-                  ? Math.round(calcDailyAverage(dbData) * 30.5 * 100) / 100
+                  ? Math.round(calcDailyAverage(localData) * 30.5 * 100) / 100
                   : null}
                 {selectedValue === "joint"
                   ? Math.round(
-                      calcDailyAverage(filterByType(dbData, "joint")) *
+                      calcDailyAverage(filterByType(localData, "joint")) *
                         30.5 *
                         100
                     ) / 100
                   : null}
                 {selectedValue === "bong"
                   ? Math.round(
-                      calcDailyAverage(filterByType(dbData, "bong")) *
+                      calcDailyAverage(filterByType(localData, "bong")) *
                         30.5 *
                         100
                     ) / 100
                   : null}
                 {selectedValue === "vape"
                   ? Math.round(
-                      calcDailyAverage(filterByType(dbData, "vape")) *
+                      calcDailyAverage(filterByType(localData, "vape")) *
                         30.5 *
                         100
                     ) / 100
@@ -250,23 +256,27 @@ const StatsDashboard = ({ user, dbData }) => {
               <Text style={styles.card_label}>Ø Jahr</Text>
               <Text style={styles.card_value}>
                 {selectedValue === "main"
-                  ? Math.round(calcDailyAverage(dbData) * 365 * 100) / 100
+                  ? Math.round(calcDailyAverage(localData) * 365 * 100) / 100
                   : null}
                 {selectedValue === "joint"
                   ? Math.round(
-                      calcDailyAverage(filterByType(dbData, "joint")) *
+                      calcDailyAverage(filterByType(localData, "joint")) *
                         365 *
                         100
                     ) / 100
                   : null}
                 {selectedValue === "bong"
                   ? Math.round(
-                      calcDailyAverage(filterByType(dbData, "bong")) * 365 * 100
+                      calcDailyAverage(filterByType(localData, "bong")) *
+                        365 *
+                        100
                     ) / 100
                   : null}
                 {selectedValue === "vape"
                   ? Math.round(
-                      calcDailyAverage(filterByType(dbData, "vape")) * 365 * 100
+                      calcDailyAverage(filterByType(localData, "vape")) *
+                        365 *
+                        100
                     ) / 100
                   : null}
               </Text>

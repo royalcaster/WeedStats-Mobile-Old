@@ -27,19 +27,16 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const HistoryTable = ({ user, history, ondelete }) => {
-
   const [loading, setLoading] = useState();
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
   }, []);
-
 
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
   });
-
 
   return (
     <>
@@ -69,14 +66,15 @@ const HistoryTable = ({ user, history, ondelete }) => {
           <View style={{ flex: 2, justifyContent: "center" }}>
             <Text style={styles.date}>
               {" "}
-              <Fontisto name="date" style={styles.icon_date} /> {event.date}
+              <Fontisto name="date" style={styles.icon_date} />{" "}
+              {new Date(event.timestamp).toLocaleDateString("de-DE")}
             </Text>
           </View>
           <View style={{ flex: 2, justifyContent: "center" }}>
             <Text style={styles.time}>
               {" "}
               <Ionicons name="time-outline" style={styles.icon_time} />{" "}
-              {event.time}
+              {new Date(event.timestamp).toLocaleTimeString("de-DE")}
             </Text>
           </View>
           <View style={{ flex: 2, borderRadius: 30 }}>
@@ -90,7 +88,7 @@ const HistoryTable = ({ user, history, ondelete }) => {
                   borderRadius: 30,
                 },
               ]}
-              onPress={() => ondelete(event.key)}
+              onPress={() => ondelete(event)}
             >
               <AntDesign
                 name="delete"
