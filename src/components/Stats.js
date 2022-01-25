@@ -28,6 +28,7 @@ import {
 } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { enableMultiTabIndexedDbPersistence } from "firebase/firestore";
 
 const Stats = ({ user }) => {
   const [view, setView] = useState("dashboard");
@@ -68,6 +69,13 @@ const Stats = ({ user }) => {
     } catch (e) {
       console.log("Error:", e);
     } */
+  };
+
+  // TODO: Weiterleiten auf Maps-Seite und Zoom auf Koordinaten des Eintrags (+ Marker setzen)
+  const showOnMap = (entry) => {
+    console.log("Nummer: " + entry.number);
+    console.log("Latitude: " + entry.latitude);
+    console.log("Longitude: " + entry.longitude);
   };
 
   const getRelevantKeys = async () => {
@@ -177,7 +185,7 @@ const Stats = ({ user }) => {
         <StatsDashboard user={user} localData={localData} />
       ) : null}
       {localDataLoaded && view == "history" ? (
-        <StatsHistory user={user} history={localData} ondelete={deleteEntry} />
+        <StatsHistory history={localData} showOnMap={showOnMap} />
       ) : null}
     </Animated.View>
   );

@@ -50,7 +50,6 @@ const StatsDashboard = ({ user, localData }) => {
   }, []);
 
   const calcDailyAverage = (array) => {
-    console.log("Daily Average");
     return (
       array.length /
       ((localData[localData.length - 1].timestamp - localData[0].timestamp) /
