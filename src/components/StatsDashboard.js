@@ -47,7 +47,6 @@ const StatsDashboard = ({ user, localData }) => {
       useNativeDriver: true,
       easing: Easing.bezier(0.07, 1, 0.33, 0.89),
     }).start();
-    console.log(new Date(localData[localData.length - 1].timestamp).getDate());
   }, []);
 
   const calcDailyAverage = (array) => {
