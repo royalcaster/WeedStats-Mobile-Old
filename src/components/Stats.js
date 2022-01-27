@@ -142,7 +142,6 @@ const Stats = ({ user }) => {
             style={({ pressed }) => [
               {
                 borderTopColor: view == "dashboard" ? "#0080FF" : "#171717",
-                borderTopWidth: 2,
                 backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E",
               },
               styles.nav_pressable,
@@ -156,6 +155,14 @@ const Stats = ({ user }) => {
             >
               Dashboard
             </Text>
+            <FontAwesome
+              name="line-chart"
+              style={{
+                color: view == "dashboard" ? "#0080FF" : "#c4c4c4",
+                marginBottom: 10,
+                fontSize: 25,
+              }}
+            />
           </Pressable>
 
           <Pressable
@@ -163,7 +170,6 @@ const Stats = ({ user }) => {
             style={({ pressed }) => [
               {
                 borderTopColor: view == "history" ? "#0080FF" : "#171717",
-                borderTopWidth: 2,
                 backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E",
               },
               styles.nav_pressable,
@@ -177,6 +183,14 @@ const Stats = ({ user }) => {
             >
               Verlauf
             </Text>
+            <FontAwesome
+              name="history"
+              style={{
+                color: view == "history" ? "#0080FF" : "#c4c4c4",
+                marginBottom: 10,
+                fontSize: 25,
+              }}
+            />
           </Pressable>
         </View>
       )}
@@ -217,13 +231,15 @@ const styles = StyleSheet.create({
   },
   nav_pressable: {
     flex: 1,
+    borderTopWidth: 2,
+    alignItems: "center",
   },
   nav_text: {
     textAlign: "center",
-    fontFamily: "PoppinsLight",
+    fontFamily: "PoppinsBlack",
     fontSize: 18,
-    marginTop: 15,
-    marginBottom: 15,
+    marginTop: 5,
+    marginBottom: -5,
   },
   loading_text: {
     fontFamily: "PoppinsLight",
