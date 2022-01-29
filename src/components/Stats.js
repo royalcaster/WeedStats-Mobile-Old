@@ -28,6 +28,7 @@ import {
 } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { enableMultiTabIndexedDbPersistence } from "firebase/firestore";
 
 const Stats = ({ user }) => {
   const [view, setView] = useState("dashboard");
@@ -68,6 +69,13 @@ const Stats = ({ user }) => {
     } catch (e) {
       console.log("Error:", e);
     } */
+  };
+
+  // TODO: Weiterleiten auf Maps-Seite und Zoom auf Koordinaten des Eintrags (+ Marker setzen)
+  const showOnMap = (entry) => {
+    console.log("Nummer: " + entry.number);
+    console.log("Latitude: " + entry.latitude);
+    console.log("Longitude: " + entry.longitude);
   };
 
   const getRelevantKeys = async () => {
@@ -134,7 +142,6 @@ const Stats = ({ user }) => {
             style={({ pressed }) => [
               {
                 borderTopColor: view == "dashboard" ? "#0080FF" : "#171717",
-                borderTopWidth: 2,
                 backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E",
               },
               styles.nav_pressable,
@@ -148,6 +155,14 @@ const Stats = ({ user }) => {
             >
               Dashboard
             </Text>
+            <FontAwesome
+              name="line-chart"
+              style={{
+                color: view == "dashboard" ? "#0080FF" : "#c4c4c4",
+                marginBottom: 10,
+                fontSize: 25,
+              }}
+            />
           </Pressable>
 
           <Pressable
@@ -155,7 +170,6 @@ const Stats = ({ user }) => {
             style={({ pressed }) => [
               {
                 borderTopColor: view == "history" ? "#0080FF" : "#171717",
-                borderTopWidth: 2,
                 backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E",
               },
               styles.nav_pressable,
@@ -169,6 +183,14 @@ const Stats = ({ user }) => {
             >
               Verlauf
             </Text>
+            <FontAwesome
+              name="history"
+              style={{
+                color: view == "history" ? "#0080FF" : "#c4c4c4",
+                marginBottom: 10,
+                fontSize: 25,
+              }}
+            />
           </Pressable>
         </View>
       )}
@@ -177,7 +199,7 @@ const Stats = ({ user }) => {
         <StatsDashboard user={user} localData={localData} />
       ) : null}
       {localDataLoaded && view == "history" ? (
-        <StatsHistory user={user} history={localData} ondelete={deleteEntry} />
+        <StatsHistory history={localData} showOnMap={showOnMap} />
       ) : null}
     </Animated.View>
   );
@@ -209,13 +231,15 @@ const styles = StyleSheet.create({
   },
   nav_pressable: {
     flex: 1,
+    borderTopWidth: 2,
+    alignItems: "center",
   },
   nav_text: {
     textAlign: "center",
-    fontFamily: "PoppinsLight",
+    fontFamily: "PoppinsBlack",
     fontSize: 18,
-    marginTop: 15,
-    marginBottom: 15,
+    marginTop: 5,
+    marginBottom: -5,
   },
   loading_text: {
     fontFamily: "PoppinsLight",

@@ -4,7 +4,7 @@ import CounterItem from "./CounterItem";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import moment from "moment";
 
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 import {
   StyleSheet,
@@ -30,7 +30,6 @@ const Main = ({ user, statConfig, toggleCounter }) => {
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  
   useEffect(() => {
     Animated.timing(headingAnim, {
       toValue: 0,
@@ -54,11 +53,26 @@ const Main = ({ user, statConfig, toggleCounter }) => {
     }).start();
   }, []);
 
-  const [countdown, setCountDown] = useState(0);
-
-  var target = "";
   useEffect(() => {
-    //Idee: Prüfe, ob es am Tag vor 4:20 ist, oder nach 4:20. Wenn vor, berechne countdown von jetzt bis 4:20, wenn nach, berechne countdown von jetzt bis 4:20 des nächsten tages
+    calcDaysTill420();
+    sortCounterOrder();
+  });
+
+  const [countdown, setCountDown] = useState(0);
+  const [counterOrder, setCounterOrder] = useState([
+    { type: "joint", counter: user.joint_counter },
+    { type: "bong", counter: user.bong_counter },
+    { type: "vape", counter: user.vape_counter },
+  ]);
+
+  const sortCounterOrder = () => {
+    counterOrder.sort((a, b) => {
+      return b.counter - a.counter;
+    });
+  };
+
+  const calcDaysTill420 = () => {
+    let target = "";
     let now = new Date();
     let ft_current_year = new Date(now.getFullYear(), 3, 20, 0, 0);
 
@@ -75,24 +89,10 @@ const Main = ({ user, statConfig, toggleCounter }) => {
       target = b.diff(a, "days");
     }
     setCountDown(target);
-  });
-
-  const getGradientColors = ( x ) => {
-    var colors;
-    x == 0 ? colors = {c1: "#50d036", c2: "#2f831e"} : null;
-    x == 1 ? colors = {c1: "#50d036", c2: "#2f831e"} : null;
-    x == 2 ? colors = {c1: "#c5680f", c2: "#673608"} : null;
-    x == 3 ? colors = {c1: "#f8b127", c2: "#b47805"} : null;
-    x == 4 ? colors = {c1: "#279cf8", c2: "#0567b4"} : null;
-    x == 5 ? colors = {c1: "#6236d0", c2: "#3b1e83"} : null;
-    x == 6 ? colors = {c1: "#dc27f8", c2: "#9c05b4"} : null;
-    x == 7 ? colors = {c1: "#f02e2e", c2: "#ad0c0c"} : null;
-    return colors;
-  }
-  
+  };
 
   return (
-      <>
+    <>
       <View style={{ height: 50 }}></View>
 
       <View style={{ width: "100%", flexDirection: "row" }}>
@@ -165,7 +165,7 @@ const Main = ({ user, statConfig, toggleCounter }) => {
           </Text>
         </Animated.View>
       </View>
-      <View style={{height: 10}}></View>
+      <View style={{ height: 10 }}></View>
 
       <ScrollView style={styles.counters_container}>
         {!statConfig.joint && !statConfig.bong && !statConfig.vape ? (
@@ -187,158 +187,23 @@ const Main = ({ user, statConfig, toggleCounter }) => {
             </Text>
           </View>
         ) : (
-          <>
-            {statConfig.joint ? (
+          counterOrder.map((item) => {
+            return (
               <CounterItem
-                type="joint"
-                counter={user.joint_counter}
+                key={item.type}
+                type={item.type}
+                counter={user[item.type + "_counter"]}
                 toggleCounter={toggleCounter}
-                level_status={calcLevelStatus(user.joint_counter)}
-                level={calcLevelName(user.joint_counter)}
-                level_index={Math.ceil(user.joint_counter / 70)}
-                bg_colors={getGradientColors(Math.ceil(user.joint_counter / 70))}
-              ></CounterItem>
-            ) : null}
-            {statConfig.bong ? (
-              <CounterItem
-                type="bong"
-                counter={user.bong_counter}
-                toggleCounter={toggleCounter}
-                level_status={calcLevelStatus(user.bong_counter)}
-                level={calcLevelName(user.bong_counter)}
-                level_index={Math.ceil(user.bong_counter / 70)}
-                bg_colors={getGradientColors(Math.ceil(user.bong_counter / 70))}
-              ></CounterItem>
-            ) : null}
-            {statConfig.vape ? (
-              <CounterItem
-                type="vape"
-                counter={user.vape_counter}
-                toggleCounter={toggleCounter}
-                level_status={calcLevelStatus(user.vape_counter)}
-                level={calcLevelName(user.vape_counter)}
-                level_index={Math.ceil(user.vape_counter / 70)}
-                bg_colors={getGradientColors(Math.ceil(user.vape_counter / 70))}
-              ></CounterItem>
-            ) : null}
-          </>
+              />
+            );
+          })
         )}
       </ScrollView>
-    </> 
-  )};
+    </>
+  );
+};
 
 export default Main;
-
-const calcLevelColor = (counter) => {
-  if (counter == 420) {
-    return "#D90F0F";
-  } else {
-    var indicator = Math.ceil(counter / 70);
-    switch (indicator) {
-      case 0:
-        return "#3BA426";
-        break;
-      case 1:
-        return "#3BA426";
-        break;
-      case 2:
-        return "#81440A";
-        break;
-      case 3:
-        return "#c85a14";
-        break;
-      case 4:
-        return "#0781E1";
-        break;
-      case 5:
-        return "#4A26A4";
-        break;
-      case 6:
-        return "#C407E1";
-        break;
-      case 7:
-        return "#D90F0F";
-        break;
-      default:
-        return "#D90F0F";
-        break;
-    }
-  }
-};
-
-const calcLevelName = (counter) => {
-  if (counter == 420) {
-    return "Legende";
-  } else {
-    var indicator = Math.ceil(counter / 70);
-    switch (indicator) {
-      case 0:
-        return "Nappo";
-        break;
-      case 1:
-        return "Nappo";
-        break;
-      case 2:
-        return "Beginner";
-        break;
-      case 3:
-        return "Amateur";
-        break;
-      case 4:
-        return "Fortgeschrittener";
-        break;
-      case 5:
-        return "Smurf";
-        break;
-      case 6:
-        return "Experte";
-        break;
-      case 7:
-        return "Legende";
-        break;
-      default:
-        return "Legende";
-        break;
-    }
-  }
-};
-
-const calcLevelStatus = (counter) => {
-  if (counter == 420) {
-    return "100%";
-  } else {
-    var indicator = Math.ceil(counter / 70);
-    switch (indicator) {
-      case 0:
-        return "0%";
-        break;
-      case 1:
-        return (100 * counter) / 70 + "%";
-        break;
-      case 2:
-        return (100 * (counter - 70)) / 70 + "%";
-        break;
-      case 3:
-        return (100 * (counter - 140)) / 70 + "%";
-        break;
-      case 4:
-        return (100 * (counter - 210)) / 70 + "%";
-        break;
-      case 5:
-        return (100 * (counter - 280)) / 70 + "%";
-        break;
-      case 6:
-        return (100 * (counter - 350)) / 70 + "%";
-        break;
-      case 7:
-        return "100%";
-        break;
-      default:
-        return "100%";
-        break;
-    }
-  }
-};
 
 const styles = StyleSheet.create({
   counters_container: {

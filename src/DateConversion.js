@@ -1,5 +1,8 @@
 // nimmt ein Date Objekt und wandelt es in deutsche Notation um (TT.MM.JJJJ)
 const toGermanDate = (date) => {
+  if (!date) {
+    return null;
+  }
   return (
     addZero(date.getDate()) +
     "." +
