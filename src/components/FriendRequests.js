@@ -5,6 +5,8 @@ import BackButton from './BackButton'
 
 import uuid from 'react-native-uuid'
 
+import RequestItem from './RequestItem'
+
 //Firebase
 import { setDoc, doc, getDoc, updateDoc, getDocs, Timestamp, collection, query, where } from "firebase/firestore";
 import { db, firestore } from "./FirebaseConfig";
@@ -81,7 +83,7 @@ const FriendRequests = ({user, onExit}) => {
         setModalVisible(false);
     }
 
-    loadRequests = async () => {
+    const loadRequests = async () => {
         const docRef = doc(firestore, "users", user.id);
         const docSnap = await getDoc(docRef);
 
@@ -108,12 +110,12 @@ const FriendRequests = ({user, onExit}) => {
 
             {!requests ? null : <>
             {loading ? <ActivityIndicator color={"#0080FF"} size={"large"} style={{marginTop: 50}}/> : (
-                results.map((result) => {
-                    return <FriendListItem key={uuid.v4()} userid={result.id} onPress={() => {setActiveRequested(result);setModalVisible(true)}}/>
+                requests.map((request) => {
+                    return <RequestItem key={uuid.v4()} userid={request} onAccept={() => acceptRequest(result.id)} onDecline={() => declineRequest(result.id)} />
                 })
             )}
             </>}
-
+            <Text>{requests}</Text>
             </ScrollView>
 
             

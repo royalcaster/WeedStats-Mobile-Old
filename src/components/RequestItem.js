@@ -72,7 +72,7 @@ const RequestItem = ({userid, onPress}) => {
                 <View style={{flexDirection: "row",  alignItems: "center"}}>
                             <View style={{width: 20}}></View>
                             <Animated.View style={{transform: [{translateX: slide1Anim}], zIndex: 2}}>
-                                <ProfileImage x={45} type={1} url={user.photoUrl}/>
+                                {/* <ProfileImage x={45} type={1} url={user.photoUrl}/> */}
                             </Animated.View>
                             <View style={{width: 20}}></View>
                             <Animated.View style={{flexDirection: "column", transform: [{translateX: slide2Anim}], zIndex: 1}}>
