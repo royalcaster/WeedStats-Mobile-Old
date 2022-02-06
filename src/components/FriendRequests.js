@@ -2,10 +2,9 @@ import React, {useEffect, useRef, useState} from "react";
 import { Animated, View, StyleSheet, TextInput, Dimensions, Easing, Text, ScrollView, ActivityIndicator, TouchableNativeFeedback, Modal, Pressable, TouchableNativeFeedbackBase } from "react-native";
 
 import BackButton from './BackButton'
+import RequestItem from './RequestItem'
 
 import uuid from 'react-native-uuid'
-
-import RequestItem from './RequestItem'
 
 //Firebase
 import { setDoc, doc, getDoc, updateDoc, getDocs, Timestamp, collection, query, where } from "firebase/firestore";
@@ -15,13 +14,17 @@ import FriendListItem from "./FriendListItem";
 
 import Antdesign from 'react-native-vector-icons/AntDesign'
 
-const FriendRequests = ({user, onExit}) => {
+const FriendResquests = ({user, onExit}) => {
 
     const screen_height = Dimensions.get("screen").height;
     const slideAnim = useRef(new Animated.Value(screen_height)).current;
 
-    const [requests, setRequests] = useState();
-    const [loading, setLoading] = useState(true);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [activeRequested, setActiveRequested] = useState(null);
+    const [alreadySent, setAlreadySent] = useState(false);
+
+    const [results, setResults] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         Animated.timing(slideAnim,{
@@ -31,7 +34,7 @@ const FriendRequests = ({user, onExit}) => {
             easing: Easing.bezier(0,1.02,.21,.97)
         }).start();
         loadRequests();
-    });
+    },[]);
     
     const hide = () => {
         Animated.timing(slideAnim,{
@@ -44,6 +47,25 @@ const FriendRequests = ({user, onExit}) => {
                 onExit();
             }
         });
+    }
+
+    const loadRequests = async () => {
+        setLoading(true);
+        var resultBuffer = [];
+
+            try {
+                const docRef = doc(firestore, "users", user.id);
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    resultBuffer = docSnap.data().requests;
+                }
+            }
+            catch(e){
+                console.log("Error", e);
+            }
+        setResults(resultBuffer);
+        setLoading(false);
     }
 
     const makeFriendRequest = async (id) => {
@@ -83,39 +105,90 @@ const FriendRequests = ({user, onExit}) => {
         setModalVisible(false);
     }
 
-    const loadRequests = async () => {
-        const docRef = doc(firestore, "users", user.id);
-        const docSnap = await getDoc(docRef);
+    const acceptFriend = (id) => {
+        setIsLoading(true)
 
+        const docRef = doc(firestore, "users", user.id);
+
+        setResults(results.filter(item => item != id));
+        updateDoc(docRef,{
+            requests: results
+        });
+
+        var friends_buffer;
+        const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-            setRequests(docSnap.data().requests);
+            friends_buffer = docSnap.data().friends
         }
-        setLoading(false);
+            
+        loadRequest();
     }
 
     return (
         <Animated.View style={[styles.container,{transform: [{translateY: slideAnim}]}]}>
             <View style={{height: 50}}></View>
 
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}>
+            <View style={{flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.5)"}}>
+                <View style={styles.modal_container}>
+                    {!alreadySent ? <><View style={{flex: 1, justifyContent: "center"}}>
+                        <Text style={styles.heading}>Freundschaftsanfrage an <Text>{activeRequested ? activeRequested.username : null}</Text> senden?</Text>
+                    </View>
+                    <View style={{flex: 1, flexDirection: "row"}}>
+                        <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+                            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", true)} onPress={() => setModalVisible(false)}>
+                                <View style={styles.touchable}>
+                                    <Antdesign name="close" style={[styles.icon,{color: "#eb4034"}]}/>
+                                </View>
+                            </TouchableNativeFeedback>
+                        </View>
+                        <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+                            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", true)} onPress={() => makeFriendRequest(activeRequested.id)}>
+                                <View style={styles.touchable}>
+                                    <Antdesign name="check" style={[styles.icon,{color: "#3BA426"}]}/>
+                                </View>
+                            </TouchableNativeFeedback>
+                        </View>
+                    </View></> 
+                    
+                    : <View style={{flex: 1, justifyContent: "center"}}><Antdesign style={styles.info_icon} name="exclamationcircleo"/><View style={{height: 30}}></View><Text style={styles.heading}>Du hast bereits eine Freundschaftsanfrage an <Text>{activeRequested ? activeRequested.username : null}</Text> gesendet.</Text><View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+                            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", true)} onPress={() => setModalVisible(false)}>
+                                <View style={styles.touchable}>
+                                    <Antdesign name="close" style={[styles.icon,{color: "#eb4034"}]}/>
+                                </View>
+                            </TouchableNativeFeedback>
+                        </View></View>}
+                </View>
+            </View>
+        </Modal>
+
+            
             <View style={{width: "100%", flexDirection: "row", maxHeight: 60, flex: 1}} >
                 <View style={{flex: 1, alignItems: "center"}}>
                     <BackButton onPress={() => hide()}/>
                 </View>
-                <View style={{flex: 4, justifyContent: "center", alignItems: "flex-start"}}>
+                <View style={{flex: 4, justifyContent: "center"}}>
                     <Text style={styles.heading}>Anfragen</Text>
                 </View>
             </View>
             
             <ScrollView style={{width: "100%", flex: 1, alignSelf: "center", marginTop: 20}}>
 
-            {!requests ? null : <>
+            {!results ? null : <>
             {loading ? <ActivityIndicator color={"#0080FF"} size={"large"} style={{marginTop: 50}}/> : (
-                requests.map((request) => {
-                    return <RequestItem key={uuid.v4()} userid={request} onAccept={() => acceptRequest(result.id)} onDecline={() => declineRequest(result.id)} />
+                results.map((result) => {
+                    return <RequestItem key={uuid.v4()} user={user} userid={result} onAccept={acceptFriend(result)} onDecline={declineFriend(result)}/>
                 })
             )}
             </>}
-            <Text>{requests}</Text>
+
             </ScrollView>
 
             
@@ -123,7 +196,7 @@ const FriendRequests = ({user, onExit}) => {
     );
 }
 
-export default FriendRequests
+export default FriendResquests
 
 const styles = StyleSheet.create({
     container: {
@@ -156,8 +229,9 @@ const styles = StyleSheet.create({
         color: "white",
         textAlign: "center",
         fontFamily: "PoppinsBlack",
-        fontSize: 22,
+        fontSize: 20,
         maxWidth: 300,
+        textAlign: "left",
         marginLeft: 10
     },
     touchable: {

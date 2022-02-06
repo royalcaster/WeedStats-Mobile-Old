@@ -10,7 +10,7 @@ import { db, firestore } from "./FirebaseConfig";
 
 import Feather from 'react-native-vector-icons/Feather'
 
-const RequestItem = ({userid, onPress}) => {
+const RequestItem = ({userid}) => {
 
     const opacityAnim = useRef(new Animated.Value(0)).current;
     const slide1Anim = useRef(new Animated.Value(-500)).current;
@@ -25,7 +25,7 @@ const RequestItem = ({userid, onPress}) => {
             toValue: 1,
             duration: 600,
             useNativeDriver: true,
-            /* easing: Easing.bezier(0,1.02,.21,.97), */
+            easing: Easing.bezier(0,1.02,.21,.97),
         }).start();
 
         Animated.timing(slide1Anim,{
@@ -69,28 +69,29 @@ const RequestItem = ({userid, onPress}) => {
     return (<>
         { !isLoading ?  
         <Animated.View style={[{opacity: opacityAnim},styles.container]}>
-                <View style={{flexDirection: "row",  alignItems: "center"}}>
+                <View style={{flexDirection: "row", width: "100%", height: "100%", alignItems: "center", justifyContent: "center"}}>
+                        <View style={{flex: 3, flexDirection: "row"}}>
                             <View style={{width: 20}}></View>
                             <Animated.View style={{transform: [{translateX: slide1Anim}], zIndex: 2}}>
-                                {/* <ProfileImage x={45} type={1} url={user.photoUrl}/> */}
+                                <ProfileImage x={45} type={1} url={user.photoUrl}/>
                             </Animated.View>
                             <View style={{width: 20}}></View>
                             <Animated.View style={{flexDirection: "column", transform: [{translateX: slide2Anim}], zIndex: 1}}>
                                 <Text style={styles.username}>{user.username}</Text>
                                 <Text style={[styles.username,{fontFamily: "PoppinsLight", fontSize: 12, marginTop: -3}]}>{user.username}</Text>
                             </Animated.View>
-
+                        </View>
                         <View style={{flex: 1}}>
-                            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", false)} onPress={onPress}>
+                            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", true)}>
                                 <View style={styles.touchable}>
-                                    <Feather name="close" style={styles.icon}/>
+                                    <Feather name="x" style={[styles.icon,{color: "#eb4034"}]}/>
                                 </View>
                             </TouchableNativeFeedback>
                         </View>
                         <View style={{flex: 1}}>
-                            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", false)} onPress={onPress}>
+                            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", true)}>
                                 <View style={styles.touchable}>
-                                    <Feather name="check" style={styles.icon}/>
+                                    <Feather name="check" style={[styles.icon,{color: "#3BA426"}]}/>
                                 </View>
                             </TouchableNativeFeedback>
                         </View>
@@ -107,6 +108,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
         height: 80,
+        width: "100%",
     },
     username: {
         color: "rgba(255,255,255,0.8)",
@@ -115,6 +117,11 @@ const styles = StyleSheet.create({
     },
     touchable: {
         width: "100%",
-        justifyContent: "center"
+        justifyContent: "center",
+        height: "100%"
+    },
+    icon: {
+        textAlign: "center",
+        fontSize: 30
     }
 });
