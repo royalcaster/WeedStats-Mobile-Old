@@ -19,7 +19,7 @@ import { db } from "./FirebaseConfig";
 
 import toGermanDate from "../DateConversion";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import SwitchSelector from 'react-native-switch-selector'
 
 import {
   LineChart,
@@ -229,10 +229,56 @@ const StatsDashboard = ({ user, localData }) => {
 
   const [streakData, setStreakData] = useState(calcStreak(localData));
 
+  const options_type = [
+    { label: "Gesamt", value: 0 },
+    { label: "Joint", value: 1 },
+    { label: "Bong", value: 2 },
+    { label: "Vape", value: 3 }
+  ];
+
+  const options_time = [
+    { label: "Gesamt", value: 4 },
+    { label: "letzte Woche", value: 5 },
+    { label: "letzter Monat", value: 6 },
+    { label: "letztes Jahr", value: 7 }
+  ];
+
+  const toggleSelection = (index) => {
+    switch(index){
+      case 0: setSelectedType("main"); break;
+      case 1: setSelectedType("joint"); break;
+      case 2: setSelectedType("bong"); break;
+      case 3: setSelectedType("vape"); break;
+      case 4: setSelectedTime(0); break;
+      case 5: setSelectedTime(7); break;
+      case 6: setSelectedTime(30); break;
+      case 7: setSelectedTime(365); break;
+    }
+  }
+
   return (
     <ScrollView style={styles.container}>
       <Animated.View style={{ opacity: fadeAnim, alignItems: "center" }}>
-        <View
+
+        <View style={{height: 20}}></View>
+        <Text style={styles.heading2}>Überblick</Text>
+        <View style={{height: 10}}></View>
+
+        <View style={{width: "95%"}}>
+          <SwitchSelector 
+            options={options_type} 
+            initial={0} 
+            onPress={value => toggleSelection(value)}
+            textColor={"white"}
+            backgroundColor={"#171717"}
+            selectedColor={"white"}
+            buttonColor={"#0080FF"}
+            textStyle={{fontFamily: "PoppinsLight"}}
+            selectedTextStyle={{fontFamily: "PoppinsLight"}}
+          />
+        </View>
+
+        {/* <View
           style={{
             flexDirection: "row",
             width: "98%",
@@ -314,7 +360,9 @@ const StatsDashboard = ({ user, localData }) => {
               Vape
             </Text>
           </Pressable>
-        </View>
+        </View> */}
+
+
         <View style={{ height: 10 }}></View>
 
         <View style={{ alignItems: "center", flex: 1 }}>
@@ -520,9 +568,25 @@ const StatsDashboard = ({ user, localData }) => {
             </>
           ) : null}
 
-          <View style={{ height: 20 }}></View>
+          <View style={{height: 20}}></View>
 
-          <View
+          <Text style={styles.heading2}>Grafiken</Text>
+          <View style={{height: 10}}></View>
+
+            <SwitchSelector
+              options={options_time} 
+              initial={0}
+              onPress={value => toggleSelection(value)}
+              textColor={"white"}
+              backgroundColor={"#171717"}
+              selectedColor={"white"}
+              buttonColor={"#0080FF"}
+              textStyle={{fontFamily: "PoppinsLight"}}
+              selectedTextStyle={{fontFamily: "PoppinsLight"}}
+              style={{width: "95%"}}
+            />
+
+         {/*  <View
             style={{
               flexDirection: "row",
               width: "98%",
@@ -604,7 +668,7 @@ const StatsDashboard = ({ user, localData }) => {
                 letztes Jahr
               </Text>
             </Pressable>
-          </View>
+          </View> */}
 
           <View style={{ height: 20 }}></View>
 
@@ -751,10 +815,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#171717",
     width: "30%",
     margin: 5,
-    padding: 15,
+    padding: 10,
+    paddingLeft: 20,
     borderRadius: 25,
     borderTopColor: "#0080FF",
-    borderTopWidth: 2,
+    borderTopWidth: 2
   },
   card_label: {
     color: "#8a8a8a",
@@ -820,5 +885,12 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
     textAlign: "center",
     fontSize: 12,
+  },
+  heading2: {
+    color: "white",
+    fontSize: 20,
+    fontFamily: "PoppinsBlack",
+    marginLeft: 20,
+    alignSelf: "flex-start"
   },
 });

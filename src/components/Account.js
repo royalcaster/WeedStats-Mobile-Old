@@ -4,9 +4,11 @@ import { View, Image, StyleSheet, Text, Pressable, Animated, Easing, Dimensions 
 import { useFonts } from 'expo-font';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import Entypo from 'react-native-vector-icons/Entypo';
+
 import Button from "./Button";
 
-const Account = ({ user, handleLogOut, onexit, onShowDonation }) => {
+const Account = ({ user, handleLogOut, onexit, onShowDonation, onShowFeedback }) => {
 
     const window_height = Dimensions.get("window").height;
 
@@ -15,40 +17,43 @@ const Account = ({ user, handleLogOut, onexit, onShowDonation }) => {
 
     React.useEffect(() => {
         Animated.timing(
-          fadeAnim,
-          {
-            toValue: 1,
-            duration: 500,
-            easing: Easing.bezier(0,1.02,.21,.97),
-            useNativeDriver: true,
-          }
-        ).start(({finished}) => {
-            if (finished) {
-                console.log("fertig");
-            }
-        });
-        Animated.timing(
             opacityAnim,
             {
               toValue: 1,
-              duration: 100,
+              duration: 400,
               easing: Easing.bezier(0,1.08,.99,1),
               useNativeDriver: true,
             }
           ).start();
-      }, [fadeAnim, opacityAnim])
+      }, [opacityAnim])
 
     const [loaded] = useFonts({
         PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
         PoppinsLight: require('./fonts/Poppins-Light.ttf')
     });
 
+    const hide = () => {
+        Animated.timing(
+            opacityAnim,
+            {
+              toValue: 0,
+              duration: 300,
+              easing: Easing.bezier(0,1.08,.99,1),
+              useNativeDriver: true,
+            }
+          ).start(({finished}) => {
+            if (finished) {
+                onexit();
+            }
+        });
+    }
+
     return (
         <>
-        <Animated.View style={[{transform: [{scale: fadeAnim}], opacity: opacityAnim, height: window_height + 20},styles.container]}>
+        <Animated.View style={[{opacity: opacityAnim, height: window_height + 20},styles.container]}>
             <View style={{height: 50}}></View>
 
-            <Pressable onPress={onexit} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : "#1E1E1E+"}, styles.pressable_back]}>
+            <Pressable onPress={() => hide()} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : "#1E1E1E+"}, styles.pressable_back]}>
                 <MaterialIcons name="arrow-back" style={styles.icon_back}/>
             </Pressable>
 
@@ -66,6 +71,10 @@ const Account = ({ user, handleLogOut, onexit, onShowDonation }) => {
                     <Text style={[styles.member_text,{fontFamily: "PoppinsBlack"}]}>{user.member_since}</Text>
                 </View>
             </View>
+
+            <Button onPress={onShowFeedback} title={" Feedback senden"} icon={<Entypo name="newsletter" style={styles.money_icon} />} borderradius={100} color={"#4a4a4a"} fontColor={"white"}/> 
+            
+            <View style={{height: 15}}></View>
 
             <Button onPress={onShowDonation} title={"WeedStats unterstützen"} icon={<MaterialIcons name="euro" style={styles.money_icon} />} borderradius={100} color={"#4a4a4a"} fontColor={"white"}/> 
             
@@ -86,7 +95,7 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         zIndex: 21,
-        backgroundColor: "#1E1E1E"
+        backgroundColor: "#171717"
     },
     profile_img: {
         height: 120,

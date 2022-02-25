@@ -58,7 +58,7 @@ export default function Home({
           />
         ) : null}
         {view == "stats" ? <Stats user={user} /> : null}
-        {view == "map" ? <Map /> : null}
+        {view == "map" ? <Map user={user}/> : null}
         {view == "config" ? (
           <Config statConfig={statConfig} toggleConfig={toggleConfig} />
         ) : null}
@@ -69,6 +69,7 @@ export default function Home({
 
       <View style={styles.footer_container}>
         <View style={styles.options_container}>
+          <View style={{flexDirection: "row", width: "100%"}}>
           <MenuButton
             onPress={() => {
               setView("stats");
@@ -144,8 +145,10 @@ export default function Home({
               />
             }
           />
+          </View>
         </View>
       </View>
+        
     </Animated.View>
   );
 }
@@ -153,7 +156,7 @@ export default function Home({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#171717",
     alignItems: "center",
   },
   header_container: {
@@ -206,7 +209,7 @@ const styles = StyleSheet.create({
     width: "100%",
     bottom: 0,
     position: "absolute",
-    flexDirection: "row",
+    flexDirection: "column",
     maxWidth: 700,
     height: "100%",
     backgroundColor: "#1E1E1E",

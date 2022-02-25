@@ -25,6 +25,8 @@ import Splash from "./src/components/Splash";
 import { setDoc, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
 import { db, firestore } from "./src/components/FirebaseConfig";
 
+import { AppRegistry } from "react-native";
+
 //Expo
 import { useFonts } from "expo-font";
 import * as Google from "expo-google-app-auth";
@@ -36,6 +38,8 @@ try {
   console.log("Error", e);
 }
 
+AppRegistry.registerComponent('main',() => App);
+
 export default function App() {
   const [user, setUser] = useState(null);
   const [userLoaded, setUserLoaded] = useState(false);
@@ -44,13 +48,6 @@ export default function App() {
   const [writeComplete, setWriteComplete] = useState(false);
 
   const [showSplash, setShowSplash] = useState(true);
-
-  /* useEffect(() => {
-    fadeSplash();
-    setTimeout(() => hideSplash(),3000);
-  },[]); */
-
-  
 
   //Sucht im AsyncStorage nach dem letzten User der sich eingeloggt hat und loggt sich bei Erfolg automatisch ein
   useEffect(async () => {
@@ -91,6 +88,7 @@ export default function App() {
         last_entry_latitude: docSnap.data().last_entry_latitude,
         last_entry_longitude: docSnap.data().last_entry_longitude,
         last_entry_type: docSnap.data().last_entry_type,
+        last_feedback: docSnap.data().last_feedback,
         main_counter:
           docSnap.data().joint_counter +
           docSnap.data().bong_counter +
@@ -117,6 +115,7 @@ export default function App() {
           last_entry_latitude: null,
           last_entry_longitude: null,
           last_entry_type: null,
+          last_feedback: null,
           show_joint: true,
           show_bong: true,
           show_vape: true,
@@ -140,6 +139,7 @@ export default function App() {
             last_entry_latitude: docSnap.data().last_entry_latitude,
             last_entry_longitude: docSnap.data().last_entry_longitude,
             last_entry_type: docSnap.data().last_entry_type,
+            last_feedback: docSnap.data().last_feedback,
             main_counter:
               docSnap.data().joint_counter +
               docSnap.data().bong_counter +
@@ -474,8 +474,8 @@ const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: "#1E1E1E",
     borderRadius: 20,
-    borderWidth: 5,
-    borderColor: "white",
+    /* borderWidth: 5,
+    borderColor: "white", */
     padding: 15,
     alignItems: "center",
     shadowColor: "#000",
@@ -483,8 +483,8 @@ const styles = StyleSheet.create({
       width: 0,
       height: 10,
     },
-    shadowOpacity: 0.51,
-    shadowRadius: 13.16,
+    shadowOpacity: 1,
+    shadowRadius: 30,
     elevation: 20,
   },
   modalBigText: {

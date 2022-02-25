@@ -1,5 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
-import { Animated, Easing, View, StyleSheet, Dimensions, Text, Image, ScrollView } from "react-native";
+import { Animated, Easing, View, StyleSheet, Dimensions, Text, Image, ScrollView, TouchableNativeFeedback, Modal } from "react-native";
+
+import Antdesign from 'react-native-vector-icons/AntDesign'
 
 //Firebase
 import { setDoc, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
@@ -7,11 +9,13 @@ import { db, firestore } from "./FirebaseConfig";
 
 import BackButton from "./BackButton";
 
-const FriendPage = ({ show, userid, onExit }) => {
+const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
 
     const screen_width = Dimensions.get("screen").width;
 
     const [user, setUser] = useState();
+
+    const [modalVisible, setModalVisible] = useState(false);
 
     const slideAnim = useRef(new Animated.Value(screen_width)).current;
 
@@ -83,9 +87,66 @@ const FriendPage = ({ show, userid, onExit }) => {
                 </View>
     }
 
+    const removeFriend = async (id) => {
+        try {
+            const docRef = doc(firestore, "users", realuser.id);
+            const docSnap = await getDoc(docRef);
+
+            var buffer;
+            if (docSnap.exists()) {
+                buffer = docSnap.data().friends
+            }
+
+            updateDoc(docRef, {
+                friends: buffer.filter(item => item != id)
+            });
+            
+        }
+        catch(e){
+            console.log("Error", e);
+        }
+        setModalVisible(false);
+        refresh();
+    }
+
     return (
         <>
             {user ? <Animated.View style={[styles.container,{transform: [{translateX: slideAnim}]}]}>
+
+
+                            <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                        Alert.alert("Modal has been closed.");
+                        setModalVisible(!modalVisible);
+                        }}>
+                            <View style={{flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.5)"}}>
+                                <View style={styles.modal_container}>
+                                    <><View style={{flex: 1, justifyContent: "center"}}>
+                                        <Text style={styles.heading}>{user.username} als Freund entfernen?</Text>
+                                    </View>
+                                    <View style={{flex: 1, flexDirection: "row"}}>
+                                        <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+                                            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", true)} onPress={() => setModalVisible(false)}>
+                                                <View style={styles.touchable}>
+                                                    <Antdesign name="close" style={[styles.icon,{color: "#eb4034"}]}/>
+                                                </View>
+                                            </TouchableNativeFeedback>
+                                        </View>
+                                        <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+                                            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", true)} onPress={() => {removeFriend(userid); hide();}}>
+                                                <View style={styles.touchable}>
+                                                    <Antdesign name="check" style={[styles.icon,{color: "#3BA426"}]}/>
+                                                </View>
+                                            </TouchableNativeFeedback>
+                                        </View>
+                                    </View></>
+                                </View>
+                            </View>
+                        </Modal>
+
 
                         {/* <View style={{height: 50, zIndex: 6, position: "absolute"}}></View> */}
 
@@ -115,13 +176,34 @@ const FriendPage = ({ show, userid, onExit }) => {
                                 <View style={{width: "100%", alignSelf: "center"}}>
                                     <View style={{height: 15}}></View>
                                     <Text style={styles.label}>Letzte Aktivität</Text>
-                                    {user.last_act_type == "joint" ? <Image style={styles.type_image_joint} source={require('./img/joint.png')}/> : null}
-                                    {user.last_act_type == "bong" ? <Image style={styles.type_image_bong} source={require('./img/bong.png')}/> : null}
-                                    {user.last_act_type == "vape" ? <Image style={styles.type_image_vape} source={require('./img/vape.png')}/> : null}
-                                    <Text style={styles.date}>{chopTimeStamp(user.last_act_timestamp)}</Text>
+                                    <View style={{height: 10}}></View>
+                                    <View style={styles.activity_container}>
+                                        
+                                        <View style={{flex: 2, alignItems: "center", alignContent: "center"}}>
+                                            <Text style={styles.date}>{chopTimeStamp(user.last_act_timestamp)}</Text>
+                                        </View>
+                                        <View style={{flex: 1, alignItems: "center", alignContent: "center"}}>
+                                            {user.last_act_type == "joint" ? <Image style={styles.type_image_joint} source={require('./img/joint.png')}/> : null}
+                                            {user.last_act_type == "bong" ? <Image style={styles.type_image_bong} source={require('./img/bong.png')}/> : null}
+                                            {user.last_act_type == "vape" ? <Image style={styles.type_image_vape} source={require('./img/vape.png')}/> : null}
+                                        </View>
+                                    </View>
+                                    <View style={{height: 20}}></View>
+                                </View>
+
+                                <Text>Hinzufügen: aktueller Streak, Main-Typ, </Text>
+                                
+                                <View style={{bottom: 0, position: "absolute", width: "100%"}}>
+                                    <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", false)} onPress={() => setModalVisible(true)}>
+                                        <View style={styles.touchable_delete}>
+                                            <Text style={styles.delete_text}>Als Freund entfernen</Text>
+                                        </View>
+                                    </TouchableNativeFeedback>
                                 </View>
 
                             </View>
+
+                            
                             
                         </ScrollView>
 
@@ -176,9 +258,9 @@ const styles = StyleSheet.create({
     date: {
         color: "white",
         fontSize: 16,
-        fontFamily: "PoppinsBlack",
+        fontFamily: "PoppinsLight",
         textAlignVertical: "center",
-        textAlign: "center"
+        textAlign: "left"
     },
     type_image_joint: {
         width: 30,
@@ -199,6 +281,58 @@ const styles = StyleSheet.create({
         height: 90,
         marginTop: 5,
         marginBottom: 10,
+        alignSelf: "center"
+    },
+    touchable_delete: {
+        width: "100%",
+        alignSelf: "center",
+        height: 60,
+        borderRadius: 100
+    },
+    delete_text: {
+        color: "#eb4034",
+        fontFamily: "PoppinsLight",
+        alignSelf: "center",
+        textAlignVertical: "center",
+        height: "100%"
+    },
+    modal_container: {
+        backgroundColor: "#1E1E1E",
+        width: "90%",
+        height: 300,
+        alignSelf: "center",
+        borderRadius: 25,
+        flexDirection: "column"
+    },
+    heading: {
+        color: "white",
+        textAlign: "center",
+        fontFamily: "PoppinsBlack",
+        fontSize: 22,
+        maxWidth: 300,
+        alignSelf: "center"
+    },
+    touchable: {
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    icon: {
+        fontSize: 40
+    },
+    info_icon: {
+        color: "white",
+        fontSize: 30,
+        textAlign: "center",
+        marginTop: 20
+    },
+    activity_container: {
+        backgroundColor: "#1E1E1E",
+        borderRadius: 25,
+        flexDirection: "row",
+        width: "70%",
+        alignItems: "center",
+        alignContent: "center",
         alignSelf: "center"
     }
 });

@@ -95,7 +95,7 @@ const Main = ({ user, statConfig, toggleCounter }) => {
     <>
       <View style={{ height: 50 }}></View>
 
-      <View style={{ width: "100%", flexDirection: "row" }}>
+      <View style={{ width: "100%", flexDirection: "row"}}>
         <Animated.View
           style={{
             paddingLeft: 15,

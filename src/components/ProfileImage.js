@@ -10,8 +10,8 @@ const ProfileImage = ({ x, url, type }) => {
         </View>
         : null}
         {type == 2 ? 
-            <View style={{height: x, width: x, borderRadius: 100, overflow: "hidden"}}>
-            <Image style={{height: "100%"}} source={url}/>
+            <View style={{height: x, width: x, borderRadius: 0, overflow: "hidden"}}>
+            <Image style={{height: "100%"}} source={{uri: url}}/>
         </View>
         : null}
         </>

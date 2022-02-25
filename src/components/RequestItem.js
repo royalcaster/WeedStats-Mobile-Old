@@ -10,7 +10,7 @@ import { db, firestore } from "./FirebaseConfig";
 
 import Feather from 'react-native-vector-icons/Feather'
 
-const RequestItem = ({userid}) => {
+const RequestItem = ({userid, onAccept, onDecline}) => {
 
     const opacityAnim = useRef(new Animated.Value(0)).current;
     const slide1Anim = useRef(new Animated.Value(-500)).current;
@@ -89,7 +89,7 @@ const RequestItem = ({userid}) => {
                             </TouchableNativeFeedback>
                         </View>
                         <View style={{flex: 1}}>
-                            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", true)}>
+                            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", true)} onPress={() => onAccept()}>
                                 <View style={styles.touchable}>
                                     <Feather name="check" style={[styles.icon,{color: "#3BA426"}]}/>
                                 </View>

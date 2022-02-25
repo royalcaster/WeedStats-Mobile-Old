@@ -53,6 +53,8 @@ import Feather from 'react-native-vector-icons/Feather'
 import Antdesign from 'react-native-vector-icons/AntDesign'
 import FriendRequests from "./FriendRequests";
 
+import Feedback from "./Feedback";
+
 const Groups = ({ user, handleLogOut }) => {
   const defaultGroup = {
     title: "",
@@ -75,6 +77,9 @@ const Groups = ({ user, handleLogOut }) => {
   const [loading, setLoading] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
   const [showDonation, setShowDonation] = useState(false);
+
+  const [showFeedback, setShowFeedback] = useState(false);
+
   const [showAccount, setShowAccount] = useState(false);
   const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [showGroup, setShowGroup] = useState(false);
@@ -91,8 +96,7 @@ const Groups = ({ user, handleLogOut }) => {
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 300,
-      easing: Easing.bezier(0, 1.02, 0.21, 0.97),
+      duration: 500,
       useNativeDriver: true,
     }).start();
     Animated.timing(accountAnim, {
@@ -119,6 +123,10 @@ const Groups = ({ user, handleLogOut }) => {
 
   const hideDonation = () => { 
     setShowDonation(false);
+  };
+
+  const hideFeedback = () => { 
+    setShowFeedback(false);
   };
 
   const hideMenu = () => {
@@ -260,8 +268,12 @@ const Groups = ({ user, handleLogOut }) => {
             setShowDonation(true);
             hideAccount();
           }}
+          onShowFeedback={() => {
+            setShowFeedback(true);
+            hideAccount();
+          }}
         />
-      ) : null}
+      ) : <>
       {showDonation ? (
         <Donation
           onexit={() => {
@@ -269,12 +281,14 @@ const Groups = ({ user, handleLogOut }) => {
             hideDonation();
           }}
         ></Donation>
-      ) : null}
+      ) : <>
+      {showFeedback ? <Feedback onexit={hideFeedback} user={user}/> : null}
+      </>}
 
       {showAddFriend ? <SearchPanel user={user} onExit={() => setShowAddFriend(false)}/> : null}
-      {showRequests ? <FriendRequests user={user} onExit={() => setShowRequests(false)}/> : null}
+      {showRequests ? <FriendRequests user={user} onExit={() => setShowRequests(false)} refresh={() => {getFriendList()}}/> : null}
       
-      <FriendPage show={showFriend} userid={activeFriend} onExit={() => {setShowFriend(false); setActiveFriend(null)}}/>
+      <FriendPage show={showFriend} userid={activeFriend} onExit={() => {setShowFriend(false); setActiveFriend(null)}} realuser={user} refresh={() => {getFriendList(); setActiveFriend(null); setShowFriend(false);}}/>
 
       <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
         <View style={{ height: 50 }}></View>
@@ -353,12 +367,21 @@ const Groups = ({ user, handleLogOut }) => {
         )} */}
 
       <ScrollView style={{marginBottom: 45}}>
-              {!loading ? <>{friendList.map((friend) => {
+              {!loading ? <>{
+              friendList.length != 0 ? 
+              friendList.map((friend) => {
                   return <FriendListItem key={uuid.v4()} userid={friend} onPress={() => {
                     setActiveFriend(friend);
                     setShowFriend(true);
                   }}/>
-              })}</> : null}
+              })
+              : <>
+              <View style={{height: 50}}></View>
+                <Text style={[styles.empty,{fontSize: 20, fontFamily: "PoppinsBlack"}]}>Noch keine Freunde :(</Text>
+                  <Text style={styles.empty}>Tippe auf das + oben rechts</Text>
+              </>
+              }
+              </> : null}
       </ScrollView>
 
         <View style={{ height: 20 }}></View>
@@ -417,8 +440,10 @@ const Groups = ({ user, handleLogOut }) => {
           </TouchableNativeFeedback>
         </Animated.View>
       </Animated.View>
+      </>}
     </>
   );
+  
 };
 
 export default Groups;
@@ -466,4 +491,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#1E1E1E"
   },
+  empty: {
+        color: "rgba(255,255,255,0.5)",
+        alignSelf: "center",
+        marginTop: 5,
+        fontFamily: "PoppinsLight"
+    }
 });

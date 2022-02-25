@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useEffect, useRef } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
 
 import { db } from "./FirebaseConfig";
 
@@ -25,7 +26,10 @@ import {
   FlatList,
   ActivityIndicator,
   TextBase,
+  TouchableNativeFeedback
 } from "react-native";
+
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { enableMultiTabIndexedDbPersistence } from "firebase/firestore";
@@ -137,35 +141,29 @@ const Stats = ({ user }) => {
         <ActivityIndicator animating={true} size="large" color="#0080FF" />
       ) : (
         <View style={{ flexDirection: "row" }}>
-          <Pressable
+          <View style={[styles.nav_pressable,{borderTopWidth: 2, borderTopColor: view == "dashboard" ? "#0080FF" : "rgba(255,255,255,0.15)"}]}>
+          <TouchableNativeFeedback
+          background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)}
             onPress={() => setView("dashboard")}
-            style={({ pressed }) => [
-              {
-                borderTopColor: view == "dashboard" ? "#0080FF" : "#171717",
-                backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E",
-              },
-              styles.nav_pressable,
-            ]}
           >
-            <Text
-              style={[
-                { color: view == "dashboard" ? "#0080FF" : "#c4c4c4" },
-                styles.nav_text,
-              ]}
-            >
-              Dashboard
-            </Text>
-            <FontAwesome
-              name="line-chart"
+            <View style={styles.touchable}>
+            <AntDesign
+              name="barschart"
               style={{
                 color: view == "dashboard" ? "#0080FF" : "#c4c4c4",
                 marginBottom: 10,
-                fontSize: 25,
+                fontSize: 30,
+                height: "100%",
+                textAlignVertical: "center"
               }}
             />
-          </Pressable>
+            </View>
+          </TouchableNativeFeedback>
+          </View>
 
-          <Pressable
+          <View style={[styles.nav_pressable,{borderTopWidth: 2, borderTopColor: view == "history" ? "#0080FF" : "rgba(255,255,255,0.15)"}]}>    
+          <TouchableNativeFeedback
+          background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)}
             onPress={() => setView("history")}
             style={({ pressed }) => [
               {
@@ -175,23 +173,21 @@ const Stats = ({ user }) => {
               styles.nav_pressable,
             ]}
           >
-            <Text
-              style={[
-                { color: view == "history" ? "#0080FF" : "#c4c4c4" },
-                styles.nav_text,
-              ]}
-            >
-              Verlauf
-            </Text>
-            <FontAwesome
-              name="history"
+            <View style={styles.touchable}>
+            <EvilIcons
+              name="clock"
               style={{
                 color: view == "history" ? "#0080FF" : "#c4c4c4",
                 marginBottom: 10,
-                fontSize: 25,
+                fontSize: 30,
+                height: "100%",
+                textAlignVertical: "center"
               }}
             />
-          </Pressable>
+            </View>
+          </TouchableNativeFeedback>
+          </View>
+
         </View>
       )}
 
@@ -231,8 +227,9 @@ const styles = StyleSheet.create({
   },
   nav_pressable: {
     flex: 1,
-    borderTopWidth: 2,
+    borderTopWidth: 0,
     alignItems: "center",
+    backgroundColor: "#1E1E1E"
   },
   nav_text: {
     textAlign: "center",
@@ -247,4 +244,9 @@ const styles = StyleSheet.create({
     color: "#c4c4c4",
     textAlign: "center",
   },
+  touchable: {
+    height: 50,
+    width: "100%",
+    alignItems: "center"
+  }
 });

@@ -9,7 +9,6 @@ import Button from "./Button";
 const Levels = ({onexit}) => {
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
-    const scaleAnim = useRef(new Animated.Value(0)).current;
 
     React.useEffect(() => {
         Animated.timing(
@@ -21,16 +20,23 @@ const Levels = ({onexit}) => {
             useNativeDriver: true,
           }
         ).start();
+      }, [fadeAnim])
+
+    const hide = () => {
         Animated.timing(
-            scaleAnim,
+            fadeAnim,
             {
-              toValue: 1,
-              duration: 400,
+              toValue: 0,
+              duration: 200,
               easing: Easing.bezier(0,1.02,.21,.97),
               useNativeDriver: true,
             }
-          ).start();
-      }, [fadeAnim, scaleAnim])
+          ).start(({finished}) => {
+            if (finished) {
+                onexit();
+            }
+        });
+    }  
 
     const [loaded] = useFonts({
         PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
@@ -38,7 +44,7 @@ const Levels = ({onexit}) => {
     });
 
     return (
-        <Animated.View style={[{transform: [{scale: scaleAnim}],opacity: fadeAnim},styles.container]}>
+        <Animated.View style={[{opacity: fadeAnim},styles.container]}>
 
         <View style={{height: 60}}></View>
 
@@ -170,7 +176,7 @@ const Levels = ({onexit}) => {
                 </View>
             </View>
 
-            <Button title={"Zurück"} icon={<Feather name="arrow-left" style={styles.cancel_icon}/>} color={"#eb4034"} fontColor={"white"} onPress={onexit} borderradius={100}/>
+            <Button title={"Zurück"} icon={<Feather name="arrow-left" style={styles.cancel_icon}/>} color={"#eb4034"} fontColor={"white"} onPress={() => hide()} borderradius={100}/>
 
         </Animated.View>
     );

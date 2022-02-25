@@ -14,7 +14,7 @@ import FriendListItem from "./FriendListItem";
 
 import Antdesign from 'react-native-vector-icons/AntDesign'
 
-const FriendResquests = ({user, onExit}) => {
+const FriendResquests = ({user, onExit, refresh}) => {
 
     const screen_height = Dimensions.get("screen").height;
     const slideAnim = useRef(new Animated.Value(screen_height)).current;
@@ -24,7 +24,7 @@ const FriendResquests = ({user, onExit}) => {
     const [alreadySent, setAlreadySent] = useState(false);
 
     const [results, setResults] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         Animated.timing(slideAnim,{
@@ -50,7 +50,6 @@ const FriendResquests = ({user, onExit}) => {
     }
 
     const loadRequests = async () => {
-        setLoading(true);
         var resultBuffer = [];
 
             try {
@@ -105,23 +104,44 @@ const FriendResquests = ({user, onExit}) => {
         setModalVisible(false);
     }
 
-    const acceptFriend = (id) => {
-        setIsLoading(true)
+    const acceptFriend = async (id) => {
+        setLoading(true)
 
         const docRef = doc(firestore, "users", user.id);
+        const docRef2 = doc(firestore, "users", id);
 
-        setResults(results.filter(item => item != id));
+        var buffer = results.filter(item => item != id);
         updateDoc(docRef,{
-            requests: results
+            requests: buffer
         });
+        console.log(buffer);
 
         var friends_buffer;
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             friends_buffer = docSnap.data().friends
         }
-            
-        loadRequest();
+        
+        friends_buffer.push(id);
+
+        updateDoc(docRef, {
+            friends: friends_buffer
+        });
+
+        const docSnap2 = await getDoc(docRef2);
+        if (docSnap.exists()) {
+            friends_buffer = docSnap.data().friends
+        }
+
+        friends_buffer.push(user.id);
+
+        updateDoc(docRef2, {
+            friends: friends_buffer
+        });
+
+        loadRequests();
+        refresh();w
+        setLoading(false);
     }
 
     return (
@@ -181,13 +201,19 @@ const FriendResquests = ({user, onExit}) => {
             
             <ScrollView style={{width: "100%", flex: 1, alignSelf: "center", marginTop: 20}}>
 
-            {!results ? null : <>
+            {results ? <>{results.length == 0 ? 
+            <>
+                <View style={{height: 50}}></View>
+                <Text style={[styles.empty,{fontSize: 20, fontFamily: "PoppinsBlack"}]}>Noch keine Anfragen :(</Text>
+                <Text style={styles.empty}>Das wird schon noch!</Text>
+            </>
+            : <>
             {loading ? <ActivityIndicator color={"#0080FF"} size={"large"} style={{marginTop: 50}}/> : (
                 results.map((result) => {
-                    return <RequestItem key={uuid.v4()} user={user} userid={result} onAccept={acceptFriend(result)} onDecline={declineFriend(result)}/>
+                    return <RequestItem key={uuid.v4()} user={user} userid={result} onAccept={() => acceptFriend(result)} /*onDecline={declineFriend(result)} *//>
                 })
             )}
-            </>}
+            </>}</> : null}
 
             </ScrollView>
 
@@ -248,5 +274,11 @@ const styles = StyleSheet.create({
         fontSize: 30,
         textAlign: "center",
         marginTop: 20
+    },
+    empty: {
+        color: "rgba(255,255,255,0.5)",
+        alignSelf: "center",
+        marginTop: 5,
+        fontFamily: "PoppinsLight"
     }
 });

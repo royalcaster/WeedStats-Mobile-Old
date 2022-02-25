@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     touchable: {
         width: 60,
         height: 60,
-        backgroundColor: "rgba(0,0,0,0.25)",
+        backgroundColor: "rgba(0,0,0,0.0)",
         borderRadius: 25
     }
     

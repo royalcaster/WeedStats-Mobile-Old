@@ -113,8 +113,9 @@ const SearchPanel = ({user, onExit}) => {
             catch(e){
                 console.log("Error:", e)
             }
-        }
         setModalVisible(false);
+        }
+        
     }
 
     return (
