@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFonts } from "expo-font";
 import { StyleSheet, Image, View, Text, Pressable, ScrollView, Dimensions, TouchableOpacity, TouchableNativeFeedback} from 'react-native';
 
@@ -32,7 +32,7 @@ import {
 
 import { db, firestore } from "./FirebaseConfig";
 
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';;
 
 const Map = ({ user }) => {
 
@@ -65,6 +65,8 @@ const Map = ({ user }) => {
       const [markers, setMarkers] = useState([]);
       
       const [region, setRegion] = useState(initRegion);
+
+      
       
       useEffect(() => {
         loadData();       //Freunde + deren letzte Einträge

@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useRef } from "react";
-import { View, Image, StyleSheet, Text, Animated, Pressable, Easing } from 'react-native';
+import { View, Image, StyleSheet, Text, Animated, Pressable, Easing, BackHandler } from 'react-native';
 import { useFonts } from 'expo-font';
 
 import Feather from 'react-native-vector-icons/Feather';
@@ -21,6 +21,22 @@ const Levels = ({onexit}) => {
           }
         ).start();
       }, [fadeAnim])
+
+    // Call back function when back button is pressed
+    const backActionHandler = () => {
+        hide();
+        return true;
+    };
+
+    useEffect(() => {
+
+        // Add event listener for hardware back button press on Android
+        BackHandler.addEventListener("hardwareBackPress", backActionHandler);
+    
+        return () =>
+          // clear/remove event listener
+          BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
+      }, []);
 
     const hide = () => {
         Animated.timing(
@@ -188,8 +204,10 @@ const styles = StyleSheet.create({
     container: {
         marginTop: 0,
         width: "100%",
-        height: "95%",
-        justifyContent: "center"
+        height: "100%",
+        justifyContent: "center",
+        backgroundColor: "#1E1E1E",
+        paddingBottom: 30 
     },
     lvl_img: {
         height: 80,

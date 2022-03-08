@@ -44,6 +44,12 @@ const HistoryTable = ({ event, showOnMap }) => {
         {event.type == "vape" ? (
           <Image style={styles.v_img} source={require("./img/vape.png")} />
         ) : null}
+        {event.type == "pipe" ? (
+          <Image style={styles.p_img} source={require("./img/pipe.png")} />
+        ) : null}
+        {event.type == "cookie" ? (
+          <Image style={styles.c_img} source={require("./img/cookie.png")} />
+        ) : null}
       </View>
       <View style={{ flex: 2, justifyContent: "center" }}>
         <Text style={styles.date}>
@@ -115,6 +121,16 @@ const styles = StyleSheet.create({
   v_img: {
     height: 50,
     width: 30,
+    alignSelf: "center",
+  },
+  p_img: {
+    height: 50,
+    width: 30,
+    alignSelf: "center",
+  },
+  c_img: {
+    height: 40,
+    width: 40,
     alignSelf: "center",
   },
   date: {

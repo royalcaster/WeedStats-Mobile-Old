@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import { Animated, View, StyleSheet, TextInput, Dimensions, Easing, Text, ScrollView, ActivityIndicator, TouchableNativeFeedback, Modal, Pressable, TouchableNativeFeedbackBase } from "react-native";
+import { Animated, View, StyleSheet, TextInput, Dimensions, Easing, Text, ScrollView, ActivityIndicator, TouchableNativeFeedback, Modal, Pressable, TouchableNativeFeedbackBase, BackHandler } from "react-native";
 
 import BackButton from './BackButton'
 import RequestItem from './RequestItem'
@@ -35,6 +35,22 @@ const FriendResquests = ({user, onExit, refresh}) => {
         }).start();
         loadRequests();
     },[]);
+
+    // Call back function when back button is pressed
+    const backActionHandler = () => {
+        hide();
+        return true;
+    };
+
+    useEffect(() => {
+
+        // Add event listener for hardware back button press on Android
+        BackHandler.addEventListener("hardwareBackPress", backActionHandler);
+    
+        return () =>
+          // clear/remove event listener
+          BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
+      }, []);
     
     const hide = () => {
         Animated.timing(slideAnim,{
@@ -140,7 +156,7 @@ const FriendResquests = ({user, onExit, refresh}) => {
         });
 
         loadRequests();
-        refresh();w
+        refresh();
         setLoading(false);
     }
 
@@ -201,19 +217,21 @@ const FriendResquests = ({user, onExit, refresh}) => {
             
             <ScrollView style={{width: "100%", flex: 1, alignSelf: "center", marginTop: 20}}>
 
-            {results ? <>{results.length == 0 ? 
-            <>
-                <View style={{height: 50}}></View>
-                <Text style={[styles.empty,{fontSize: 20, fontFamily: "PoppinsBlack"}]}>Noch keine Anfragen :(</Text>
-                <Text style={styles.empty}>Das wird schon noch!</Text>
-            </>
-            : <>
-            {loading ? <ActivityIndicator color={"#0080FF"} size={"large"} style={{marginTop: 50}}/> : (
+            {loading ? <ActivityIndicator color={"#0080FF"} size={"large"} style={{marginTop: 50}}/> : <>{
+                results ? <>{
+                    results.length != 0 ? 
                 results.map((result) => {
-                    return <RequestItem key={uuid.v4()} user={user} userid={result} onAccept={() => acceptFriend(result)} /*onDecline={declineFriend(result)} *//>
-                })
-            )}
-            </>}</> : null}
+                    return <RequestItem key={uuid.v4()} user={user} userid={result} onAccept={() => acceptFriend(result)}/>
+                    }) : <>
+                    <View style={{height: 50}}></View>
+                    <Antdesign name="frowno" style={{fontSize: 70, color: "rgba(255,255,255,0.25)", textAlign: "center",marginBottom: 20}}/>
+                    <Text style={[styles.empty,{fontSize: 20, fontFamily: "PoppinsLight"}]}>Keine Anfragen</Text>
+                    <Text style={styles.empty}>Das wird schon noch!</Text>
+                    </>}</> : null
+            }</>}
+
+            
+            
 
             </ScrollView>
 
@@ -278,7 +296,7 @@ const styles = StyleSheet.create({
     empty: {
         color: "rgba(255,255,255,0.5)",
         alignSelf: "center",
-        marginTop: 5,
-        fontFamily: "PoppinsLight"
+        fontFamily: "PoppinsLight",
+        fontSize: 12
     }
 });

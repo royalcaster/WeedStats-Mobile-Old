@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import { Animated, Easing, View, StyleSheet, Dimensions, Text, Image, ScrollView, TouchableNativeFeedback, Modal } from "react-native";
+import { Animated, Easing, View, StyleSheet, Dimensions, Text, Image, ScrollView, TouchableNativeFeedback, Modal, BackHandler } from "react-native";
 
 import Antdesign from 'react-native-vector-icons/AntDesign'
 
@@ -55,6 +55,22 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
             easing: Easing.bezier(0,1.02,.21,.97),
         }).start();
     }
+
+    // Call back function when back button is pressed
+    const backActionHandler = () => {
+        hide();
+        return true;
+    };
+
+    useEffect(() => {
+
+        // Add event listener for hardware back button press on Android
+        BackHandler.addEventListener("hardwareBackPress", backActionHandler);
+    
+        return () =>
+          // clear/remove event listener
+          BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
+      }, []);
 
     const hide = () => {
         Animated.timing(slideAnim,{

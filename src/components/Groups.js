@@ -55,6 +55,8 @@ import FriendRequests from "./FriendRequests";
 
 import Feedback from "./Feedback";
 
+import Levels from './Levels'
+
 const Groups = ({ user, handleLogOut }) => {
   const defaultGroup = {
     title: "",
@@ -79,6 +81,7 @@ const Groups = ({ user, handleLogOut }) => {
   const [showDonation, setShowDonation] = useState(false);
 
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showLevels, setShowLevels] = useState(false);
 
   const [showAccount, setShowAccount] = useState(false);
   const [showCreateGroup, setShowCreateGroup] = useState(false);
@@ -117,10 +120,6 @@ const Groups = ({ user, handleLogOut }) => {
     setLoading(false);
   }
 
-  const hideCreateGroup = () => {
-    setShowCreateGroup(false);
-  };
-
   const hideDonation = () => { 
     setShowDonation(false);
   };
@@ -129,18 +128,14 @@ const Groups = ({ user, handleLogOut }) => {
     setShowFeedback(false);
   };
 
-  const hideMenu = () => {
-    setShowMenu(false);
+  const hideLevels = () => { 
+    setShowLevels(false);
   };
 
   const hideAccount = () => {
     setShowAccount(false);
   };
 
-  const hideGroup = () => {
-    setShowGroup(false);
-    getGroupList();
-  };
 
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
@@ -167,96 +162,6 @@ const Groups = ({ user, handleLogOut }) => {
     return messages_buffer;
   };
 
-  var groupIDs;
-  const getGroupList = async () => {
-    setGroupList([]);
-    try {
-      const docRef = doc(firestore, "users", user.id);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        groupIDs = docSnap.data().groups;
-      }
-
-      groupIDs.forEach((group) => {
-        const groupRef = ref(db, "groups/" + group);
-        onValue(groupRef, (snaphot) => {
-          setGroupList((groupList) => [
-            ...groupList,
-            {
-              admin: snaphot.val().admin,
-              createdon: snaphot.val().createdon,
-              id: snaphot.val().id,
-              members: snaphot.val().members,
-              title: snaphot.val().title,
-              messages: getMessageList(group),
-            },
-          ]);
-        });
-        /* console.log(groupList.length) */
-      });
-    } catch (e) {
-      console.log("Error:", e);
-    }
-  };
-
- /*  const createGroup = async (groupData) => {
-    //Gruppe mit Datum und kurzer ID versehen
-    groupData = {
-      ...groupData,
-      createdon: new Date().toLocaleDateString("de-DE"),
-      id: uuid.v4().substring(0, 8),
-    };
-
-    const docRef = doc(firestore, "users", user.id);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      updateDoc(docRef, {
-        groups: [...docSnap.data().groups, groupData.id],
-      });
-    }
-
-    const groupRef = ref(db, "groups/" + groupData.id);
-    set(groupRef, {
-      id: groupData.id,
-      admin: groupData.admin,
-      createdon: groupData.createdon,
-      title: groupData.title,
-      members: groupData.members,
-      messages: groupData.messages,
-      counter: 0,
-    });
-
-    getGroupList();
-  }; */
-
-  /* const toggleLatestOnline = (group) => {
-    console.log(group.id);
-    var buffer = {
-      name: "",
-      latestonline: "",
-      index: 0,
-    };
-    const members_ref = ref(db, "groups/" + group.id + "/members");
-    onChildAdded(members_ref, (member) => {
-      if (member.val().name == user.username) {
-        buffer.latestonline = member.val().latestonline;
-        buffer.name = member.val().name;
-        buffer.index = member.val().index;
-      }
-    });
-
-    //Hier liegt das Problem, Gruppen werden aus einem Grund nach dem Update 2 mal angezeigt...
-    const ref2 = ref(db, "groups/" + group.id + "/members/" + buffer.index);
-    if (group.messages.length > 0) {
-      set(ref2, {
-        index: buffer.index,
-        name: buffer.name,
-        latestonline: group.messages.length,
-      });
-    }
-  }; */
-
   return (
     <>
       {showAccount ? (
@@ -272,6 +177,10 @@ const Groups = ({ user, handleLogOut }) => {
             setShowFeedback(true);
             hideAccount();
           }}
+          onShowLevels={() => {
+            setShowLevels(true);
+            hideAccount();
+          }}
         />
       ) : <>
       {showDonation ? (
@@ -282,7 +191,7 @@ const Groups = ({ user, handleLogOut }) => {
           }}
         ></Donation>
       ) : <>
-      {showFeedback ? <Feedback onexit={hideFeedback} user={user}/> : null}
+      {showFeedback ? <Feedback onexit={hideFeedback} user={user}/> : <>{showLevels ? <Levels onexit={hideLevels}/> : null}</>}
       </>}
 
       {showAddFriend ? <SearchPanel user={user} onExit={() => setShowAddFriend(false)}/> : null}
@@ -377,8 +286,9 @@ const Groups = ({ user, handleLogOut }) => {
               })
               : <>
               <View style={{height: 50}}></View>
-                <Text style={[styles.empty,{fontSize: 20, fontFamily: "PoppinsBlack"}]}>Noch keine Freunde :(</Text>
-                  <Text style={styles.empty}>Tippe auf das + oben rechts</Text>
+                <Antdesign name="frowno" style={{fontSize: 70, color: "rgba(255,255,255,0.25)", textAlign: "center",marginBottom: 20}}/>
+                <Text style={[styles.empty,{fontSize: 20, fontFamily: "PoppinsLight"}]}>Keine Freunde</Text>
+                <Text style={styles.empty}>Tippe auf das + oben rechts</Text>
               </>
               }
               </> : null}
@@ -494,7 +404,7 @@ const styles = StyleSheet.create({
   empty: {
         color: "rgba(255,255,255,0.5)",
         alignSelf: "center",
-        marginTop: 5,
-        fontFamily: "PoppinsLight"
+        fontFamily: "PoppinsLight",
+        fontSize: 12
     }
 });

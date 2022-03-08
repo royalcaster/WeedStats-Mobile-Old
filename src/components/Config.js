@@ -9,10 +9,9 @@ import {
   TextInput,
   Image,
   ScrollView,
-  Modal
+  Modal,
+  ActivityIndicator
 } from "react-native"
-
-import Levels from './Levels'
 
 import Button from "./Button"
 
@@ -22,11 +21,39 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 
 import Toggle from 'react-native-toggle-element';
 
-const Config = ({ statConfig, toggleConfig }) => {
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-  const [showLevels, setShowLevels] = useState(false);
-  const hideLevels = () => {
-    setShowLevels(false);
+const Config = () => {
+
+  const [config, setConfig] = useState()
+
+  const [loading, setLoading] = useState(true);
+
+  const [saved, setSaved] = useState(true);
+
+  useEffect( () => {
+    loadSettings();
+  },[]);
+
+  const loadSettings = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('settings')
+      jsonValue != null ? setConfig(JSON.parse(jsonValue)) : null;
+    } catch(e) {
+      console.log("Error in Config beim Laden: ",e);
+    }
+    setLoading(false);
+  }
+
+  const storeSettings = async () => {
+    try {
+      const jsonValue = JSON.stringify(config)
+      await AsyncStorage.setItem('settings', jsonValue)
+    } catch (e) {
+      console.log("Error in Config beim Speichern: ",e);
+    }
+    setLoading(false);
+    setSaved(true);
   }
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -36,7 +63,7 @@ const Config = ({ statConfig, toggleConfig }) => {
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 200,
+      duration: 500,
       useNativeDriver: true,
     }).start();
   }, [fadeAnim]);
@@ -52,8 +79,6 @@ const Config = ({ statConfig, toggleConfig }) => {
 
   return (
     <>
-    {showLevels ? <Levels onexit={hideLevels}></Levels> :
-    
     <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
 
               <Modal 
@@ -78,6 +103,9 @@ const Config = ({ statConfig, toggleConfig }) => {
             </Modal>
       
       <View style={{height: 50}}></View>
+
+        {loading ? <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}><ActivityIndicator size={"large"} color={"#0080FF"}/></View> : 
+
         <ScrollView style={{width: "100%", flex: 1}}>
 
           <Text style={styles.heading}>Ansicht konfigurieren</Text>
@@ -85,29 +113,41 @@ const Config = ({ statConfig, toggleConfig }) => {
             <View style={{flexDirection: "row", width: "100%",}}>
               <ConfigItem
                 type="joint"
-                config={statConfig.joint}
-                onToggle={toggleConfig}
+                config={config.showJoint}
+                onToggle={() => {setConfig({...config, showJoint: !config.showJoint}); setSaved(false)}}
               ></ConfigItem>
               <ConfigItem
                 type="bong"
-                config={statConfig.bong}
-                onToggle={toggleConfig}
+                config={config.showBong}
+                onToggle={() => {setConfig({...config, showBong: !config.showBong}); setSaved(false)}}
               ></ConfigItem>
               <ConfigItem
                 type="vape"
-                config={statConfig.vape}
-                onToggle={toggleConfig}
+                config={config.showVape}
+                onToggle={() => {setConfig({...config, showVape: !config.showVape}); setSaved(false)}}
               ></ConfigItem>
             </View>
+            <View style={{flexDirection: "row", width: "80%", alignSelf: "center", marginTop: -20}}>
+              <ConfigItem
+                  type="pipe"
+                  config={config.showPipe}
+                  onToggle={() => {setConfig({...config, showPipe: !config.showPipe}); setSaved(false)}}
+                ></ConfigItem>
+                <ConfigItem
+                  type="cookie"
+                  config={config.showCookie}
+                  onToggle={() => {setConfig({...config, showCookie: !config.showCookie}); setSaved(false)}}
+                ></ConfigItem>
+            </View>
 
 
-          <View style={{height: 20}}></View>
+          <View style={{height: 10}}></View>
 
           <View style={{flexDirection: "row", height: 50, width: "95%", alignContent: "center"}}>
-            <View style={{flex: 4}}>
-              <Text style={styles.label}>Lightmode</Text>
+            <View style={{flex: 4, justifyContent: "center"}}>
+              <Text style={styles.label}>Helles Design</Text>
             </View>
-            <View style={{flex: 1, alignItems: "center"}}>
+            <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
             
               <Toggle 
                 value={lightmode} 
@@ -130,14 +170,14 @@ const Config = ({ statConfig, toggleConfig }) => {
           <View style={{height: 10}}></View>
 
           <View style={{flexDirection: "row", height: 50, width: "95%", alignContent: "center"}}>
-            <View style={{flex: 4}}>
+            <View style={{flex: 4, justifyContent: "center"}}>
               <Text style={styles.label}>Aktivitätsdetails speichern</Text>
             </View>
-            <View style={{flex: 1, alignItems: "center"}}>
+            <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
             
               <Toggle 
-                value={true} 
-                onPress={(val) => console.log(val)} 
+                value={config.saveEntries} 
+                onPress={() => {setConfig({...config, saveEntries: !config.saveEntries}); setSaved(false)}} 
                 trackBar={{
                   activeBackgroundColor: "#0080FF",
                   inActiveBackgroundColor: "#171717",
@@ -151,14 +191,14 @@ const Config = ({ statConfig, toggleConfig }) => {
           </View>
 
           <View style={{flexDirection: "row", height: 50, width: "95%", alignContent: "center"}}>
-            <View style={{flex: 4}}>
+            <View style={{flex: 4, justifyContent: "center"}}>
               <Text style={styles.label}>Aktivitäten für Freunde sichtbar machen</Text>
             </View>
-            <View style={{flex: 1, alignItems: "center"}}>
+            <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
             
               <Toggle 
-                value={true} 
-                onPress={(val) => console.log(val)} 
+                value={config.showFriends} 
+                onPress={() => {setConfig({...config, showFriends: !config.showFriends}); setSaved(false)}}
                 trackBar={{
                   activeBackgroundColor: "#0080FF",
                   inActiveBackgroundColor: "#171717",
@@ -172,14 +212,14 @@ const Config = ({ statConfig, toggleConfig }) => {
           </View>
 
           <View style={{flexDirection: "row", height: 50, width: "95%", alignContent: "center"}}>
-            <View style={{flex: 4}}>
+            <View style={{flex: 4, justifyContent: "center"}}>
               <Text style={styles.label}>Aktivitäten auf der Karte sichtbar machen</Text>
             </View>
-            <View style={{flex: 1, alignItems: "center"}}>
+            <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
             
               <Toggle 
-                value={true} 
-                onPress={(val) => console.log(val)} 
+                value={config.showMap} 
+                onPress={() => {setConfig({...config, showMap: !config.showMap}); setSaved(false)}} 
                 trackBar={{
                   activeBackgroundColor: "#0080FF",
                   inActiveBackgroundColor: "#171717",
@@ -193,10 +233,13 @@ const Config = ({ statConfig, toggleConfig }) => {
           </View>
 
           <View style={{height: 30}}></View>
-          <Button fontColor={"white"} onPress={() => setShowLevels(true)} borderradius={100} color={"#4a4a4a"} title={" Levelübersicht"} icon={<FontAwesome name="trophy" style={styles.money_icon} />}/>
+          {saved ? <Button fontColor={"rgba(255,255,255,0.5)"} onPress={() => {}} borderradius={100} color={"#4a4a4a"} title={"Gespeichert"}/> 
+          : <Button fontColor={"white"} onPress={() => {storeSettings()}} borderradius={100} color={"#0080FF"} title={"Speichern"}/>}
+
         </ScrollView>
+        }
     
-    </Animated.View>}
+    </Animated.View>
     </>
   );
 };
@@ -262,7 +305,7 @@ const styles = StyleSheet.create({
     fontFamily: "PoppinsBlack"
   },
   label: {
-    color: "white",
+    color: "rgba(255,255,255,0.75)",
     fontSize: 15,
     fontFamily: "PoppinsLight",
     marginLeft: 20

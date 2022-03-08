@@ -14,6 +14,8 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { LogBox } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Button from "./src/components/Button";
+import GradientButton from "./src/components/GradientButton";
 
 //Components
 import Home from "./src/components/Home";
@@ -83,6 +85,8 @@ export default function App() {
         joint_counter: docSnap.data().joint_counter,
         bong_counter: docSnap.data().bong_counter,
         vape_counter: docSnap.data().vape_counter,
+        pipe_counter: docSnap.data().pipe_counter,
+        cookie_counter: docSnap.data().cookie_counter,
         member_since: docSnap.data().member_since,
         last_entry_timestamp: docSnap.data().last_entry_timestamp,
         last_entry_latitude: docSnap.data().last_entry_latitude,
@@ -111,6 +115,8 @@ export default function App() {
           joint_counter: 0,
           bong_counter: 0,
           vape_counter: 0,
+          pipe_counter: 0,
+          cookie_counter: 0,
           last_entry_timestamp: null,
           last_entry_latitude: null,
           last_entry_longitude: null,
@@ -134,6 +140,8 @@ export default function App() {
             joint_counter: docSnap.data().joint_counter,
             bong_counter: docSnap.data().bong_counter,
             vape_counter: docSnap.data().vape_counter,
+            pipe_counter: docSnap.data().pipe_counter,
+            cookie_counter: docSnap.data().cookie_counter,
             member_since: docSnap.data().member_since,
             last_entry_timestamp: docSnap.data().last_entry_timestamp,
             last_entry_latitude: docSnap.data().last_entry_latitude,
@@ -143,7 +151,9 @@ export default function App() {
             main_counter:
               docSnap.data().joint_counter +
               docSnap.data().bong_counter +
-              docSnap.data().vape_counter,
+              docSnap.data().vape_counter +
+              docSnap.data().pipe_counter +
+              docSnap.data().cookie_counter,
           });
           setStatConfig({
             joint: docSnap.data().show_joint,
@@ -153,6 +163,23 @@ export default function App() {
         }
       } catch (e) {
         console.log("Error:", e);
+      }
+
+      //Einstellugns-Objekt im Local Storage erstmalig einrichten:
+      try {
+        const value = JSON.stringify({
+          showJoint: true,
+          showBong: false,
+          showVape: true,
+          showPipe: false,
+          showCookie: true,
+          saveEntries: false,
+          showFriends: true,
+          showMap: false
+        });
+        await AsyncStorage.setItem('settings', value)
+      } catch (e) {
+        console.log("Error in App.js: ",e);
       }
     }
   };
@@ -339,6 +366,16 @@ export default function App() {
           vape_counter: docSnap.data().vape_counter + 1,
         });
         break;
+      case "pipe":
+        await updateDoc(docRef, {
+          pipe_counter: docSnap.data().pipe_counter + 1,
+        });
+        break;
+      case "cookie":
+        await updateDoc(docRef, {
+          cookie_counter: docSnap.data().cookie_counter + 1,
+        });
+        break; 
     }
 
     const docSnap_new = await getDoc(docRef);
@@ -348,6 +385,8 @@ export default function App() {
       joint_counter: docSnap_new.data().joint_counter,
       bong_counter: docSnap_new.data().bong_counter,
       vape_counter: docSnap_new.data().vape_counter,
+      pipe_counter: docSnap_new.data().pipe_counter,
+      cookie_counter: docSnap_new.data().cookie_counter,
       last_entry_timestamp: docSnap_new.data().last_entry_timestamp,
       last_entry_type: docSnap_new.data().last_entry_type,
       last_entry_latitude: docSnap_new.data().last_entry_latitude,
@@ -401,7 +440,42 @@ export default function App() {
   return (
     <>
       <NavigationContainer>
-        <Modal
+
+      <Modal 
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+          setWriteComplete(false);
+        }}>
+                <View style={{alignItems: "center", justifyContent: "center", backgroundColor:"rgba(0,0,0,0.5)", flex: 1}}>
+                  {writeComplete ? 
+
+                    <View style={{width: "90%", height: 300, backgroundColor: "#171717", alignSelf: "center", borderRadius: 25}}>
+                        <View style={{flex: 1}}>
+                            <Text style={[styles.heading,{marginLeft: 0, textAlign: "center", height: "100%", textAlignVertical: "center", fontSize: 22}]}>Erfolg</Text>
+                        </View>
+                        <View style={{flex: 1}}>
+                            <Text style={[styles.text,{fontSize: 15}]}>{getRandomSaying()}</Text>
+                        </View>
+                        <View style={{flex: 1}}>
+                            <Button title={"Ok"} color={"#0080FF"} borderradius={25} fontColor={"white"} onPress={() => {
+                      setModalVisible(!modalVisible);
+                      setWriteComplete(false);
+                    }}/>
+                        </View>
+                    </View> :
+                    <ActivityIndicator
+                      animating={true}
+                      size="large"
+                      color="#0080FF"
+                    />
+                  }
+                </View>
+            </Modal>
+
+        {/* <Modal
           animationType="fade"
           transparent={true}
           visible={modalVisible}
@@ -439,7 +513,9 @@ export default function App() {
               )}
             </View>
           </View>
-      </Modal>
+      </Modal> */}
+
+
       <View style={{flex: 1, backgroundColor: "#171717"}}>
         {showSplash ? <Splash onExit={() => setShowSplash(false)}/> : null}
 
@@ -512,4 +588,18 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
   },
+  heading: {
+    color: "white",
+    fontSize: 20,
+    fontFamily: "PoppinsBlack",
+    marginLeft: 20
+  },
+  text: {
+    alignSelf: "center",
+    fontFamily: "PoppinsLight",
+    fontSize: 18,
+    color: "white",
+    maxWidth: 250,
+    textAlign: "center"
+},
 });

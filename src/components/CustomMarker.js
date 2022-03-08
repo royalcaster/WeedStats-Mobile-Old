@@ -1,18 +1,19 @@
-import React, { useRef, useState } from "react";
-import { View, Image, StyleSheet, Text, TouchableNativeFeedback, Animated } from 'react-native'
+import React, { useEffect, useRef, useState } from "react";
+import { View, Image, StyleSheet, Text, TouchableNativeFeedback, Animated, Easing } from 'react-native'
 
 import ProfileImage from "./ProfileImage";
 
 const CustomMarker = ({ photoUrl, username, type, timestamp }) => {
 
+
     return (
         <>
-        <View style={styles.container}>
+        <Animated.View style={[styles.container]}>
                     <Animated.View style={[styles.image]}>
                         <ProfileImage x={50} url={photoUrl} type={1}/>
                     </Animated.View>
                     <View style={styles.dot}></View>
-        </View>
+        </Animated.View>
         </>
     );
 }

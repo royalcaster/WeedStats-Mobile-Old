@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import { Animated, View, StyleSheet, TextInput, Dimensions, Easing, Text, ScrollView, ActivityIndicator, TouchableNativeFeedback, Modal, Pressable, TouchableNativeFeedbackBase } from "react-native";
+import { Animated, View, StyleSheet, TextInput, Dimensions, Easing, Text, ScrollView, ActivityIndicator, TouchableNativeFeedback, Modal, Pressable, TouchableNativeFeedbackBase, BackHandler } from "react-native";
 
 import BackButton from './BackButton'
 
@@ -33,6 +33,22 @@ const SearchPanel = ({user, onExit}) => {
             easing: Easing.bezier(0,1.02,.21,.97)
         }).start();
     });
+
+    // Call back function when back button is pressed
+    const backActionHandler = () => {
+        hide();
+        return true;
+    };
+
+    useEffect(() => {
+
+        // Add event listener for hardware back button press on Android
+        BackHandler.addEventListener("hardwareBackPress", backActionHandler);
+    
+        return () =>
+          // clear/remove event listener
+          BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
+      }, []);
     
     const hide = () => {
         Animated.timing(slideAnim,{
@@ -152,7 +168,7 @@ const SearchPanel = ({user, onExit}) => {
                         </View>
                     </View></> 
                     
-                    : <View style={{flex: 1, justifyContent: "center"}}><Antdesign style={styles.info_icon} name="exclamationcircleo"/><View style={{height: 30}}></View><Text style={styles.heading}>Du hast bereits eine Freundschaftsanfrage an <Text>{activeRequested ? activeRequested.username : null}</Text> gesendet.</Text><View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+                    : <View style={{flex: 1, justifyContent: "center"}}><Antdesign style={styles.info_icon} name="exclamationcircleo"/><View style={{height: 30}}></View><Text style={[styles.heading,{textAlign: "center"}]}>Du hast bereits eine Freundschaftsanfrage an <Text>{activeRequested ? activeRequested.username : null}</Text> gesendet.</Text><View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
                             <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", true)} onPress={() => setModalVisible(false)}>
                                 <View style={styles.touchable}>
                                     <Antdesign name="close" style={[styles.icon,{color: "#eb4034"}]}/>
@@ -163,19 +179,24 @@ const SearchPanel = ({user, onExit}) => {
             </View>
         </Modal>
 
-            
+                
+            <Text style={styles.heading}>Finde neue Freunde</Text>
+            <View style={{height: 10}}></View>
             <View style={{width: "100%", flexDirection: "row", maxHeight: 60, flex: 1}} >
                 <View style={{flex: 1, alignItems: "center"}}>
                     <BackButton onPress={() => hide()}/>
                 </View>
                 <View style={{flex: 4}}>
-                    <TextInput style={styles.input} onChangeText={(text) => {searchUsers(text)}}></TextInput>
+                    <TextInput autoFocus={true} style={styles.input} onChangeText={(text) => {searchUsers(text)}}></TextInput>
                 </View>
             </View>
             
             <ScrollView style={{width: "100%", flex: 1, alignSelf: "center", marginTop: 20}}>
 
-            {!results ? null : <>
+            {!results || results.length == 0 ? 
+            <View style={{width: "100%", marginTop: 100}}>
+                <Text style={{fontFamily: "PoppinsBlack", fontSize: 15, color: "rgba(255,255,255,0.25)", alignSelf: "center"}}>Keine Suchergebnisse</Text>
+            </View> : <>
             {loading ? <ActivityIndicator color={"#0080FF"} size={"large"} style={{marginTop: 50}}/> : (
                 results.map((result) => {
                     return <FriendListItem key={uuid.v4()} userid={result.id} onPress={() => {setActiveRequested(result);setModalVisible(true)}}/>
@@ -223,9 +244,10 @@ const styles = StyleSheet.create({
         color: "white",
         textAlign: "center",
         fontFamily: "PoppinsBlack",
-        fontSize: 22,
+        fontSize: 20,
         maxWidth: 300,
-        alignSelf: "center"
+        textAlign: "left",
+        marginLeft: 25
     },
     touchable: {
         height: "100%",

@@ -1,14 +1,28 @@
 import React from 'react';
 import { useRef, useEffect } from 'react';
-import { StyleSheet, Image, View, Text, Pressable, Animated, Easing, Dimensions} from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
+import { StyleSheet, Image, View, Text, Pressable, Animated, Easing, Dimensions, BackHandler} from 'react-native';
+import ReactDOM from "react-dom";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import { backgroundColor, color, transform } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+import uuid from 'react-native-uuid'
+
 import { useFonts } from 'expo-font';
-import DeprecatedTextStylePropTypes from 'react-native/Libraries/DeprecatedPropTypes/DeprecatedTextStylePropTypes';
 
 const Donation = ( { onexit } ) => {
+
+    /* const PayPalButton = window.paypal.Buttons.driver("react", { React, ReactDOM });
+
+    const createOrder = (data, actions) => {
+        return actions.order.create({
+          purchase_units: [
+            {
+              amount: {
+                value: "1",
+              },
+            },
+          ],
+        });
+    } */
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const opacityAnim = useRef(new Animated.Value(0)).current;
@@ -34,6 +48,34 @@ const Donation = ( { onexit } ) => {
         PoppinsLight: require('./fonts/Poppins-Light.ttf')
     });
 
+    // Call back function when back button is pressed
+    const backActionHandler = () => {
+        hide();
+        return true;
+    };
+
+    useEffect(() => {
+
+        // Add event listener for hardware back button press on Android
+        BackHandler.addEventListener("hardwareBackPress", backActionHandler);
+    
+        return () =>
+          // clear/remove event listener
+          BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
+      }, []);
+    
+    const hide = () => {
+        Animated.timing(opacityAnim, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true,
+        }).start(({finished}) => {
+            if (finished) {
+                onexit();
+            }
+        });
+    }
+
     return (
         <Animated.View style={[{transform: [{scale: fadeAnim}], opacity: opacityAnim, height: window_height + 20},styles.container]}>
 
@@ -42,6 +84,8 @@ const Donation = ( { onexit } ) => {
             <Pressable onPress={onexit} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : "#1E1E1E+"}, styles.pressable_back]}>
                 <MaterialIcons name="arrow-back" style={styles.icon_back}/>
             </Pressable>
+
+            
            
                 <View style={{height: 80}} />
                 <Image source={require('./img/Dön.png')} style={styles.image}></Image>
@@ -50,7 +94,7 @@ const Donation = ( { onexit } ) => {
                 <View style={{height: 10}} />
                 <Text style={[styles.text]}>Gib uns einen Döner aus!</Text>
 
-                <Pressable onPress={onexit} style={({pressed}) => [{backgroundColor: pressed ? "#292929" : "#1E1E1E"},styles.close_text]}>
+                <Pressable onPress={hide} style={({pressed}) => [{backgroundColor: pressed ? "#292929" : "#1E1E1E"},styles.close_text]}>
                 </Pressable>
 
         </Animated.View>

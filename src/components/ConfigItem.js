@@ -66,6 +66,28 @@ const ConfigItem = ({ type, config, onToggle }) => {
             </Text>
           </>
         ) : null}
+        {type === "pipe" ? (
+          <>
+            <Image
+              style={active ? styles.pipe_img_active : styles.pipe_img}
+              source={require("./img/pipe.png")}
+            ></Image>
+            <Text style={active ? styles.label_active : styles.label}>
+              Pfeife
+            </Text>
+          </>
+        ) : null}
+        {type === "cookie" ? (
+          <>
+            <Image
+              style={active ? styles.cookie_img_active : styles.cookie_img}
+              source={require("./img/cookie.png")}
+            ></Image>
+            <Text style={active ? styles.label_active : styles.label}>
+              Edible
+            </Text>
+          </>
+        ) : null}
       </View>
     </Pressable>
   );
@@ -126,6 +148,28 @@ const styles = StyleSheet.create({
   vape_img_active: {
     height: 80,
     width: 45,
+    alignSelf: "center",
+  },
+  pipe_img: {
+    height: 80,
+    width: 45,
+    alignSelf: "center",
+    opacity: 0.5,
+  },
+  pipe_img_active: {
+    height: 80,
+    width: 45,
+    alignSelf: "center",
+  },
+  cookie_img: {
+    height: 80,
+    width: 75,
+    alignSelf: "center",
+    opacity: 0.5,
+  },
+  cookie_img_active: {
+    height: 80,
+    width: 75,
     alignSelf: "center",
   },
   label: {

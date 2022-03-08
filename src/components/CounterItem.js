@@ -13,6 +13,7 @@ import {
   Image,
   Pressable,
   Animated,
+  Easing
 } from "react-native";
 
 import { LinearGradient } from "expo-linear-gradient";
@@ -23,6 +24,17 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
   const [buttonPressed, setButtonPressed] = useState(false);
 
   const buttonFill = useRef(new Animated.Value(0)).current;
+
+  const scaleAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(scaleAnim,{
+      toValue: 1,
+      useNativeDriver: true,
+      duration: 400,
+      easing: Easing.bezier(0,1.02,.21,.97)
+    }).start();
+  },[]);
 
   buttonPressed
     ? Animated.timing(buttonFill, {
@@ -100,11 +112,12 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
     x == 5 ? (colors = ["#6236d0", "#3b1e83"]) : null;
     x == 6 ? (colors = ["#dc27f8", "#9c05b4"]) : null;
     x == 7 ? (colors = ["#f02e2e", "#ad0c0c"]) : null;
+    !x ? (colors = ["#50d036", "#2f831e"]) : null
     return colors;
   };
 
   return (
-    <View>
+    <Animated.View style={{transform: [{scale: scaleAnim}]}}>
       <LinearGradient
         colors={getGradientColors(Math.ceil(counter / 70))}
         style={{
@@ -143,6 +156,12 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
         {type === "vape" ? (
           <Image style={styles.vape_img} source={require("./img/vape.png")} />
         ) : null}
+        {type === "pipe" ? (
+          <Image style={styles.pipe_img} source={require("./img/pipe.png")} />
+        ) : null}
+        {type === "cookie" ? (
+          <Image style={styles.cookie_img} source={require("./img/cookie.png")} />
+        ) : null}
         <LevelImage index={Math.ceil(counter / 70)} />
         <Text style={styles.counter_number}>{counter}</Text>
         <Statusbar status={calcLevelStatus(counter)}></Statusbar>
@@ -177,7 +196,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
 
         {/* </Animated.View> */}
       </LinearGradient>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -199,28 +218,44 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   bong_img: {
-    width: 100,
+    width: 80,
+    height: 130,
+    position: "absolute",
+    alignSelf: "flex-start",
+    marginLeft: -30,
+    marginTop: 25,
+  },
+  joint_img: {
+    width: 50,
+    height: 130,
+    position: "absolute",
+    alignSelf: "flex-start",
+    marginLeft: -15,
+    marginTop: 25,
+  },
+  vape_img: {
+    width: 70,
+    height: 140,
+    position: "absolute",
+    alignSelf: "flex-start",
+    marginLeft: -30,
+    marginTop: 15,
+  },
+  pipe_img: {
+    width: 110,
     height: 170,
     position: "absolute",
     alignSelf: "flex-start",
     marginLeft: -35,
-    marginTop: 5,
-  },
-  joint_img: {
-    width: 60,
-    height: 180,
-    position: "absolute",
-    alignSelf: "flex-start",
-    marginLeft: -15,
     marginTop: -5,
   },
-  vape_img: {
+  cookie_img: {
     width: 100,
-    height: 170,
+    height: 110,
     position: "absolute",
     alignSelf: "flex-start",
-    marginLeft: -40,
-    marginTop: 5,
+    marginLeft: -30,
+    marginTop: 20,
   },
   add_pressable: {
     padding: 30,

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRef, useEffect } from 'react';
-import { StyleSheet, Image, View, Text, Pressable, Animated, Easing, Dimensions, TextInput, Modal, ActivityIndicator} from 'react-native';
+import { StyleSheet, Image, View, Text, Pressable, Animated, Easing, Dimensions, TextInput, Modal, ActivityIndicator, BackHandler } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import moment from "moment";
@@ -58,6 +58,22 @@ const Feedback = ( { onexit, user } ) => {
         PoppinsLight: require('./fonts/Poppins-Light.ttf')
     });
 
+    // Call back function when back button is pressed
+    const backActionHandler = () => {
+        hide();
+        return true;
+    };
+
+    useEffect(() => {
+
+        // Add event listener for hardware back button press on Android
+        BackHandler.addEventListener("hardwareBackPress", backActionHandler);
+    
+        return () =>
+          // clear/remove event listener
+          BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
+      }, []);
+    
     const hide = () => {
         Animated.timing(opacityAnim, {
             toValue: 0,
@@ -209,7 +225,7 @@ const Feedback = ( { onexit, user } ) => {
 
             <View style={{height: 20}}></View>
 
-            <Text style={{color: "#eb4034", fontFamily: "PoppinsLight", width: "90%", alignSelf: "center", fontSize: 15, textAlign: "center"}}>
+            <Text style={{color: "rgba(255,255,255,0.75)", fontFamily: "PoppinsLight", width: "80%", alignSelf: "center", fontSize: 15, textAlign: "left"}}>
             Beachte, dass du auf 1 Feedback alle 30 Tage bschränkt bist. </Text>
 
             </View>
