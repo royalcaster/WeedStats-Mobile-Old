@@ -4,9 +4,13 @@ import { useFonts } from 'expo-font';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Button from "./Button";
 import { useEffect, useRef } from 'react';
-import Feather from 'react-native-vector-icons/Feather'
 
 import Svg, { Circle } from 'react-native-svg'
+
+import { BlurView, VibrancyView } from "@react-native-community/blur";
+
+import CounterItem from "./CounterItem";
+
 
 const Login = ({ handleLogin }) => {
 
@@ -41,17 +45,33 @@ const Login = ({ handleLogin }) => {
 
             <View style={{height: 50}}></View>
 
-            <Image style={{height: 150, width: 150, alignSelf: "center"}} source={require('./img/logo.png')}/>
-            <Text style={{color: "white", fontSize: 35, fontFamily: "PoppinsBlack", textAlign: "center", marginTop: -15}}>WeedStats</Text>
-            
-            <View style={{zIndex: 1, position: "absolute", bottom: 0, width: "100%"}}> 
-                <Button fontColor={"black"} icon={icon} title={" Mit Google Anmelden"} borderradius={100} color={"white"} onPress={handleLogin} hovercolor={"rgba(0,0,0,0.15)"}/>
-                <View style={{height: 80}}></View>
+            <View style={{width: "100%", height: 200, position: "absolute", top: 0, zIndex: 2, backgroundColor: "#1E1E1E"}}>
+                <View style={{height: 30}}></View>
+                <Image style={{height: 100, width: 100, alignSelf: "center"}} source={require('./img/logo.png')}/>
+                <Text style={{color: "white", fontSize: 30, fontFamily: "PoppinsBlack", textAlign: "center", marginTop: -15}}>WeedStats</Text>
             </View>
 
-            <View style={{position: "absolute", height: 250, width: "100%", bottom: 0}}>
+            <BlurView
+                style={{height: "100%", width: "100%", position: "absolute", zIndex: 0}}
+                blurType="dark"
+                blurAmount={10}
+                reducedTransparencyFallbackColor="white"
+            />
+
+            <View style={{height: "100%", width: "100%", position: "absolute", zIndex: 0}}>
+                <CounterItem type={"joint"} counter={57}/>
+                <CounterItem type={"bong"} counter={274}/>
+                <CounterItem type={"vape"} counter={423}/>
+            </View>
+
+            <View style={{zIndex: 2, position: "absolute", bottom: 0, width: "100%"}}> 
+                <Button fontColor={"black"} icon={icon} title={" Mit Google Anmelden"} borderradius={100} color={"white"} onPress={handleLogin} hovercolor={"rgba(0,0,0,0.15)"}/>
+                <View style={{height: 40}}></View>
+            </View>
+
+            <View style={{position: "absolute", height: 250, width: "100%", bottom: 0, zIndex: 1}}>
                 <Svg height="100%" width="100%" style={{position: "absolute"}}>
-                    <Circle cx={screen_width / 2} cy={400} r={400} fill={"#0080FF"}/>
+                    <Circle cx={screen_width / 2} cy={500} r={400} fill={"#0080FF"}/>
                 </Svg>
             </View>
         </Animated.View>
