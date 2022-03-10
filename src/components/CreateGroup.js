@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
-import { Animated, View, Text, Pressable, StyleSheet, TextInput } from "react-native";
+import { Animated, View, Text, Pressable, StyleSheet, TextInput, Easing, Dimensions, TouchableNativeFeedback } from "react-native";
 import { useFonts } from 'expo-font';
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -12,44 +12,78 @@ const CreateGroup = ({ user, onCreate, onexit }) => {
         PoppinsLight: require('./fonts/Poppins-Light.ttf')
     });
 
+    const windowHeight = Dimensions.get('window').height;
+    const slideAnim = useRef(new Animated.Value(windowHeight)).current;
+
+    const [rippleColor, setRippleColor] = useState("rgba(255,255,255,0.15)");
+    const [rippleOverflow, setRippleOverflow] = useState(false);
+
+    useEffect(() => {
+        Animated.timing(
+            slideAnim, {
+                toValue: 0,
+                duration: 350,
+                useNativeDriver: true,
+                easing: Easing.bezier(0,1.02,.21,.97),
+            }
+        ).start();
+    },[]);
+
     const [groupData, setGroupData] = useState({
         title: "",
         admin: user.username,
         id: "",
-        members: [],
-        createdon: ""
+        members: [{index: 0, name: user.username, latestonline: 0}],
+        createdon: "",
+        messages: []
     });
 
     return (
-    <Animated.View style={styles.container}>
+    <Animated.View style={[styles.container,{transform: [{translateY: slideAnim}]}]}>
 
         <View style={{height: 50}}></View>
 
         <View style={{alignItems: "center", flexDirection: "row"}}>                 
-                <FontAwesome name="plus" style={{fontSize: 25, color: "#c4c4c4", marginLeft: 20}}/>
+                <FontAwesome name="plus" style={{fontSize: 25, color: "white", marginLeft: 20}}/>
                 <Text style={styles.heading}>Gruppe erstellen</Text>
         </View>
 
         <View style={{height: 50}}></View>
         
         <View style={{width: "80%", alignSelf: "center"}}>
-            <Text style={styles.label}>Name der Gruppe</Text>
+            <Text style={styles.label}>Name der Gruppe: <Text style={{color: "#0080FF"}}>{groupData.title}</Text></Text>
             <TextInput style={styles.input} value={groupData.title} onChangeText={text => setGroupData({...groupData, title: text})} spellCheck={false}></TextInput>
         </View>
 
         <View style={{height: 50}}></View>
 
-        <View style={{flexDirection: "row", width: "90%", alignSelf: "center"}}>
-            <Pressable onPress={onexit} style={({pressed}) => [{backgroundColor: pressed ? "#404040" : "#4a4a4a"},styles.button]} /* onPress={onExit} */><Text style={styles.text}>Abbrechen</Text></Pressable>
-            <View style={{width: 10}}></View>
-            <Pressable onPress={() => {
+        <View style={{flexDirection: "row", width: "90%", alignSelf: "center", height: 50}}>
+
+        <View style={{borderRadius: 100, overflow: "hidden", flex: 1,}}>
+            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(rippleColor, false)} onPress={onexit}>
+                <View style={styles.touchable}>
+                    <Text style={styles.text}>Abbrechen</Text>
+                </View>
+            </TouchableNativeFeedback>
+        </View>
+
+        <View style={{width: 15}}></View> 
+
+        <View style={{borderRadius: 100, overflow: "hidden", flex: 1,}}>
+            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(rippleColor, false)} onPress={() => {
                 if (groupData.title.length > 0) {
                     onCreate(groupData); onexit()
                 }
                 else {
                     alert("Bitte Namen der Gruppe angeben!");
                 }
-                }} style={({pressed}) => [{backgroundColor: pressed ? "#0072e3" : "#0080FF"},styles.button]} /* onPress={onCreate} */><Text style={styles.text}>Erstellen</Text></Pressable>
+                }}>
+                <View style={[styles.touchable,{backgroundColor: "#0080FF"}]}>
+                <Text style={styles.text}>Erstellen</Text>
+                </View>
+            </TouchableNativeFeedback>
+        </View>
+
         </View>
     </Animated.View>);
 }
@@ -63,15 +97,15 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontFamily: "PoppinsBlack",
-        color: "#c4c4c4",
+        color: "white",
         fontSize: 20,
         marginLeft: 10
     },
     label: {
-        fontFamily: "PoppinsLight",
-        color: "#8a8a8a",
-        fontSize: 16,
-        marginLeft: 25
+        fontFamily: "PoppinsMedium",
+        color: "rgba(255,255,255,0.75)",
+        textAlign: "center",
+        fontSize: 14,
     },
     input: {
         height: 60,
@@ -94,6 +128,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: "PoppinsBlack",
         textAlignVertical: "center",
-        color: "#d1d1d1"
+        color: "white"
+    },
+    touchable: {
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "column",
+        backgroundColor: "rgba(255,255,255,0.25)",
+        flex: 1,
     }
 });

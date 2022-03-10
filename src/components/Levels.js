@@ -1,9 +1,10 @@
 import React from "react";
 import { useEffect, useRef } from "react";
-import { View, Image, StyleSheet, Text, Animated, Pressable } from 'react-native';
+import { View, Image, StyleSheet, Text, Animated, Pressable, Easing, BackHandler } from 'react-native';
 import { useFonts } from 'expo-font';
 
 import Feather from 'react-native-vector-icons/Feather';
+import Button from "./Button";
 
 const Levels = ({onexit}) => {
 
@@ -15,10 +16,43 @@ const Levels = ({onexit}) => {
           {
             toValue: 1,
             duration: 200,
+            easing: Easing.bezier(0,1.02,.21,.97),
             useNativeDriver: true,
           }
         ).start();
       }, [fadeAnim])
+
+    // Call back function when back button is pressed
+    const backActionHandler = () => {
+        hide();
+        return true;
+    };
+
+    useEffect(() => {
+
+        // Add event listener for hardware back button press on Android
+        BackHandler.addEventListener("hardwareBackPress", backActionHandler);
+    
+        return () =>
+          // clear/remove event listener
+          BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
+      }, []);
+
+    const hide = () => {
+        Animated.timing(
+            fadeAnim,
+            {
+              toValue: 0,
+              duration: 200,
+              easing: Easing.bezier(0,1.02,.21,.97),
+              useNativeDriver: true,
+            }
+          ).start(({finished}) => {
+            if (finished) {
+                onexit();
+            }
+        });
+    }  
 
     const [loaded] = useFonts({
         PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
@@ -28,7 +62,7 @@ const Levels = ({onexit}) => {
     return (
         <Animated.View style={[{opacity: fadeAnim},styles.container]}>
 
-        <View style={{height: 50}}></View>
+        <View style={{height: 60}}></View>
 
             <View style={{
                 alignSelf: "center",
@@ -158,16 +192,7 @@ const Levels = ({onexit}) => {
                 </View>
             </View>
 
-            <Pressable onPress={onexit} style={ ({pressed}) => [{backgroundColor: pressed ? "#b32d24" : "#eb4034"},styles.cancelButton]}>
-                    <Text style={{
-                    color: "white",
-                    fontSize: 18,
-                    fontFamily: "PoppinsLight",
-                    alignSelf: "center"
-                    }}>
-                        <Feather name="arrow-left" style={styles.cancel_icon}/>Zurück
-                    </Text>
-                </Pressable>
+            <Button title={"Zurück"} icon={<Feather name="arrow-left" style={styles.cancel_icon}/>} color={"#eb4034"} fontColor={"white"} onPress={() => hide()} borderradius={100}/>
 
         </Animated.View>
     );
@@ -179,8 +204,10 @@ const styles = StyleSheet.create({
     container: {
         marginTop: 0,
         width: "100%",
-        height: "95%",
-        justifyContent: "center"
+        height: "100%",
+        justifyContent: "center",
+        backgroundColor: "#1E1E1E",
+        paddingBottom: 30 
     },
     lvl_img: {
         height: 80,
@@ -215,6 +242,7 @@ const styles = StyleSheet.create({
         fontSize: 25,
         color: "white",
         textAlignVertical: "center",
-        top: 5
+        position: "relative",
+        marginTop: 20
     }
 });

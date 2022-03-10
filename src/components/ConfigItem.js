@@ -25,8 +25,7 @@ const ConfigItem = ({ type, config, onToggle }) => {
         setActive(!active);
       }}
       style={{
-        width: 350,
-        alignSelf: "center",
+        flex: 1
       }}
     >
       <View style={active ? styles.container_active : styles.container}>
@@ -67,6 +66,28 @@ const ConfigItem = ({ type, config, onToggle }) => {
             </Text>
           </>
         ) : null}
+        {type === "pipe" ? (
+          <>
+            <Image
+              style={active ? styles.pipe_img_active : styles.pipe_img}
+              source={require("./img/pipe.png")}
+            ></Image>
+            <Text style={active ? styles.label_active : styles.label}>
+              Pfeife
+            </Text>
+          </>
+        ) : null}
+        {type === "cookie" ? (
+          <>
+            <Image
+              style={active ? styles.cookie_img_active : styles.cookie_img}
+              source={require("./img/cookie.png")}
+            ></Image>
+            <Text style={active ? styles.label_active : styles.label}>
+              Edible
+            </Text>
+          </>
+        ) : null}
       </View>
     </Pressable>
   );
@@ -76,27 +97,25 @@ export default ConfigItem;
 
 const styles = StyleSheet.create({
   container: {
-    height: 170,
-    width: 350,
-    alignSelf: "center",
+    paddingTop: 10,
+    margin: 10,
     marginBottom: 30,
     borderRadius: 25,
     justifyContent: "center",
     textAlign: "center",
     backgroundColor: "#171717",
-    display: "flex",
   },
   container_active: {
-    height: 170,
-    width: 350,
-    alignSelf: "center",
+    paddingTop: 10,
+    margin: 10,
     marginBottom: 30,
     borderRadius: 25,
     justifyContent: "center",
     textAlign: "center",
+    backgroundColor: "#171717",
+
     borderColor: "#0781E1",
     borderWidth: 3,
-    backgroundColor: "#171717",
   },
   bong_img: {
     height: 80,
@@ -131,33 +150,57 @@ const styles = StyleSheet.create({
     width: 45,
     alignSelf: "center",
   },
+  pipe_img: {
+    height: 80,
+    width: 45,
+    alignSelf: "center",
+    opacity: 0.5,
+  },
+  pipe_img_active: {
+    height: 80,
+    width: 45,
+    alignSelf: "center",
+  },
+  cookie_img: {
+    height: 80,
+    width: 75,
+    alignSelf: "center",
+    opacity: 0.5,
+  },
+  cookie_img_active: {
+    height: 80,
+    width: 75,
+    alignSelf: "center",
+  },
   label: {
     color: "white",
-    fontSize: 18,
+    fontSize: 13,
     fontFamily: "PoppinsLight",
     marginTop: 10,
+    marginBottom: 5,
     opacity: 0.5,
     alignSelf: "center",
   },
   label_active: {
     color: "white",
-    fontSize: 18,
+    fontSize: 13,
     fontFamily: "PoppinsLight",
     marginTop: 10,
+    marginBottom: 5,
     alignSelf: "center",
   },
   checkbox: {
     color: "#666666",
-    fontSize: 35,
+    fontSize: 20,
     position: "absolute",
-    top: 20,
-    left: 20,
+    top: 10,
+    left: 10,
   },
   checkbox_active: {
     color: "#0781E1",
-    fontSize: 35,
+    fontSize: 20,
     position: "absolute",
-    top: 20,
-    left: 20,
+    top: 10,
+    left: 10
   },
 });

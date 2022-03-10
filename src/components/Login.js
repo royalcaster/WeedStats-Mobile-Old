@@ -1,9 +1,31 @@
 import React from "react";
-import { ImageBackgroundBase, StyleSheet, Text, TouchableWithoutFeedbackBase, View, Button, Pressable, Image } from 'react-native';
+import { ImageBackgroundBase, StyleSheet, Text, TouchableNativeFeedback, View, Pressable, Image, Animated, Dimensions } from 'react-native';
 import { useFonts } from 'expo-font';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Button from "./Button";
+import { useEffect, useRef } from 'react';
+import Feather from 'react-native-vector-icons/Feather'
+
+import Svg, { Circle } from 'react-native-svg'
 
 const Login = ({ handleLogin }) => {
+
+    const icon = <FontAwesome name="google" style={{fontSize: 25, color: "black"}}/>
+
+    const screen_width = Dimensions.get("screen").width;
+    const screen_height = Dimensions.get("screen").height;
+
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        Animated.timing(
+            fadeAnim, {
+                toValue: 1,
+                duration: 400,
+                useNativeDriver: true
+            }
+        ).start();
+    },[]);
 
     const [loaded] = useFonts({
         PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
@@ -15,31 +37,39 @@ const Login = ({ handleLogin }) => {
       }
 
     return (
-        <View style={styles.login_container}>
+        <Animated.View style={[{opacity: fadeAnim},styles.login_container]}>
 
-            <Image style={styles.login_logo} source={require('./img/logo_glow.png')}/>
+            <View style={{height: 50}}></View>
 
-            <Text style={styles.login_heading}>WeedStats</Text>
-            <Pressable style={({pressed}) => [{backgroundColor: pressed ? "#c9c9c9" : "white"},styles.login_pressable]} onPress={handleLogin}>
-                <FontAwesome name="google" style={{fontSize: 30}}/><View style={{width: 10}}/><Text style={styles.login_pressable_text}> Mit Google anmelden</Text>
-            </Pressable>
-        </View>
+            <Image style={{height: 150, width: 150, alignSelf: "center"}} source={require('./img/logo.png')}/>
+            <Text style={{color: "white", fontSize: 35, fontFamily: "PoppinsBlack", textAlign: "center", marginTop: -15}}>WeedStats</Text>
+            
+            <View style={{zIndex: 1, position: "absolute", bottom: 0, width: "100%"}}> 
+                <Button fontColor={"black"} icon={icon} title={" Mit Google Anmelden"} borderradius={100} color={"white"} onPress={handleLogin} hovercolor={"rgba(0,0,0,0.15)"}/>
+                <View style={{height: 80}}></View>
+            </View>
+
+            <View style={{position: "absolute", height: 250, width: "100%", bottom: 0}}>
+                <Svg height="100%" width="100%" style={{position: "absolute"}}>
+                    <Circle cx={screen_width / 2} cy={400} r={400} fill={"#0080FF"}/>
+                </Svg>
+            </View>
+        </Animated.View>
     );
 }
 
 const styles = StyleSheet.create({
     login_container: {
-        justifyContent: "center",
         backgroundColor: "#1E1E1E",
-        alignItems: "center",
         height: "100%"
     },
     login_heading: {
-        color: "white",
-        fontSize: 50,
+        color: "#1E1E1E",
+        fontSize: 25,
         fontFamily: "PoppinsBlack",
         textAlign: "center",
-        marginTop: 20
+        textAlignVertical: "center",
+        marginTop: 10
     },
     login_pressable: {
         borderWidth: 2,
@@ -49,7 +79,9 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         marginTop: 20,
         flexDirection: "row",
-        alignItems: "center"
+        alignItems: "center",
+        backgroundColor: "white",
+        overflow: "hidden"
     },
     login_pressable_text: {
         color: "white",
@@ -59,8 +91,29 @@ const styles = StyleSheet.create({
         color: "#1E1E1E"
     },
     login_logo: {
-        width: 280,
-        height: 280
+        width: 80,
+        height: 80,
+        alignSelf: "center"
+    },
+    info_container: {
+        width: "85%",
+        flex: 4,
+        backgroundColor: "#1E1E1E",
+        alignSelf: "center",
+        borderRadius: 20
+    },
+    info_icon: {
+        color: "white",
+        alignSelf: "center",
+        fontSize: 70,
+    },
+    text: {
+        color: "white",
+        fontFamily: "PoppinsLight",
+        width: "85%",
+        alignSelf: "center",
+        textAlign: "center",
+        fontSize: 15
     }
 });
 

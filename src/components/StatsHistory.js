@@ -5,17 +5,19 @@ import {
   StyleSheet,
   Image,
   View,
+  FlatList,
   Text,
   Pressable,
   ScrollView,
-  Animated, Easing
+  Animated,
+  Easing,
 } from "react-native";
 
-import HistoryTable from "./HistoryTable";
+import HistoryItem from "./HistoryItem";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-const StatsHistory = ({ user, history, ondelete }) => {
+const StatsHistory = ({ history, showOnMap }) => {
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
@@ -31,16 +33,20 @@ const StatsHistory = ({ user, history, ondelete }) => {
     }).start();
   }, []);
 
+  const renderItem = ({ item }) => (
+    <HistoryItem event={item} showOnMap={showOnMap} />
+  );
+
   return (
-    
-    <ScrollView style={styles.container}>
-      <Animated.View style={{opacity: fadeAnim}}>
+    <>
+      <View style={{ height: 10 }}></View>
 
-        <View style={{height: 10}}></View>
-
-        <HistoryTable user={user} history={history} ondelete={ondelete}/>
-      </Animated.View>
-    </ScrollView>
+      <FlatList
+        data={history.slice().reverse()}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.number}
+      />
+    </>
   );
 };
 
@@ -60,6 +66,6 @@ const styles = StyleSheet.create({
     fontFamily: "PoppinsBlack",
     color: "#c4c4c4",
     fontSize: 20,
-    marginLeft: 10
-},
+    marginLeft: 10,
+  },
 });

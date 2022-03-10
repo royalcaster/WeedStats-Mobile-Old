@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Animated,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   ScrollView,
   Pressable,
   Dimensions,
+  Easing
 } from "react-native";
 import { useFonts } from "expo-font";
 import { useState, useRef } from "react";
@@ -16,12 +17,14 @@ import { Appearance, useColorScheme } from "react-native";
 
 import Stats from "./Stats";
 import Main from "./Main";
-import Map from './Map';
+import Map from "./Map";
 import Config from "./Config";
 import Groups from "./Groups";
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Entypo from "react-native-vector-icons/Entypo";
+import Button from "./Button";
+import MenuButton from "./MenuButton";
 
 export default function Home({
   user,
@@ -36,6 +39,7 @@ export default function Home({
 
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
+    PoppinsMedium: require("./fonts/Poppins-Medium.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
   });
 
@@ -44,7 +48,7 @@ export default function Home({
   }
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={[{opacity: 1},styles.container]}>
       <View style={styles.content_container}>
         {view == "main" ? (
           <Main
@@ -54,7 +58,7 @@ export default function Home({
           />
         ) : null}
         {view == "stats" ? <Stats user={user} /> : null}
-        {view == "map" ? <Map /> : null}
+        {view == "map" ? <Map user={user}/> : null}
         {view == "config" ? (
           <Config statConfig={statConfig} toggleConfig={toggleConfig} />
         ) : null}
@@ -65,134 +69,94 @@ export default function Home({
 
       <View style={styles.footer_container}>
         <View style={styles.options_container}>
-          <Pressable
+          <View style={{flexDirection: "row", width: "100%"}}>
+          <MenuButton
             onPress={() => {
               setView("stats");
             }}
-            style={({ pressed }) => [
-              { backgroundColor: pressed ? "#292929" : "#1E1E1E" },
-              styles.options_pressable,
-            ]}
-          >
-            <Entypo
-              name="area-graph"
-              style={[
-                { color: view == "stats" ? "#e0e0e0" : "#4a4a4a" },
-                styles.settings_icon,
-              ]}
-            />
-            <Text
-              style={[
-                { color: view == "stats" ? "white" : "#4a4a4a" },
-                styles.options_pressable_label,
-              ]}
-            >
-              Stats
-            </Text>
-          </Pressable>
-          <Pressable
+            selected={view == "stats"}
+            title={"Stats"}
+            icon={
+              <Entypo
+                name="area-graph"
+                style={[
+                  { color: view == "stats" ? "#e0e0e0" : "#4a4a4a" },
+                  styles.settings_icon,
+                ]}
+              />
+            }
+          />
+          <MenuButton
             onPress={() => {
               setView("map");
             }}
-            style={({ pressed }) => [
-              { backgroundColor: pressed ? "#292929" : "#1E1E1E" },
-              styles.options_pressable,
-            ]}
-          >
-            <FontAwesome
-              name="map-marker"
-              style={[
-                { color: view == "map" ? "#e0e0e0" : "#4a4a4a" },
-                styles.settings_icon,
-              ]}
-            />
-            <Text
-              style={[
-                { color: view == "map" ? "white" : "#4a4a4a" },
-                styles.options_pressable_label,
-              ]}
-            >
-              Karte
-            </Text>
-          </Pressable>
-          <Pressable
+            selected={view == "map"}
+            title={"Karte"}
+            icon={
+              <FontAwesome
+                name="map-marker"
+                style={[
+                  { color: view == "map" ? "#e0e0e0" : "#4a4a4a" },
+                  styles.settings_icon,
+                ]}
+              />
+            }
+          />
+          <MenuButton
+            type={"img"}
+            url={
+              view == "main"
+                ? require("./img/logo.png")
+                : require("./img/logo_bw.png")
+            }
             onPress={() => {
               setView("main");
             }}
-            style={({ pressed }) => [
-              { backgroundColor: pressed ? "#292929" : "#1E1E1E" },
-              styles.options_pressable,
-            ]}
-          >
-            <Image
-              style={styles.pressable_profileimg}
-              source={
-                view == "main"
-                  ? require("./img/logo.png")
-                  : require("./img/logo_bw.png")
-              }
-            />
-          </Pressable>
-          <Pressable
+          />
+          <MenuButton
             onPress={() => {
               setView("config");
             }}
-            style={({ pressed }) => [
-              { backgroundColor: pressed ? "#292929" : "#1E1E1E" },
-              styles.options_pressable,
-            ]}
-          >
-            <FontAwesome
-              name="sliders"
-              style={[
-                { color: view == "config" ? "#e0e0e0" : "#4a4a4a" },
-                styles.settings_icon,
-              ]}
-            />
-            <Text
-              style={[
-                { color: view == "config" ? "white" : "#4a4a4a" },
-                styles.options_pressable_label,
-              ]}
-            >
-              Settings
-            </Text>
-          </Pressable>
-          <Pressable
+            selected={view == "config"}
+            title={"Settings"}
+            icon={
+              <FontAwesome
+                name="sliders"
+                style={[
+                  { color: view == "config" ? "#e0e0e0" : "#4a4a4a" },
+                  styles.settings_icon,
+                ]}
+              />
+            }
+          />
+          <MenuButton
             onPress={() => {
               setView("groups");
             }}
-            style={({ pressed }) => [
-              { backgroundColor: pressed ? "#292929" : "#1E1E1E" },
-              styles.options_pressable,
-            ]}
-          >
-            <FontAwesome
-              name="user"
-              style={[
-                { color: view == "groups" ? "#e0e0e0" : "#4a4a4a" },
-                styles.settings_icon,
-              ]}
-            />
-            <Text
-              style={[
-                { color: view == "groups" ? "white" : "#4a4a4a" },
-                styles.options_pressable_label,
-              ]}
-            >
-              Social
-            </Text>
-          </Pressable>
+            selected={view == "groups"}
+            title={"Social"}
+            icon={
+              <FontAwesome
+                name="user"
+                style={[
+                  { color: view == "groups" ? "#e0e0e0" : "#4a4a4a" },
+                  styles.settings_icon,
+                ]}
+              />
+            }
+          />
+          </View>
         </View>
       </View>
-    </View>
+        
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#171717",
     alignItems: "center",
   },
   header_container: {
@@ -240,13 +204,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingBottom: 0,
     paddingTop: 0,
-    marginBottom: 10,
   },
   options_container: {
     width: "100%",
     bottom: 0,
     position: "absolute",
-    flexDirection: "row",
+    flexDirection: "column",
     maxWidth: 700,
     height: "100%",
     backgroundColor: "#1E1E1E",
@@ -286,8 +249,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   pressable_profileimg: {
-    height: 50,
-    width: 50,
+    height: 70,
+    width: 70,
     alignSelf: "center",
     marginBottom: 5,
   },
@@ -299,6 +262,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#171717",
     justifyContent: "center",
+    zIndex:10
   },
   options_pressable_label: {
     fontFamily: "PoppinsLight",
