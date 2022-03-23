@@ -14,22 +14,11 @@ import {
   Easing,
 } from "react-native";
 
-import { ref, query, onChildAdded } from "firebase/database";
-import { db } from "./FirebaseConfig";
-
 import toGermanDate from "../DateConversion";
 
-import SwitchSelector from 'react-native-switch-selector'
+import SwitchSelector from "react-native-switch-selector";
 
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart,
-  graphStyle,
-} from "react-native-chart-kit";
+import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
 
 const StatsDashboard = ({ user, localData }) => {
   const [loaded] = useFonts({
@@ -190,6 +179,13 @@ const StatsDashboard = ({ user, localData }) => {
   };
 
   const createLineChartData = (array, datapoints) => {
+    if (array.length == 0) {
+      return [
+        ["keine Angaben", "keine Angaben"],
+        [0, 0],
+      ];
+    }
+
     const first = array[0].timestamp;
     const step = (Date.now() - first) / datapoints;
     let chartData = new Array(datapoints).fill(0);
@@ -233,48 +229,71 @@ const StatsDashboard = ({ user, localData }) => {
     { label: "Gesamt", value: 0 },
     { label: "Joint", value: 1 },
     { label: "Bong", value: 2 },
-    { label: "Vape", value: 3 }
+    { label: "Vape", value: 3 },
+    { label: "Pfeife", value: 4 },
+    { label: "Edible", value: 5 },
   ];
 
   const options_time = [
-    { label: "Gesamt", value: 4 },
-    { label: "letzte Woche", value: 5 },
-    { label: "letzter Monat", value: 6 },
-    { label: "letztes Jahr", value: 7 }
+    { label: "Gesamt", value: 6 },
+    { label: "letzte Woche", value: 7 },
+    { label: "letzter Monat", value: 8 },
+    { label: "letztes Jahr", value: 9 },
   ];
 
   const toggleSelection = (index) => {
-    switch(index){
-      case 0: setSelectedType("main"); break;
-      case 1: setSelectedType("joint"); break;
-      case 2: setSelectedType("bong"); break;
-      case 3: setSelectedType("vape"); break;
-      case 4: setSelectedTime(0); break;
-      case 5: setSelectedTime(7); break;
-      case 6: setSelectedTime(30); break;
-      case 7: setSelectedTime(365); break;
+    switch (index) {
+      case 0:
+        setSelectedType("main");
+        break;
+      case 1:
+        setSelectedType("joint");
+        break;
+      case 2:
+        setSelectedType("bong");
+        break;
+      case 3:
+        setSelectedType("vape");
+        break;
+      case 4:
+        setSelectedType("pipe");
+        break;
+      case 5:
+        setSelectedType("cookie");
+        break;
+      case 6:
+        setSelectedTime(0);
+        break;
+      case 7:
+        setSelectedTime(7);
+        break;
+      case 8:
+        setSelectedTime(30);
+        break;
+      case 9:
+        setSelectedTime(365);
+        break;
     }
-  }
+  };
 
   return (
     <ScrollView style={styles.container}>
       <Animated.View style={{ opacity: fadeAnim, alignItems: "center" }}>
-
-        <View style={{height: 20}}></View>
+        <View style={{ height: 20 }}></View>
         <Text style={styles.heading2}>Überblick</Text>
-        <View style={{height: 10}}></View>
+        <View style={{ height: 10 }}></View>
 
-        <View style={{width: "95%"}}>
-          <SwitchSelector 
-            options={options_type} 
-            initial={0} 
-            onPress={value => toggleSelection(value)}
+        <View style={{ width: "95%" }}>
+          <SwitchSelector
+            options={options_type}
+            initial={0}
+            onPress={(value) => toggleSelection(value)}
             textColor={"white"}
             backgroundColor={"#171717"}
             selectedColor={"white"}
             buttonColor={"#0080FF"}
-            textStyle={{fontFamily: "PoppinsLight"}}
-            selectedTextStyle={{fontFamily: "PoppinsLight"}}
+            textStyle={{ fontFamily: "PoppinsLight" }}
+            selectedTextStyle={{ fontFamily: "PoppinsLight" }}
           />
         </View>
 
@@ -362,10 +381,30 @@ const StatsDashboard = ({ user, localData }) => {
           </Pressable>
         </View> */}
 
-
         <View style={{ height: 10 }}></View>
 
         <View style={{ alignItems: "center", flex: 1 }}>
+          {selectedType === "joint" ? (
+            <Image
+              style={styles.joint_img}
+              source={require("./img/joint.png")}
+            />
+          ) : null}
+          {selectedType === "bong" ? (
+            <Image style={styles.bong_img} source={require("./img/bong.png")} />
+          ) : null}
+          {selectedType === "vape" ? (
+            <Image style={styles.vape_img} source={require("./img/vape.png")} />
+          ) : null}
+          {selectedType === "pipe" ? (
+            <Image style={styles.pipe_img} source={require("./img/pipe.png")} />
+          ) : null}
+          {selectedType === "cookie" ? (
+            <Image
+              style={styles.cookie_img}
+              source={require("./img/cookie.png")}
+            />
+          ) : null}
           <Text
             style={{
               fontSize: 60,
@@ -382,7 +421,7 @@ const StatsDashboard = ({ user, localData }) => {
             style={{
               fontSize: 18,
               color: "#0080FF",
-              fontFamily: "PoppinsLight",
+              fontFamily: "PoppinsBlack",
             }}
           >
             Ø Tag
@@ -438,7 +477,9 @@ const StatsDashboard = ({ user, localData }) => {
             {selectedType === "main" ? "Einträge" : null}
             {selectedType === "joint" ? "Joints" : null}
             {selectedType === "bong" ? "Bongs" : null}
-            {selectedType === "vape" ? "Vapes" : null} in den letzten
+            {selectedType === "vape" ? "Vapes" : null}
+            {selectedType === "pipe" ? "Pfeifen" : null}
+            {selectedType === "cookie" ? "Edibles" : null} in den letzten
           </Text>
           <View
             style={{
@@ -568,25 +609,25 @@ const StatsDashboard = ({ user, localData }) => {
             </>
           ) : null}
 
-          <View style={{height: 20}}></View>
+          <View style={{ height: 20 }}></View>
 
           <Text style={styles.heading2}>Grafiken</Text>
-          <View style={{height: 10}}></View>
+          <View style={{ height: 10 }}></View>
 
-            <SwitchSelector
-              options={options_time} 
-              initial={0}
-              onPress={value => toggleSelection(value)}
-              textColor={"white"}
-              backgroundColor={"#171717"}
-              selectedColor={"white"}
-              buttonColor={"#0080FF"}
-              textStyle={{fontFamily: "PoppinsLight"}}
-              selectedTextStyle={{fontFamily: "PoppinsLight"}}
-              style={{width: "95%"}}
-            />
+          <SwitchSelector
+            options={options_time}
+            initial={0}
+            onPress={(value) => toggleSelection(value)}
+            textColor={"white"}
+            backgroundColor={"#171717"}
+            selectedColor={"white"}
+            buttonColor={"#0080FF"}
+            textStyle={{ fontFamily: "PoppinsLight" }}
+            selectedTextStyle={{ fontFamily: "PoppinsLight" }}
+            style={{ width: "95%" }}
+          />
 
-         {/*  <View
+          {/*  <View
             style={{
               flexDirection: "row",
               width: "98%",
@@ -779,6 +820,26 @@ const StatsDashboard = ({ user, localData }) => {
                   legendFontColor: "#7F7F7F",
                   legendFontSize: 15,
                 },
+                {
+                  name: "Pfeife",
+                  count: filterByMostRecent(
+                    filterByType(localData, "pipe"),
+                    selectedTime
+                  ).length,
+                  color: "#0080FF",
+                  legendFontColor: "#7F7F7F",
+                  legendFontSize: 15,
+                },
+                {
+                  name: "Edible",
+                  count: filterByMostRecent(
+                    filterByType(localData, "cookie"),
+                    selectedTime
+                  ).length,
+                  color: "red",
+                  legendFontColor: "#7F7F7F",
+                  legendFontSize: 15,
+                },
               ]}
               width={Dimensions.get("window").width}
               height={250}
@@ -789,7 +850,6 @@ const StatsDashboard = ({ user, localData }) => {
               }}
               accessor={"count"}
               paddingLeft={"15"}
-              avoidFalseZero={true}
             />
           ) : null}
         </View>
@@ -819,7 +879,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     borderRadius: 25,
     borderTopColor: "#0080FF",
-    borderTopWidth: 2
+    borderTopWidth: 2,
   },
   card_label: {
     color: "#8a8a8a",
@@ -891,6 +951,38 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: "PoppinsBlack",
     marginLeft: 20,
-    alignSelf: "flex-start"
+    alignSelf: "flex-start",
+  },
+  bong_img: {
+    width: 80,
+    height: 130,
+    position: "absolute",
+    opacity: 0.7,
+  },
+  joint_img: {
+    width: 50,
+    height: 130,
+    position: "absolute",
+    opacity: 0.7,
+  },
+  vape_img: {
+    width: 70,
+    height: 140,
+    position: "absolute",
+    opacity: 0.7,
+    marginTop: -5,
+  },
+  pipe_img: {
+    width: 110,
+    height: 170,
+    position: "absolute",
+    opacity: 0.7,
+    marginTop: -10,
+  },
+  cookie_img: {
+    width: 100,
+    height: 110,
+    position: "absolute",
+    opacity: 0.7,
   },
 });

@@ -13,7 +13,7 @@ import {
   Image,
   Pressable,
   Animated,
-  Easing
+  Easing,
 } from "react-native";
 
 import { LinearGradient } from "expo-linear-gradient";
@@ -28,13 +28,13 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
   const scaleAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(scaleAnim,{
+    Animated.timing(scaleAnim, {
       toValue: 1,
       useNativeDriver: true,
       duration: 400,
-      easing: Easing.bezier(0,1.02,.21,.97)
+      easing: Easing.bezier(0, 1.02, 0.21, 0.97),
     }).start();
-  },[]);
+  }, []);
 
   buttonPressed
     ? Animated.timing(buttonFill, {
@@ -112,12 +112,12 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
     x == 5 ? (colors = ["#6236d0", "#3b1e83"]) : null;
     x == 6 ? (colors = ["#dc27f8", "#9c05b4"]) : null;
     x == 7 ? (colors = ["#f02e2e", "#ad0c0c"]) : null;
-    !x ? (colors = ["#50d036", "#2f831e"]) : null
+    !x ? (colors = ["#50d036", "#2f831e"]) : null;
     return colors;
   };
 
   return (
-    <Animated.View style={{transform: [{scale: scaleAnim}]}}>
+    <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
       <LinearGradient
         colors={getGradientColors(Math.ceil(counter / 70))}
         style={{
@@ -160,7 +160,10 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
           <Image style={styles.pipe_img} source={require("./img/pipe.png")} />
         ) : null}
         {type === "cookie" ? (
-          <Image style={styles.cookie_img} source={require("./img/cookie.png")} />
+          <Image
+            style={styles.cookie_img}
+            source={require("./img/cookie.png")}
+          />
         ) : null}
         <LevelImage index={Math.ceil(counter / 70)} />
         <Text style={styles.counter_number}>{counter}</Text>
