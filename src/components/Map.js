@@ -266,8 +266,8 @@ const Map = ({ user }) => {
               return (<View>{renderItem(marker)}</View>);
             })}
           </Pages>
+          
         </View> : null}
-
         </View>
     </ScrollView>
     )
@@ -311,7 +311,8 @@ const styles = StyleSheet.create({
       position: "absolute",
       zIndex: 2,
       bottom: 55,
-      padding: 0
+      padding: 0,
+      marginBottom: 20
     },
     touchable: {
       width: "100%",
@@ -327,6 +328,14 @@ const styles = StyleSheet.create({
 });
 
 const mapStyle = [
+    {
+      "elementType": "labels",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
+    },
     {
       "elementType": "geometry",
       "stylers": [

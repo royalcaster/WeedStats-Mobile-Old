@@ -7,6 +7,8 @@ import moment from "moment";
 
 import { useFonts } from 'expo-font';
 
+import BackButton from './BackButton';
+
 import Button from './Button';
 
 import RNTextArea from "@freakycoder/react-native-text-area";
@@ -164,10 +166,9 @@ const Feedback = ( { onexit, user } ) => {
 
             {loading ? <View style={{flex: 1, alignItems: "center"}}><View style={{height: 200}}></View><ActivityIndicator size={"large"} color={"#0080FF"}/></View> : <>
             <View style={{flexDirection: "row", alignContent: "center", alignItems: "center"}}>
-                    <Pressable onPress={onexit} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : "#1E1E1E+"}, styles.pressable_back]}>
-                        <MaterialIcons name="arrow-back" style={styles.icon_back}/>
-                        
-                    </Pressable>
+                <View style={{marginLeft: 20}}>
+                    <BackButton onPress={() => hide()}/>
+                </View>
                 <Text style={styles.heading}>Feedback senden</Text>
             </View>
 

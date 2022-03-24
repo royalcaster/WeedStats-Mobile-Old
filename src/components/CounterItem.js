@@ -118,6 +118,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
 
   return (
     <Animated.View style={{transform: [{scale: scaleAnim}]}}>
+      
       <LinearGradient
         colors={getGradientColors(Math.ceil(counter / 70))}
         style={{
@@ -132,6 +133,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
           /* opacity: fadeAnim, */
         }}
       >
+        <View style={{borderWidth: 5, borderColor: counter > 419 ? "#E6C743" : "rgba(255,255,255,0)", width: "100%", alignItems: "center", borderRadius: 30}}>
         {/* <Animated.View
       id="joint_container"
       style={{
@@ -193,8 +195,9 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
             }}
           ></Animated.View>
         </Pressable>
-
+        
         {/* </Animated.View> */}
+        </View>
       </LinearGradient>
     </Animated.View>
   );

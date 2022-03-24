@@ -9,6 +9,8 @@ import Antdesign from 'react-native-vector-icons/AntDesign'
 
 import ProfileImage from "./ProfileImage";
 
+import BackButton from "./BackButton";
+
 import Entypo from 'react-native-vector-icons/Entypo';
 
 //Firebase
@@ -127,9 +129,9 @@ const Account = ({ user, handleLogOut, onexit, onShowDonation, onShowFeedback, o
 
             <View style={{height: 50}}></View>
 
-            <Pressable onPress={() => hide()} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : "#1E1E1E+"}, styles.pressable_back]}>
-                <MaterialIcons name="arrow-back" style={styles.icon_back}/>
-            </Pressable>
+            <View style={{marginLeft: 20}}>
+                <BackButton onPress={() => hide()}/>
+            </View>
 
             <View style={{
                 alignItems: "center",
@@ -199,7 +201,7 @@ const styles = StyleSheet.create({
         color: "#797a7a",
         fontSize: 16,
         fontFamily: "PoppinsLight",
-        marginTop: 0
+        marginTop: -5
     },
     signOutButton: {
         width: "80%",
@@ -229,7 +231,7 @@ const styles = StyleSheet.create({
     },
     member_text: {
         color: "#797a7a",
-        fontSize: 18,
+        fontSize: 15,
         fontFamily: "PoppinsLight",
         marginTop: 20,
     },

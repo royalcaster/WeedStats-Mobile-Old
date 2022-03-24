@@ -186,7 +186,7 @@ const Groups = ({ user, handleLogOut }) => {
       {showDonation ? (
         <Donation
           onexit={() => {
-            setShowAccount(true);
+            setShowAccount(false);
             hideDonation();
           }}
         ></Donation>

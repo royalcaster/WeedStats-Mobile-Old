@@ -4,17 +4,15 @@ import { useFonts } from 'expo-font';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Button from "./Button";
 import { useEffect, useRef } from 'react';
-
 import Svg, { Circle } from 'react-native-svg'
-
-import { BlurView, VibrancyView } from "@react-native-community/blur";
-
-import CounterItem from "./CounterItem";
+import { Pages } from 'react-native-pages';
 
 
 const Login = ({ handleLogin }) => {
 
     const icon = <FontAwesome name="google" style={{fontSize: 25, color: "black"}}/>
+
+    const carouselRef = useRef(null);
 
     const screen_width = Dimensions.get("screen").width;
     const screen_height = Dimensions.get("screen").height;
@@ -45,23 +43,26 @@ const Login = ({ handleLogin }) => {
 
             <View style={{height: 50}}></View>
 
-            <View style={{width: "100%", height: 200, position: "absolute", top: 0, zIndex: 2, backgroundColor: "#1E1E1E"}}>
+            <View style={{width: "100%", height: 150, position: "absolute", top: 0, zIndex: 2, backgroundColor: "#1E1E1E"}}>
                 <View style={{height: 30}}></View>
                 <Image style={{height: 100, width: 100, alignSelf: "center"}} source={require('./img/logo.png')}/>
                 <Text style={{color: "white", fontSize: 30, fontFamily: "PoppinsBlack", textAlign: "center", marginTop: -15}}>WeedStats</Text>
             </View>
 
-            <BlurView
-                style={{height: "100%", width: "100%", position: "absolute", zIndex: 0}}
-                blurType="dark"
-                blurAmount={10}
-                reducedTransparencyFallbackColor="white"
-            />
-
-            <View style={{height: "100%", width: "100%", position: "absolute", zIndex: 0}}>
-                <CounterItem type={"joint"} counter={57}/>
-                <CounterItem type={"bong"} counter={274}/>
-                <CounterItem type={"vape"} counter={423}/>
+            <View style={{width: "100%", height: "60%", position: "absolute", top: 180}}>
+            <Pages 
+                ref={carouselRef}
+            >
+                <View style={{justifyContent: "center", height: "100%"}}>
+                    <Image style={styles.login_img} source={require('./img/login1.png')}/>
+                </View>
+                <View style={{justifyContent: "center", height: "100%"}}>
+                    <Image style={{height: 300, width: 300, alignSelf: "center"}} source={require('./img/login2.png')}/>
+                </View>
+                <View style={{justifyContent: "center", height: "100%"}}>
+                    <Image style={{height: 350, width: 300, alignSelf: "center"}} source={require('./img/login3.png')}/>
+                </View>
+            </Pages>
             </View>
 
             <View style={{zIndex: 2, position: "absolute", bottom: 0, width: "100%"}}> 
@@ -134,6 +135,11 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         textAlign: "center",
         fontSize: 15
+    },
+    login_img: {
+        maxHeight: 464,
+        maxWidth: 260,
+        alignSelf: "center"
     }
 });
 

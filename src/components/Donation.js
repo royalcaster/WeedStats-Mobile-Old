@@ -6,6 +6,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import uuid from 'react-native-uuid'
 
+import BackButton from './BackButton';
+
 import { useFonts } from 'expo-font';
 
 const Donation = ( { onexit } ) => {
@@ -81,9 +83,9 @@ const Donation = ( { onexit } ) => {
 
             <View style={{height: 50}} />
 
-            <Pressable onPress={onexit} style={({pressed}) => [{backgroundColor: pressed ? "#242424" : "#1E1E1E+"}, styles.pressable_back]}>
-                <MaterialIcons name="arrow-back" style={styles.icon_back}/>
-            </Pressable>
+            <View style={{marginLeft: 20}}>
+                <BackButton onPress={() => hide()}/>
+            </View>
 
             
            

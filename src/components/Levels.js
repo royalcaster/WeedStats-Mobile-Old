@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useRef } from "react";
 import { View, Image, StyleSheet, Text, Animated, Pressable, Easing, BackHandler } from 'react-native';
 import { useFonts } from 'expo-font';
-
+import BackButton from "./BackButton";
 import Feather from 'react-native-vector-icons/Feather';
 import Button from "./Button";
 
@@ -15,8 +15,7 @@ const Levels = ({onexit}) => {
           fadeAnim,
           {
             toValue: 1,
-            duration: 200,
-            easing: Easing.bezier(0,1.02,.21,.97),
+            duration: 300,
             useNativeDriver: true,
           }
         ).start();
@@ -29,7 +28,6 @@ const Levels = ({onexit}) => {
     };
 
     useEffect(() => {
-
         // Add event listener for hardware back button press on Android
         BackHandler.addEventListener("hardwareBackPress", backActionHandler);
     
@@ -62,7 +60,13 @@ const Levels = ({onexit}) => {
     return (
         <Animated.View style={[{opacity: fadeAnim},styles.container]}>
 
-        <View style={{height: 60}}></View>
+        <View style={{height: 50}}></View>
+
+            <View style={{marginLeft: 20}}>
+                <BackButton onPress={() => hide()}/>
+            </View>
+
+            <View style={{height: 10}}></View>
 
             <View style={{
                 alignSelf: "center",
@@ -192,7 +196,8 @@ const Levels = ({onexit}) => {
                 </View>
             </View>
 
-            <Button title={"Zurück"} icon={<Feather name="arrow-left" style={styles.cancel_icon}/>} color={"#eb4034"} fontColor={"white"} onPress={() => hide()} borderradius={100}/>
+            {/* <Button title={"Zurück"} icon={<Feather name="arrow-left" style={styles.cancel_icon}/>} color={"#eb4034"} fontColor={"white"} onPress={() => hide()} borderradius={100}/> */}
+
 
         </Animated.View>
     );
