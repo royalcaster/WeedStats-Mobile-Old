@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useEffect, useRef } from "react";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+import AntDesign from "react-native-vector-icons/AntDesign";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 
 import { db } from "./FirebaseConfig";
@@ -8,6 +8,7 @@ import { db } from "./FirebaseConfig";
 //Unterkomponenten
 import StatsDashboard from "./StatsDashboard";
 import StatsHistory from "./StatsHistory";
+import StatsEmpty from "./StatsEmpty";
 
 //TabView
 import Swiper from "react-native-swiper";
@@ -26,10 +27,8 @@ import {
   FlatList,
   ActivityIndicator,
   TextBase,
-  TouchableNativeFeedback
+  TouchableNativeFeedback,
 } from "react-native";
-
-import AntDesign from "react-native-vector-icons/AntDesign";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { enableMultiTabIndexedDbPersistence } from "firebase/firestore";
@@ -141,60 +140,83 @@ const Stats = ({ user }) => {
         <ActivityIndicator animating={true} size="large" color="#0080FF" />
       ) : (
         <View style={{ flexDirection: "row" }}>
-          <View style={[styles.nav_pressable,{borderTopWidth: 2, borderTopColor: view == "dashboard" ? "#0080FF" : "rgba(255,255,255,0.15)"}]}>
-          <TouchableNativeFeedback
-          background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)}
-            onPress={() => setView("dashboard")}
-          >
-            <View style={styles.touchable}>
-            <AntDesign
-              name="barschart"
-              style={{
-                color: view == "dashboard" ? "#0080FF" : "#c4c4c4",
-                marginBottom: 10,
-                fontSize: 30,
-                height: "100%",
-                textAlignVertical: "center"
-              }}
-            />
-            </View>
-          </TouchableNativeFeedback>
-          </View>
-
-          <View style={[styles.nav_pressable,{borderTopWidth: 2, borderTopColor: view == "history" ? "#0080FF" : "rgba(255,255,255,0.15)"}]}>    
-          <TouchableNativeFeedback
-          background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)}
-            onPress={() => setView("history")}
-            style={({ pressed }) => [
-              {
-                borderTopColor: view == "history" ? "#0080FF" : "#171717",
-                backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E",
-              },
+          <View
+            style={[
               styles.nav_pressable,
+              {
+                borderTopWidth: 2,
+                borderTopColor:
+                  view == "dashboard" ? "#0080FF" : "rgba(255,255,255,0.15)",
+              },
             ]}
           >
-            <View style={styles.touchable}>
-            <EvilIcons
-              name="clock"
-              style={{
-                color: view == "history" ? "#0080FF" : "#c4c4c4",
-                marginBottom: 10,
-                fontSize: 30,
-                height: "100%",
-                textAlignVertical: "center"
-              }}
-            />
-            </View>
-          </TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              background={TouchableNativeFeedback.Ripple(
+                "rgba(255,255,255,0.15)",
+                false
+              )}
+              onPress={() => setView("dashboard")}
+            >
+              <View style={styles.touchable}>
+                <AntDesign
+                  name="barschart"
+                  style={{
+                    color: view == "dashboard" ? "#0080FF" : "#c4c4c4",
+                    marginBottom: 10,
+                    fontSize: 30,
+                    height: "100%",
+                    textAlignVertical: "center",
+                  }}
+                />
+              </View>
+            </TouchableNativeFeedback>
           </View>
 
+          <View
+            style={[
+              styles.nav_pressable,
+              {
+                borderTopWidth: 2,
+                borderTopColor:
+                  view == "history" ? "#0080FF" : "rgba(255,255,255,0.15)",
+              },
+            ]}
+          >
+            <TouchableNativeFeedback
+              background={TouchableNativeFeedback.Ripple(
+                "rgba(255,255,255,0.15)",
+                false
+              )}
+              onPress={() => setView("history")}
+              style={({ pressed }) => [
+                {
+                  borderTopColor: view == "history" ? "#0080FF" : "#171717",
+                  backgroundColor: pressed ? "#1c1c1c" : "#1E1E1E",
+                },
+                styles.nav_pressable,
+              ]}
+            >
+              <View style={styles.touchable}>
+                <EvilIcons
+                  name="clock"
+                  style={{
+                    color: view == "history" ? "#0080FF" : "#c4c4c4",
+                    marginBottom: 10,
+                    fontSize: 30,
+                    height: "100%",
+                    textAlignVertical: "center",
+                  }}
+                />
+              </View>
+            </TouchableNativeFeedback>
+          </View>
         </View>
       )}
-
-      {localDataLoaded && view == "dashboard" ? (
+      {localDataLoaded && localData.length == 0 ? <StatsEmpty /> : null}
+      {localDataLoaded && localData.length != 0 && view == "dashboard" ? (
         <StatsDashboard user={user} localData={localData} />
       ) : null}
-      {localDataLoaded && view == "history" ? (
+      {localDataLoaded && localData.length != 0 && view == "history" ? (
         <StatsHistory history={localData} showOnMap={showOnMap} />
       ) : null}
     </Animated.View>
@@ -229,7 +251,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopWidth: 0,
     alignItems: "center",
-    backgroundColor: "#1E1E1E"
+    backgroundColor: "#1E1E1E",
   },
   nav_text: {
     textAlign: "center",
@@ -247,6 +269,6 @@ const styles = StyleSheet.create({
   touchable: {
     height: 50,
     width: "100%",
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 });

@@ -40,7 +40,7 @@ try {
   console.log("Error", e);
 }
 
-AppRegistry.registerComponent('main',() => App);
+AppRegistry.registerComponent("main", () => App);
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -93,10 +93,7 @@ export default function App() {
         last_entry_longitude: docSnap.data().last_entry_longitude,
         last_entry_type: docSnap.data().last_entry_type,
         last_feedback: docSnap.data().last_feedback,
-        main_counter:
-          docSnap.data().joint_counter +
-          docSnap.data().bong_counter +
-          docSnap.data().vape_counter,
+        main_counter: docSnap.data().main_counter,
       });
       setStatConfig({
         joint: docSnap.data().show_joint,
@@ -175,11 +172,11 @@ export default function App() {
           showCookie: true,
           saveEntries: false,
           showFriends: true,
-          showMap: false
+          showMap: false,
         });
-        await AsyncStorage.setItem('settings', value)
+        await AsyncStorage.setItem("settings", value);
       } catch (e) {
-        console.log("Error in App.js: ",e);
+        console.log("Error in App.js: ", e);
       }
     }
   };
@@ -375,7 +372,7 @@ export default function App() {
         await updateDoc(docRef, {
           cookie_counter: docSnap.data().cookie_counter + 1,
         });
-        break; 
+        break;
     }
 
     const docSnap_new = await getDoc(docRef);
@@ -440,40 +437,76 @@ export default function App() {
   return (
     <>
       <NavigationContainer>
-
-      <Modal 
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-          setWriteComplete(false);
-        }}>
-                <View style={{alignItems: "center", justifyContent: "center", backgroundColor:"rgba(0,0,0,0.5)", flex: 1}}>
-                  {writeComplete ? 
-
-                    <View style={{width: "90%", height: 300, backgroundColor: "#171717", alignSelf: "center", borderRadius: 25}}>
-                        <View style={{flex: 1}}>
-                            <Text style={[styles.heading,{marginLeft: 0, textAlign: "center", height: "100%", textAlignVertical: "center", fontSize: 22}]}>Erfolg</Text>
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Text style={[styles.text,{fontSize: 15}]}>{getRandomSaying()}</Text>
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Button title={"Ok"} color={"#0080FF"} borderradius={25} fontColor={"white"} onPress={() => {
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+            setWriteComplete(false);
+          }}
+        >
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "rgba(0,0,0,0.5)",
+              flex: 1,
+            }}
+          >
+            {writeComplete ? (
+              <View
+                style={{
+                  width: "90%",
+                  height: 300,
+                  backgroundColor: "#171717",
+                  alignSelf: "center",
+                  borderRadius: 25,
+                }}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={[
+                      styles.heading,
+                      {
+                        marginLeft: 0,
+                        textAlign: "center",
+                        height: "100%",
+                        textAlignVertical: "center",
+                        fontSize: 22,
+                      },
+                    ]}
+                  >
+                    Erfolg
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.text, { fontSize: 15 }]}>
+                    {getRandomSaying()}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Button
+                    title={"Ok"}
+                    color={"#0080FF"}
+                    borderradius={25}
+                    fontColor={"white"}
+                    onPress={() => {
                       setModalVisible(!modalVisible);
                       setWriteComplete(false);
-                    }}/>
-                        </View>
-                    </View> :
-                    <ActivityIndicator
-                      animating={true}
-                      size="large"
-                      color="#0080FF"
-                    />
-                  }
+                    }}
+                  />
                 </View>
-            </Modal>
+              </View>
+            ) : (
+              <ActivityIndicator
+                animating={true}
+                size="large"
+                color="#0080FF"
+              />
+            )}
+          </View>
+        </Modal>
 
         {/* <Modal
           animationType="fade"
@@ -515,22 +548,21 @@ export default function App() {
           </View>
       </Modal> */}
 
+        <View style={{ flex: 1, backgroundColor: "#171717" }}>
+          {showSplash ? <Splash onExit={() => setShowSplash(false)} /> : null}
 
-      <View style={{flex: 1, backgroundColor: "#171717"}}>
-        {showSplash ? <Splash onExit={() => setShowSplash(false)}/> : null}
-
-        {user ? (
-          <Home
-            user={user}
-            statConfig={statConfig}
-            toggleConfig={toggleConfig}
-            handleLogOut={handleLogOut}
-            toggleCounter={toggleCounter}
-          />
-        ) : (
-          <Login handleLogin={handleLogin} />
-        )}
-      </View>
+          {user ? (
+            <Home
+              user={user}
+              statConfig={statConfig}
+              toggleConfig={toggleConfig}
+              handleLogOut={handleLogOut}
+              toggleCounter={toggleCounter}
+            />
+          ) : (
+            <Login handleLogin={handleLogin} />
+          )}
+        </View>
       </NavigationContainer>
     </>
   );
@@ -592,7 +624,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
     fontFamily: "PoppinsBlack",
-    marginLeft: 20
+    marginLeft: 20,
   },
   text: {
     alignSelf: "center",
@@ -600,6 +632,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "white",
     maxWidth: 250,
-    textAlign: "center"
-},
+    textAlign: "center",
+  },
 });
