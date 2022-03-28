@@ -26,19 +26,8 @@ import ProfileImage from "./ProfileImage";
 import Entypo from "react-native-vector-icons/Entypo";
 
 //Firebase
-import {
-  setDoc,
-  doc,
-  getDoc,
-  updateDoc,
-  getDocs,
-  Timestamp,
-  collection,
-  query,
-  where,
-  deleteDoc,
-} from "firebase/firestore";
-import { db, firestore } from "./FirebaseConfig";
+import { doc, deleteDoc } from "firebase/firestore";
+import { firestore } from "./FirebaseConfig";
 
 import Button from "./Button";
 
@@ -50,13 +39,6 @@ const Account = ({
   onShowFeedback,
   onShowLevels,
 }) => {
-  const window_height = Dimensions.get("window").height;
-
-  const [showLevels, setShowLevels] = useState(false);
-  const hideLevels = () => {
-    setShowLevels(false);
-  };
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
 
@@ -104,14 +86,18 @@ const Account = ({
 
   const deleteAccount = async () => {
     handleLogOut();
+
+    // Firestore-Doc löschen
     const docRef = doc(firestore, "users", user.id);
     await deleteDoc(docRef);
-    // Löscht aktuell alles aus dem AsyncStorage
-    // TODO: mit getAllKeys und multiRemove nur die App-spezifischen Einträge löschen
+
+    // AsyncStorage-Daten löschen
+    let allKeys = [];
     try {
-      await AsyncStorage.clear();
+      allKeys = await AsyncStorage.getAllKeys();
+      await AsyncStorage.multiRemove(allKeys);
     } catch (e) {
-      console.log("Konnte lokalen Speicher nicht löschen.");
+      console.log("Fehler beim Löschen des AsyncStorage.", e);
     }
   };
 

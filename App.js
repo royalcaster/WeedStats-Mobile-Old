@@ -20,7 +20,7 @@ import GradientButton from "./src/components/GradientButton";
 //Components
 import Home from "./src/components/Home";
 import Login from "./src/components/Login";
-import getRandomSaying from "./src/Sayings";
+import sayings from "./src/Sayings.json";
 import Splash from "./src/components/Splash";
 
 //Firebase
@@ -48,6 +48,7 @@ export default function App() {
   const [statConfig, setStatConfig] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [writeComplete, setWriteComplete] = useState(false);
+  const [sayingNr, setSayingNr] = useState(0);
 
   const [showSplash, setShowSplash] = useState(true);
 
@@ -125,7 +126,6 @@ export default function App() {
           member_since: new Date().toISOString().slice(0, 10),
           main_counter: 0,
         });
-        console.log(user.photoUrl);
         const docSnap = await getDoc(doc(firestore, "users", user.id));
         if (docSnap.exists()) {
           setUser({
@@ -314,6 +314,9 @@ export default function App() {
   const toggleCounter = async (index) => {
     Platform.OS === "android" ? Vibration.vibrate(50) : null;
 
+    // Neuen Index für Zitat ermitteln
+    setSayingNr(Math.floor(Math.random() * sayings.length));
+
     setModalVisible(true);
 
     // Die Bestimmung der Position dauert von den Schritten in der Funktion toggleCounter() mit Abstand am längsten
@@ -482,7 +485,15 @@ export default function App() {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.text, { fontSize: 15 }]}>
-                    {getRandomSaying()}
+                    {sayings[sayingNr].saying}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.text,
+                      { fontSize: 15, fontStyle: "italic", marginTop: 10 },
+                    ]}
+                  >
+                    {sayings[sayingNr].from}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
