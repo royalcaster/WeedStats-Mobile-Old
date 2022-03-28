@@ -81,20 +81,20 @@ const Levels = ({ onexit }) => {
               flexDirection: "row",
               alignItems: "center",
               marginBottom: 20,
-              borderColor: index == 6 ? "#E6C743" : null,
-              borderWidth: index == 6 ? 3 : null,
+              borderColor: index == levels.length - 1 ? "#E6C743" : null,
+              borderWidth: index == levels.length - 1 ? 3 : null,
               maxWidth: 700,
             }}
           >
             <LevelImage index={index} style={styles.lvl_img} />
             <View style={{ marginLeft: 15 }}>
               <Text style={styles.lvl_name}>{level.name}</Text>
-              {index != 6 ? (
+              {index != levels.length - 1 ? (
                 <Text style={styles.lvl_bounds}>
                   {index * 70}-{(index + 1) * 70 - 1}
                 </Text>
               ) : (
-                <Text style={styles.lvl_bounds}>ab 420</Text>
+                <Text style={styles.lvl_bounds}>ab {index * 70}</Text>
               )}
             </View>
           </View>
