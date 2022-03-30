@@ -20,10 +20,9 @@ import {
   Animated,
   Easing,
   ActivityIndicator,
-
 } from "react-native";
 
-const Main = ({ user, statConfig, toggleCounter }) => {
+const Main = ({ user, toggleCounter }) => {
   const headingAnim = useRef(new Animated.Value(-100)).current;
 
   const leftAnim = useRef(new Animated.Value(-70)).current;
@@ -33,7 +32,7 @@ const Main = ({ user, statConfig, toggleCounter }) => {
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  var config = {};
+  let config = {};
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -65,25 +64,24 @@ const Main = ({ user, statConfig, toggleCounter }) => {
 
   const loadSettings = async () => {
     try {
-      const jsonValue = await AsyncStorage.getItem('settings');
-      jsonValue != null ? config = JSON.parse(jsonValue) : null;
-      
-      var settings = [];
+      const jsonValue = await AsyncStorage.getItem("settings");
+      jsonValue != null ? (config = JSON.parse(jsonValue)) : null;
+
+      let settings = [];
       !config.showJoint ? settings.push("joint") : null;
       !config.showBong ? settings.push("bong") : null;
       !config.showVape ? settings.push("vape") : null;
       !config.showPipe ? settings.push("pipe") : null;
       !config.showCookie ? settings.push("cookie") : null;
 
-      var buffer = counterOrder.filter(item => !settings.includes(item.type));
+      let buffer = counterOrder.filter((item) => !settings.includes(item.type));
       setCounterOrder(buffer);
 
       setLoading(false);
-
-    } catch(e) {
-      console.log("Error in Laden: ",e);
+    } catch (e) {
+      console.log("Error in Laden: ", e);
     }
-  }
+  };
 
   const [countdown, setCountDown] = useState(0);
   const [counterOrder, setCounterOrder] = useState([
@@ -124,7 +122,7 @@ const Main = ({ user, statConfig, toggleCounter }) => {
     <>
       <View style={{ height: 50 }}></View>
 
-      <View style={{ width: "100%", flexDirection: "row"}}>
+      <View style={{ width: "100%", flexDirection: "row" }}>
         <Animated.View
           style={{
             paddingLeft: 15,
@@ -196,40 +194,54 @@ const Main = ({ user, statConfig, toggleCounter }) => {
       </View>
       <View style={{ height: 10 }}></View>
 
-      {loading ? <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}><ActivityIndicator size={"large"} color={"#0080FF"}/></View> : 
-      <ScrollView style={styles.counters_container}>
-        {counterOrder.length == 0 ? (
-          <View style={{ justifyContent: "center"}}>
-            <Text>{config.showBong}</Text>
-            <EvilIcons
-              style={{
-                color: "rgba(255,255,255,0.3)",
-                fontSize: 100,
-                marginBottom: 20,
-                alignSelf: "center",
-              }}
-              name="close"
-            />
-            <Text style={[styles.blank_text,{fontSize: 20}]}>Keine Stats aktiviert</Text>
-            <Text style={[styles.blank_text,{maxWidth: 200, textAlign: "center"}]}>
-              Konfiguriere deine Ansicht in den{" "}
-              <FontAwesome style={{ fontSize: 20 }} name="sliders" />{" "}
-              Einstellungen.
-            </Text>
-          </View>
-        ) : (
-          counterOrder.map((item) => {
-            return (
-              <CounterItem
-                key={item.type}
-                type={item.type}
-                counter={user[item.type + "_counter"]}
-                toggleCounter={toggleCounter}
+      {loading ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator size={"large"} color={"#0080FF"} />
+        </View>
+      ) : (
+        <ScrollView style={styles.counters_container}>
+          {counterOrder.length == 0 ? (
+            <View style={{ justifyContent: "center" }}>
+              <Text>{config.showBong}</Text>
+              <EvilIcons
+                style={{
+                  color: "rgba(255,255,255,0.3)",
+                  fontSize: 100,
+                  marginBottom: 20,
+                  alignSelf: "center",
+                }}
+                name="close"
               />
-            );
-          })
-        )}
-      </ScrollView>}
+              <Text style={[styles.blank_text, { fontSize: 20 }]}>
+                Keine Stats aktiviert
+              </Text>
+              <Text
+                style={[
+                  styles.blank_text,
+                  { maxWidth: 200, textAlign: "center" },
+                ]}
+              >
+                Konfiguriere deine Ansicht in den{" "}
+                <FontAwesome style={{ fontSize: 20 }} name="sliders" />{" "}
+                Einstellungen.
+              </Text>
+            </View>
+          ) : (
+            counterOrder.map((item) => {
+              return (
+                <CounterItem
+                  key={item.type}
+                  type={item.type}
+                  counter={user[item.type + "_counter"]}
+                  toggleCounter={toggleCounter}
+                />
+              );
+            })
+          )}
+        </ScrollView>
+      )}
     </>
   );
 };
@@ -241,7 +253,7 @@ const styles = StyleSheet.create({
     flex: 5,
     backgroundColor: "#171717",
     width: "100%",
-    height: "100%"
+    height: "100%",
   },
   blank_text: {
     color: "#787878",

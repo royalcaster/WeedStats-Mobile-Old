@@ -9,7 +9,7 @@ import {
   ScrollView,
   Pressable,
   Dimensions,
-  Easing
+  Easing,
 } from "react-native";
 import { useFonts } from "expo-font";
 import { useState, useRef } from "react";
@@ -26,13 +26,7 @@ import Entypo from "react-native-vector-icons/Entypo";
 import Button from "./Button";
 import MenuButton from "./MenuButton";
 
-export default function Home({
-  user,
-  statConfig,
-  toggleConfig,
-  handleLogOut,
-  toggleCounter,
-}) {
+export default function Home({ user, handleLogOut, toggleCounter }) {
   const device_width = Dimensions.get("window").width;
 
   const [view, setView] = useState("main");
@@ -48,20 +42,14 @@ export default function Home({
   }
 
   return (
-    <Animated.View style={[{opacity: 1},styles.container]}>
+    <Animated.View style={[{ opacity: 1 }, styles.container]}>
       <View style={styles.content_container}>
         {view == "main" ? (
-          <Main
-            user={user}
-            statConfig={statConfig}
-            toggleCounter={toggleCounter}
-          />
+          <Main user={user} toggleCounter={toggleCounter} />
         ) : null}
         {view == "stats" ? <Stats user={user} /> : null}
-        {view == "map" ? <Map user={user}/> : null}
-        {view == "config" ? (
-          <Config statConfig={statConfig} toggleConfig={toggleConfig} />
-        ) : null}
+        {view == "map" ? <Map user={user} /> : null}
+        {view == "config" ? <Config /> : null}
         {view == "groups" ? (
           <Groups user={user} handleLogOut={handleLogOut} />
         ) : null}
@@ -69,86 +57,85 @@ export default function Home({
 
       <View style={styles.footer_container}>
         <View style={styles.options_container}>
-          <View style={{flexDirection: "row", width: "100%"}}>
-          <MenuButton
-            onPress={() => {
-              setView("stats");
-            }}
-            selected={view == "stats"}
-            title={"Stats"}
-            icon={
-              <Entypo
-                name="area-graph"
-                style={[
-                  { color: view == "stats" ? "#e0e0e0" : "#4a4a4a" },
-                  styles.settings_icon,
-                ]}
-              />
-            }
-          />
-          <MenuButton
-            onPress={() => {
-              setView("map");
-            }}
-            selected={view == "map"}
-            title={"Karte"}
-            icon={
-              <FontAwesome
-                name="map-marker"
-                style={[
-                  { color: view == "map" ? "#e0e0e0" : "#4a4a4a" },
-                  styles.settings_icon,
-                ]}
-              />
-            }
-          />
-          <MenuButton
-            type={"img"}
-            url={
-              view == "main"
-                ? require("./img/logo.png")
-                : require("./img/logo_bw.png")
-            }
-            onPress={() => {
-              setView("main");
-            }}
-          />
-          <MenuButton
-            onPress={() => {
-              setView("config");
-            }}
-            selected={view == "config"}
-            title={"Settings"}
-            icon={
-              <FontAwesome
-                name="sliders"
-                style={[
-                  { color: view == "config" ? "#e0e0e0" : "#4a4a4a" },
-                  styles.settings_icon,
-                ]}
-              />
-            }
-          />
-          <MenuButton
-            onPress={() => {
-              setView("groups");
-            }}
-            selected={view == "groups"}
-            title={"Social"}
-            icon={
-              <FontAwesome
-                name="user"
-                style={[
-                  { color: view == "groups" ? "#e0e0e0" : "#4a4a4a" },
-                  styles.settings_icon,
-                ]}
-              />
-            }
-          />
+          <View style={{ flexDirection: "row", width: "100%" }}>
+            <MenuButton
+              onPress={() => {
+                setView("stats");
+              }}
+              selected={view == "stats"}
+              title={"Stats"}
+              icon={
+                <Entypo
+                  name="area-graph"
+                  style={[
+                    { color: view == "stats" ? "#e0e0e0" : "#4a4a4a" },
+                    styles.settings_icon,
+                  ]}
+                />
+              }
+            />
+            <MenuButton
+              onPress={() => {
+                setView("map");
+              }}
+              selected={view == "map"}
+              title={"Karte"}
+              icon={
+                <FontAwesome
+                  name="map-marker"
+                  style={[
+                    { color: view == "map" ? "#e0e0e0" : "#4a4a4a" },
+                    styles.settings_icon,
+                  ]}
+                />
+              }
+            />
+            <MenuButton
+              type={"img"}
+              url={
+                view == "main"
+                  ? require("./img/logo.png")
+                  : require("./img/logo_bw.png")
+              }
+              onPress={() => {
+                setView("main");
+              }}
+            />
+            <MenuButton
+              onPress={() => {
+                setView("config");
+              }}
+              selected={view == "config"}
+              title={"Settings"}
+              icon={
+                <FontAwesome
+                  name="sliders"
+                  style={[
+                    { color: view == "config" ? "#e0e0e0" : "#4a4a4a" },
+                    styles.settings_icon,
+                  ]}
+                />
+              }
+            />
+            <MenuButton
+              onPress={() => {
+                setView("groups");
+              }}
+              selected={view == "groups"}
+              title={"Social"}
+              icon={
+                <FontAwesome
+                  name="user"
+                  style={[
+                    { color: view == "groups" ? "#e0e0e0" : "#4a4a4a" },
+                    styles.settings_icon,
+                  ]}
+                />
+              }
+            />
           </View>
         </View>
       </View>
-        
     </Animated.View>
   );
 }
@@ -262,7 +249,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#171717",
     justifyContent: "center",
-    zIndex:10
+    zIndex: 10,
   },
   options_pressable_label: {
     fontFamily: "PoppinsLight",

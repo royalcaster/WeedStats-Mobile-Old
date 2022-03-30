@@ -101,6 +101,27 @@ const Account = ({
     }
   };
 
+  // Diese Funktion darf nach Bedarf mit neuer Funktionalität gefüllt werden und dient z.B. dazu, veraltete Einträge im AsyncStorage zu entfernen.
+  // In der finalen Version der App fliegt diese Funktion natürlich raus.
+  const doWhatever = async () => {
+    try {
+      const value = JSON.stringify({
+        showJoint: true,
+        showBong: false,
+        showVape: true,
+        showPipe: false,
+        showCookie: true,
+        shareMainCounter: false,
+        shareLastEntry: true,
+        saveGPS: false,
+        shareGPS: false,
+      });
+      await AsyncStorage.setItem("settings", value);
+    } catch (e) {
+      console.log("Error in App.js: ", e);
+    }
+  };
+
   const [showDelete, setShowDelete] = useState(false);
 
   return (
@@ -229,6 +250,17 @@ const Account = ({
             </Text>
           </View>
         </View>
+
+        <Button
+          fontColor={"white"}
+          onPress={doWhatever}
+          borderradius={100}
+          color={"#4a4a4a"}
+          title={"Bugfix!"}
+          icon={<FontAwesome name="gears" style={styles.money_icon} />}
+        />
+
+        <View style={{ height: 15 }}></View>
 
         <Button
           fontColor={"white"}

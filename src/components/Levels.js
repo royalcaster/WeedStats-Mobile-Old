@@ -72,6 +72,7 @@ const Levels = ({ onexit }) => {
       {levels.map((level, index) => {
         return (
           <View
+            key={index}
             style={{
               alignSelf: "center",
               borderRadius: 10,

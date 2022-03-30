@@ -189,7 +189,180 @@ const Config = () => {
               ></ConfigItem>
             </View>
 
+            <Text style={styles.heading}>Persönliche Daten</Text>
             <View style={{ height: 10 }}></View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                height: 50,
+                width: "95%",
+                alignContent: "center",
+              }}
+            >
+              <View style={{ flex: 4, justifyContent: "center" }}>
+                <Text style={styles.label}>Gesamt-Counter teilen</Text>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Toggle
+                  value={config.shareMainCounter}
+                  onPress={() => {
+                    setConfig({
+                      ...config,
+                      shareMainCounter: !config.shareMainCounter,
+                    });
+                    setSaved(false);
+                  }}
+                  trackBar={{
+                    activeBackgroundColor: "#0080FF",
+                    inActiveBackgroundColor: "#171717",
+                    width: 50,
+                    height: 25,
+                  }}
+                  thumbButton={{
+                    inActiveBackgroundColor: "white",
+                    activeBackgroundColor: "white",
+                    height: 25,
+                    width: 25,
+                  }}
+                />
+              </View>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                height: 50,
+                width: "95%",
+                alignContent: "center",
+              }}
+            >
+              <View style={{ flex: 4, justifyContent: "center" }}>
+                <Text style={styles.label}>Letzten Eintrag teilen</Text>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Toggle
+                  value={config.shareLastEntry}
+                  onPress={() => {
+                    setConfig({
+                      ...config,
+                      shareLastEntry: !config.shareLastEntry,
+                    });
+                    setSaved(false);
+                  }}
+                  trackBar={{
+                    activeBackgroundColor: "#0080FF",
+                    inActiveBackgroundColor: "#171717",
+                    width: 50,
+                    height: 25,
+                  }}
+                  thumbButton={{
+                    inActiveBackgroundColor: "white",
+                    activeBackgroundColor: "white",
+                    height: 25,
+                    width: 25,
+                  }}
+                />
+              </View>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                height: 50,
+                width: "95%",
+                alignContent: "center",
+              }}
+            >
+              <View style={{ flex: 4, justifyContent: "center" }}>
+                <Text style={styles.label}>GPS-Daten erfassen</Text>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Toggle
+                  value={config.saveGPS}
+                  onPress={() => {
+                    setConfig({ ...config, saveGPS: !config.saveGPS });
+                    setSaved(false);
+                  }}
+                  trackBar={{
+                    activeBackgroundColor: "#0080FF",
+                    inActiveBackgroundColor: "#171717",
+                    width: 50,
+                    height: 25,
+                  }}
+                  thumbButton={{
+                    inActiveBackgroundColor: "white",
+                    activeBackgroundColor: "white",
+                    height: 25,
+                    width: 25,
+                  }}
+                />
+              </View>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                height: 50,
+                width: "95%",
+                alignContent: "center",
+              }}
+            >
+              <View style={{ flex: 4, justifyContent: "center" }}>
+                <Text style={styles.label}>GPS-Daten teilen</Text>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Toggle
+                  disabled={!config.saveGPS}
+                  value={config.shareGPS}
+                  onPress={() => {
+                    setConfig({
+                      ...config,
+                      shareGPS: !config.shareGPS,
+                    });
+                    setSaved(false);
+                  }}
+                  trackBar={{
+                    activeBackgroundColor: "#0080FF",
+                    inActiveBackgroundColor: "#171717",
+                    width: 50,
+                    height: 25,
+                  }}
+                  thumbButton={{
+                    inActiveBackgroundColor: "white",
+                    activeBackgroundColor: "white",
+                    height: 25,
+                    width: 25,
+                  }}
+                />
+              </View>
+            </View>
+
+            <View style={{ height: 30 }}></View>
 
             <View
               style={{
@@ -212,135 +385,6 @@ const Config = () => {
                 <Toggle
                   value={lightmode}
                   onPress={(val) => setLightMode(val)}
-                  trackBar={{
-                    activeBackgroundColor: "#0080FF",
-                    inActiveBackgroundColor: "#171717",
-                    width: 50,
-                    height: 25,
-                  }}
-                  thumbButton={{
-                    inActiveBackgroundColor: "white",
-                    activeBackgroundColor: "white",
-                    height: 25,
-                    width: 25,
-                  }}
-                />
-              </View>
-            </View>
-
-            <View style={{ height: 20 }}></View>
-
-            <Text style={styles.heading}>Persönliche Daten</Text>
-            <View style={{ height: 10 }}></View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "95%",
-                alignContent: "center",
-              }}
-            >
-              <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>Aktivitätsdetails speichern</Text>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Toggle
-                  value={config.saveEntries}
-                  onPress={() => {
-                    setConfig({ ...config, saveEntries: !config.saveEntries });
-                    setSaved(false);
-                  }}
-                  trackBar={{
-                    activeBackgroundColor: "#0080FF",
-                    inActiveBackgroundColor: "#171717",
-                    width: 50,
-                    height: 25,
-                  }}
-                  thumbButton={{
-                    inActiveBackgroundColor: "white",
-                    activeBackgroundColor: "white",
-                    height: 25,
-                    width: 25,
-                  }}
-                />
-              </View>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "95%",
-                alignContent: "center",
-              }}
-            >
-              <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>
-                  Aktivitäten für Freunde sichtbar machen
-                </Text>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Toggle
-                  value={config.showFriends}
-                  onPress={() => {
-                    setConfig({ ...config, showFriends: !config.showFriends });
-                    setSaved(false);
-                  }}
-                  trackBar={{
-                    activeBackgroundColor: "#0080FF",
-                    inActiveBackgroundColor: "#171717",
-                    width: 50,
-                    height: 25,
-                  }}
-                  thumbButton={{
-                    inActiveBackgroundColor: "white",
-                    activeBackgroundColor: "white",
-                    height: 25,
-                    width: 25,
-                  }}
-                />
-              </View>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "95%",
-                alignContent: "center",
-              }}
-            >
-              <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>
-                  Aktivitäten auf der Karte sichtbar machen
-                </Text>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Toggle
-                  value={config.showMap}
-                  onPress={() => {
-                    setConfig({ ...config, showMap: !config.showMap });
-                    setSaved(false);
-                  }}
                   trackBar={{
                     activeBackgroundColor: "#0080FF",
                     inActiveBackgroundColor: "#171717",
