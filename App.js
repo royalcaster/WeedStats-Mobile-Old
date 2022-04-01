@@ -20,7 +20,7 @@ import GradientButton from "./src/components/GradientButton";
 //Components
 import Home from "./src/components/Home";
 import Login from "./src/components/Login";
-import getRandomSaying from "./src/Sayings";
+import sayings from "./src/Sayings.json";
 import Splash from "./src/components/Splash";
 
 //Firebase
@@ -33,6 +33,7 @@ import { AppRegistry } from "react-native";
 import { useFonts } from "expo-font";
 import * as Google from "expo-google-app-auth";
 import * as Location from "expo-location";
+import { update } from "firebase/database";
 
 try {
   LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
@@ -45,9 +46,9 @@ AppRegistry.registerComponent("main", () => App);
 export default function App() {
   const [user, setUser] = useState(null);
   const [userLoaded, setUserLoaded] = useState(false);
-  const [statConfig, setStatConfig] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [writeComplete, setWriteComplete] = useState(false);
+  const [sayingNr, setSayingNr] = useState(0);
 
   const [showSplash, setShowSplash] = useState(true);
 
@@ -95,11 +96,6 @@ export default function App() {
         last_feedback: docSnap.data().last_feedback,
         main_counter: docSnap.data().main_counter,
       });
-      setStatConfig({
-        joint: docSnap.data().show_joint,
-        bong: docSnap.data().show_bong,
-        vape: docSnap.data().show_vape,
-      });
     } else {
       //Nutzer-Dokument existiert nicht -> loggt sich erstmalig ein -> Dokument erstellen
       try {
@@ -119,13 +115,9 @@ export default function App() {
           last_entry_longitude: null,
           last_entry_type: null,
           last_feedback: null,
-          show_joint: true,
-          show_bong: true,
-          show_vape: true,
           member_since: new Date().toISOString().slice(0, 10),
           main_counter: 0,
         });
-        console.log(user.photoUrl);
         const docSnap = await getDoc(doc(firestore, "users", user.id));
         if (docSnap.exists()) {
           setUser({
@@ -152,17 +144,12 @@ export default function App() {
               docSnap.data().pipe_counter +
               docSnap.data().cookie_counter,
           });
-          setStatConfig({
-            joint: docSnap.data().show_joint,
-            bong: docSnap.data().show_bong,
-            vape: docSnap.data().show_vape,
-          });
         }
       } catch (e) {
         console.log("Error:", e);
       }
 
-      //Einstellugns-Objekt im Local Storage erstmalig einrichten:
+      //Einstellungs-Objekt im Local Storage erstmalig einrichten:
       try {
         const value = JSON.stringify({
           showJoint: true,
@@ -170,9 +157,10 @@ export default function App() {
           showVape: true,
           showPipe: false,
           showCookie: true,
-          saveEntries: false,
-          showFriends: true,
-          showMap: false,
+          shareMainCounter: true,
+          shareLastEntry: true,
+          saveGPS: true,
+          shareGPS: false,
         });
         await AsyncStorage.setItem("settings", value);
       } catch (e) {
@@ -312,27 +300,49 @@ export default function App() {
  */
 
   const toggleCounter = async (index) => {
+    let settings = {};
+    let new_entry = {};
+    try {
+      const jsonValue = await AsyncStorage.getItem("settings");
+      jsonValue != null ? (settings = JSON.parse(jsonValue)) : null;
+    } catch (e) {
+      console.log("Error in App.js: ", e);
+    }
+
     Platform.OS === "android" ? Vibration.vibrate(50) : null;
+
+    // Neuen Index für Zitat ermitteln
+    setSayingNr(Math.floor(Math.random() * sayings.length));
 
     setModalVisible(true);
 
-    // Die Bestimmung der Position dauert von den Schritten in der Funktion toggleCounter() mit Abstand am längsten
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Permission to access location was denied");
-      return;
-    }
-    let location = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.Highest,
-    });
+    if (settings.saveGPS) {
+      // Die Bestimmung der Position dauert von den Schritten in der Funktion toggleCounter() mit Abstand am längsten
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Highest,
+      });
 
-    const new_entry = {
-      number: user.main_counter + 1,
-      type: index,
-      timestamp: Date.now(),
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    };
+      new_entry = {
+        number: user.main_counter + 1,
+        type: index,
+        timestamp: Date.now(),
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+    } else {
+      new_entry = {
+        number: user.main_counter + 1,
+        type: index,
+        timestamp: Date.now(),
+        latitude: null,
+        longitude: null,
+      };
+    }
 
     await writeLocalStorage(new_entry);
 
@@ -340,41 +350,35 @@ export default function App() {
     const docSnap = await getDoc(docRef);
 
     await updateDoc(docRef, {
+      [index + "_counter"]: docSnap.data()[index + "_counter"] + 1,
       main_counter: docSnap.data().main_counter + 1,
-      last_entry_timestamp: new_entry.timestamp,
-      last_entry_type: new_entry.type,
-      last_entry_latitude: new_entry.latitude,
-      last_entry_longitude: new_entry.longitude,
     });
 
-    switch (index) {
-      case "joint":
-        await updateDoc(docRef, {
-          joint_counter: docSnap.data().joint_counter + 1,
-        });
-        break;
-      case "bong":
-        await updateDoc(docRef, {
-          bong_counter: docSnap.data().bong_counter + 1,
-        });
-        break;
-      case "vape":
-        await updateDoc(docRef, {
-          vape_counter: docSnap.data().vape_counter + 1,
-        });
-        break;
-      case "pipe":
-        await updateDoc(docRef, {
-          pipe_counter: docSnap.data().pipe_counter + 1,
-        });
-        break;
-      case "cookie":
-        await updateDoc(docRef, {
-          cookie_counter: docSnap.data().cookie_counter + 1,
-        });
-        break;
+    if (settings.shareLastEntry) {
+      await updateDoc(docRef, {
+        last_entry_timestamp: new_entry.timestamp,
+        last_entry_type: new_entry.type,
+      });
+    } else {
+      await updateDoc(docRef, {
+        last_entry_timestamp: null,
+        last_entry_type: null,
+      });
     }
 
+    if (settings.shareGPS) {
+      await updateDoc(docRef, {
+        last_entry_latitude: new_entry.latitude,
+        last_entry_longitude: new_entry.longitude,
+      });
+    } else {
+      await updateDoc(docRef, {
+        last_entry_latitude: null,
+        last_entry_longitude: null,
+      });
+    }
+
+    // Das sollte in Zukunft noch ersetzt werden
     const docSnap_new = await getDoc(docRef);
     setUser({
       ...user,
@@ -391,38 +395,6 @@ export default function App() {
     });
 
     setWriteComplete(true);
-  };
-
-  const toggleConfig = async (index) => {
-    const docRef = doc(firestore, "users", user.id);
-    const docSnap = await getDoc(docRef);
-    try {
-      switch (index) {
-        case "joint":
-          await updateDoc(docRef, {
-            show_joint: !docSnap.data().show_joint,
-          });
-          const docSnap_1 = await getDoc(docRef);
-          setStatConfig({ ...statConfig, joint: docSnap_1.data().show_joint });
-          break;
-        case "bong":
-          await updateDoc(docRef, {
-            show_bong: !docSnap.data().show_bong,
-          });
-          const docSnap_2 = await getDoc(docRef);
-          setStatConfig({ ...statConfig, bong: docSnap_2.data().show_bong });
-          break;
-        case "vape":
-          await updateDoc(docRef, {
-            show_vape: !docSnap.data().show_vape,
-          });
-          const docSnap_3 = await getDoc(docRef);
-          setStatConfig({ ...statConfig, vape: docSnap_3.data().show_vape });
-          break;
-      }
-    } catch (e) {
-      console.log("Error", e);
-    }
   };
 
   const [loaded] = useFonts({
@@ -482,7 +454,15 @@ export default function App() {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.text, { fontSize: 15 }]}>
-                    {getRandomSaying()}
+                    {sayings[sayingNr].saying}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.text,
+                      { fontSize: 15, fontStyle: "italic", marginTop: 10 },
+                    ]}
+                  >
+                    {sayings[sayingNr].from}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -554,8 +534,6 @@ export default function App() {
           {user ? (
             <Home
               user={user}
-              statConfig={statConfig}
-              toggleConfig={toggleConfig}
               handleLogOut={handleLogOut}
               toggleCounter={toggleCounter}
             />

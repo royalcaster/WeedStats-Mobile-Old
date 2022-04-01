@@ -26,19 +26,8 @@ import ProfileImage from "./ProfileImage";
 import Entypo from "react-native-vector-icons/Entypo";
 
 //Firebase
-import {
-  setDoc,
-  doc,
-  getDoc,
-  updateDoc,
-  getDocs,
-  Timestamp,
-  collection,
-  query,
-  where,
-  deleteDoc,
-} from "firebase/firestore";
-import { db, firestore } from "./FirebaseConfig";
+import { doc, deleteDoc } from "firebase/firestore";
+import { firestore } from "./FirebaseConfig";
 
 import Button from "./Button";
 
@@ -50,13 +39,6 @@ const Account = ({
   onShowFeedback,
   onShowLevels,
 }) => {
-  const window_height = Dimensions.get("window").height;
-
-  const [showLevels, setShowLevels] = useState(false);
-  const hideLevels = () => {
-    setShowLevels(false);
-  };
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
 
@@ -104,14 +86,39 @@ const Account = ({
 
   const deleteAccount = async () => {
     handleLogOut();
+
+    // Firestore-Doc löschen
     const docRef = doc(firestore, "users", user.id);
     await deleteDoc(docRef);
-    // Löscht aktuell alles aus dem AsyncStorage
-    // TODO: mit getAllKeys und multiRemove nur die App-spezifischen Einträge löschen
+
+    // AsyncStorage-Daten löschen
+    let allKeys = [];
     try {
-      await AsyncStorage.clear();
+      allKeys = await AsyncStorage.getAllKeys();
+      await AsyncStorage.multiRemove(allKeys);
     } catch (e) {
-      console.log("Konnte lokalen Speicher nicht löschen.");
+      console.log("Fehler beim Löschen des AsyncStorage.", e);
+    }
+  };
+
+  // Diese Funktion darf nach Bedarf mit neuer Funktionalität gefüllt werden und dient z.B. dazu, veraltete Einträge im AsyncStorage zu entfernen.
+  // In der finalen Version der App fliegt diese Funktion natürlich raus.
+  const doWhatever = async () => {
+    try {
+      const value = JSON.stringify({
+        showJoint: true,
+        showBong: false,
+        showVape: true,
+        showPipe: false,
+        showCookie: true,
+        shareMainCounter: false,
+        shareLastEntry: true,
+        saveGPS: false,
+        shareGPS: false,
+      });
+      await AsyncStorage.setItem("settings", value);
+    } catch (e) {
+      console.log("Error in App.js: ", e);
     }
   };
 
@@ -243,6 +250,17 @@ const Account = ({
             </Text>
           </View>
         </View>
+
+        <Button
+          fontColor={"white"}
+          onPress={doWhatever}
+          borderradius={100}
+          color={"#4a4a4a"}
+          title={"Bugfix!"}
+          icon={<FontAwesome name="gears" style={styles.money_icon} />}
+        />
+
+        <View style={{ height: 15 }}></View>
 
         <Button
           fontColor={"white"}

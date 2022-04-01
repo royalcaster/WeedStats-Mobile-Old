@@ -17,8 +17,6 @@ import { useEffect, useRef } from "react";
 
 import Svg, { Circle } from "react-native-svg";
 
-import CounterItem from "./CounterItem";
-
 const Login = ({ handleLogin }) => {
   const icon = (
     <FontAwesome name="google" style={{ fontSize: 25, color: "black" }} />
@@ -50,19 +48,44 @@ const Login = ({ handleLogin }) => {
     <Animated.View style={[{ opacity: fadeAnim }, styles.login_container]}>
       <View style={{ height: 50 }}></View>
 
+        <View style={{zIndex: -1, flex: 1}}>
+            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.1)", position: "absolute", top: 30, left: 30, fontSize: 20}}>243</Text>
+            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.2)", position: "absolute", top: 210, left: 70, fontSize: 35}}>189</Text>
+            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.2)", position: "absolute", top: 80, left: 240, fontSize: 25}}>87</Text>
+            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.2)", position: "absolute", top: 300, left: 300, fontSize: 20}}>396</Text>    
+        </View>
+
       <View
         style={{
           width: "100%",
           height: 200,
           position: "absolute",
-          top: 0,
-          zIndex: 2,
-          backgroundColor: "#1E1E1E",
+          top: 200,
+          zIndex: 2
         }}
       >
-        <View style={{ height: 30 }}></View>
+        <View style={{flexDirection: "row"}}>
+            <View style={{flex: 1}}>
+                <Image style={styles.image} source={require('./img/joint.png')}/>
+            </View>
+            <View style={{flex: 1}}>
+                <Image style={[styles.image,{width: 35, transform: [{translateY: -30}]}]} source={require('./img/bong.png')}/>
+            </View>
+            <View style={{flex: 1}}>
+                <Image style={[styles.image,{transform: [{translateY: -50}]}]} source={require('./img/vape.png')}/>
+            </View>
+            <View style={{flex: 1}}>
+                <Image style={[styles.image,{width: 40, transform: [{translateY: -30}]}]} source={require('./img/pipe.png')}/>
+            </View>
+            <View style={{flex: 1}}>
+                <Image style={[styles.image,{width: 55}]} source={require('./img/cookie.png')}/>
+            </View>
+        </View>
+        
+
+        <View style={{ height: 0 }}></View>
         <Image
-          style={{ height: 100, width: 100, alignSelf: "center" }}
+          style={{ height: 200, width: 200, alignSelf: "center" }}
           source={require("./img/logo.png")}
         />
         <Text
@@ -76,19 +99,6 @@ const Login = ({ handleLogin }) => {
         >
           WeedStats
         </Text>
-      </View>
-
-      <View
-        style={{
-          height: "100%",
-          width: "100%",
-          position: "absolute",
-          zIndex: 0,
-        }}
-      >
-        <CounterItem type={"joint"} counter={57} />
-        <CounterItem type={"bong"} counter={274} />
-        <CounterItem type={"vape"} counter={423} />
       </View>
 
       <View
@@ -180,6 +190,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 15,
   },
+  image: {
+      height: 60,
+      width: 20,
+      alignSelf: "center"
+  }
 });
 
 export default Login;
