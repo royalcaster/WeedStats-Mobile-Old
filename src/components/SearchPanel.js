@@ -1,17 +1,14 @@
 import React, {useEffect, useRef, useState} from "react";
-import { Animated, View, StyleSheet, TextInput, Dimensions, Easing, Text, ScrollView, ActivityIndicator, TouchableNativeFeedback, Modal, Pressable, TouchableNativeFeedbackBase, BackHandler } from "react-native";
-
+import { Animated, View, StyleSheet, TextInput, Dimensions, Easing, Text, ScrollView, ActivityIndicator, TouchableNativeFeedback, Modal } from "react-native";
 import BackButton from './BackButton'
-
 import uuid from 'react-native-uuid'
 
 //Firebase
-import { setDoc, doc, getDoc, updateDoc, getDocs, Timestamp, collection, query, where } from "firebase/firestore";
-import { db, firestore } from "./FirebaseConfig";
-
+import { doc, getDoc, updateDoc, getDocs, Timestamp, collection, query, where } from "firebase/firestore";
+import { firestore } from "./FirebaseConfig";
 import FriendListItem from "./FriendListItem";
-
 import Antdesign from 'react-native-vector-icons/AntDesign'
+import { useBackHandler } from '@react-native-community/hooks'
 
 const SearchPanel = ({user, onExit}) => {
 
@@ -33,27 +30,11 @@ const SearchPanel = ({user, onExit}) => {
             easing: Easing.bezier(0,1.02,.21,.97)
         }).start();
     });
-
-    // Call back function when back button is pressed
-    const backActionHandler = () => {
-        hide();
-        return true;
-    };
-
-    useEffect(() => {
-
-        // Add event listener for hardware back button press on Android
-        BackHandler.addEventListener("hardwareBackPress", backActionHandler);
-    
-        return () =>
-          // clear/remove event listener
-          BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
-      }, []);
     
     const hide = () => {
         Animated.timing(slideAnim,{
             toValue: screen_height,
-            duration: 600,
+            duration: 1200,
             useNativeDriver: true,
             easing: Easing.bezier(0,1.02,.21,.97)
         }).start(({finished}) => {
@@ -62,6 +43,12 @@ const SearchPanel = ({user, onExit}) => {
             }
         });
     }
+
+    useBackHandler(() => {
+        console.log("test");
+        hide();
+        return true
+    })
 
     const searchUsers = async (text) => {
         setLoading(true);

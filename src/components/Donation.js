@@ -10,6 +10,8 @@ import BackButton from './BackButton';
 
 import { useFonts } from 'expo-font';
 
+import { useBackHandler } from '@react-native-community/hooks'
+
 const Donation = ( { onexit } ) => {
 
     /* const PayPalButton = window.paypal.Buttons.driver("react", { React, ReactDOM });
@@ -26,21 +28,22 @@ const Donation = ( { onexit } ) => {
         });
     } */
 
-    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const screen_width = Dimensions.get("screen").width;
+    const fadeAnim = useRef(new Animated.Value(screen_width)).current;
     const opacityAnim = useRef(new Animated.Value(0)).current;
-    const window_height = Dimensions.get("window").height;
+    
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
-          toValue: 1,
+          toValue: 0,
           duration: 400,
-          easing: Easing.bezier(0,1.02,.21,.97),
+          easing: Easing.bezier(0,.79,0,.99),
           useNativeDriver: true,
         }).start();
         Animated.timing(opacityAnim, {
             toValue: 1,
             duration: 200,
-            easing: Easing.bezier(0,1.02,.21,.97),
+            easing: Easing.bezier(0,.79,0,.99),
             useNativeDriver: true,
           }).start();
       }, [fadeAnim, opacityAnim]);
@@ -50,26 +53,16 @@ const Donation = ( { onexit } ) => {
         PoppinsLight: require('./fonts/Poppins-Light.ttf')
     });
 
-    // Call back function when back button is pressed
-    const backActionHandler = () => {
+    useBackHandler(() => {
         hide();
-        return true;
-    };
-
-    useEffect(() => {
-
-        // Add event listener for hardware back button press on Android
-        BackHandler.addEventListener("hardwareBackPress", backActionHandler);
-    
-        return () =>
-          // clear/remove event listener
-          BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
-      }, []);
+        return true
+      })
     
     const hide = () => {
-        Animated.timing(opacityAnim, {
-            toValue: 0,
+        Animated.timing(fadeAnim, {
+            toValue: screen_width,
             duration: 300,
+            easing: Easing.bezier(0,.79,0,.99),
             useNativeDriver: true,
         }).start(({finished}) => {
             if (finished) {
@@ -79,16 +72,17 @@ const Donation = ( { onexit } ) => {
     }
 
     return (
-        <Animated.View style={[{transform: [{scale: fadeAnim}], opacity: opacityAnim, height: window_height + 20},styles.container]}>
+        <Animated.View style={[{transform: [{translateX: fadeAnim}], opacity: opacityAnim, height: "100%"},styles.container]}>
 
             <View style={{height: 50}} />
 
-            <View style={{marginLeft: 20}}>
-                <BackButton onPress={() => hide()}/>
+            <View style={{flexDirection: "row", alignContent: "center", alignItems: "center"}}>
+                <View style={{marginLeft: 20}}>
+                    <BackButton onPress={() => hide()}/>
+                </View>
+                <Text style={styles.heading}>WeedStats unterstützen</Text>
             </View>
 
-            
-           
                 <View style={{height: 80}} />
                 <Image source={require('./img/Dön.png')} style={styles.image}></Image>
                 <View style={{height: 50}} />
@@ -167,4 +161,11 @@ const styles = StyleSheet.create({
         fontSize: 30, 
         left: 5
     },
+    heading: {
+        color: "white",
+        fontSize: 20,
+        fontFamily: "PoppinsBlack",
+        marginLeft: 20,
+        textAlign: "left"
+      },
 });

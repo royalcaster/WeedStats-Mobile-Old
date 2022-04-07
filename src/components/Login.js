@@ -1,11 +1,8 @@
 import React from "react";
 import {
-  ImageBackgroundBase,
   StyleSheet,
   Text,
-  TouchableNativeFeedback,
   View,
-  Pressable,
   Image,
   Animated,
   Dimensions,
@@ -15,7 +12,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Button from "./Button";
 import { useEffect, useRef } from "react";
 
-import Svg, { Circle } from "react-native-svg";
+import Svg, { Circle, Line } from "react-native-svg";
 
 const Login = ({ handleLogin }) => {
   const icon = (
@@ -23,7 +20,6 @@ const Login = ({ handleLogin }) => {
   );
 
   const screen_width = Dimensions.get("screen").width;
-  const screen_height = Dimensions.get("screen").height;
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -49,10 +45,22 @@ const Login = ({ handleLogin }) => {
       <View style={{ height: 50 }}></View>
 
         <View style={{zIndex: -1, flex: 1}}>
-            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.1)", position: "absolute", top: 30, left: 30, fontSize: 20}}>243</Text>
-            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.2)", position: "absolute", top: 210, left: 70, fontSize: 35}}>189</Text>
-            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.2)", position: "absolute", top: 80, left: 240, fontSize: 25}}>87</Text>
-            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.2)", position: "absolute", top: 300, left: 300, fontSize: 20}}>396</Text>    
+            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.1)", position: "absolute", top: 30, left: 30, fontSize: 20}}>87</Text>
+            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.1)", position: "absolute", top: 210, left: 40, fontSize: 35}}>189</Text>
+            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.15)", position: "absolute", top: 60, left: 280, fontSize: 25}}>132</Text>
+            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.15)", position: "absolute", top: 300, left: 330, fontSize: 20}}>233</Text>
+            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.2)", position: "absolute", top: 350, left: 40, fontSize: 18}}>253</Text>
+            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.2)", position: "absolute", top: 420, left: 320, fontSize: 30}}>311</Text>
+            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.2)", position: "absolute", top: 470, left: 130, fontSize: 20}}>396</Text>
+
+            <Svg height="100%" width="100%" style={{ position: "absolute"}}>
+              <Line x1={70} y1={45} x2={250} y2={70} stroke={"rgba(255,255,255,0.1)"} strokeWidth={1}/>
+              <Line x1={255} y1={100} x2={115} y2={215} stroke={"rgba(255,255,255,0.1)"} strokeWidth={1}/>
+              <Line x1={115} y1={245} x2={310} y2={305} stroke={"rgba(255,255,255,0.1)"} strokeWidth={1}/>
+              <Line x1={310} y1={320} x2={95} y2={355} stroke={"rgba(255,255,255,0.1)"} strokeWidth={1}/>
+              <Line x1={95} y1={370} x2={300} y2={430} stroke={"rgba(255,255,255,0.1)"} strokeWidth={1}/>
+              <Line x1={300} y1={450} x2={185} y2={475} stroke={"rgba(255,255,255,0.1)"} strokeWidth={1}/>
+            </Svg>
         </View>
 
       <View
@@ -64,7 +72,7 @@ const Login = ({ handleLogin }) => {
           zIndex: 2
         }}
       >
-        <View style={{flexDirection: "row"}}>
+        <View style={{flexDirection: "row", width: "90%", alignSelf: "center"}}>
             <View style={{flex: 1}}>
                 <Image style={styles.image} source={require('./img/joint.png')}/>
             </View>
@@ -82,19 +90,17 @@ const Login = ({ handleLogin }) => {
             </View>
         </View>
         
-
-        <View style={{ height: 0 }}></View>
         <Image
-          style={{ height: 200, width: 200, alignSelf: "center" }}
+          style={{ height: 250, width: 250, alignSelf: "center", marginTop: -50}}
           source={require("./img/logo.png")}
         />
         <Text
           style={{
             color: "white",
-            fontSize: 30,
+            fontSize: 40,
             fontFamily: "PoppinsBlack",
             textAlign: "center",
-            marginTop: -15,
+            marginTop: -30,
           }}
         >
           WeedStats
@@ -125,7 +131,8 @@ const Login = ({ handleLogin }) => {
           zIndex: 1,
         }}
       >
-        <Svg height="100%" width="100%" style={{ position: "absolute" }}>
+        <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.5)", textAlign: "center", fontSize: 40}}>420</Text>
+        <Svg height="100%" width="100%" style={{ position: "absolute"}}>
           <Circle cx={screen_width / 2} cy={500} r={400} fill={"#0080FF"} />
         </Svg>
       </View>

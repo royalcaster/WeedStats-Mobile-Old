@@ -14,7 +14,13 @@ import {
   BackHandler,
 } from "react-native";
 
+import Feedback from "./Feedback";
+import Donation from "./Donation";
+import Levels from "./Levels";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 import { useFonts } from "expo-font";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -25,64 +31,64 @@ import ProfileImage from "./ProfileImage";
 
 import Entypo from "react-native-vector-icons/Entypo";
 
+import { useBackHandler } from '@react-native-community/hooks'
+
 //Firebase
 import { doc, deleteDoc } from "firebase/firestore";
 import { firestore } from "./FirebaseConfig";
 
 import Button from "./Button";
+import BackButton from "./BackButton";
 
 const Account = ({
   user,
   handleLogOut,
   onexit,
-  onShowDonation,
-  onShowFeedback,
-  onShowLevels,
+  show
 }) => {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const opacityAnim = useRef(new Animated.Value(0)).current;
 
-  React.useEffect(() => {
-    Animated.timing(opacityAnim, {
-      toValue: 1,
-      duration: 400,
-      easing: Easing.bezier(0, 1.08, 0.99, 1),
-      useNativeDriver: true,
-    }).start();
-  }, [opacityAnim]);
+  const screen_height = Dimensions.get("screen").height;
+
+  const [showLevels, setShowLevels] = useState(false);
+  const [showDonation, setShowDonation] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+
+  const opacityAnim = useRef(new Animated.Value(screen_height)).current;
 
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
   });
 
-  // Call back function when back button is pressed
-  const backActionHandler = () => {
-    hide();
-    return true;
+  const slide = () => {
+    Animated.timing(opacityAnim, {
+      toValue: 0,
+      duration: 600,
+      easing: Easing.bezier(.2,1,.21,.97),
+      useNativeDriver: true,
+    }).start();
   };
-
-  useEffect(() => {
-    // Add event listener for hardware back button press on Android
-    BackHandler.addEventListener("hardwareBackPress", backActionHandler);
-
-    return () =>
-      // clear/remove event listener
-      BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
-  }, []);
 
   const hide = () => {
     Animated.timing(opacityAnim, {
-      toValue: 0,
-      duration: 300,
-      easing: Easing.bezier(0, 1.08, 0.99, 1),
+      toValue: screen_height,
+      duration: 1200,
+      easing: Easing.bezier(0,1.02,.21,.97),
       useNativeDriver: true,
     }).start(({ finished }) => {
       if (finished) {
-        onexit();
+        /* onexit(); */
       }
     });
   };
+
+  show ? slide() : hide();
+
+  useBackHandler(() => {
+    onexit();
+    hide();
+    return true
+  })
 
   const deleteAccount = async () => {
     handleLogOut();
@@ -125,10 +131,15 @@ const Account = ({
   const [showDelete, setShowDelete] = useState(false);
 
   return (
-    <>
       <Animated.View
-        style={[{ opacity: opacityAnim, height: "100%" }, styles.container]}
+        style={[{ opacity: 1, height: "100%", transform: [{translateY: opacityAnim}]}, styles.container]}
       >
+
+      {showLevels ? <Levels onexit={() => setShowLevels(false)}/> : null}
+      {showFeedback ? <Feedback user={user} onexit={() => setShowFeedback(false)}/> : null}
+      {showDonation ? <Donation onexit={() => setShowDonation(false)}/> : null}
+
+
         <Modal animationType="fade" transparent={true} visible={showDelete}>
           <View
             style={{
@@ -220,53 +231,64 @@ const Account = ({
         </Modal>
 
         <View style={{ height: 50 }}></View>
+        
+        <View style={{
+          flex: 1,
+          borderTopLeftRadius: 25,
+          borderTopRightRadius: 25,
+          backgroundColor: "#0F0F0F"
+        }}>
 
-        <Pressable
-          onPress={() => hide()}
-          style={({ pressed }) => [
-            { backgroundColor: pressed ? "#242424" : "#1E1E1E+" },
-            styles.pressable_back,
-          ]}
-        >
-          <MaterialIcons name="arrow-back" style={styles.icon_back} />
-        </Pressable>
+        <View style={{width: "100%", height: 60, justifyContent: "center"}}>
+          <View style={{marginLeft: 5, position: "absolute"}}>
+            <View style={{transform: [{rotate: "-90deg"}]}}>
+              <BackButton onPress={() => {onexit(); hide()}}/>
+            </View>
+          </View>
+          <Text style={{alignSelf: "center", color: "rgba(255,255,255,0.5)", fontSize: 13, fontFamily: "PoppinsLight", letterSpacing: 2}}>DEIN ACCOUNT</Text>
+        </View>
 
         <View
           style={{
             alignItems: "center",
-            flex: 1,
+            flex: 2,
+            flexDirection: "row",
+            width: "100%",
+            alignSelf: "center",
+            paddingRight: 20,
+            paddingLeft: 20,
+            height: 100
           }}
         >
-          <ProfileImage url={user.photoUrl} x={120} type={1} />
+          <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+            <ProfileImage url={user.photoUrl} x={70} type={1} />
+          </View>
 
-          <Text style={styles.username}>{user.username}</Text>
-          <Text style={styles.email}>{user.email}</Text>
-
-          <View style={{ flexDirection: "row" }}>
-            <Text style={styles.member_text}>Mitglied seit:</Text>
-            <View style={{ width: 20 }} />
-            <Text style={[styles.member_text, { fontFamily: "PoppinsLight" }]}>
-              {user.member_since}
-            </Text>
+          <View style={{flex: 2}}>
+            <Text style={styles.username}>{user.username}</Text>
+            <Text style={styles.email}>{user.email}</Text>
           </View>
         </View>
 
+        <View style={{flex: 1}}>
+         <Text style={{alignSelf: "center", color: "rgba(255,255,255,0.75)", fontSize: 15, fontFamily: "PoppinsLight", letterSpacing: 2}}>MITGLED SEIT: {user.member_since}</Text>
+         </View>
         <Button
           fontColor={"white"}
           onPress={doWhatever}
           borderradius={100}
-          color={"#4a4a4a"}
+          color={"#1E1E1E"}
           title={"Bugfix!"}
           icon={<FontAwesome name="gears" style={styles.money_icon} />}
-        />
+        /> 
 
         <View style={{ height: 15 }}></View>
 
         <Button
           fontColor={"white"}
-          onPress={onShowLevels}
+          onPress={() => setShowLevels(true)}
           borderradius={100}
-          color={"#4a4a4a"}
+          color={"#1E1E1E"}
           title={" Levelübersicht"}
           icon={<FontAwesome name="trophy" style={styles.money_icon} />}
         />
@@ -274,22 +296,22 @@ const Account = ({
         <View style={{ height: 15 }}></View>
 
         <Button
-          onPress={onShowFeedback}
+          onPress={() => setShowFeedback(true)}
           title={" Feedback senden"}
-          icon={<Entypo name="newsletter" style={styles.money_icon} />}
+          icon={<FontAwesome name="gears" style={styles.money_icon} />}
           borderradius={100}
-          color={"#4a4a4a"}
+          color={"#1E1E1E"}
           fontColor={"white"}
         />
 
         <View style={{ height: 15 }}></View>
 
         <Button
-          onPress={onShowDonation}
+          onPress={() => setShowDonation(true)}
           title={"WeedStats unterstützen"}
           icon={<MaterialIcons name="euro" style={styles.money_icon} />}
           borderradius={100}
-          color={"#4a4a4a"}
+          color={"#1E1E1E"}
           fontColor={"white"}
         />
 
@@ -306,7 +328,7 @@ const Account = ({
 
         <View style={{ height: 10 }}></View>
 
-        <View style={{ width: "100%" }}>
+        <View style={{ width: "100%"}}>
           <TouchableNativeFeedback
             background={TouchableNativeFeedback.Ripple(
               "rgba(255,255,255,0.05)",
@@ -321,8 +343,8 @@ const Account = ({
         </View>
 
         <View style={{ height: 10 }}></View>
+        </View>
       </Animated.View>
-    </>
   );
 };
 
@@ -331,8 +353,10 @@ export default Account;
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    zIndex: 21,
+    zIndex: 1,
+    position: "absolute",
     backgroundColor: "#171717",
+    alignSelf: "center"
   },
   profile_img: {
     height: 120,
@@ -340,15 +364,13 @@ const styles = StyleSheet.create({
   },
   username: {
     color: "white",
-    fontSize: 25,
-    fontFamily: "PoppinsBlack",
-    marginTop: 20,
+    fontSize: 18,
+    fontFamily: "PoppinsBlack"
   },
   email: {
-    color: "#797a7a",
-    fontSize: 16,
+    color: "rgba(255,255,255,0.75)",
+    fontSize: 14,
     fontFamily: "PoppinsLight",
-    marginTop: 0,
   },
   signOutButton: {
     width: "80%",
@@ -377,10 +399,9 @@ const styles = StyleSheet.create({
     left: 5,
   },
   member_text: {
-    color: "#797a7a",
-    fontSize: 18,
+    color: "rgba(255,255,255,0.75)",
+    fontSize: 16,
     fontFamily: "PoppinsLight",
-    marginTop: 20,
   },
   button_text: {
     color: "white",

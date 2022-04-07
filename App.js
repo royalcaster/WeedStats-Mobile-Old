@@ -8,14 +8,12 @@ import {
   Text,
   View,
   Modal,
-  Pressable,
   Vibration,
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { LogBox } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "./src/components/Button";
-import GradientButton from "./src/components/GradientButton";
 
 //Components
 import Home from "./src/components/Home";
@@ -24,16 +22,14 @@ import sayings from "./src/Sayings.json";
 import Splash from "./src/components/Splash";
 
 //Firebase
-import { setDoc, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
-import { db, firestore } from "./src/components/FirebaseConfig";
-
+import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { firestore } from "./src/components/FirebaseConfig";
 import { AppRegistry } from "react-native";
 
 //Expo
 import { useFonts } from "expo-font";
 import * as Google from "expo-google-app-auth";
 import * as Location from "expo-location";
-import { update } from "firebase/database";
 
 try {
   LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
@@ -488,46 +484,6 @@ export default function App() {
           </View>
         </Modal>
 
-        {/* <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-            setWriteComplete(false);
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              {writeComplete ? (
-                <>
-                  <Text style={styles.modalBigText}>Erfolg!</Text>
-                  <Text style={styles.modalSmallText}>{getRandomSaying()}</Text>
-                  <Pressable
-                    style={({ pressed }) => [
-                      { backgroundColor: pressed ? "#2b2b2b" : "#383838" },
-                      styles.button,
-                    ]}
-                    hitSlop={50}
-                    onPress={() => {
-                      setModalVisible(!modalVisible);
-                      setWriteComplete(false);
-                    }}
-                  >
-                    <Text style={styles.buttonText}>OK</Text>
-                  </Pressable>
-                </>
-              ) : (
-                <ActivityIndicator
-                  animating={true}
-                  size="large"
-                  color="#0080FF"
-                />
-              )}
-            </View>
-          </View>
-      </Modal> */}
-
         <View style={{ flex: 1, backgroundColor: "#171717" }}>
           {showSplash ? <Splash onExit={() => setShowSplash(false)} /> : null}
 
@@ -560,8 +516,6 @@ const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: "#1E1E1E",
     borderRadius: 20,
-    /* borderWidth: 5,
-    borderColor: "white", */
     padding: 15,
     alignItems: "center",
     shadowColor: "#000",

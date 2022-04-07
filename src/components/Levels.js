@@ -9,43 +9,39 @@ import {
   Pressable,
   Easing,
   BackHandler,
+  Dimensions,
 } from "react-native";
 import { useFonts } from "expo-font";
 import BackButton from "./BackButton";
 import LevelImage from "./LevelImage";
 import levels from "../Levels.json";
 
+import { useBackHandler } from '@react-native-community/hooks'
+
 const Levels = ({ onexit }) => {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const screen_width = Dimensions.get("window").width;
+  const fadeAnim = useRef(new Animated.Value(screen_width)).current;
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
-      toValue: 1,
+      toValue: 0,
       duration: 300,
+      easing: Easing.bezier(0,.79,0,.99),
       useNativeDriver: true,
     }).start();
   }, [fadeAnim]);
 
-  // Call back function when back button is pressed
-  const backActionHandler = () => {
+  useBackHandler(() => {
     hide();
-    return true;
-  };
-
-  useEffect(() => {
-    // Add event listener for hardware back button press on Android
-    BackHandler.addEventListener("hardwareBackPress", backActionHandler);
-
-    return () =>
-      // clear/remove event listener
-      BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
-  }, []);
+    return true
+  })
 
   const hide = () => {
     Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 200,
-      easing: Easing.bezier(0, 1.02, 0.21, 0.97),
+      toValue: screen_width,
+      duration: 300,
+      easing: Easing.bezier(0,.79,0,.99),
       useNativeDriver: true,
     }).start(({ finished }) => {
       if (finished) {
@@ -60,12 +56,15 @@ const Levels = ({ onexit }) => {
   });
 
   return (
-    <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
+    <Animated.View style={[{ opacity: 1 , transform: [{translateX: fadeAnim}]}, styles.container]}>
       <View style={{ height: 50 }}></View>
 
-      <View style={{ marginLeft: 20 }}>
-        <BackButton onPress={() => hide()} />
-      </View>
+      <View style={{flexDirection: "row", alignContent: "center", alignItems: "center"}}>
+                <View style={{marginLeft: 20}}>
+                    <BackButton onPress={() => hide()}/>
+                </View>
+                <Text style={styles.heading}>Levelübersicht</Text>
+            </View>
 
       <View style={{ height: 10 }}></View>
 
@@ -116,12 +115,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#1E1E1E",
     paddingBottom: 30,
+    zIndex: 1,
+    position: "absolute"
+  },
+  heading: {
+    color: "white",
+    fontSize: 20,
+    fontFamily: "PoppinsBlack",
+    marginLeft: 20,
+    textAlign: "left"
   },
   lvl_img: {
     height: 80,
     width: 80,
     marginLeft: 15,
-    marginTop: -10,
+    marginTop: -10
   },
   lvl_name: {
     fontSize: 24,

@@ -21,21 +21,21 @@ const FriendListItem = ({userid, onPress}) => {
     const animate = () => {
         Animated.timing(opacityAnim,{
             toValue: 1,
-            duration: 600,
+            duration: 500,
             useNativeDriver: true,
             /* easing: Easing.bezier(0,1.02,.21,.97), */
         }).start();
 
         Animated.timing(slide1Anim,{
             toValue: 0,
-            duration: 550,
+            duration: 450,
             useNativeDriver: true,
             easing: Easing.bezier(0,1.02,.21,.97),
         }).start();
 
         Animated.timing(slide2Anim,{
             toValue: 0,
-            duration: 250,
+            duration: 200,
             useNativeDriver: true,
             easing: Easing.bezier(0,1.02,.21,.97),
         }).start();

@@ -1,50 +1,38 @@
 import React, { useState } from 'react';
 import { useRef, useEffect } from 'react';
-import { StyleSheet, Image, View, Text, Pressable, Animated, Easing, Dimensions, TextInput, Modal, ActivityIndicator, BackHandler } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
+import { StyleSheet, View, Text, Animated, Easing, Dimensions, TextInput, Modal } from 'react-native';
 import moment from "moment";
-
 import { useFonts } from 'expo-font';
-
 import BackButton from './BackButton';
-
 import Button from './Button';
-
 import RNTextArea from "@freakycoder/react-native-text-area";
-
 import uuid from 'react-native-uuid'
-
 import {
     setDoc,
     doc,
     getDoc,
-    updateDoc,
-    Timestamp,
-    addDoc,
-    limitToLast,
-    query,
+    updateDoc
   } from "firebase/firestore";
-
-  import { db, firestore } from "./FirebaseConfig";
+import { firestore } from "./FirebaseConfig";
+import { useBackHandler } from '@react-native-community/hooks'
 
 const Feedback = ( { onexit, user } ) => {
 
-    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const screen_width = Dimensions.get("screen").width;
+    const fadeAnim = useRef(new Animated.Value(screen_width)).current;
     const opacityAnim = useRef(new Animated.Value(0)).current;
-    const window_height = Dimensions.get("window").height;
-
     const [feedback, setFeedback] = useState("");
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [sent, setSent] = useState(false);
     const [locked, setLocked] = useState(false);
+    const [buttonBlocked, setButtonBlocked] = useState(moment(new Date(Date.now())).diff(moment(new Date(user.last_feedback * 1000)), "days")<7);
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 400,
-          easing: Easing.bezier(0,1.02,.21,.97),
+          toValue: 0,
+          duration: 300,
+          easing: Easing.bezier(0,.79,0,.99),
           useNativeDriver: true,
         }).start();
         Animated.timing(opacityAnim, {
@@ -60,26 +48,16 @@ const Feedback = ( { onexit, user } ) => {
         PoppinsLight: require('./fonts/Poppins-Light.ttf')
     });
 
-    // Call back function when back button is pressed
-    const backActionHandler = () => {
+    useBackHandler(() => {
         hide();
-        return true;
-    };
-
-    useEffect(() => {
-
-        // Add event listener for hardware back button press on Android
-        BackHandler.addEventListener("hardwareBackPress", backActionHandler);
-    
-        return () =>
-          // clear/remove event listener
-          BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
-      }, []);
+        return true
+    })
     
     const hide = () => {
-        Animated.timing(opacityAnim, {
-            toValue: 0,
+        Animated.timing(fadeAnim, {
+            toValue: screen_width,
             duration: 300,
+            easing: Easing.bezier(0,.79,0,.99),
             useNativeDriver: true,
         }).start(({finished}) => {
             if (finished) {
@@ -90,15 +68,14 @@ const Feedback = ( { onexit, user } ) => {
 
     const sendFeedback = async () => {
         setLoading(true);
-
         try{
             const docRef = doc(firestore, "users", user.id);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
                 const now = moment(new Date(Date.now()));
-                const last = moment(new Date(1645359692 * 1000));
+                const last = moment(new Date(docSnap.data().last_feedback * 1000));
                 
-                if (now.diff(last, "days")<31) {
+                if (now.diff(last, "days")<7) {
                     setLocked(true);
                     setLoading(false);
                 }
@@ -106,7 +83,10 @@ const Feedback = ( { onexit, user } ) => {
                     await setDoc(doc(firestore, "feedback", uuid.v4()),{
                         email: email,
                         feedback: feedback
-                    }).then();
+                    });
+                    await updateDoc(doc(firestore, "users", user.id),{
+                        last_feedback: Date.now(),
+                    });
                     setSent(true);
                     setLoading(false);
                 }
@@ -119,9 +99,8 @@ const Feedback = ( { onexit, user } ) => {
 
 
     return (
-        <Animated.View style={[{transform: [{scale: fadeAnim}], opacity: opacityAnim, height: window_height + 20},styles.container]}>
+        <Animated.View style={[{transform: [{translateX: fadeAnim}], opacity: opacityAnim, height: "100%"},styles.container]}>
 
-            
             <Modal 
                 animationType="fade"
                 transparent={true}
@@ -164,7 +143,6 @@ const Feedback = ( { onexit, user } ) => {
 
             <View style={{height: 50}} />
 
-            {loading ? <View style={{flex: 1, alignItems: "center"}}><View style={{height: 200}}></View><ActivityIndicator size={"large"} color={"#0080FF"}/></View> : <>
             <View style={{flexDirection: "row", alignContent: "center", alignItems: "center"}}>
                 <View style={{marginLeft: 20}}>
                     <BackButton onPress={() => hide()}/>
@@ -174,9 +152,9 @@ const Feedback = ( { onexit, user } ) => {
 
             <View style={{height: 20}}></View>
 
-            <View style={{flex: 1.5}}>
-
-                <Text style={{color: "rgba(255,255,255,0.75)", fontFamily: "PoppinsLight", width: "90%", alignSelf: "center", fontSize: 15}}>
+            <View style={{flex: 4}}>
+                <Text style={{color: "rgba(255,255,255,1)", fontFamily: "PoppinsBlack", width: "85%", alignSelf: "center", fontSize: 22}}>Deine Meinung zählt!</Text>
+                <Text style={{color: "rgba(255,255,255,0.75)", fontFamily: "PoppinsLight", width: "85%", alignSelf: "center", fontSize: 15}}>
                 Erzähl uns, wie du WeedStats findest. 
                 Optional kannst du deine Email-Adresse für eine Antwort angeben, 
                 ansonsten bleibt dein Feedback selbstverständlich anonym.</Text>
@@ -184,58 +162,59 @@ const Feedback = ( { onexit, user } ) => {
                 <View style={{height: 20}}></View>
 
                 <View style={{flex: 1}}>
-                    <TextInput style={styles.input} placeholder={"Email-Adresse (optional)"} placeholderTextColor={"rgba(255,255,255,0.5)"} value={email} onChangeText={(text) => setEmail(text)}/>
+                    <View style={{width: "75%", alignSelf: "center", flexDirection: "row"}}>
+                        <Text style={{fontFamily: "PoppinsLight", color: "rgba(255,255,255,0.75)", fontSize: 12, flex: 1}}>Email-Adresse</Text>
+                        <Text style={{fontFamily: "PoppinsLight", color: "#E19707", fontSize: 12, textAlign: "right", flex: 1}}>optional</Text>
+                    </View>
+                    <TextInput style={styles.input} placeholder={"Email-Adresse..."} placeholderTextColor={"rgba(255,255,255,0.2)"} value={email} onChangeText={(text) => setEmail(text)}/>
                 </View>
 
                 <View style={{height: 10}}></View>
 
                 <View style={{flex: 4}}>
 
+                <View style={{width: "75%", alignSelf: "center", flexDirection: "row"}}>
+                    <Text style={{fontFamily: "PoppinsLight", color: "rgba(255,255,255,0.75)", fontSize: 12, flex: 1}}>Feedback</Text>
+                    <Text style={{fontFamily: "PoppinsLight", color: "#D90F0F", fontSize: 12, textAlign: "right", flex: 1}}>erforderlich</Text>
+                </View>
                 <RNTextArea
                     maxCharLimit={300}
-                    placeholderTextColor="rgba(255,255,255,0.5)"
+                    placeholderTextColor="rgba(255,255,255,0.2)"
                     exceedCharCountColor="#990606"
                     placeholder={"Dein Feedback..."}
                     onChangeText={(text) => setFeedback(text)}
                     value={feedback}
-                    style={{backgroundColor: "#171717", borderRadius: 25, width: "90%", alignSelf: "center", height: "100%"}}
-                    textInputStyle={{fontFamily: "PoppinsLight", color: "white", fontSize: 17}}
+                    style={{backgroundColor: "#171717", borderRadius: 15, width: "90%", alignSelf: "center", height: 200}}
+                    textInputStyle={{fontFamily: "PoppinsLight", color: "white", fontSize: 15, textAlignVertical: "top"}}
                     spellCheck={false}
-        
                 />
 
                 </View>
 
             </View>
             
-            <View style={{flex: 1}}>
-
-            <View style={{height: 40}}></View>
-
-            <View style={{flex: 1}}>
+            <View style={{flex: 1, justifyContent: "center"}}>
 
             <View style={{flexDirection: "row"}}>
-                <View style={{flex: 1}}>
-                    <Button title={"Abbrechen"} color={"rgba(255,255,255,0.25)"} borderradius={25} fontColor={"white"} onPress={hide}/>
-                </View>
-
-                <View style={{flex: 1}}>
-                    <Button title={"Senden"} color={"#0080FF"} borderradius={25} fontColor={"white"} onPress={() => {setLoading(true); sendFeedback()}}/>
-                </View>
+                 
+            {!buttonBlocked ? 
+                    <View style={{flex: 1}}>
+                        <Button title={"Senden"} color={"#0080FF"} borderradius={25} fontColor={"white"} onPress={() => {setLoading(true); sendFeedback()}}/>
+                    </View>
+            :
+                    <View style={{flex: 1}}>
+                        <Text style={{color: "white", fontFamily: "PoppinsBlack", textAlign: "center", fontSize: 18}}>Nächstes Feedback in:   <Text style={{color: "#0080FF", fontSize: 35}}>{moment(new Date(user.last_feedback)).add(7,'days').diff(moment(new Date(Date.now())), "days")}</Text>   Tagen.</Text>
+                    </View>
+            }
+                
             </View>
 
             <View style={{height: 20}}></View>
 
-            <Text style={{color: "rgba(255,255,255,0.75)", fontFamily: "PoppinsLight", width: "80%", alignSelf: "center", fontSize: 15, textAlign: "left"}}>
-            Beachte, dass du auf 1 Feedback alle 30 Tage bschränkt bist. </Text>
+            <Text style={{color: "rgba(255,255,255,0.75)", fontFamily: "PoppinsLight", width: "80%", alignSelf: "center", fontSize: 13, textAlign: "left", textAlign: "center"}}>
+            Beachte, dass du auf 1 Feedback alle 7 Tage bschränkt bist. </Text>
 
             </View>
-
-            </View>
-            </>}
-
-            
-            
 
         </Animated.View>
     )
@@ -316,11 +295,11 @@ const styles = StyleSheet.create({
         backgroundColor: "#171717",
         width: "90%",
         alignSelf: "center",
-        borderRadius: 25,
-        height: "100%",
+        borderRadius: 15,
+        height: 50,
         fontFamily: "PoppinsLight",
         paddingLeft: 20,
         color: "white",
-        fontSize: 17
+        fontSize: 15
     }
 });

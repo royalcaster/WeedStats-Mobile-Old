@@ -9,6 +9,10 @@ import { db, firestore } from "./FirebaseConfig";
 
 import BackButton from "./BackButton";
 
+import levels from "../Levels.json";
+
+import { LinearGradient } from "expo-linear-gradient";
+
 const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
 
     const screen_width = Dimensions.get("screen").width;
@@ -23,6 +27,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
         if (userid) {
             getUser();
         }
+        user ? console.log(getHighestCounter()) : null;
     },[userid]);
 
     const getUser = async () => {
@@ -37,7 +42,13 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                     member_since: docSnap.data().member_since,
                     main_counter: docSnap.data().main_counter,
                     last_act_timestamp: docSnap.data().last_entry_timestamp,
-                    last_act_type: docSnap.data().last_entry_type
+                    last_act_type: docSnap.data().last_entry_type,
+                    joint_counter: docSnap.data().joint_counter,
+                    bong_counter: docSnap.data().bong_counter,
+                    vape_counter: docSnap.data().vape_counter,
+                    pipe_counter: docSnap.data().pipe_counter,
+                    cookie_counter: docSnap.data().cookie_counter
+
                 });
             }
         }
@@ -55,22 +66,6 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
             easing: Easing.bezier(0,1.02,.21,.97),
         }).start();
     }
-
-    // Call back function when back button is pressed
-    const backActionHandler = () => {
-        hide();
-        return true;
-    };
-
-    useEffect(() => {
-
-        // Add event listener for hardware back button press on Android
-        BackHandler.addEventListener("hardwareBackPress", backActionHandler);
-    
-        return () =>
-          // clear/remove event listener
-          BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
-      }, []);
 
     const hide = () => {
         Animated.timing(slideAnim,{
@@ -125,6 +120,40 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
         refresh();
     }
 
+    const getHighestCounter = () => {
+        let counters = [
+            ["Joint",user.joint_counter],
+            ["Bong",user.bong_counter],
+            ["Vape",user.vape_counter],
+            ["Pipe",user.pipe_counter],
+            ["Cookie",user.cookie_counter]
+        ];
+        let highest = [" ",0]
+        for (let i = 0; i<counters.length; i++) {
+            counters[i][1] > highest[1] ? () => {
+                highest[0] = counters[i][0]; 
+                highest[1] = counters[i][1];
+            }
+             : null;
+        }
+        return highest;
+        
+    }
+
+    const calcLevelName = (counter) => {
+        let indicator = Math.floor(counter / 70);
+        return indicator > levels.length - 1
+          ? levels[levels.length - 1].name
+          : levels[Math.floor(counter / 70)].name;
+      };
+    
+      const getGradientColors = (counter) => {
+        let indicator = Math.floor(counter / 70);
+        return indicator > levels.length - 1
+          ? levels[levels.length - 1].colors
+          : levels[Math.floor(counter / 70)].colors;
+      };
+
     return (
         <>
             {user ? <Animated.View style={[styles.container,{transform: [{translateX: slideAnim}]}]}>
@@ -152,7 +181,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                                             </TouchableNativeFeedback>
                                         </View>
                                         <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
-                                            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", true)} onPress={() => {removeFriend(userid); hide();}}>
+                                            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", true)} onPresps={() => {removeFriend(userid); hide();}}>
                                                 <View style={styles.touchable}>
                                                     <Antdesign name="check" style={[styles.icon,{color: "#3BA426"}]}/>
                                                 </View>
@@ -181,19 +210,21 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                                 <Text style={styles.username}>{user.username}</Text>
                                 <Text style={styles.member_since}>Mitglied seit: {user.member_since}</Text>
 
-                                <View style={{height: 20}}></View>
+                                <View style={{height: 30}}></View>
 
                                 <View style={{width: "100%", alignSelf: "center", backgroundColor: "#1E1E1E"}}>
-                                    <View style={{height: 15}}></View>
-                                    <Text style={styles.label}>Gesamt</Text>
+                                    <View style={{height: 30}}></View>
+                                    <Text style={styles.label}>GESAMT</Text>
                                     <Text style={styles.value}>{user.main_counter}</Text>
+                                    <View style={{height: 10}}></View>
                                 </View>
 
-                                <View style={{width: "100%", alignSelf: "center"}}>
-                                    <View style={{height: 15}}></View>
-                                    <Text style={styles.label}>Letzte Aktivität</Text>
+                                <View style={{width: "100%", alignSelf: "center", backgroundColor: "#0F0F0F"}}>
+                                    <View style={{height: 30}}></View>
+                                    <Text style={styles.label}>BESTLEISTUNG</Text>
                                     <View style={{height: 10}}></View>
-                                    <View style={styles.activity_container}>
+
+                                    <View style={[styles.activity_container,{backgroundColor: "green", borderRadius: 25}]}>
                                         
                                         <View style={{flex: 2, alignItems: "center", alignContent: "center"}}>
                                             <Text style={styles.date}>{chopTimeStamp(user.last_act_timestamp)}</Text>
@@ -204,6 +235,28 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                                             {user.last_act_type == "vape" ? <Image style={styles.type_image_vape} source={require('./img/vape.png')}/> : null}
                                         </View>
                                     </View>
+
+                                    <View style={{height: 40}}></View>
+                                </View>
+
+                                <View style={{width: "100%", alignSelf: "center"}}>
+                                    <View style={{height: 30}}></View>
+                                    <Text style={styles.label}>LETZTE AKTIVITÄT</Text>
+                                    <View style={{height: 10}}></View>
+
+                                    <View style={styles.activity_container}>
+                                        <View style={{flex: 1, alignItems: "center", alignContent: "center"}}></View>
+                                        <View style={{flex: 1, alignItems: "center", alignContent: "center"}}>
+                                            {user.last_act_type == "joint" ? <Image style={styles.type_image_joint} source={require('./img/joint.png')}/> : null}
+                                            {user.last_act_type == "bong" ? <Image style={styles.type_image_bong} source={require('./img/bong.png')}/> : null}
+                                            {user.last_act_type == "vape" ? <Image style={styles.type_image_vape} source={require('./img/vape.png')}/> : null}
+                                        </View>
+                                        <View style={{flex: 3, alignContent: "center"}}>
+                                            <Text style={styles.date}>{chopTimeStamp(user.last_act_timestamp)}</Text>
+                                            
+                                        </View>
+                                    </View>
+
                                     <View style={{height: 20}}></View>
                                 </View>
 
@@ -254,33 +307,34 @@ const styles = StyleSheet.create({
         color: "rgba(255,255,255,0.5)",
         fontFamily: "PoppinsLight",
         marginLeft: 20,
-        marginTop: -10
+        marginTop: -15
     },
     label: {
         color: "rgba(255,255,255,0.75)",
         fontSize: 15,
         fontFamily: "PoppinsLight",
         textAlignVertical: "center",
-        marginLeft: 20
+        textAlign: "center",
+        letterSpacing: 4
     },
     value: {
-        color: "#0080FF",
-        fontSize: 50,
+        color: "rgba(255,255,255,1)",
+        fontSize: 55,
         fontFamily: "PoppinsBlack",
         textAlignVertical: "center",
-        marginTop: -15,
+        marginTop: -10,
         textAlign: "center"
     },
     date: {
         color: "white",
-        fontSize: 16,
+        fontSize: 14,
         fontFamily: "PoppinsLight",
         textAlignVertical: "center",
         textAlign: "left"
     },
     type_image_joint: {
-        width: 30,
-        height: 80,
+        width: 20,
+        height: 60,
         marginTop: 5,
         marginBottom: 10,
         alignSelf: "center"
@@ -294,7 +348,7 @@ const styles = StyleSheet.create({
     },
     type_image_vape: {
         width: 30,
-        height: 90,
+        height: 70,
         marginTop: 5,
         marginBottom: 10,
         alignSelf: "center"
@@ -344,7 +398,7 @@ const styles = StyleSheet.create({
     },
     activity_container: {
         backgroundColor: "#1E1E1E",
-        borderRadius: 25,
+        borderRadius: 15,
         flexDirection: "row",
         width: "70%",
         alignItems: "center",

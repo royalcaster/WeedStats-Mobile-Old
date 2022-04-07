@@ -6,10 +6,8 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import LevelImage from "./LevelImage";
 import levels from "../Levels.json";
 import {
-  ImageBackgroundComponent,
   StyleSheet,
   Text,
-  TouchableWithoutFeedbackBase,
   View,
   Image,
   Pressable,

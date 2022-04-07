@@ -6,66 +6,35 @@ import {
   ScrollView,
   Image,
   StyleSheet,
-  ActivityIndicator,
   Animated,
   Easing,
   TouchableNativeFeedback,
 } from "react-native";
 import { useFonts } from "expo-font";
-
 import {
-  setDoc,
   doc,
   getDoc,
-  updateDoc,
-  Timestamp,
-  addDoc,
-  limitToLast,
-  query,
 } from "firebase/firestore";
 import {
   ref,
-  push,
-  getDatabase,
-  set,
-  onValue,
   onChildAdded,
 } from "firebase/database";
 import { db, firestore } from "./FirebaseConfig";
-
 import { useState, useEffect, useRef } from "react";
 import uuid from "react-native-uuid";
-
 import Account from "./Account";
-import OptionPanel from "./OptionPanel";
 import Donation from "./Donation";
-import Group from "./Group";
-import GroupListItem from "./GroupListItem";
 import FriendPage from "./FriendPage";
-
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import Entypo from "react-native-vector-icons/Entypo";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 import FriendListItem from "./FriendListItem";
 import SearchPanel from './SearchPanel'
-
 import Feather from 'react-native-vector-icons/Feather'
 import Antdesign from 'react-native-vector-icons/AntDesign'
 import FriendRequests from "./FriendRequests";
-
 import Feedback from "./Feedback";
-
 import Levels from './Levels'
 
 const Groups = ({ user, handleLogOut }) => {
-  const defaultGroup = {
-    title: "",
-    members: ["1", "2", "3"],
-    admin: "",
-    createdon: "",
-    messages: [],
-  };
-
+  
   const [rippleColor, setRippleColor] = useState("rgba(255,255,255,0.1)");
   const [rippleOverflow, setRippleOverflow] = useState(false);
 
@@ -77,14 +46,12 @@ const Groups = ({ user, handleLogOut }) => {
   const [showAddFriend, setShowAddFriend] = useState(false);
 
   const [loading, setLoading] = useState(true);
-  const [showMenu, setShowMenu] = useState(false);
   const [showDonation, setShowDonation] = useState(false);
 
   const [showFeedback, setShowFeedback] = useState(false);
   const [showLevels, setShowLevels] = useState(false);
 
   const [showAccount, setShowAccount] = useState(false);
-  const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [showGroup, setShowGroup] = useState(false);
   const [showRequests, setShowRequests] = useState();
 
@@ -120,84 +87,31 @@ const Groups = ({ user, handleLogOut }) => {
     setLoading(false);
   }
 
-  const hideDonation = () => { 
-    setShowDonation(false);
-  };
-
-  const hideFeedback = () => { 
-    setShowFeedback(false);
-  };
-
-  const hideLevels = () => { 
-    setShowLevels(false);
-  };
-
-  const hideAccount = () => {
-    setShowAccount(false);
-  };
-
-
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsMedium: require("./fonts/Poppins-Medium.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
   });
 
-  //Gruppen laden für Social-Sektor
-  const [groupList, setGroupList] = useState([]);
-
-  const getMessageList = (group) => {
-    var messages_buffer = [];
-    const messageRef = ref(db, "groups/" + group + "/messages");
-    onChildAdded(messageRef, (snapshot) => {
-      messages_buffer.push({
-        type: snapshot.val().type,
-        date: snapshot.val().date,
-        sender: snapshot.val().sender,
-        download_uri: snapshot.val().download_uri,
-        mood: snapshot.val().mood,
-        img_id: snapshot.val().img_id,
-      });
-    });
-    return messages_buffer;
-  };
 
   return (
     <>
-      {showAccount ? (
-        <Account
-          user={user}
-          handleLogOut={handleLogOut}
-          onexit={hideAccount}
-          onShowDonation={() => {
-            setShowDonation(true);
-            hideAccount();
-          }}
-          onShowFeedback={() => {
-            setShowFeedback(true);
-            hideAccount();
-          }}
-          onShowLevels={() => {
-            setShowLevels(true);
-            hideAccount();
-          }}
-        />
-      ) : <>
-      {showDonation ? (
-        <Donation
-          onexit={() => {
-            setShowAccount(false);
-            hideDonation();
-          }}
-        ></Donation>
-      ) : <>
-      {showFeedback ? <Feedback onexit={hideFeedback} user={user}/> : <>{showLevels ? <Levels onexit={hideLevels}/> : null}</>}
-      </>}
-
       {showAddFriend ? <SearchPanel user={user} onExit={() => setShowAddFriend(false)}/> : null}
       {showRequests ? <FriendRequests user={user} onExit={() => setShowRequests(false)} refresh={() => {getFriendList()}}/> : null}
-      
-      <FriendPage show={showFriend} userid={activeFriend} onExit={() => {setShowFriend(false); setActiveFriend(null)}} realuser={user} refresh={() => {getFriendList(); setActiveFriend(null); setShowFriend(false);}}/>
+
+      <FriendPage 
+        show={showFriend} 
+        userid={activeFriend} 
+        onExit={() => {setShowFriend(false); setActiveFriend(null)}} 
+        realuser={user} 
+        refresh={() => {getFriendList(); setActiveFriend(null); setShowFriend(false);}}/>
+
+      <Account
+        user={user}
+        handleLogOut={handleLogOut}
+        onexit={() => setShowAccount(false)}
+        show={showAccount}
+      />
 
       <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
         <View style={{ height: 50 }}></View>
@@ -244,37 +158,6 @@ const Groups = ({ user, handleLogOut }) => {
 
         <View style={{ height: 20 }}></View>
 
-       {/*  {loading ? (
-          <View style={{ justifyContent: "center", height: "75%" }}>
-            <ActivityIndicator size="large" color="#0080FF" />
-          </View>
-        ) : (
-          <>
-            {groupList.map((group) => (
-              <View key={uuid.v4()}>
-                <GroupListItem
-                  onPress={() => {
-                    setShowGroup(true);
-                    setActiveGroup(group);
-                    toggleLatestOnline(group);
-                  }}
-                  group={group}
-                  username={user.username}
-                />
-                <View
-                  style={{
-                    width: "100%",
-                    height: 1,
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    bottom: 0,
-                    position: "absolute",
-                  }}
-                ></View>
-              </View>
-            ))}
-          </>
-        )} */}
-
       <ScrollView style={{marginBottom: 45}}>
               {!loading ? <>{
               friendList.length != 0 ? 
@@ -303,14 +186,16 @@ const Groups = ({ user, handleLogOut }) => {
             overflow: "hidden",
             position: "absolute",
             bottom: 10,
-            height: 55,
+            height: 60,
             width: "95%",
             alignSelf: "center",
+            borderTopColor: "#0080FF",
+            borderTopWidth: 0
           }}
         >
           <TouchableNativeFeedback
             background={TouchableNativeFeedback.Ripple(
-              rippleColor,
+              "rgba(255,255,255,0.1)",
               rippleOverflow
             )}
             onPress={() => setShowAccount(true)}
@@ -350,8 +235,7 @@ const Groups = ({ user, handleLogOut }) => {
           </TouchableNativeFeedback>
         </Animated.View>
       </Animated.View>
-      </>}
-    </>
+      </>
   );
   
 };
@@ -363,6 +247,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#171717",
     height: "100%",
     width: "100%",
+    zIndex: 0
   },
   heading: {
     fontFamily: "PoppinsBlack",
@@ -399,7 +284,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-    backgroundColor: "#1E1E1E"
+    backgroundColor: "#0F0F0F"
   },
   empty: {
         color: "rgba(255,255,255,0.5)",

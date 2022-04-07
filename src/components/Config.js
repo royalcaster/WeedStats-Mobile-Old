@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useEffect, useRef } from "react";
 import { TextInputBase, View } from "react-native";
 import { useFonts } from "expo-font";
+import { LogBox } from 'react-native';
 import {
   StyleSheet,
   Text,
@@ -28,6 +29,7 @@ const Config = () => {
 
   useEffect(() => {
     loadSettings();
+    LogBox.ignoreAllLogs();
   }, []);
 
   const loadSettings = async () => {
