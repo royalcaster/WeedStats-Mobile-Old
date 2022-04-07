@@ -265,7 +265,13 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
               >
                 <View style={{ height: 15 }}></View>
                 <Text style={styles.label}>Gesamt</Text>
-                <Text style={styles.value}>{user.main_counter}</Text>
+                {user.main_counter ? (
+                  <Text style={styles.value}>{user.main_counter}</Text>
+                ) : (
+                  <Text style={styles.label}>
+                    Dieser User teilt seinen Gesamt-Counter momentan nicht.
+                  </Text>
+                )}
               </View>
 
               <View style={{ width: "100%", alignSelf: "center" }}>

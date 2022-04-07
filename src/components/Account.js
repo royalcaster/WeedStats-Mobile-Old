@@ -26,7 +26,7 @@ import ProfileImage from "./ProfileImage";
 import Entypo from "react-native-vector-icons/Entypo";
 
 //Firebase
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, deleteDoc } from "firebase/firestore";
 import { firestore } from "./FirebaseConfig";
 
 import Button from "./Button";
@@ -104,19 +104,36 @@ const Account = ({
   // Diese Funktion darf nach Bedarf mit neuer Funktionalität gefüllt werden und dient z.B. dazu, veraltete Einträge im AsyncStorage zu entfernen.
   // In der finalen Version der App fliegt diese Funktion natürlich raus.
   const doWhatever = async () => {
+    const docRef = doc(firestore, "users", user.id);
+    const docSnap = await getDoc(docRef);
+
     try {
       const value = JSON.stringify({
         showJoint: true,
-        showBong: false,
+        showBong: true,
         showVape: true,
-        showPipe: false,
+        showPipe: true,
         showCookie: true,
-        shareMainCounter: false,
+        shareMainCounter: true,
+        shareTypeCounters: true,
         shareLastEntry: true,
-        saveGPS: false,
-        shareGPS: false,
+        saveGPS: true,
+        shareGPS: true,
       });
       await AsyncStorage.setItem("settings", value);
+    } catch (e) {
+      console.log("Error in App.js: ", e);
+    }
+    try {
+      const value = JSON.stringify({
+        main: docSnap.data().main_counter,
+        joint: docSnap.data().joint_counter,
+        bong: docSnap.data().bong_counter,
+        vape: docSnap.data().vape_counter,
+        pipe: docSnap.data().pipe_counter,
+        cookie: docSnap.data().cookie_counter,
+      });
+      await AsyncStorage.setItem(user.id + "_counters", value);
     } catch (e) {
       console.log("Error in App.js: ", e);
     }

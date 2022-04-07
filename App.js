@@ -72,6 +72,15 @@ export default function App() {
   };
 
   const refreshUser = async (user) => {
+    let local_counters = {};
+
+    try {
+      const jsonValue = await AsyncStorage.getItem(user.id + "_counters");
+      jsonValue != null ? (local_counters = JSON.parse(jsonValue)) : null;
+    } catch (e) {
+      console.log("Error in App.js: ", e);
+    }
+
     const docRef = doc(firestore, "users", user.id);
     const docSnap = await getDoc(docRef);
 
@@ -83,18 +92,18 @@ export default function App() {
         email: docSnap.data().email,
         photoUrl: docSnap.data().photoUrl,
         friends: docSnap.data().friends,
-        joint_counter: docSnap.data().joint_counter,
-        bong_counter: docSnap.data().bong_counter,
-        vape_counter: docSnap.data().vape_counter,
-        pipe_counter: docSnap.data().pipe_counter,
-        cookie_counter: docSnap.data().cookie_counter,
+        joint_counter: local_counters.joint,
+        bong_counter: local_counters.bong,
+        vape_counter: local_counters.vape,
+        pipe_counter: local_counters.pipe,
+        cookie_counter: local_counters.cookie,
         member_since: docSnap.data().member_since,
         last_entry_timestamp: docSnap.data().last_entry_timestamp,
         last_entry_latitude: docSnap.data().last_entry_latitude,
         last_entry_longitude: docSnap.data().last_entry_longitude,
         last_entry_type: docSnap.data().last_entry_type,
         last_feedback: docSnap.data().last_feedback,
-        main_counter: docSnap.data().main_counter,
+        main_counter: local_counters.main,
       });
     } else {
       //Nutzer-Dokument existiert nicht -> loggt sich erstmalig ein -> Dokument erstellen
@@ -105,18 +114,18 @@ export default function App() {
           email: user.email,
           photoUrl: user.photoUrl,
           friends: [],
-          joint_counter: 0,
-          bong_counter: 0,
-          vape_counter: 0,
-          pipe_counter: 0,
-          cookie_counter: 0,
+          joint_counter: null,
+          bong_counter: null,
+          vape_counter: null,
+          pipe_counter: null,
+          cookie_counter: null,
           last_entry_timestamp: null,
           last_entry_latitude: null,
           last_entry_longitude: null,
           last_entry_type: null,
           last_feedback: null,
           member_since: new Date().toISOString().slice(0, 10),
-          main_counter: 0,
+          main_counter: null,
         });
         const docSnap = await getDoc(doc(firestore, "users", user.id));
         if (docSnap.exists()) {
@@ -126,23 +135,18 @@ export default function App() {
             email: docSnap.data().email,
             photoUrl: docSnap.data().photoUrl,
             friends: docSnap.data().friends,
-            joint_counter: docSnap.data().joint_counter,
-            bong_counter: docSnap.data().bong_counter,
-            vape_counter: docSnap.data().vape_counter,
-            pipe_counter: docSnap.data().pipe_counter,
-            cookie_counter: docSnap.data().cookie_counter,
+            joint_counter: local_counters.joint,
+            bong_counter: local_counters.bong,
+            vape_counter: local_counters.vape,
+            pipe_counter: local_counters.pipe,
+            cookie_counter: local_counters.cookie,
             member_since: docSnap.data().member_since,
             last_entry_timestamp: docSnap.data().last_entry_timestamp,
             last_entry_latitude: docSnap.data().last_entry_latitude,
             last_entry_longitude: docSnap.data().last_entry_longitude,
             last_entry_type: docSnap.data().last_entry_type,
             last_feedback: docSnap.data().last_feedback,
-            main_counter:
-              docSnap.data().joint_counter +
-              docSnap.data().bong_counter +
-              docSnap.data().vape_counter +
-              docSnap.data().pipe_counter +
-              docSnap.data().cookie_counter,
+            main_counter: local_counters.main,
           });
         }
       } catch (e) {
@@ -158,11 +162,27 @@ export default function App() {
           showPipe: false,
           showCookie: true,
           shareMainCounter: true,
+          shareTypeCounters: true,
           shareLastEntry: true,
           saveGPS: true,
           shareGPS: false,
         });
         await AsyncStorage.setItem("settings", value);
+      } catch (e) {
+        console.log("Error in App.js: ", e);
+      }
+
+      //Counter-Object im Local Storage erstmalig einrichten:
+      try {
+        const value = JSON.stringify({
+          main: 0,
+          joint: 0,
+          bong: 0,
+          vape: 0,
+          pipe: 0,
+          cookie: 0,
+        });
+        await AsyncStorage.setItem(user.id + "_counters", value);
       } catch (e) {
         console.log("Error in App.js: ", e);
       }
@@ -236,12 +256,34 @@ export default function App() {
   }; */
 
   const writeLocalStorage = async (new_entry) => {
+    // Erstellt neuen Eintrag im AsyncStorage
     try {
       const jsonValue = JSON.stringify(new_entry);
       await AsyncStorage.setItem(
         user.id + "_entry_" + (user.main_counter + 1),
         jsonValue
       );
+    } catch (e) {
+      console.log("Error:", e);
+    }
+
+    // Updated betroffene Counters im AsyncStorage
+
+    let current_counters = {};
+
+    try {
+      const jsonValue = await AsyncStorage.getItem(user.id + "_counters");
+      jsonValue != null ? (current_counters = JSON.parse(jsonValue)) : null;
+    } catch (e) {
+      console.log("Error in App.js: ", e);
+    }
+
+    current_counters[new_entry.type] += 1;
+    current_counters.main += 1;
+
+    try {
+      const jsonValue = JSON.stringify(current_counters);
+      await AsyncStorage.setItem(user.id + "_counters", jsonValue);
     } catch (e) {
       console.log("Error:", e);
     }
@@ -349,10 +391,34 @@ export default function App() {
     const docRef = doc(firestore, "users", user.id);
     const docSnap = await getDoc(docRef);
 
-    await updateDoc(docRef, {
-      [index + "_counter"]: docSnap.data()[index + "_counter"] + 1,
-      main_counter: docSnap.data().main_counter + 1,
-    });
+    if (settings.shareMainCounter) {
+      await updateDoc(docRef, {
+        main_counter: user.main_counter + 1,
+      });
+    } else {
+      await updateDoc(docRef, {
+        main_counter: null,
+      });
+    }
+
+    if (settings.shareTypeCounters && settings.shareMainCounter) {
+      await updateDoc(docRef, {
+        joint_counter: user.joint_counter,
+        bong_counter: user.bong_counter,
+        vape_counter: user.vape_counter,
+        pipe_counter: user.pipe_counter,
+        cookie_counter: user.cookie_counter,
+        [index + "_counter"]: user[index + "_counter"] + 1,
+      });
+    } else {
+      await updateDoc(docRef, {
+        joint_counter: null,
+        bong_counter: null,
+        vape_counter: null,
+        pipe_counter: null,
+        cookie_counter: null,
+      });
+    }
 
     if (settings.shareLastEntry) {
       await updateDoc(docRef, {
@@ -378,16 +444,25 @@ export default function App() {
       });
     }
 
+    let local_counters = {};
+
+    try {
+      const jsonValue = await AsyncStorage.getItem(user.id + "_counters");
+      jsonValue != null ? (local_counters = JSON.parse(jsonValue)) : null;
+    } catch (e) {
+      console.log("Error in App.js: ", e);
+    }
+
     // Das sollte in Zukunft noch ersetzt werden
     const docSnap_new = await getDoc(docRef);
     setUser({
       ...user,
-      main_counter: docSnap_new.data().main_counter,
-      joint_counter: docSnap_new.data().joint_counter,
-      bong_counter: docSnap_new.data().bong_counter,
-      vape_counter: docSnap_new.data().vape_counter,
-      pipe_counter: docSnap_new.data().pipe_counter,
-      cookie_counter: docSnap_new.data().cookie_counter,
+      main_counter: local_counters.main,
+      joint_counter: local_counters.joint,
+      bong_counter: local_counters.bong,
+      vape_counter: local_counters.vape,
+      pipe_counter: local_counters.pipe,
+      cookie_counter: local_counters.cookie,
       last_entry_timestamp: docSnap_new.data().last_entry_timestamp,
       last_entry_type: docSnap_new.data().last_entry_type,
       last_entry_latitude: docSnap_new.data().last_entry_latitude,
