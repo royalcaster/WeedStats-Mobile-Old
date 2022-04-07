@@ -1,6 +1,7 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Animated, View, StyleSheet, Text, Easing } from "react-native";
 import ProfileImage from "./ProfileImage";
+import levels from "../Levels.json";
 
 import { TouchableNativeFeedback } from "react-native";
 
@@ -8,101 +9,153 @@ import { TouchableNativeFeedback } from "react-native";
 import { setDoc, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
 import { db, firestore } from "./FirebaseConfig";
 
-const FriendListItem = ({userid, onPress}) => {
+const FriendListItem = ({ userid, onPress }) => {
+  const opacityAnim = useRef(new Animated.Value(0)).current;
+  const slide1Anim = useRef(new Animated.Value(-500)).current;
+  const slide2Anim = useRef(new Animated.Value(-500)).current;
 
-    const opacityAnim = useRef(new Animated.Value(0)).current;
-    const slide1Anim = useRef(new Animated.Value(-500)).current;
-    const slide2Anim = useRef(new Animated.Value(-500)).current;
+  useEffect(() => {
+    loadUser();
+  }, []);
 
-    useEffect(() => {
-        loadUser();
-    },[]);
+  const animate = () => {
+    Animated.timing(opacityAnim, {
+      toValue: 1,
+      duration: 600,
+      useNativeDriver: true,
+      /* easing: Easing.bezier(0,1.02,.21,.97), */
+    }).start();
 
-    const animate = () => {
-        Animated.timing(opacityAnim,{
-            toValue: 1,
-            duration: 600,
-            useNativeDriver: true,
-            /* easing: Easing.bezier(0,1.02,.21,.97), */
-        }).start();
+    Animated.timing(slide1Anim, {
+      toValue: 0,
+      duration: 550,
+      useNativeDriver: true,
+      easing: Easing.bezier(0, 1.02, 0.21, 0.97),
+    }).start();
 
-        Animated.timing(slide1Anim,{
-            toValue: 0,
-            duration: 550,
-            useNativeDriver: true,
-            easing: Easing.bezier(0,1.02,.21,.97),
-        }).start();
+    Animated.timing(slide2Anim, {
+      toValue: 0,
+      duration: 250,
+      useNativeDriver: true,
+      easing: Easing.bezier(0, 1.02, 0.21, 0.97),
+    }).start();
+  };
 
-        Animated.timing(slide2Anim,{
-            toValue: 0,
-            duration: 250,
-            useNativeDriver: true,
-            easing: Easing.bezier(0,1.02,.21,.97),
-        }).start();
+  const [user, setUser] = useState();
+  const [counters, setCounters] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadUser = async () => {
+    try {
+      const docRef = doc(firestore, "users", userid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        setUser({
+          username: docSnap.data().username,
+          photoUrl: docSnap.data().photoUrl,
+        });
+        setCounters([
+          { type: "Joint", counter: docSnap.data().joint_counter },
+          { type: "Bong", counter: docSnap.data().bong_counter },
+          { type: "Vape", counter: docSnap.data().vape_counter },
+          { type: "Pfeife", counter: docSnap.data().pipe_counter },
+          { type: "Edible", counter: docSnap.data().cookie_counter },
+        ]);
+      }
+    } catch (e) {
+      console.log("Error:", e);
+    }
+    setIsLoading(false);
+    animate();
+  };
+
+  const getTitle = () => {
+    if (
+      counters.forEach((entry) => {
+        entry.counter == null;
+      })
+    ) {
+      return "WeedStats-User";
     }
 
-    const [user, setUser] = useState();
-    const [isLoading, setIsLoading] = useState(true);
+    counters.sort((a, b) => {
+      return b.counter - a.counter;
+    });
+    return counters[0].type + "-" + calcLevelName(counters[0].counter);
+  };
 
-    const loadUser = async () => {
-        try { 
-            const docRef = doc(firestore, "users", userid);
-            const docSnap = await getDoc(docRef);
+  const calcLevelName = (counter) => {
+    let indicator = Math.floor(counter / 70);
+    return indicator > levels.length - 1
+      ? levels[levels.length - 1].name
+      : levels[Math.floor(counter / 70)].name;
+  };
 
-            if (docSnap.exists()) {
-                setUser({
-                    username: docSnap.data().username,
-                    photoUrl: docSnap.data().photoUrl
-                });
-            }
-        }
-        catch(e){
-            console.log("Error:",e);
-        }
-        setIsLoading(false);
-        animate();
-    }
-
-
-    return (<>
-        { !isLoading ?  
-        <Animated.View style={[{opacity: opacityAnim},styles.container]}>
-        <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.05)", false)} onPress={onPress}>
-           <View style={styles.touchable}> 
-            <View style={{flexDirection: "row",  alignItems: "center"}}>
-                            <View style={{width: 20}}></View>
-                            <Animated.View style={{transform: [{translateX: slide1Anim}], zIndex: 2}}>
-                                <ProfileImage x={45} type={1} url={user.photoUrl}/>
-                            </Animated.View>
-                            <View style={{width: 20}}></View>
-                            <Animated.View style={{flexDirection: "column", transform: [{translateX: slide2Anim}], zIndex: 1}}>
-                                <Text style={styles.username}>{user.username}</Text>
-                                <Text style={[styles.username,{fontFamily: "PoppinsLight", fontSize: 12, marginTop: -3}]}>{user.username}</Text>
-                            </Animated.View>
-                        </View>
-                
+  return (
+    <>
+      {!isLoading ? (
+        <Animated.View style={[{ opacity: opacityAnim }, styles.container]}>
+          <TouchableNativeFeedback
+            background={TouchableNativeFeedback.Ripple(
+              "rgba(255,255,255,0.05)",
+              false
+            )}
+            onPress={onPress}
+          >
+            <View style={styles.touchable}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View style={{ width: 20 }}></View>
+                <Animated.View
+                  style={{ transform: [{ translateX: slide1Anim }], zIndex: 2 }}
+                >
+                  <ProfileImage x={45} type={1} url={user.photoUrl} />
+                </Animated.View>
+                <View style={{ width: 20 }}></View>
+                <Animated.View
+                  style={{
+                    flexDirection: "column",
+                    transform: [{ translateX: slide2Anim }],
+                    zIndex: 1,
+                  }}
+                >
+                  <Text style={styles.username}>{user.username}</Text>
+                  <Text
+                    style={[
+                      styles.username,
+                      {
+                        fontFamily: "PoppinsLight",
+                        fontSize: 12,
+                        marginTop: -3,
+                      },
+                    ]}
+                  >
+                    {getTitle()}
+                  </Text>
+                </Animated.View>
+              </View>
             </View>
-        </TouchableNativeFeedback>   
+          </TouchableNativeFeedback>
         </Animated.View>
-        :   null
-            }</>
-    );
-}
+      ) : null}
+    </>
+  );
+};
 
-export default FriendListItem
+export default FriendListItem;
 
 const styles = StyleSheet.create({
-    container: {
-        flexDirection: "row",
-        height: 80,
-    },
-    username: {
-        color: "rgba(255,255,255,0.8)",
-        fontFamily: "PoppinsBlack",
-        fontSize: 15
-    },
-    touchable: {
-        width: "100%",
-        justifyContent: "center"
-    }
+  container: {
+    flexDirection: "row",
+    height: 80,
+  },
+  username: {
+    color: "rgba(255,255,255,0.8)",
+    fontFamily: "PoppinsBlack",
+    fontSize: 15,
+  },
+  touchable: {
+    width: "100%",
+    justifyContent: "center",
+  },
 });
