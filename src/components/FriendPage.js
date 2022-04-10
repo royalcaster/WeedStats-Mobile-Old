@@ -11,35 +11,71 @@ import {
   TouchableNativeFeedback,
   Modal,
   BackHandler,
+  ActivityIndicator,
 } from "react-native";
 
 import Antdesign from "react-native-vector-icons/AntDesign";
+import levels from "../Levels.json";
+import Best from "./Best";
 
 //Firebase
-import { setDoc, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
+import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, firestore } from "./FirebaseConfig";
 
 import BackButton from "./BackButton";
-
-import levels from "../Levels.json";
-
-import { LinearGradient } from "expo-linear-gradient";
 
 const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
     
   const screen_width = Dimensions.get("screen").width;
 
   const [user, setUser] = useState();
+  const [loading, setLoading] = useState(true);
 
   const [modalVisible, setModalVisible] = useState(false);
 
   const slideAnim = useRef(new Animated.Value(screen_width)).current;
+
+  const slideAnim2 = useRef(new Animated.Value(-50)).current;
+  const opacityAnim = useRef(new Animated.Value(0)).current;
+
+  const opacityAnim2 = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (userid) {
       getUser();
     }
   }, [userid]);
+
+  const slideCounters = () => {
+    console.log("test");
+
+    slideAnim2.setValue(-50);
+    opacityAnim.setValue(0);
+    opacityAnim2.setValue(0);
+
+    Animated.timing(slideAnim2,{
+      delay: 200,
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true,
+      easing: Easing.bezier(0, 1.02, 0.21, 0.97)
+    }).start();
+
+    Animated.timing(opacityAnim,{
+      delay: 200,
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+
+    Animated.timing(opacityAnim2,{
+      /* delay: 400, */
+      toValue: 0.2,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+
+  }
 
   const getUser = async () => {
     try {
@@ -54,7 +90,28 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
           main_counter: docSnap.data().main_counter,
           last_act_timestamp: docSnap.data().last_entry_timestamp,
           last_act_type: docSnap.data().last_entry_type,
+          joint_counter: docSnap.data().joint_counter,
+          bong_counter: docSnap.data().bong_counter,
+          vape_counter: docSnap.data().vape_counter,
+          pipe_counter: docSnap.data().pipe_counter,
+          cookie_counter: docSnap.data().cookie_counter,
+          best: getSortedCounters([
+            { type: "Joint", counter: docSnap.data().joint_counter },
+            { type: "Bong", counter: docSnap.data().bong_counter },
+            { type: "Vape", counter: docSnap.data().vape_counter },
+            { type: "Pfeife", counter: docSnap.data().pipe_counter },
+            { type: "Edible", counter: docSnap.data().cookie_counter },
+          ])
         });
+        /* setCounters([
+            { type: "Joint", counter: docSnap.data().joint_counter },
+            { type: "Bong", counter: docSnap.data().bong_counter },
+            { type: "Vape", counter: docSnap.data().vape_counter },
+            { type: "Pfeife", counter: docSnap.data().pipe_counter },
+            { type: "Edible", counter: docSnap.data().cookie_counter },
+          ]); */
+          setLoading(false);
+          slideCounters();
       }
     } catch (e) {
       console.log("Error", e);
@@ -120,41 +177,19 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
       );
     };
 
-    const getHighestCounter = () => {
-        let counters = [
-            ["Joint",user.joint_counter],
-            ["Bong",user.bong_counter],
-            ["Vape",user.vape_counter],
-            ["Pipe",user.pipe_counter],
-            ["Cookie",user.cookie_counter]
-        ];
-        let highest = [" ",0]
-        for (let i = 0; i<counters.length; i++) {
-            counters[i][1] > highest[1] ? () => {
-                highest[0] = counters[i][0]; 
-                highest[1] = counters[i][1];
-            }
-             : null;
-        }
-        return highest;
-        
-    }
-
-    const calcLevelName = (counter) => {
-        let indicator = Math.floor(counter / 70);
-        return indicator > levels.length - 1
+  const calcLevelName = (counter) => {
+      let indicator = Math.floor(counter / 70);
+      return indicator > levels.length - 1
           ? levels[levels.length - 1].name
           : levels[Math.floor(counter / 70)].name;
-      };
-    
-      const getGradientColors = (counter) => {
-        let indicator = Math.floor(counter / 70);
-        return indicator > levels.length - 1
+  };
+
+  const getGradientColors = (counter) => {
+      let indicator = Math.floor(counter / 70);
+      return indicator > levels.length - 1
           ? levels[levels.length - 1].colors
           : levels[Math.floor(counter / 70)].colors;
-      };
-
-    
+  };
 
   const removeFriend = async (id) => {
     try {
@@ -174,6 +209,24 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
     }
     setModalVisible(false);
     refresh();
+  };
+
+  const getSortedCounters = (array) => {
+    array.sort((a, b) => {
+      return b.counter - a.counter;
+    });
+    return array[0];
+  }
+
+  const getTitle = () => {
+    /* if (
+      counters.forEach((entry) => {
+        entry.counter == null;
+      })
+    ) {
+      return "WeedStats-User";
+    } */
+    return user.best.type + "-" + calcLevelName(user.best.counter);
   };
 
   return (
@@ -270,7 +323,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
               position: "absolute",
             }}
           >
-            <BackButton onPress={() => onExit()} />
+            <BackButton onPress={() => {onExit();setLoading(true);}} />
           </View>
 
           <Image
@@ -304,20 +357,89 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                   backgroundColor: "#1E1E1E",
                 }}
               >
-                <View style={{ height: 15 }}></View>
-                <Text style={styles.label}>Gesamt</Text>
+                <View style={{ height: 30 }}></View>
+                {!loading ? <>
                 {user.main_counter ? (
-                  <Text style={styles.value}>{user.main_counter}</Text>
+                  <Animated.View style={{opacity: opacityAnim,transform: [{translateX: slideAnim2}]}}>
+                    <Text style={styles.value}>{user.main_counter}</Text>
+                  </Animated.View>
                 ) : (
                   <Text style={styles.label}>
                     Dieser User teilt seinen Gesamt-Counter momentan nicht.
                   </Text>
                 )}
+                <Text style={[styles.label,{marginTop: -25}]}>GESAMT</Text>
+                </> : <View style={{height: 60, justifyContent: "center"}}>
+                <ActivityIndicator size={"small"} color={"#0080FF"}/>
+              </View>}
+                <View style={{ height: 30 }}></View>
+
+                {!loading ? 
+
+                <Animated.View style={{width: "95%", flexDirection: "row", alignSelf: "center", height: 60}}>
+                    <View style={{flex: 1}}>
+                      <Animated.View style={{opacity: opacityAnim, transform: [{translateX: slideAnim2}]}}>
+                        <Text style={styles.small_counter}>{user.joint_counter}</Text>
+                      </Animated.View>
+                        <Text style={styles.small_label}>JOINT</Text>
+                        <Animated.Image style={[styles.small_image,{opacity: opacityAnim2}]} source={require('./img/joint.png')}/>
+                    </View>
+                    <View style={{flex: 1}}>
+                     <Animated.View style={{opacity: opacityAnim, transform: [{translateX: slideAnim2}]}}>
+                        <Text style={styles.small_counter}>{user.bong_counter}</Text>
+                      </Animated.View>
+                        <Text style={styles.small_label}>BONG</Text>
+                        <Animated.Image style={[styles.small_image,{width: 50, marginTop: -10, opacity: opacityAnim2}]} source={require('./img/bong.png')}/>
+                    </View>
+                    <View style={{flex: 1}}>
+                      <Animated.View style={{opacity: opacityAnim, transform: [{translateX: slideAnim2}]}}>
+                        <Text style={styles.small_counter}>{user.vape_counter}</Text>
+                      </Animated.View>
+                        <Text style={styles.small_label}>VAPE</Text>
+                        <Animated.Image style={[styles.small_image,{height: 90, width: 40, marginTop: -17, opacity: opacityAnim2}]} source={require('./img/vape.png')}/>
+                    </View>
+                    <View style={{flex: 1}}>
+                     <Animated.View style={{opacity: opacityAnim, transform: [{translateX: slideAnim2}]}}>
+                        <Text style={styles.small_counter}>{user.pipe_counter}</Text>
+                      </Animated.View>
+                        <Text style={styles.small_label}>PFEIFE</Text>
+                        <Animated.Image style={[styles.small_image,{height: 100, width: 60, marginTop: -20, opacity: opacityAnim2}]} source={require('./img/pipe.png')}/>
+                    </View>
+                    <View style={{flex: 1}}>
+                      <Animated.View style={{opacity: opacityAnim, transform: [{translateX: slideAnim2}]}}>
+                        <Text style={styles.small_counter}>{user.cookie_counter}</Text>
+                      </Animated.View>
+                        <Text style={styles.small_label}>EDIBLE</Text>
+                        <Animated.Image style={[styles.small_image,{height: 65, width: 60, marginTop: 0, opacity: opacityAnim2}]} source={require('./img/cookie.png')}/>
+                    </View>
+                </Animated.View>
+                  : 
+                <View style={{height: 60, justifyContent: "center"}}>
+                  <ActivityIndicator size={"small"} color={"#0080FF"}/>
+                </View>}
+
+                <View style={{ height: 40 }}></View>
+              </View>
+
+
+              <View style={{ width: "100%", alignSelf: "center", backgroundColor: "#0F0F0F"}}>
+                <View style={{ height: 30 }}></View>
+                <Text style={styles.label}>BESTLEISTUNG</Text>
+                <View style={{ height: 10 }}></View>
+                {!loading ? 
+
+                <Best colors={getGradientColors(user.best.counter)} level_index={Math.floor(user.best.counter / 70)} title={getTitle()}/>
+
+                : 
+                <View style={{height: 80, justifyContent: "center"}}>
+                  <ActivityIndicator size={"small"} color={"#0080FF"}/>
+                </View>}
+                <View style={{ height: 35 }}></View>
               </View>
 
               <View style={{ width: "100%", alignSelf: "center" }}>
-                <View style={{ height: 15 }}></View>
-                <Text style={styles.label}>Letzte Aktivität</Text>
+                <View style={{ height: 30 }}></View>
+                <Text style={styles.label}>LETZTE AKTIVITÄT</Text>
                 <View style={{ height: 10 }}></View>
                 <View style={styles.activity_container}>
                   {user.last_act_timestamp != null &&
@@ -370,8 +492,6 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                 <View style={{ height: 20 }}></View>
               </View>
 
-              <Text>Hinzufügen: aktueller Streak, Main-Typ, </Text>
-
               <View style={{ bottom: 0, position: "absolute", width: "100%" }}>
                 <TouchableNativeFeedback
                   background={TouchableNativeFeedback.Ripple(
@@ -418,18 +538,19 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,0.5)",
     fontFamily: "PoppinsLight",
     marginLeft: 20,
-    marginTop: -10,
+    marginTop: -15,
   },
   label: {
     color: "rgba(255,255,255,0.75)",
-    fontSize: 15,
+    fontSize: 13,
     fontFamily: "PoppinsLight",
+    letterSpacing: 3,
     textAlignVertical: "center",
-    marginLeft: 20,
+    textAlign: "center"
   },
   value: {
-    color: "#0080FF",
-    fontSize: 50,
+    color: "white",
+    fontSize: 60,
     fontFamily: "PoppinsBlack",
     textAlignVertical: "center",
     marginTop: -15,
@@ -515,4 +636,30 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignSelf: "center",
   },
+  small_counter: {
+    zIndex: 2,
+    color: "white",
+    fontSize: 30,
+    fontFamily: "PoppinsBlack",
+    textAlign: "center",
+    marginTop: 5,
+    opacity: 1
+  },
+  small_image: {
+      height: 80,
+      width: 30,
+      position: "absolute",
+      zIndex: -1,
+      opacity: 0.2,
+      alignSelf: "center",
+      marginTop: -10
+  },
+  small_label: {
+    textAlign: "center",
+    zIndex: 1,
+    color: "rgba(255,255,255,1)",
+    fontFamily: "PoppinsLight",
+    fontSize: 12,
+    marginTop: -15
+  }
 });
