@@ -414,7 +414,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                     </View>
                 </Animated.View>
                   : 
-                <View style={{height: 60, justifyContent: "center"}}>
+                <View style={{height: 70, justifyContent: "center"}}>
                   <ActivityIndicator size={"small"} color={"#0080FF"}/>
                 </View>}
 

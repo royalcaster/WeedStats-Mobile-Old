@@ -60,6 +60,7 @@ const Main = ({ user, toggleCounter }) => {
     loadSettings();
     calcDaysTill420();
     sortCounterOrder();
+    console.log(user.joint_counter);
   }, []);
 
   const loadSettings = async () => {

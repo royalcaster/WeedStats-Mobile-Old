@@ -56,7 +56,7 @@ const Map = ({ user }) => {
   const windowHeight = Dimensions.get("window").height;
   const windowWidth = Dimensions.get("window").width;
 
-  const [view, setView] = useState("heatmap");
+  const [view, setView] = useState("friends");
 
   const [localData, setLocalData] = useState([]);
 
@@ -344,7 +344,7 @@ const Map = ({ user }) => {
           </View>
         </LinearGradient>
 
-        {!loading ? (
+        {!loading && localDataLoaded ? (
           <MapView
             provider={PROVIDER_GOOGLE}
             initialRegion={initRegion}
@@ -360,7 +360,7 @@ const Map = ({ user }) => {
             pitchEnabled={true}
             showsMyLocationButton={false}
           >
-            {view == "heatmap" ? (
+            {/* {view == "heatmap" ? (
               <Heatmap
                 points={filterNull(localData).map((entry) => {
                   return {
@@ -370,7 +370,7 @@ const Map = ({ user }) => {
                 })}
                 radius={40}
               />
-            ) : null}
+            ) : null} */}
 
             {view == "friends" ? (
               <>

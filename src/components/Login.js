@@ -13,6 +13,7 @@ import Button from "./Button";
 import { useEffect, useRef } from "react";
 
 import Svg, { Circle, Line } from "react-native-svg";
+import LoginNumber from "./LoginNumber";
 
 const Login = ({ handleLogin }) => {
   const icon = (
@@ -20,6 +21,8 @@ const Login = ({ handleLogin }) => {
   );
 
   const screen_width = Dimensions.get("screen").width;
+
+  
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -29,6 +32,8 @@ const Login = ({ handleLogin }) => {
       duration: 400,
       useNativeDriver: true,
     }).start();
+
+   /*  startLoginMovie(); */
   }, []);
 
   const [loaded] = useFonts({
@@ -40,28 +45,39 @@ const Login = ({ handleLogin }) => {
     return null;
   }
 
+/*   const startLoginMovie = () => {
+
+  } */
+
+  const lines = [
+    {x1: 70,  y1: 45,  x2: 250,  y2: 70,  stroke: "rgba(255,255,255,0.1)",  strokeWidth: 1},
+    {x1: 255,  y1: 100,  x2: 115,  y2: 215,  stroke: "rgba(255,255,255,0.1)",  strokeWidth: 1},
+    {x1: 115,  y1: 245,  x2: 310,  y2: 305,  stroke: "rgba(255,255,255,0.1)",  strokeWidth: 1},
+    {x1: 310,  y1: 320,  x2: 95,  y2: 355,  stroke: "rgba(255,255,255,0.1)",  strokeWidth: 1},
+    {x1: 95,  y1: 370,  x2: 300,  y2: 430,  stroke: "rgba(255,255,255,0.1)",  strokeWidth: 1},
+    {x1: 300,  y1: 450,  x2: 185,  y2: 475,  stroke: "rgba(255,255,255,0.1)",  strokeWidth: 1},
+  ]
+
   return (
     <Animated.View style={[{ opacity: fadeAnim }, styles.login_container]}>
-      <View style={{ height: 50 }}></View>
 
-        <View style={{zIndex: -1, flex: 1}}>
-            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.1)", position: "absolute", top: 30, left: 30, fontSize: 20}}>87</Text>
-            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.1)", position: "absolute", top: 210, left: 40, fontSize: 35}}>189</Text>
-            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.15)", position: "absolute", top: 60, left: 280, fontSize: 25}}>132</Text>
-            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.15)", position: "absolute", top: 300, left: 330, fontSize: 20}}>233</Text>
-            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.2)", position: "absolute", top: 350, left: 40, fontSize: 18}}>253</Text>
-            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.2)", position: "absolute", top: 420, left: 320, fontSize: 30}}>311</Text>
-            <Text style={{fontFamily: "PoppinsBlack", color: "rgba(255,255,255,0.2)", position: "absolute", top: 470, left: 130, fontSize: 20}}>396</Text>
+      <View style={{top: -50}}>
+            <LoginNumber fontFamily={"PoppinsBlack"} color={"rgba(255,255,255,0.1)"} position={"absolute"}  top={340}   left={40} fontSize={35} number={189} />
+            <LoginNumber fontFamily={"PoppinsBlack"} color={"rgba(255,255,255,0.15)"} position={"absolute"}  top={60}    left={280} fontSize={25}  number={132} />
+            <LoginNumber fontFamily={"PoppinsBlack"} color={"rgba(255,255,255,0.1)"} position={"absolute"}  top={30}    left={30} fontSize={20}   number={87} />
+            <LoginNumber fontFamily={"PoppinsBlack"} color={"rgba(255,255,255,0.15)"} position={"absolute"} top={300}   left={330} fontSize={20}  number={233} />
+            <LoginNumber fontFamily={"PoppinsBlack"} color={"rgba(255,255,255,0.2)"} position={"absolute"}  top={350}   left={40} fontSize={18}   number={253} />
+            <LoginNumber fontFamily={"PoppinsBlack"} color={"rgba(255,255,255,0.2)"} position={"absolute"}  top={370}   left={320} fontSize={30}  number={311} />
+            <LoginNumber fontFamily={"PoppinsBlack"} color={"rgba(255,255,255,0.2)"} position={"absolute"}  top={360}   left={130} fontSize={20}  number={396} />
+      </View>
 
-            <Svg height="100%" width="100%" style={{ position: "absolute"}}>
-              <Line x1={70} y1={45} x2={250} y2={70} stroke={"rgba(255,255,255,0.1)"} strokeWidth={1}/>
-              <Line x1={255} y1={100} x2={115} y2={215} stroke={"rgba(255,255,255,0.1)"} strokeWidth={1}/>
-              <Line x1={115} y1={245} x2={310} y2={305} stroke={"rgba(255,255,255,0.1)"} strokeWidth={1}/>
-              <Line x1={310} y1={320} x2={95} y2={355} stroke={"rgba(255,255,255,0.1)"} strokeWidth={1}/>
-              <Line x1={95} y1={370} x2={300} y2={430} stroke={"rgba(255,255,255,0.1)"} strokeWidth={1}/>
-              <Line x1={300} y1={450} x2={185} y2={475} stroke={"rgba(255,255,255,0.1)"} strokeWidth={1}/>
-            </Svg>
-        </View>
+      <Svg height="100%" width="100%" style={{ position: "absolute"}}>
+
+      {lines.map(line => {
+        <Line x1={line.x1} y1={line.y1} x2={line.x2} y2={line.y2} stroke={line.stroke} strokeWidth={line.strokeWidth} />
+      })}
+
+      </Svg>
 
       <View
         style={{
