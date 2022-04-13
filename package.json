@@ -22,6 +22,7 @@
     "@react-native-google-signin/google-signin": "^7.0.1",
     "@react-navigation/material-top-tabs": "^6.0.6",
     "@react-navigation/native": "^6.0.8",
+    "date-streaks": "^1.2.1",
     "expo": "~43.0.2",
     "expo-application": "^4.0.0",
     "expo-camera": "~12.0.3",

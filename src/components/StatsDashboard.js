@@ -19,6 +19,7 @@ import toGermanDate from "../DateConversion";
 import SwitchSelector from "react-native-switch-selector";
 
 import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
+import { summary, streakRanges, trackRecord } from "date-streaks";
 
 const StatsDashboard = ({ user, localData }) => {
   const [loaded] = useFonts({
@@ -67,7 +68,7 @@ const StatsDashboard = ({ user, localData }) => {
     });
   };
 
-  const isNextDay = (daysDiff, absDiff, monat, jahr) => {
+  /*   const isNextDay = (daysDiff, absDiff, monat, jahr) => {
     const monat31 = [1, 3, 5, 7, 8, 10, 12];
     const monat30 = [4, 6, 9, 11];
 
@@ -110,9 +111,9 @@ const StatsDashboard = ({ user, localData }) => {
     }
     // Ansonsten: Tage sind identisch (irrelevant)
     return 3;
-  };
+  }; */
 
-  const calcStreak = (array) => {
+  /*   const calcStreak = (array) => {
     let current = 1;
     let longest = 1;
     let smokedToday = false;
@@ -176,6 +177,61 @@ const StatsDashboard = ({ user, localData }) => {
       toGermanDate(startDateCurrent),
       smokedToday,
     ];
+  }; */
+
+  const calcStreak = (array) => {
+    const dates = getEntryDates(array);
+    const length = Math.ceil((Date.now() - dates[0]) / (1000 * 60 * 60 * 24));
+    const rec = trackRecord({ dates, length });
+    const sum1 = summary(dates);
+    const ranges1 = streakRanges(dates);
+    const breakDates = getBreakDates({ rec });
+    const sum2 = summary(breakDates);
+    const ranges2 = streakRanges(breakDates);
+
+    return {
+      currentStreak: sum1.currentStreak,
+      longestStreak: sum1.longestStreak,
+      today: sum1.todayInStreak,
+      within: sum1.withinCurrentStreak,
+      startCurrent: toGermanDate(ranges1[0].start),
+      rangeLongest: ranges1.find(
+        ({ duration }) => duration === sum1.longestStreak
+      ),
+      currentBreak: sum2.currentStreak,
+      longestBreak: sum2.longestStreak,
+      startCurrentBreak: toGermanDate(ranges2[0].start),
+      rangeLongestBreak: ranges2.find(
+        ({ duration }) => duration === sum2.longestStreak
+      ),
+    };
+  };
+
+  const getEntryDates = (array) => {
+    let dates = array.map((entry) => {
+      let date = new Date(entry.timestamp);
+      date.setUTCHours(0, 0, 0, 0);
+      return +date;
+    });
+
+    dates = dates.filter(function (value, index, array) {
+      return array.indexOf(value) === index;
+    });
+
+    return dates;
+  };
+
+  const getBreakDates = ({ rec }) => {
+    // Konvertiert Object in verschachteltes Array
+    let dates = Object.entries(rec);
+
+    // Filtert nach den Daten, an denen nicht gesmoked wurde
+    dates = dates.filter((entry) => entry[1] === false);
+
+    // Wirft das überflüssige zweite property weg -> eindim. Array
+    dates = dates.map((entry) => Date.parse(entry[0]));
+
+    return dates;
   };
 
   const createLineChartData = (array, datapoints) => {
@@ -579,31 +635,59 @@ const StatsDashboard = ({ user, localData }) => {
 
               <View style={styles.card_container_wide}>
                 <Text style={styles.card_label}>Aktueller Streak</Text>
-                {streakData[5] ? (
-                  <Text style={[styles.card_value, { fontSize: 25 }]}>
-                    {streakData[3]} Tage
-                  </Text>
-                ) : (
-                  <Text
-                    style={[
-                      styles.card_value,
-                      { fontSize: 25, color: "#D0342C" },
-                    ]}
-                  >
-                    {streakData[3]} Tage
-                  </Text>
-                )}
-                {streakData[4] ? (
+                <Text
+                  style={[
+                    styles.card_value,
+                    { fontSize: 25 },
+                    streakData.today
+                      ? { color: "#c4c4c4" }
+                      : { color: "#8a8a8a" },
+                  ]}
+                >
+                  {streakData.currentStreak} Tage
+                </Text>
+                {streakData.within ? (
                   <Text style={[styles.card_value, { fontSize: 20 }]}>
-                    (seit {streakData[4]})
+                    (seit {streakData.startCurrent})
                   </Text>
                 ) : null}
                 <Text style={styles.card_label}>Längster Streak</Text>
                 <Text style={[styles.card_value, { fontSize: 25 }]}>
-                  {streakData[0]} Tage
+                  {streakData.longestStreak} Tage
                 </Text>
                 <Text style={[styles.card_value, { fontSize: 20 }]}>
-                  ({streakData[1]} -{streakData[2]})
+                  ({toGermanDate(streakData.rangeLongest.start)} -
+                  {toGermanDate(streakData.rangeLongest.end)})
+                </Text>
+              </View>
+
+              <View style={{ height: 10 }}></View>
+
+              <View style={styles.card_container_wide}>
+                <Text style={styles.card_label}>Aktuelle Pause</Text>
+                <Text
+                  style={[
+                    styles.card_value,
+                    { fontSize: 25 },
+                    streakData.today
+                      ? { color: "#8a8a8a" }
+                      : { color: "#c4c4c4" },
+                  ]}
+                >
+                  {streakData.currentBreak} Tage
+                </Text>
+                {!streakData.today ? (
+                  <Text style={[styles.card_value, { fontSize: 20 }]}>
+                    (seit {streakData.startCurrentBreak})
+                  </Text>
+                ) : null}
+                <Text style={styles.card_label}>Längste Pause</Text>
+                <Text style={[styles.card_value, { fontSize: 25 }]}>
+                  {streakData.longestBreak} Tage
+                </Text>
+                <Text style={[styles.card_value, { fontSize: 20 }]}>
+                  ({toGermanDate(streakData.rangeLongestBreak.start)} -
+                  {toGermanDate(streakData.rangeLongestBreak.end)})
                 </Text>
               </View>
             </>
