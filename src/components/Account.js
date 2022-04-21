@@ -20,7 +20,7 @@ import Levels from "./Levels";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import Swipeable from "react-native-gesture-handler/Swipeable";
 
 import { useFonts } from "expo-font";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -31,7 +31,7 @@ import ProfileImage from "./ProfileImage";
 
 import Entypo from "react-native-vector-icons/Entypo";
 
-import { useBackHandler } from '@react-native-community/hooks'
+import { useBackHandler } from "@react-native-community/hooks";
 
 //Firebase
 import { doc, getDoc, deleteDoc } from "firebase/firestore";
@@ -40,13 +40,7 @@ import { firestore } from "./FirebaseConfig";
 import Button from "./Button";
 import BackButton from "./BackButton";
 
-const Account = ({
-  user,
-  handleLogOut,
-  onexit,
-  show
-}) => {
-
+const Account = ({ user, handleLogOut, onexit, show }) => {
   const screen_height = Dimensions.get("screen").height;
 
   const [showLevels, setShowLevels] = useState(false);
@@ -64,7 +58,7 @@ const Account = ({
     Animated.timing(opacityAnim, {
       toValue: 0,
       duration: 600,
-      easing: Easing.bezier(.2,1,.21,.97),
+      easing: Easing.bezier(0.2, 1, 0.21, 0.97),
       useNativeDriver: true,
     }).start();
   };
@@ -73,7 +67,7 @@ const Account = ({
     Animated.timing(opacityAnim, {
       toValue: screen_height,
       duration: 1200,
-      easing: Easing.bezier(0,1.02,.21,.97),
+      easing: Easing.bezier(0, 1.02, 0.21, 0.97),
       useNativeDriver: true,
     }).start(({ finished }) => {
       if (finished) {
@@ -87,8 +81,8 @@ const Account = ({
   useBackHandler(() => {
     onexit();
     hide();
-    return true
-  })
+    return true;
+  });
 
   const deleteAccount = async () => {
     handleLogOut();
@@ -125,6 +119,7 @@ const Account = ({
         shareLastEntry: true,
         saveGPS: true,
         shareGPS: true,
+        showTutorial: true,
       });
       await AsyncStorage.setItem("settings", value);
     } catch (e) {
@@ -148,121 +143,144 @@ const Account = ({
   const [showDelete, setShowDelete] = useState(false);
 
   return (
-      <Animated.View
-        style={[{ opacity: 1, height: "100%", transform: [{translateY: opacityAnim}]}, styles.container]}
-      >
+    <Animated.View
+      style={[
+        {
+          opacity: 1,
+          height: "100%",
+          transform: [{ translateY: opacityAnim }],
+        },
+        styles.container,
+      ]}
+    >
+      {showLevels ? <Levels onexit={() => setShowLevels(false)} /> : null}
+      {showFeedback ? (
+        <Feedback user={user} onexit={() => setShowFeedback(false)} />
+      ) : null}
+      {showDonation ? <Donation onexit={() => setShowDonation(false)} /> : null}
 
-      {showLevels ? <Levels onexit={() => setShowLevels(false)}/> : null}
-      {showFeedback ? <Feedback user={user} onexit={() => setShowFeedback(false)}/> : null}
-      {showDonation ? <Donation onexit={() => setShowDonation(false)}/> : null}
-
-
-        <Modal animationType="fade" transparent={true} visible={showDelete}>
+      <Modal animationType="fade" transparent={true} visible={showDelete}>
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            flex: 1,
+          }}
+        >
           <View
             style={{
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "rgba(0,0,0,0.5)",
-              flex: 1,
+              width: "90%",
+              height: 300,
+              backgroundColor: "#171717",
+              alignSelf: "center",
+              borderRadius: 25,
             }}
           >
-            <View
-              style={{
-                width: "90%",
-                height: 300,
-                backgroundColor: "#171717",
-                alignSelf: "center",
-                borderRadius: 25,
-              }}
-            >
-              <View style={{ flex: 1 }}>
-                <Text
-                  style={[
-                    styles.heading,
-                    {
-                      marginLeft: 0,
-                      textAlign: "center",
-                      height: "100%",
-                      textAlignVertical: "center",
-                      fontSize: 22,
-                    },
-                  ]}
+            <View style={{ flex: 1 }}>
+              <Text
+                style={[
+                  styles.heading,
+                  {
+                    marginLeft: 0,
+                    textAlign: "center",
+                    height: "100%",
+                    textAlignVertical: "center",
+                    fontSize: 22,
+                  },
+                ]}
+              >
+                Achtung
+              </Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.text, { fontSize: 15 }]}>
+                Das kann nicht rückgängig gemacht werden. Dieses Konto wirklich
+                löschen?
+              </Text>
+            </View>
+            <View style={{ flex: 1, flexDirection: "row" }}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <TouchableNativeFeedback
+                  background={TouchableNativeFeedback.Ripple(
+                    "rgba(255,255,255,0.05)",
+                    true
+                  )}
+                  onPress={() => setShowDelete(false)}
                 >
-                  Achtung
-                </Text>
+                  <View style={styles.touchable}>
+                    <Antdesign
+                      name="close"
+                      style={[styles.icon, { color: "#eb4034" }]}
+                    />
+                  </View>
+                </TouchableNativeFeedback>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={[styles.text, { fontSize: 15 }]}>
-                  Das kann nicht rückgängig gemacht werden. Dieses Konto
-                  wirklich löschen?
-                </Text>
-              </View>
-              <View style={{ flex: 1, flexDirection: "row" }}>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <TouchableNativeFeedback
+                  background={TouchableNativeFeedback.Ripple(
+                    "rgba(255,255,255,0.05)",
+                    true
+                  )}
+                  onPress={() => deleteAccount()}
                 >
-                  <TouchableNativeFeedback
-                    background={TouchableNativeFeedback.Ripple(
-                      "rgba(255,255,255,0.05)",
-                      true
-                    )}
-                    onPress={() => setShowDelete(false)}
-                  >
-                    <View style={styles.touchable}>
-                      <Antdesign
-                        name="close"
-                        style={[styles.icon, { color: "#eb4034" }]}
-                      />
-                    </View>
-                  </TouchableNativeFeedback>
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <TouchableNativeFeedback
-                    background={TouchableNativeFeedback.Ripple(
-                      "rgba(255,255,255,0.05)",
-                      true
-                    )}
-                    onPress={() => deleteAccount()}
-                  >
-                    <View style={styles.touchable}>
-                      <Antdesign
-                        name="check"
-                        style={[styles.icon, { color: "#3BA426" }]}
-                      />
-                    </View>
-                  </TouchableNativeFeedback>
-                </View>
+                  <View style={styles.touchable}>
+                    <Antdesign
+                      name="check"
+                      style={[styles.icon, { color: "#3BA426" }]}
+                    />
+                  </View>
+                </TouchableNativeFeedback>
               </View>
             </View>
           </View>
-        </Modal>
+        </View>
+      </Modal>
 
-        <View style={{ height: 50 }}></View>
-        
-        <View style={{
+      <View style={{ height: 50 }}></View>
+
+      <View
+        style={{
           flex: 1,
           borderTopLeftRadius: 25,
           borderTopRightRadius: 25,
-          backgroundColor: "#0F0F0F"
-        }}>
-
-        <View style={{width: "100%", height: 60, justifyContent: "center"}}>
-          <View style={{marginLeft: 5, position: "absolute"}}>
-            <View style={{transform: [{rotate: "-90deg"}]}}>
-              <BackButton onPress={() => {onexit(); hide()}}/>
+          backgroundColor: "#0F0F0F",
+        }}
+      >
+        <View style={{ width: "100%", height: 60, justifyContent: "center" }}>
+          <View style={{ marginLeft: 5, position: "absolute" }}>
+            <View style={{ transform: [{ rotate: "-90deg" }] }}>
+              <BackButton
+                onPress={() => {
+                  onexit();
+                  hide();
+                }}
+              />
             </View>
           </View>
-          <Text style={{alignSelf: "center", color: "rgba(255,255,255,0.5)", fontSize: 13, fontFamily: "PoppinsLight", letterSpacing: 2}}>DEIN ACCOUNT</Text>
+          <Text
+            style={{
+              alignSelf: "center",
+              color: "rgba(255,255,255,0.5)",
+              fontSize: 13,
+              fontFamily: "PoppinsLight",
+              letterSpacing: 2,
+            }}
+          >
+            DEIN ACCOUNT
+          </Text>
         </View>
 
         <View
@@ -274,22 +292,34 @@ const Account = ({
             alignSelf: "center",
             paddingRight: 20,
             paddingLeft: 20,
-            height: 100
+            height: 100,
           }}
         >
-          <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
             <ProfileImage url={user.photoUrl} x={70} type={1} />
           </View>
 
-          <View style={{flex: 2}}>
+          <View style={{ flex: 2 }}>
             <Text style={styles.username}>{user.username}</Text>
             <Text style={styles.email}>{user.email}</Text>
           </View>
         </View>
 
-        <View style={{flex: 1}}>
-         <Text style={{alignSelf: "center", color: "rgba(255,255,255,0.75)", fontSize: 15, fontFamily: "PoppinsLight", letterSpacing: 2}}>MITGLED SEIT: {user.member_since}</Text>
-         </View>
+        <View style={{ flex: 1 }}>
+          <Text
+            style={{
+              alignSelf: "center",
+              color: "rgba(255,255,255,0.75)",
+              fontSize: 15,
+              fontFamily: "PoppinsLight",
+              letterSpacing: 2,
+            }}
+          >
+            MITGLED SEIT: {user.member_since}
+          </Text>
+        </View>
         <Button
           fontColor={"white"}
           onPress={doWhatever}
@@ -297,7 +327,7 @@ const Account = ({
           color={"#1E1E1E"}
           title={"Bugfix!"}
           icon={<FontAwesome name="gears" style={styles.money_icon} />}
-        /> 
+        />
 
         <View style={{ height: 15 }}></View>
 
@@ -345,7 +375,7 @@ const Account = ({
 
         <View style={{ height: 10 }}></View>
 
-        <View style={{ width: "100%"}}>
+        <View style={{ width: "100%" }}>
           <TouchableNativeFeedback
             background={TouchableNativeFeedback.Ripple(
               "rgba(255,255,255,0.05)",
@@ -360,8 +390,8 @@ const Account = ({
         </View>
 
         <View style={{ height: 10 }}></View>
-        </View>
-      </Animated.View>
+      </View>
+    </Animated.View>
   );
 };
 
@@ -373,7 +403,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
     position: "absolute",
     backgroundColor: "#171717",
-    alignSelf: "center"
+    alignSelf: "center",
   },
   profile_img: {
     height: 120,
@@ -382,7 +412,7 @@ const styles = StyleSheet.create({
   username: {
     color: "white",
     fontSize: 18,
-    fontFamily: "PoppinsBlack"
+    fontFamily: "PoppinsBlack",
   },
   email: {
     color: "rgba(255,255,255,0.75)",

@@ -162,6 +162,7 @@ export default function App() {
           shareLastEntry: true,
           saveGPS: true,
           shareGPS: false,
+          showTutorial: true,
         });
         await AsyncStorage.setItem("settings", value);
       } catch (e) {

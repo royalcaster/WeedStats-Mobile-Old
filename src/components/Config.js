@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useEffect, useRef } from "react";
 import { TextInputBase, View } from "react-native";
 import { useFonts } from "expo-font";
-import { LogBox } from 'react-native';
+import { LogBox } from "react-native";
 import {
   StyleSheet,
   Text,
@@ -431,6 +431,49 @@ const Config = () => {
                 <Toggle
                   value={lightmode}
                   onPress={(val) => setLightMode(val)}
+                  trackBar={{
+                    activeBackgroundColor: "#0080FF",
+                    inActiveBackgroundColor: "#171717",
+                    width: 50,
+                    height: 25,
+                  }}
+                  thumbButton={{
+                    inActiveBackgroundColor: "white",
+                    activeBackgroundColor: "white",
+                    height: 25,
+                    width: 25,
+                  }}
+                />
+              </View>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                height: 50,
+                width: "95%",
+                alignContent: "center",
+              }}
+            >
+              <View style={{ flex: 4, justifyContent: "center" }}>
+                <Text style={styles.label}>Tutorial anzeigen</Text>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Toggle
+                  value={config.showTutorial}
+                  onPress={() => {
+                    setConfig({
+                      ...config,
+                      showTutorial: !config.showTutorial,
+                    });
+                    setSaved(false);
+                  }}
                   trackBar={{
                     activeBackgroundColor: "#0080FF",
                     inActiveBackgroundColor: "#171717",

@@ -360,7 +360,7 @@ const Map = ({ user }) => {
             pitchEnabled={true}
             showsMyLocationButton={false}
           >
-            {/* {view == "heatmap" ? (
+            {view == "heatmap" ? (
               <Heatmap
                 points={filterNull(localData).map((entry) => {
                   return {
@@ -370,7 +370,7 @@ const Map = ({ user }) => {
                 })}
                 radius={40}
               />
-            ) : null} */}
+            ) : null}
 
             {view == "friends" ? (
               <>
