@@ -77,14 +77,14 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
     let indicator = Math.floor(counter / 70);
     return indicator > levels.length - 1
       ? levels[levels.length - 1].name
-      : levels[Math.floor(counter / 70)].name;
+      : levels[indicator].name;
   };
 
   const getGradientColors = (counter) => {
     let indicator = Math.floor(counter / 70);
     return indicator > levels.length - 1
       ? levels[levels.length - 1].colors
-      : levels[Math.floor(counter / 70)].colors;
+      : levels[indicator].colors;
   };
 
   return (

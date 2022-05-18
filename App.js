@@ -67,8 +67,23 @@ export default function App() {
     }
   };
 
+  const createUsernameArray = (name) => {
+    let name_array = [];
+    for (let i = 1; i <= name.length; i++) {
+      name_array.push(name.slice(0, i));
+    }
+    return name_array;
+  };
+
   const refreshUser = async (user) => {
-    let local_counters = {};
+    let local_counters = {
+      main: 0,
+      joint: 0,
+      bong: 0,
+      vape: 0,
+      pipe: 0,
+      cookie: 0,
+    };
 
     try {
       const jsonValue = await AsyncStorage.getItem(user.id + "_counters");
@@ -110,6 +125,7 @@ export default function App() {
           email: user.email,
           photoUrl: user.photoUrl,
           friends: [],
+          username_array: createUsernameArray(user.name),
           joint_counter: null,
           bong_counter: null,
           vape_counter: null,

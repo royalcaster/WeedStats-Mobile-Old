@@ -200,10 +200,10 @@ const StatsDashboard = ({ user, localData }) => {
       ),
       currentBreak: sum2.currentStreak,
       longestBreak: sum2.longestStreak,
-      startCurrentBreak: toGermanDate(ranges2[0].start),
-      rangeLongestBreak: ranges2.find(
-        ({ duration }) => duration === sum2.longestStreak
-      ),
+      startCurrentBreak: ranges2[0] ? toGermanDate(ranges2[0].start) : null,
+      rangeLongestBreak: ranges2[0]
+        ? ranges2.find(({ duration }) => duration === sum2.longestStreak)
+        : null,
     };
   };
 
@@ -685,10 +685,12 @@ const StatsDashboard = ({ user, localData }) => {
                 <Text style={[styles.card_value, { fontSize: 25 }]}>
                   {streakData.longestBreak} Tage
                 </Text>
-                <Text style={[styles.card_value, { fontSize: 20 }]}>
-                  ({toGermanDate(streakData.rangeLongestBreak.start)} -
-                  {toGermanDate(streakData.rangeLongestBreak.end)})
-                </Text>
+                {streakData.rangeLongestBreak ? (
+                  <Text style={[styles.card_value, { fontSize: 20 }]}>
+                    ({toGermanDate(streakData.rangeLongestBreak.start)} -
+                    {toGermanDate(streakData.rangeLongestBreak.end)})
+                  </Text>
+                ) : null}
               </View>
             </>
           ) : null}
