@@ -16,17 +16,17 @@ import {
 import { firestore } from "./FirebaseConfig";
 import { useBackHandler } from '@react-native-community/hooks'
 
-const Feedback = ( { onexit, user } ) => {
+const Feedback = ( { onexit, userid } ) => {
 
     const screen_width = Dimensions.get("screen").width;
     const fadeAnim = useRef(new Animated.Value(screen_width)).current;
     const opacityAnim = useRef(new Animated.Value(0)).current;
     const [feedback, setFeedback] = useState("");
     const [email, setEmail] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [sent, setSent] = useState(false);
     const [locked, setLocked] = useState(false);
-    const [buttonBlocked, setButtonBlocked] = useState(moment(new Date(Date.now())).diff(moment(new Date(user.last_feedback * 1000)), "days")<7);
+    const [user, setUser] = useState()
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
@@ -43,10 +43,32 @@ const Feedback = ( { onexit, user } ) => {
           }).start();
       }, [fadeAnim, opacityAnim]);
 
+      useEffect(() => {
+
+        getUser();
+
+        const [buttonBlocked, setButtonBlocked] = useState(false);
+        if (moment(new Date(Date.now())).diff(moment(new Date(user.last_feedback * 1000)), "days")<7 &&
+        moment(new Date(Date.now())).diff(moment(new Date(user.last_feedback * 1000)), "days")>0) {
+        setButtonBlocked(true);
+        }
+        
+      });
+
     const [loaded] = useFonts({
         PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
         PoppinsLight: require('./fonts/Poppins-Light.ttf')
     });
+
+    const getUser = async () => {
+        const docRef = doc(firestore, "users", userid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            setUser(docSnap.data());
+            setLoading(false);
+        }
+    }
 
     useBackHandler(() => {
         hide();
@@ -75,21 +97,24 @@ const Feedback = ( { onexit, user } ) => {
                 const now = moment(new Date(Date.now()));
                 const last = moment(new Date(docSnap.data().last_feedback * 1000));
                 
-                if (now.diff(last, "days")<7) {
+                /* if (now.diff(last, "days")<7) {
                     setLocked(true);
                     setLoading(false);
                 }
                 else {
-                    await setDoc(doc(firestore, "feedback", uuid.v4()),{
-                        email: email,
-                        feedback: feedback
-                    });
-                    await updateDoc(doc(firestore, "users", user.id),{
-                        last_feedback: Date.now(),
-                    });
-                    setSent(true);
-                    setLoading(false);
-                }
+                    
+                } */
+
+                await setDoc(doc(firestore, "feedback", uuid.v4()),{
+                    email: email,
+                    feedback: feedback
+                });
+                await updateDoc(doc(firestore, "users", user.id),{
+                    last_feedback: Date.now(),
+                });
+                setSent(true);
+                getUser();
+                setLoading(false);
             }
         }
         catch(e){
@@ -197,13 +222,13 @@ const Feedback = ( { onexit, user } ) => {
 
             <View style={{flexDirection: "row"}}>
                  
-            {!buttonBlocked ? 
+            {!buttonBlocked && !loading ? 
                     <View style={{flex: 1}}>
                         <Button title={"Senden"} color={"#0080FF"} borderradius={25} fontColor={"white"} onPress={() => {setLoading(true); sendFeedback()}}/>
                     </View>
             :
                     <View style={{flex: 1}}>
-                        <Text style={{color: "white", fontFamily: "PoppinsBlack", textAlign: "center", fontSize: 18}}>Nächstes Feedback in:   <Text style={{color: "#0080FF", fontSize: 35}}>{moment(new Date(user.last_feedback)).add(7,'days').diff(moment(new Date(Date.now())), "days")}</Text>   Tagen.</Text>
+                        <Text style={{color: "white", fontFamily: "PoppinsBlack", textAlign: "center", fontSize: 18}}>Nächstes Feedback in:   <Text style={{color: "#0080FF", fontSize: 35}}>{/* {moment(new Date(user.last_feedback)).add(7,'days').diff(moment(new Date(Date.now())), "days")} */}</Text>   Tagen.</Text>
                     </View>
             }
                 

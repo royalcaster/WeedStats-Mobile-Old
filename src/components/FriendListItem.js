@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, View, StyleSheet, Text, Easing } from "react-native";
+import { Animated, View, StyleSheet, Text, Easing, Image} from "react-native";
 import ProfileImage from "./ProfileImage";
 import levels from "../Levels.json";
 
@@ -120,18 +120,27 @@ const FriendListItem = ({ userid, onPress }) => {
                   }}
                 >
                   <Text style={styles.username}>{user.username}</Text>
-                  <Text
-                    style={[
-                      styles.username,
-                      {
-                        fontFamily: "PoppinsLight",
-                        fontSize: 12,
-                        marginTop: -3,
-                      },
-                    ]}
-                  >
-                    {getTitle()}
-                  </Text>
+                  <View style={{flexDirection: "row", maxHeight: 30}}>
+                    {Math.floor(counters[0].counter / 70) == 0 ? <Image style={styles.lvl_image} source={require('./img/lvl1.png')}/> : null}
+                    {Math.floor(counters[0].counter / 70) == 1 ? <Image style={styles.lvl_image} source={require('./img/lvl2.png')}/> : null}
+                    {/* {Math.floor(counters[0].counter / 70) == 2 ? <Image style={styles.lvl_image} source={require('./img/lvl3.png')}/> : null} */}
+                    {/* {Math.floor(counters[0].counter / 70) == 3 ? <Image style={styles.lvl_image} source={require('./img/lvl4.png')}/> : null} */}
+                    {/* {Math.floor(counters[0].counter / 70) == 4 ? <Image style={styles.lvl_image} source={require('./img/lvl5.png')}/> : null} */}
+                    {/* {Math.floor(counters[0].counter / 70) == 5 ? <Image style={styles.lvl_image} source={require('./img/lvl6.png')}/> : null} */}
+                    {Math.floor(counters[0].counter / 70) == 6 ? <Image style={styles.lvl_image} source={require('./img/lvl7.png')}/> : null}
+                    <Text
+                      style={[
+                        styles.username,
+                        {
+                          fontFamily: "PoppinsLight",
+                          fontSize: 12,
+                          textAlignVertical: "center",
+                        },
+                      ]}
+                    >
+                      {getTitle()}{Math.floor(counters[0].counter / 70) == 1 ? "true" : "false"}
+                    </Text>
+                  </View>
                 </Animated.View>
               </View>
             </View>
@@ -158,4 +167,12 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
   },
+  lvl_image: {
+    height: 25,
+    width: 25, 
+    marginTop: -4,
+    marginRight: 2,
+    marginLeft: -5,
+    opacity: 0.85
+  }
 });

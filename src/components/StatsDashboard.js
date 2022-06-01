@@ -348,8 +348,8 @@ const StatsDashboard = ({ user, localData }) => {
             backgroundColor={"#171717"}
             selectedColor={"white"}
             buttonColor={"#0080FF"}
-            textStyle={{ fontFamily: "PoppinsLight" }}
-            selectedTextStyle={{ fontFamily: "PoppinsLight" }}
+            textStyle={{ fontFamily: "PoppinsLight", fontSize: 12}}
+            selectedTextStyle={{ fontFamily: "PoppinsBlack", fontSize: 12}}
           />
         </View>
 
@@ -437,7 +437,7 @@ const StatsDashboard = ({ user, localData }) => {
           </Pressable>
         </View> */}
 
-        <View style={{ height: 10 }}></View>
+        <View style={{ height: 30 }}></View>
 
         <View style={{ alignItems: "center", flex: 1 }}>
           {selectedType === "joint" ? (
@@ -464,7 +464,7 @@ const StatsDashboard = ({ user, localData }) => {
           <Text
             style={{
               fontSize: 60,
-              color: "#0080FF",
+              color: "white",
               fontFamily: "PoppinsBlack",
               marginBottom: -25,
             }}
@@ -476,14 +476,14 @@ const StatsDashboard = ({ user, localData }) => {
           <Text
             style={{
               fontSize: 18,
-              color: "#0080FF",
-              fontFamily: "PoppinsBlack",
+              color: "white",
+              fontFamily: "PoppinsLight",
             }}
           >
             Ø Tag
           </Text>
 
-          <View style={{ height: 10 }}></View>
+          <View style={{ height: 30 }}></View>
 
           <View
             style={{
@@ -523,6 +523,8 @@ const StatsDashboard = ({ user, localData }) => {
               </Text>
             </View>
           </View>
+
+          <View style={{height: 20}}></View>
 
           <Text
             style={[
@@ -629,6 +631,8 @@ const StatsDashboard = ({ user, localData }) => {
             </View>
           </View>
 
+          <View style={{height: 20}}></View>
+
           {selectedType === "main" ? (
             <>
               <View style={{ height: 10 }}></View>
@@ -685,7 +689,7 @@ const StatsDashboard = ({ user, localData }) => {
                 <Text style={[styles.card_value, { fontSize: 25 }]}>
                   {streakData.longestBreak} Tage
                 </Text>
-                <Text style={[styles.card_value, { fontSize: 20 }]}>
+                <Text style={[styles.card_value2, { fontSize: 12}]}>
                   ({toGermanDate(streakData.rangeLongestBreak.start)} -
                   {toGermanDate(streakData.rangeLongestBreak.end)})
                 </Text>
@@ -966,18 +970,26 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
   },
   card_label: {
-    color: "#8a8a8a",
+    color: "white",
     fontFamily: "PoppinsLight",
     fontSize: 14,
     marginTop: 5,
     textAlign: "left",
   },
   card_value: {
-    color: "#c4c4c4",
+    color: "white",
     fontFamily: "PoppinsBlack",
     fontSize: 30,
     marginTop: -10,
     textAlign: "left",
+  },
+  card_value2: {
+    color: "#c4c4c4",
+    fontFamily: "PoppinsLight",
+    fontSize: 30,
+    marginTop: -8,
+    textAlign: "left",
+    opacity: 0.5
   },
   card_container_wide: {
     backgroundColor: "#171717",
@@ -1038,35 +1050,35 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   bong_img: {
-    width: 80,
-    height: 130,
+    width: 60,
+    height: 110,
     position: "absolute",
-    opacity: 0.7,
+    opacity: 0.25,
   },
   joint_img: {
-    width: 50,
-    height: 130,
+    width: 35,
+    height: 110,
     position: "absolute",
-    opacity: 0.7,
+    opacity: 0.25,
   },
   vape_img: {
     width: 70,
-    height: 140,
+    height: 110,
     position: "absolute",
-    opacity: 0.7,
+    opacity: 0.25,
     marginTop: -5,
   },
   pipe_img: {
     width: 110,
-    height: 170,
+    height: 140,
     position: "absolute",
-    opacity: 0.7,
-    marginTop: -10,
+    opacity: 0.25,
+    marginTop: -20,
   },
   cookie_img: {
-    width: 100,
-    height: 110,
+    width: 90,
+    height: 100,
     position: "absolute",
-    opacity: 0.7,
+    opacity: 0.25,
   },
 });

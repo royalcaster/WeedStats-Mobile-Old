@@ -155,7 +155,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
     >
       {showLevels ? <Levels onexit={() => setShowLevels(false)} /> : null}
       {showFeedback ? (
-        <Feedback user={user} onexit={() => setShowFeedback(false)} />
+        <Feedback userid={user.id} onexit={() => setShowFeedback(false)} />
       ) : null}
       {showDonation ? <Donation onexit={() => setShowDonation(false)} /> : null}
 
