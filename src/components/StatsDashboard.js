@@ -200,10 +200,10 @@ const StatsDashboard = ({ user, localData }) => {
       ),
       currentBreak: sum2.currentStreak,
       longestBreak: sum2.longestStreak,
-      startCurrentBreak: toGermanDate(ranges2[0].start),
-      rangeLongestBreak: ranges2.find(
-        ({ duration }) => duration === sum2.longestStreak
-      ),
+      startCurrentBreak: ranges2[0] ? toGermanDate(ranges2[0].start) : null,
+      rangeLongestBreak: ranges2[0]
+        ? ranges2.find(({ duration }) => duration === sum2.longestStreak)
+        : null,
     };
   };
 
