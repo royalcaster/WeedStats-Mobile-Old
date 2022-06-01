@@ -20,6 +20,7 @@ import SwitchSelector from "react-native-switch-selector";
 
 import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
 import { summary, streakRanges, trackRecord } from "date-streaks";
+import { LinearGradient } from "expo-linear-gradient";
 
 const StatsDashboard = ({ user, localData }) => {
   const [loaded] = useFonts({
@@ -440,6 +441,8 @@ const StatsDashboard = ({ user, localData }) => {
         <View style={{ height: 30 }}></View>
 
         <View style={{ alignItems: "center", flex: 1 }}>
+
+          <LinearGradient colors={["#369bff","#0080FF","#004e9c"]} style={{borderRadius: 25, padding: 20, width: 180}}>
           {selectedType === "joint" ? (
             <Image
               style={styles.joint_img}
@@ -461,6 +464,7 @@ const StatsDashboard = ({ user, localData }) => {
               source={require("./img/cookie.png")}
             />
           ) : null}
+          <View style={{height: 40}}></View>
           <Text
             style={{
               fontSize: 60,
@@ -482,6 +486,8 @@ const StatsDashboard = ({ user, localData }) => {
           >
             Ø Tag
           </Text>
+
+          </LinearGradient>
 
           <View style={{ height: 30 }}></View>
 
@@ -633,9 +639,16 @@ const StatsDashboard = ({ user, localData }) => {
 
           <View style={{height: 20}}></View>
 
+          <View style={{
+            flexDirection: "row"
+          }}>
+
+          
           {selectedType === "main" ? (
             <>
               <View style={{ height: 10 }}></View>
+
+              
 
               <View style={styles.card_container_wide}>
                 <Text style={styles.card_label}>Aktueller Streak</Text>
@@ -644,14 +657,14 @@ const StatsDashboard = ({ user, localData }) => {
                     styles.card_value,
                     { fontSize: 25 },
                     streakData.today
-                      ? { color: "#c4c4c4" }
+                      ? { color: "white" }
                       : { color: "#8a8a8a" },
                   ]}
                 >
                   {streakData.currentStreak} Tage
                 </Text>
                 {streakData.within ? (
-                  <Text style={[styles.card_value, { fontSize: 20 }]}>
+                  <Text style={[styles.card_value2]}>
                     (seit {streakData.startCurrent})
                   </Text>
                 ) : null}
@@ -659,7 +672,7 @@ const StatsDashboard = ({ user, localData }) => {
                 <Text style={[styles.card_value, { fontSize: 25 }]}>
                   {streakData.longestStreak} Tage
                 </Text>
-                <Text style={[styles.card_value, { fontSize: 20 }]}>
+                <Text style={[styles.card_value2]}>
                   ({toGermanDate(streakData.rangeLongest.start)} -
                   {toGermanDate(streakData.rangeLongest.end)})
                 </Text>
@@ -674,7 +687,7 @@ const StatsDashboard = ({ user, localData }) => {
                     styles.card_value,
                     { fontSize: 25 },
                     streakData.today
-                      ? { color: "#8a8a8a" }
+                      ? { color: "white" }
                       : { color: "#c4c4c4" },
                   ]}
                 >
@@ -689,7 +702,7 @@ const StatsDashboard = ({ user, localData }) => {
                 <Text style={[styles.card_value, { fontSize: 25 }]}>
                   {streakData.longestBreak} Tage
                 </Text>
-                <Text style={[styles.card_value2, { fontSize: 12}]}>
+                <Text style={[styles.card_value2]}>
                   ({toGermanDate(streakData.rangeLongestBreak.start)} -
                   {toGermanDate(streakData.rangeLongestBreak.end)})
                 </Text>
@@ -698,6 +711,10 @@ const StatsDashboard = ({ user, localData }) => {
           ) : null}
 
           <View style={{ height: 20 }}></View>
+
+          </View>
+
+          <View style={{ height: 30 }}></View>
 
           <Text style={styles.heading2}>Grafiken</Text>
           <View style={{ height: 10 }}></View>
@@ -710,8 +727,8 @@ const StatsDashboard = ({ user, localData }) => {
             backgroundColor={"#171717"}
             selectedColor={"white"}
             buttonColor={"#0080FF"}
-            textStyle={{ fontFamily: "PoppinsLight" }}
-            selectedTextStyle={{ fontFamily: "PoppinsLight" }}
+            textStyle={{ fontFamily: "PoppinsLight", fontSize: 12}}
+            selectedTextStyle={{ fontFamily: "PoppinsLight", fontSize: 12 }}
             style={{ width: "95%" }}
           />
 
@@ -804,6 +821,7 @@ const StatsDashboard = ({ user, localData }) => {
           <LineChart
             style={{
               marginVertical: 10,
+              borderRadius: 25
             }}
             data={{
               labels: createLineChartData(
@@ -825,21 +843,25 @@ const StatsDashboard = ({ user, localData }) => {
                 },
               ],
             }}
-            width={Dimensions.get("window").width} // from react-native
+            width={Dimensions.get("window").width - 40} // from react-native
             height={250}
             yAxisInterval={1} // optional, defaults to 1
             verticalLabelRotation={20}
             chartConfig={{
-              backgroundGradientFrom: "#171717",
-              backgroundGradientTo: "#1E1E1E",
+              backgroundGradientFrom: "#121212",
+              backgroundGradientTo: "#171717",
               decimalPlaces: 0, // optional, defaults to 2dp
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              color: () =>  {return "rgba(255,255,255,0.35)"},
+              labelColor: () =>  {return "rgba(255,255,255,0.5)"},
+              propsForLabels: {
+                fontSize: 8
+              },
               propsForDots: {
                 r: "1",
                 strokeWidth: "5",
                 stroke: "#0080FF",
               },
+              
             }}
             bezier
           />
@@ -847,6 +869,7 @@ const StatsDashboard = ({ user, localData }) => {
           <BarChart
             style={{
               marginVertical: 10,
+              borderRadius: 25
             }}
             data={{
               labels: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
@@ -861,14 +884,14 @@ const StatsDashboard = ({ user, localData }) => {
                 },
               ],
             }}
-            width={Dimensions.get("window").width}
+            width={Dimensions.get("window").width - 40}
             height={250}
             chartConfig={{
-              backgroundGradientFrom: "#171717",
-              backgroundGradientTo: "#1E1E1E",
+              backgroundGradientFrom: "#121212",
+              backgroundGradientTo: "#171717",
               decimalPlaces: 0, // optional, defaults to 2dp
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              color: () =>  {return "rgba(255,255,255,0.35)"},
+              labelColor: () =>  {return "rgba(255,255,255,0.5)"},
             }}
           />
 
@@ -876,6 +899,7 @@ const StatsDashboard = ({ user, localData }) => {
             <PieChart
               style={{
                 marginVertical: 10,
+                borderRadius: 25
               }}
               data={[
                 {
@@ -929,12 +953,12 @@ const StatsDashboard = ({ user, localData }) => {
                   legendFontSize: 15,
                 },
               ]}
-              width={Dimensions.get("window").width}
+              width={Dimensions.get("window").width - 40}
               height={250}
               backgroundColor={"#171717"}
               chartConfig={{
-                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                color: () =>  {return "rgba(255,255,255,0.35)"},
+                labelColor: () =>  {return "rgba(255,255,255,0.5)"},
               }}
               accessor={"count"}
               paddingLeft={"15"}
@@ -984,16 +1008,16 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   card_value2: {
-    color: "#c4c4c4",
+    color: "rgba(255,255,255,0.5)",
     fontFamily: "PoppinsLight",
-    fontSize: 30,
+    fontSize: 12,
     marginTop: -8,
     textAlign: "left",
-    opacity: 0.5
+    opacity: 0.75
   },
   card_container_wide: {
     backgroundColor: "#171717",
-    width: "85%",
+    margin: 10,
     padding: 15,
     borderRadius: 25,
     borderTopColor: "#0080FF",
@@ -1050,35 +1074,43 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   bong_img: {
-    width: 60,
-    height: 110,
+    width: 35,
+    height: 60,
+    alignSelf: "center",
     position: "absolute",
-    opacity: 0.25,
+    marginTop: 10,
+    opacity: 1,
   },
   joint_img: {
-    width: 35,
-    height: 110,
+    width: 20,
+    height: 60,
+    alignSelf: "center",
     position: "absolute",
-    opacity: 0.25,
+    marginTop: 10,
+    opacity: 1,
   },
   vape_img: {
-    width: 70,
-    height: 110,
+    width: 20,
+    height: 60,
+    alignSelf: "center",
     position: "absolute",
-    opacity: 0.25,
-    marginTop: -5,
+    marginTop: 10,
+    opacity: 1,
   },
   pipe_img: {
-    width: 110,
-    height: 140,
+    width: 45,
+    height: 65,
+    alignSelf: "center",
     position: "absolute",
-    opacity: 0.25,
-    marginTop: -20,
+    marginTop: 10,
+    opacity: 1,
   },
   cookie_img: {
-    width: 90,
-    height: 100,
+    width: 50,
+    height: 50,
+    alignSelf: "center",
     position: "absolute",
-    opacity: 0.25,
+    marginTop: 10,
+    opacity: 1,
   },
 });

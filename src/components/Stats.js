@@ -232,6 +232,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     height: "102%",
+    backgroundColor: "#121212"
   },
   //Tab-View
   wrapper: {},
@@ -251,7 +252,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopWidth: 0,
     alignItems: "center",
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#171717",
   },
   nav_text: {
     textAlign: "center",
