@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useEffect, useRef } from "react";
-import AntDesign from "react-native-vector-icons/AntDesign";
+import Entypo from "react-native-vector-icons/Entypo";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 
 import { db } from "./FirebaseConfig";
@@ -72,13 +72,6 @@ const Stats = ({ user }) => {
     } catch (e) {
       console.log("Error:", e);
     } */
-  };
-
-  // TODO: Weiterleiten auf Maps-Seite und Zoom auf Koordinaten des Eintrags (+ Marker setzen)
-  const showOnMap = (entry) => {
-    console.log("Nummer: " + entry.number);
-    console.log("Latitude: " + entry.latitude);
-    console.log("Longitude: " + entry.longitude);
   };
 
   const getRelevantKeys = async () => {
@@ -158,12 +151,12 @@ const Stats = ({ user }) => {
               onPress={() => setView("dashboard")}
             >
               <View style={styles.touchable}>
-                <AntDesign
-                  name="barschart"
+              <Entypo
+                  name="area-graph"
                   style={{
                     color: view == "dashboard" ? "#0080FF" : "#c4c4c4",
                     marginBottom: 10,
-                    fontSize: 30,
+                    fontSize: 25,
                     height: "100%",
                     textAlignVertical: "center",
                   }}
@@ -217,7 +210,7 @@ const Stats = ({ user }) => {
         <StatsDashboard user={user} localData={localData} />
       ) : null}
       {localDataLoaded && localData.length != 0 && view == "history" ? (
-        <StatsHistory history={localData} showOnMap={showOnMap} />
+        <StatsHistory user={user} history={localData} />
       ) : null}
     </Animated.View>
   );

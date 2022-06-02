@@ -30,6 +30,30 @@ const StatsDashboard = ({ user, localData }) => {
   const [selectedType, setSelectedType] = useState("main");
   const [selectedTime, setSelectedTime] = useState(0);
 
+  const icon_slide = useRef(new Animated.Value(-50)).current;
+  const icon_opacity = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    icon_slide.setValue(-50);
+    Animated.timing(
+      icon_slide, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+        easing: Easing.bezier(0.07, 1, 0.33, 0.89),
+        delay: 0
+      }
+    ).start();
+    icon_opacity.setValue(0);
+    Animated.timing(
+      icon_opacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+        delay: 0
+      }
+    ).start();
+  },[selectedType]);
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -443,40 +467,53 @@ const StatsDashboard = ({ user, localData }) => {
         <View style={{ alignItems: "center", flex: 1 }}>
 
           <LinearGradient colors={["#369bff","#0080FF","#004e9c"]} style={{borderRadius: 25, padding: 20, width: 180}}>
+          {selectedType === "main" ? (
+            <Animated.View
+              style={{transform: [{translateX: icon_slide}], opacity: icon_opacity}}
+              source={require("./img/joint.png")}>
+              <Image style={{height: 40, width: 15, position: "absolute"}} source={require("./img/joint.png")}/>
+              <Image style={{height: 40, width: 25, position: "absolute", left: "12%"}} source={require("./img/bong.png")}/>
+              <Image style={{height: 40, width: 25, position: "absolute", left: "30%"}} source={require("./img/vape.png")}/>
+              <Image style={{height: 50, width: 25, position: "absolute", left: "53%", marginTop: -5}} source={require("./img/pipe.png")}/>
+              <Image style={{height: 40, width: 38, position: "absolute", left: "74%"}} source={require("./img/cookie.png")}/>
+             </Animated.View>
+          ) : null}
           {selectedType === "joint" ? (
-            <Image
-              style={styles.joint_img}
+            <Animated.Image
+              style={[styles.joint_img,{transform: [{translateX: icon_slide}], opacity: icon_opacity}]}
               source={require("./img/joint.png")}
             />
           ) : null}
           {selectedType === "bong" ? (
-            <Image style={styles.bong_img} source={require("./img/bong.png")} />
+            <Animated.Image style={[styles.bong_img,{transform: [{translateX: icon_slide}], opacity: icon_opacity}]} source={require("./img/bong.png")} />
           ) : null}
           {selectedType === "vape" ? (
-            <Image style={styles.vape_img} source={require("./img/vape.png")} />
+            <Animated.Image style={[styles.vape_img, {transform: [{translateX: icon_slide}], opacity: icon_opacity}]} source={require("./img/vape.png")} />
           ) : null}
           {selectedType === "pipe" ? (
-            <Image style={styles.pipe_img} source={require("./img/pipe.png")} />
+            <Animated.Image style={[styles.pipe_img, {transform: [{translateX: icon_slide}], opacity: icon_opacity}]} source={require("./img/pipe.png")} />
           ) : null}
           {selectedType === "cookie" ? (
-            <Image
-              style={styles.cookie_img}
+            <Animated.Image
+              style={[styles.cookie_img, {transform: [{translateX: icon_slide}], opacity: icon_opacity}]}
               source={require("./img/cookie.png")}
             />
           ) : null}
           <View style={{height: 40}}></View>
-          <Text
+          <Animated.Text
             style={{
               fontSize: 60,
               color: "white",
               fontFamily: "PoppinsBlack",
               marginBottom: -25,
+              transform: [{translateX: icon_slide}],
+              opacity: icon_opacity
             }}
           >
             {Math.round(
               calcDailyAverage(filterByType(localData, selectedType)) * 100
             ) / 100}
-          </Text>
+          </Animated.Text>
           <Text
             style={{
               fontSize: 18,
@@ -500,33 +537,36 @@ const StatsDashboard = ({ user, localData }) => {
           >
             <View style={styles.card_container}>
               <Text style={styles.card_label}>Ø Woche</Text>
-              <Text style={styles.card_value}>
+              <Animated.Text style={[styles.card_value,{transform: [{translateY: icon_slide}],
+              opacity: icon_opacity}]}>
                 {Math.round(
                   calcDailyAverage(filterByType(localData, selectedType)) *
                     7 *
                     10
                 ) / 10}
-              </Text>
+              </Animated.Text>
             </View>
 
             <View style={styles.card_container}>
               <Text style={styles.card_label}>Ø Monat</Text>
-              <Text style={styles.card_value}>
+              <Animated.Text style={[styles.card_value,{transform: [{translateY: icon_slide}],
+              opacity: icon_opacity}]}>
                 {Math.round(
                   calcDailyAverage(filterByType(localData, selectedType)) *
                     30.5 *
                     10
                 ) / 10}
-              </Text>
+              </Animated.Text>
             </View>
 
             <View style={styles.card_container}>
               <Text style={styles.card_label}>Ø Jahr</Text>
-              <Text style={styles.card_value}>
+              <Animated.Text style={[styles.card_value,{transform: [{translateY: icon_slide}],
+              opacity: icon_opacity}]}>
                 {Math.round(
                   calcDailyAverage(filterByType(localData, selectedType)) * 365
                 )}
-              </Text>
+              </Animated.Text>
             </View>
           </View>
 
@@ -562,7 +602,7 @@ const StatsDashboard = ({ user, localData }) => {
               >
                 24 Stunden
               </Text>
-              <Text
+              <Animated.Text
                 style={[
                   styles.card_value,
                   {
@@ -570,6 +610,8 @@ const StatsDashboard = ({ user, localData }) => {
                     borderTopWidth: 2,
                     marginTop: 0,
                     textAlign: "center",
+                    transform: [{translateY: icon_slide}],
+                  opacity: icon_opacity
                   },
                 ]}
               >
@@ -577,7 +619,7 @@ const StatsDashboard = ({ user, localData }) => {
                   filterByMostRecent(filterByType(localData, selectedType), 1)
                     .length
                 }
-              </Text>
+              </Animated.Text>
             </View>
             <View>
               <Text
@@ -588,7 +630,7 @@ const StatsDashboard = ({ user, localData }) => {
               >
                 7 Tagen
               </Text>
-              <Text
+              <Animated.Text
                 style={[
                   styles.card_value,
                   {
@@ -598,6 +640,8 @@ const StatsDashboard = ({ user, localData }) => {
                     paddingLeft: 10,
                     marginTop: 0,
                     textAlign: "center",
+                    transform: [{translateY: icon_slide}],
+                    opacity: icon_opacity
                   },
                 ]}
               >
@@ -605,7 +649,7 @@ const StatsDashboard = ({ user, localData }) => {
                   filterByMostRecent(filterByType(localData, selectedType), 7)
                     .length
                 }
-              </Text>
+              </Animated.Text>
             </View>
             <View>
               <Text
@@ -616,7 +660,7 @@ const StatsDashboard = ({ user, localData }) => {
               >
                 30 Tagen
               </Text>
-              <Text
+              <Animated.Text
                 style={[
                   styles.card_value,
                   {
@@ -626,6 +670,8 @@ const StatsDashboard = ({ user, localData }) => {
                     paddingLeft: 10,
                     marginTop: 0,
                     textAlign: "center",
+                    transform: [{translateY: icon_slide}],
+                    opacity: icon_opacity
                   },
                 ]}
               >
@@ -633,7 +679,7 @@ const StatsDashboard = ({ user, localData }) => {
                   filterByMostRecent(filterByType(localData, selectedType), 30)
                     .length
                 }
-              </Text>
+              </Animated.Text>
             </View>
           </View>
 
@@ -650,7 +696,8 @@ const StatsDashboard = ({ user, localData }) => {
 
               
 
-              <View style={styles.card_container_wide}>
+              <Animated.View style={[styles.card_container_wide,{transform: [{translateY: icon_slide}],
+              opacity: icon_opacity}]}>
                 <Text style={styles.card_label}>Aktueller Streak</Text>
                 <Text
                   style={[
@@ -676,11 +723,12 @@ const StatsDashboard = ({ user, localData }) => {
                   ({toGermanDate(streakData.rangeLongest.start)} -
                   {toGermanDate(streakData.rangeLongest.end)})
                 </Text>
-              </View>
+              </Animated.View>
 
               <View style={{ height: 10 }}></View>
 
-              <View style={styles.card_container_wide}>
+              <Animated.View style={[styles.card_container_wide,{transform: [{translateY: icon_slide}],
+              opacity: icon_opacity}]}>
                 <Text style={styles.card_label}>Aktuelle Pause</Text>
                 <Text
                   style={[
@@ -706,7 +754,7 @@ const StatsDashboard = ({ user, localData }) => {
                   ({toGermanDate(streakData.rangeLongestBreak.start)} -
                   {toGermanDate(streakData.rangeLongestBreak.end)})
                 </Text>
-              </View>
+              </Animated.View>
             </>
           ) : null}
 
@@ -1087,7 +1135,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     position: "absolute",
     marginTop: 10,
-    opacity: 1,
+    opacity: 1
   },
   vape_img: {
     width: 20,

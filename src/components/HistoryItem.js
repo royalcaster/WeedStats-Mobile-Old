@@ -27,11 +27,12 @@ const HistoryTable = ({ event, showOnMap }) => {
     <View
       style={{
         flexDirection: "row",
-        width: "100%",
+        width: "90%",
         marginBottom: 15,
         paddingTop: 15,
         borderTopColor: "#121212",
         borderTopWidth: 0,
+        alignSelf: "center"
       }}
     >
       <View style={{ flex: 1 }}>
@@ -53,16 +54,14 @@ const HistoryTable = ({ event, showOnMap }) => {
       </View>
       <View style={{ flex: 2, justifyContent: "center" }}>
         <Text style={styles.date}>
-          {" "}
-          <Fontisto name="date" style={styles.icon_date} />{" "}
+          <Fontisto name="date" style={styles.icon_date} />{"  "}
           {toGermanDate(new Date(event.timestamp))}
         </Text>
       </View>
       <View style={{ flex: 2, justifyContent: "center" }}>
         <Text style={styles.time}>
-          {" "}
           <Ionicons name="time-outline" style={styles.icon_time} />{" "}
-          {new Date(event.timestamp).toLocaleTimeString("de-DE")}
+          {new Date(event.timestamp).toLocaleTimeString("de-DE").substring(0,5)}
         </Text>
       </View>
       <View style={{ flex: 1.5, borderRadius: 30 }}>
@@ -74,9 +73,6 @@ const HistoryTable = ({ event, showOnMap }) => {
               flex: 1,
               justifyContent: "center",
               borderRadius: 30,
-              borderRightWidth: 1,
-              borderLeftWidth: 1,
-              borderColor: "#9c9c9c",
             },
           ]}
           onPress={() => showOnMap(event)}
@@ -147,11 +143,11 @@ const styles = StyleSheet.create({
     color: "#9c9c9c",
   },
   icon_date: {
-    fontSize: 20,
-    color: "#c4c4c4",
+    fontSize: 13,
+    color: "rgba(255,255,255,0.5)",
   },
   icon_time: {
-    fontSize: 24,
-    color: "#c4c4c4",
+    fontSize: 16,
+    color: "rgba(255,255,255,0.5)",
   },
 });

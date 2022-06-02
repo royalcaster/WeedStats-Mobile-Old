@@ -47,7 +47,7 @@ export default function Home({ user, handleLogOut, toggleCounter }) {
         {view == "main" ? (
           <Main user={user} toggleCounter={toggleCounter} />
         ) : null}
-        {view == "stats" ? <Stats user={user} /> : null}
+        {view == "stats" ? <Stats user={user}/> : null}
         {view == "map" ? <Map user={user} /> : null}
         {view == "config" ? <Config /> : null}
         {view == "groups" ? (
