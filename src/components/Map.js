@@ -139,6 +139,8 @@ const Map = ({ user }) => {
     } catch (e) {
       console.log("Error:", e);
     }
+
+    console.debug(localData);
   };
 
   const filterNull = (array) => {
@@ -342,7 +344,10 @@ const Map = ({ user }) => {
             pitchEnabled={true}
             showsMyLocationButton={false}
           >
-            {view == "heatmap" ? <Heatmap
+            {view == "heatmap" ? 
+            <>
+            {localData.length == 0 ? null : 
+            <Heatmap
                 points={filterNull(localData).map((entry) => {
                   return {
                     latitude: entry.latitude,
@@ -350,7 +355,7 @@ const Map = ({ user }) => {
                   };
                 })}
                 radius={40}
-              /> : null}
+              /> }</>: null}
 
             {view == "friends" ? (
               <>

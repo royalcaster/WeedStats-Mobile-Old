@@ -30,6 +30,7 @@ import { AppRegistry } from "react-native";
 import { useFonts } from "expo-font";
 import * as Google from "expo-google-app-auth";
 import * as Location from "expo-location";
+import CustomLoader from "./src/components/CustomLoader";
 
 try {
   LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
@@ -567,11 +568,8 @@ export default function App() {
                 </View>
               </View>
             ) : (
-              <ActivityIndicator
-                animating={true}
-                size="large"
-                color="#0080FF"
-              />
+              
+              <CustomLoader x={100}/>
             )}
           </View>
         </Modal>
