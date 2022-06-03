@@ -8,6 +8,7 @@ import {
   Easing,
   TouchableNativeFeedback,
   ActivityIndicator,
+  ScrollView
 } from "react-native";
 import { useFonts } from "expo-font";
 import {
@@ -27,7 +28,6 @@ import FriendRequests from "./FriendRequests";
 import Feedback from "./Feedback";
 import Levels from './Levels'
 import CustomLoader from "./CustomLoader";
-import { ScrollView } from "react-native-collapsible-tab-view";
 
 const Groups = ({ user, handleLogOut }) => {
   
