@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { useEffect, useRef } from "react";
-import { TextInputBase, View } from "react-native";
+import { View } from "react-native";
 import { useFonts } from "expo-font";
 import { LogBox } from "react-native";
 import {
   StyleSheet,
   Text,
   Animated,
-  TextInput,
-  Image,
   ScrollView,
   Modal,
   ActivityIndicator,
@@ -524,58 +522,13 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     backgroundColor: "#1E1E1E",
-    marginTop: 0,
     justifyContent: "center",
-  },
-  config_text: {
-    color: "white",
-    fontFamily: "PoppinsLight",
-    fontSize: 18,
-    alignSelf: "center",
-  },
-  config_container: {
-    flexDirection: "row",
-    marginTop: 20,
-  },
-  switch: {
-    marginLeft: 20,
-    paddingLeft: 20,
-  },
-  signOutButton: {
-    width: "80%",
-    alignSelf: "center",
-    height: 50,
-    borderRadius: 100,
-    justifyContent: "center",
-    marginTop: 20,
-    bottom: 20,
-    flexDirection: "row",
-  },
-  money_icon: {
-    fontSize: 25,
-    color: "white",
-    textAlignVertical: "center",
   },
   heading: {
     color: "white",
     fontSize: 20,
     fontFamily: "PoppinsBlack",
     marginLeft: 20,
-  },
-  image: {
-    width: 15,
-    height: 50,
-    alignSelf: "center",
-  },
-  input: {
-    height: "100%",
-    width: "100%",
-    backgroundColor: "#171717",
-    borderRadius: 100,
-    paddingLeft: 20,
-    fontSize: 18,
-    color: "rgba(255,255,255,0.75)",
-    fontFamily: "PoppinsBlack",
   },
   label: {
     color: "rgba(255,255,255,0.75)",

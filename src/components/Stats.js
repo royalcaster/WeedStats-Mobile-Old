@@ -128,7 +128,7 @@ const Stats = ({ user }) => {
 
   return (
     <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
-      <View style={{ height: 50 }}></View>
+      <View style={{ height: 140 }}></View>
       {!localDataLoaded ? (
         <ActivityIndicator animating={true} size="large" color="#0080FF" />
       ) : (
@@ -220,11 +220,9 @@ export default Stats;
 
 const styles = StyleSheet.create({
   container: {
-    borderBottomColor: "green",
-    borderBottomWidth: 2,
     width: "100%",
     justifyContent: "center",
-    height: "102%",
+    height: "90%",
     backgroundColor: "#121212"
   },
   //Tab-View

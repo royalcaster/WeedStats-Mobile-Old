@@ -3,7 +3,6 @@ import {
   Animated,
   View,
   StyleSheet,
-  TextInput,
   Dimensions,
   Easing,
   Text,
@@ -11,8 +10,6 @@ import {
   ActivityIndicator,
   TouchableNativeFeedback,
   Modal,
-  Pressable,
-  TouchableNativeFeedbackBase,
   BackHandler,
 } from "react-native";
 
@@ -23,19 +20,11 @@ import uuid from "react-native-uuid";
 
 //Firebase
 import {
-  setDoc,
   doc,
   getDoc,
   updateDoc,
-  getDocs,
-  Timestamp,
-  collection,
-  query,
-  where,
 } from "firebase/firestore";
-import { db, firestore } from "./FirebaseConfig";
-
-import FriendListItem from "./FriendListItem";
+import { firestore } from "./FirebaseConfig";
 
 import Antdesign from "react-native-vector-icons/AntDesign";
 
@@ -314,11 +303,12 @@ const FriendResquests = ({ user, onExit, refresh }) => {
         style={{ width: "100%", flex: 1, alignSelf: "center", marginTop: 20 }}
       >
         {loading ? (
+          <View style={{height: "100%", justifyContent: "center"}}>
           <ActivityIndicator
             color={"#0080FF"}
             size={"large"}
             style={{ marginTop: 50 }}
-          />
+          /></View>
         ) : (
           <>
             {results ? (
@@ -375,17 +365,6 @@ const styles = StyleSheet.create({
     zIndex: 10,
     position: "absolute",
   },
-  input: {
-    backgroundColor: "rgba(0,0,0,0.3)",
-    marginRight: 15,
-    marginLeft: 0,
-    height: "100%",
-    borderRadius: 100,
-    paddingLeft: 20,
-    color: "white",
-    fontSize: 18,
-    fontFamily: "PoppinsMedium",
-  },
   modal_container: {
     backgroundColor: "#1E1E1E",
     width: "90%",
@@ -399,7 +378,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "PoppinsBlack",
     fontSize: 20,
-    maxWidth: 300,
     textAlign: "left",
     marginLeft: 10,
   },

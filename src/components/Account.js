@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRef } from "react";
 import {
   View,
-  Image,
   StyleSheet,
   Text,
-  Pressable,
   Animated,
   Easing,
   Dimensions,
   TouchableNativeFeedback,
   Modal,
-  BackHandler,
 } from "react-native";
 
 import Feedback from "./Feedback";
@@ -20,8 +17,6 @@ import Levels from "./Levels";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import Swipeable from "react-native-gesture-handler/Swipeable";
-
 import { useFonts } from "expo-font";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -29,12 +24,10 @@ import Antdesign from "react-native-vector-icons/AntDesign";
 
 import ProfileImage from "./ProfileImage";
 
-import Entypo from "react-native-vector-icons/Entypo";
-
 import { useBackHandler } from "@react-native-community/hooks";
 
 //Firebase
-import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc } from "firebase/firestore";
 import { firestore } from "./FirebaseConfig";
 
 import Button from "./Button";
@@ -372,10 +365,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#171717",
     alignSelf: "center",
   },
-  profile_img: {
-    height: 120,
-    width: 120,
-  },
   username: {
     color: "white",
     fontSize: 18,
@@ -386,50 +375,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "PoppinsLight",
   },
-  signOutButton: {
-    width: "80%",
-    alignSelf: "center",
-    height: 50,
-    borderRadius: 100,
-    justifyContent: "center",
-    marginTop: 20,
-    bottom: 20,
-    flexDirection: "row",
-  },
   money_icon: {
     fontSize: 25,
     color: "white",
     textAlignVertical: "center",
   },
-  pressable_back: {
-    width: 80,
-    padding: 10,
-    borderRadius: 25,
-    marginLeft: 10,
-  },
-  icon_back: {
-    color: "white",
-    fontSize: 30,
-    left: 5,
-  },
-  member_text: {
-    color: "rgba(255,255,255,0.75)",
-    fontSize: 16,
-    fontFamily: "PoppinsLight",
-  },
-  button_text: {
-    color: "white",
-    fontSize: 18,
-    fontFamily: "PoppinsLight",
-    textAlign: "center",
-    top: 2,
-    textAlignVertical: "center",
-  },
   touchable_delete: {
     width: "100%",
     alignSelf: "center",
-    height: 60,
-    borderRadius: 100,
+    height: 60
   },
   delete_text: {
     color: "#eb4034",
@@ -438,20 +392,11 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
     height: "100%",
   },
-  modal_container: {
-    backgroundColor: "#1E1E1E",
-    width: "90%",
-    height: 300,
-    alignSelf: "center",
-    borderRadius: 25,
-    flexDirection: "column",
-  },
   heading: {
     color: "white",
     textAlign: "center",
     fontFamily: "PoppinsBlack",
     fontSize: 22,
-    maxWidth: 300,
     alignSelf: "center",
   },
   touchable: {
@@ -463,17 +408,10 @@ const styles = StyleSheet.create({
   icon: {
     fontSize: 40,
   },
-  info_icon: {
-    color: "white",
-    fontSize: 30,
-    textAlign: "center",
-    marginTop: 20,
-  },
   text: {
     color: "white",
     fontFamily: "PoppinsLight",
     textAlign: "center",
-    maxWidth: 300,
-    alignSelf: "center",
+    alignSelf: "center"
   },
 });

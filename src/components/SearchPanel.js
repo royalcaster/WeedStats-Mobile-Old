@@ -4,7 +4,7 @@ import BackButton from './BackButton'
 import uuid from 'react-native-uuid'
 
 //Firebase
-import { doc, getDoc, updateDoc, getDocs, Timestamp, collection, query, where } from "firebase/firestore";
+import { doc, getDoc, updateDoc, getDocs, collection, query, where } from "firebase/firestore";
 import { firestore } from "./FirebaseConfig";
 import FriendListItem from "./FriendListItem";
 import Antdesign from 'react-native-vector-icons/AntDesign'
@@ -232,7 +232,6 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontFamily: "PoppinsBlack",
         fontSize: 20,
-        maxWidth: 300,
         textAlign: "left",
         marginLeft: 25
     },

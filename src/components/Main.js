@@ -13,7 +13,6 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import {
   StyleSheet,
   Text,
-  TouchableWithoutFeedbackBase,
   View,
   Image,
   ScrollView,
@@ -390,14 +389,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontFamily: "PoppinsLight",
     marginTop: 15,
-  },
-  header_container: {
-    flexDirection: "row",
-    width: "100%",
-    marginBottom: 20,
-    position: "relative",
-    top: 20,
-    justifyContent: "center",
   },
   main_heading: {
     color: "white",

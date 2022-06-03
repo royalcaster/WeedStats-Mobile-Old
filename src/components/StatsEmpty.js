@@ -21,23 +21,23 @@ const StatsEmpty = () => {
   });
 
   return (
-    <ScrollView style={styles.container}>
-      <Animated.View style={{ alignItems: "center" }}>
-        <View style={{ height: 50 }}></View>
-        <Text style={styles.heading}>Du hast noch keine Einträge gemacht.</Text>
+    <View style={styles.container}>
+      <Animated.View style={{ alignItems: "center", width: "85%", alignSelf: "center"}}>
         <AntDesign
           name="frowno"
           style={{
-            color: "rgba(255,255,255,0.5)",
-            margin: 20,
-            fontSize: 80,
+            color: "white",
+            margin: 10,
+            fontSize: 40,
           }}
         />
+        <Text style={styles.heading}>Du hast noch keine Einträge gemacht.</Text>
+        <View style={{ height: 30 }}></View>
         <Text style={styles.heading2}>
           Verwende die Counter, um deine Statistiken angezeigt zu bekommen.
         </Text>
       </Animated.View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -46,18 +46,20 @@ export default StatsEmpty;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#1E1E1E",
+    height: "100%",
     width: "100%",
+    justifyContent: "center"
   },
   heading: {
     fontFamily: "PoppinsBlack",
     textAlign: "center",
-    color: "#c4c4c4",
+    color: "white",
     fontSize: 20,
   },
   heading2: {
     fontFamily: "PoppinsLight",
     textAlign: "center",
     color: "rgba(255,255,255,0.5)",
-    fontSize: 16,
+    fontSize: 14,
   },
 });

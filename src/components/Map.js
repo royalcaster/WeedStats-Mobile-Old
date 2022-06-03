@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFonts } from "expo-font";
 import {
   StyleSheet,
   Image,
   View,
   Text,
-  Pressable,
   ScrollView,
   Dimensions,
   TouchableOpacity,
@@ -16,10 +15,7 @@ import uuid from "react-native-uuid";
 
 import MapView, {
   PROVIDER_GOOGLE,
-  UrlTile,
   Marker,
-  MarkerAnimated,
-  Callout,
   Heatmap,
 } from "react-native-maps";
 
@@ -36,25 +32,16 @@ import { LinearGradient } from "expo-linear-gradient";
 import { LogBox } from "react-native";
 
 import {
-  setDoc,
   doc,
   getDoc,
-  updateDoc,
-  Timestamp,
-  addDoc,
-  limitToLast,
-  query,
 } from "firebase/firestore";
 
-import { db, firestore } from "./FirebaseConfig";
-
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { firestore } from "./FirebaseConfig";
 
 const Map = ({ user }) => {
   LogBox.ignoreAllLogs();
 
   const windowHeight = Dimensions.get("window").height;
-  const windowWidth = Dimensions.get("window").width;
 
   const [view, setView] = useState("friends");
 
@@ -63,11 +50,6 @@ const Map = ({ user }) => {
   const [localDataLoaded, setLocalDataLoaded] = useState(false);
 
   const carouselRef = React.useRef(null);
-
-  const [loaded] = useFonts({
-    PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
-    PoppinsLight: require("./fonts/Poppins-Light.ttf"),
-  });
 
   const initRegion = {
     latitude: 50.612610476359684,
@@ -361,7 +343,7 @@ const Map = ({ user }) => {
             showsMyLocationButton={false}
           >
             {view == "heatmap" ? (
-              <Heatmap
+              {localData == null ? null : <Heatmap
                 points={filterNull(localData).map((entry) => {
                   return {
                     latitude: entry.latitude,
@@ -369,7 +351,8 @@ const Map = ({ user }) => {
                   };
                 })}
                 radius={40}
-              />
+              />}
+              
             ) : null}
 
             {view == "friends" ? (
@@ -411,7 +394,7 @@ const Map = ({ user }) => {
               ref={carouselRef}
             >
               {markers.map((marker) => {
-                return <View>{renderItem(marker)}</View>;
+                return <View key={uuid.v4()}>{renderItem(marker)}</View>;
               })}
             </Pages>
           </View>
@@ -428,13 +411,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#1E1E1E",
     width: "100%",
     height: "50%",
-  },
-  heading: {
-    fontFamily: "PoppinsBlack",
-    fontSize: 18,
-    marginLeft: 10,
-    color: "#1E1E1E",
-    zIndex: 10,
   },
   map: {
     width: "100%",
@@ -459,7 +435,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 2,
     bottom: 55,
-    padding: 0,
     marginBottom: 20,
   },
   touchable: {

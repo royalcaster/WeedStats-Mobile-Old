@@ -121,7 +121,7 @@ const FriendListItem = ({ userid, onPress }) => {
                 >
                   <Text style={styles.username}>{user.username}</Text>
                   <View style={{flexDirection: "row", maxHeight: 30}}>
-                    {Math.floor(counters[0].counter / 70) == 0 ? <Image style={styles.lvl_image} source={require('./img/lvl1.png')}/> : null}
+                    {Math.floor(counters[0].counter / 70) == 0 ? <Image style={styles.lvl_image} source={require('./img/lvl7.png')}/> : null}
                     {Math.floor(counters[0].counter / 70) == 1 ? <Image style={styles.lvl_image} source={require('./img/lvl2.png')}/> : null}
                     {/* {Math.floor(counters[0].counter / 70) == 2 ? <Image style={styles.lvl_image} source={require('./img/lvl3.png')}/> : null} */}
                     {/* {Math.floor(counters[0].counter / 70) == 3 ? <Image style={styles.lvl_image} source={require('./img/lvl4.png')}/> : null} */}

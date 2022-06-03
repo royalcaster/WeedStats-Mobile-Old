@@ -1,37 +1,29 @@
 import React from "react";
 import {
   View,
-  Pressable,
   Text,
-  ScrollView,
   Image,
   StyleSheet,
   Animated,
   Easing,
   TouchableNativeFeedback,
+  ActivityIndicator,
 } from "react-native";
 import { useFonts } from "expo-font";
 import {
   doc,
   getDoc,
 } from "firebase/firestore";
-import {
-  ref,
-  onChildAdded,
-} from "firebase/database";
-import { db, firestore } from "./FirebaseConfig";
+import { firestore } from "./FirebaseConfig";
 import { useState, useEffect, useRef } from "react";
 import uuid from "react-native-uuid";
 import Account from "./Account";
-import Donation from "./Donation";
 import FriendPage from "./FriendPage";
 import FriendListItem from "./FriendListItem";
 import SearchPanel from './SearchPanel'
 import Feather from 'react-native-vector-icons/Feather'
 import Antdesign from 'react-native-vector-icons/AntDesign'
 import FriendRequests from "./FriendRequests";
-import Feedback from "./Feedback";
-import Levels from './Levels'
 
 const Groups = ({ user, handleLogOut }) => {
   
@@ -47,9 +39,6 @@ const Groups = ({ user, handleLogOut }) => {
 
   const [loading, setLoading] = useState(true);
   const [showDonation, setShowDonation] = useState(false);
-
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [showLevels, setShowLevels] = useState(false);
 
   const [showAccount, setShowAccount] = useState(false);
   const [showGroup, setShowGroup] = useState(false);
@@ -156,26 +145,25 @@ const Groups = ({ user, handleLogOut }) => {
           </View>
         </View>
 
-        <View style={{ height: 20 }}></View>
-
-      <ScrollView style={{marginBottom: 45}}>
-              {!loading ? <>{
-              friendList.length != 0 ? 
-              friendList.map((friend) => {
+      {!loading ? <>
+        
+        {friendList.length != 0 ? friendList.map((friend) => {
                   return <FriendListItem key={uuid.v4()} userid={friend} onPress={() => {
                     setActiveFriend(friend);
                     setShowFriend(true);
                   }}/>
-              })
-              : <>
-              <View style={{height: 50}}></View>
-                <Antdesign name="frowno" style={{fontSize: 70, color: "rgba(255,255,255,0.25)", textAlign: "center",marginBottom: 20}}/>
-                <Text style={[styles.empty,{fontSize: 20, fontFamily: "PoppinsLight"}]}>Keine Freunde</Text>
-                <Text style={styles.empty}>Tippe auf das + oben rechts</Text>
-              </>
-              }
-              </> : null}
-      </ScrollView>
+              }) : 
+              <View style={{height: "80%", justifyContent: "center"}}>
+              <Antdesign name="frowno" style={{fontSize: 40, color: "white", textAlign: "center",marginBottom: 10}}/>
+              <Text style={[styles.empty,{fontSize: 22, fontFamily: "PoppinsBlack", color: "white"}]}>Keine Freunde</Text>
+              <View style={{height: 30}}></View>
+              <Text style={[styles.empty,{fontSize: 14}]}>Tippe auf das + oben rechts</Text>
+            </View>
+        }
+
+      </> : <View style={{height: "80%", justifyContent: "center"}}><ActivityIndicator color={"blue"} size={"large"}/></View>}
+
+
 
         <View style={{ height: 20 }}></View>
 
@@ -189,8 +177,7 @@ const Groups = ({ user, handleLogOut }) => {
             height: 60,
             width: "95%",
             alignSelf: "center",
-            borderTopColor: "#0080FF",
-            borderTopWidth: 0
+            borderTopColor: "#0080FF"
           }}
         >
           <TouchableNativeFeedback
@@ -254,16 +241,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
     marginLeft: 30,
-  },
-  account_button: {
-    width: 20,
-    height: 80,
-    position: "absolute",
-    bottom: 0,
-  },
-  pressable: {
-    textAlignVertical: "center",
-    margin: 10,
   },
   icon: {
     textAlignVertical: "center",
