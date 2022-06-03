@@ -37,7 +37,7 @@ const StatsDashboard = ({ user, localData }) => {
     Animated.timing(
       icon_slide, {
         toValue: 0,
-        duration: 300,
+        duration: 500,
         useNativeDriver: true,
         easing: Easing.bezier(0.07, 1, 0.33, 0.89),
         delay: 0
@@ -47,7 +47,7 @@ const StatsDashboard = ({ user, localData }) => {
     Animated.timing(
       icon_opacity, {
         toValue: 1,
-        duration: 300,
+        duration: 500,
         useNativeDriver: true,
         delay: 0
       }
@@ -466,10 +466,10 @@ const StatsDashboard = ({ user, localData }) => {
 
         <View style={{ alignItems: "center", flex: 1 }}>
 
-          <LinearGradient colors={["#369bff","#0080FF","#004e9c"]} style={{borderRadius: 25, padding: 20, width: 180}}>
+          <LinearGradient colors={["#369bff","#0080FF","#004e9c"]} style={{borderRadius: 25, padding: 20, width: 250}}>
           {selectedType === "main" ? (
             <Animated.View
-              style={{transform: [{translateX: icon_slide}], opacity: icon_opacity}}
+              style={{transform: [{translateX: icon_slide}], opacity: icon_opacity, width: "50%", alignSelf: "center"}}
               source={require("./img/joint.png")}>
               <Image style={{height: 40, width: 15, position: "absolute"}} source={require("./img/joint.png")}/>
               <Image style={{height: 40, width: 25, position: "absolute", left: "12%"}} source={require("./img/bong.png")}/>
@@ -500,6 +500,7 @@ const StatsDashboard = ({ user, localData }) => {
             />
           ) : null}
           <View style={{height: 40}}></View>
+          <View style={{alignSelf: "center"}}>
           <Animated.Text
             style={{
               fontSize: 60,
@@ -523,6 +524,7 @@ const StatsDashboard = ({ user, localData }) => {
           >
             Ø Tag
           </Text>
+          </View>
 
           </LinearGradient>
 

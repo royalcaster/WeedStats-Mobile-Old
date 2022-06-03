@@ -32,6 +32,7 @@ import Antdesign from 'react-native-vector-icons/AntDesign'
 import FriendRequests from "./FriendRequests";
 import Feedback from "./Feedback";
 import Levels from './Levels'
+import CustomLoader from "./CustomLoader";
 
 const Groups = ({ user, handleLogOut }) => {
   
@@ -172,6 +173,9 @@ const Groups = ({ user, handleLogOut }) => {
                 <Antdesign name="frowno" style={{fontSize: 70, color: "rgba(255,255,255,0.25)", textAlign: "center",marginBottom: 20}}/>
                 <Text style={[styles.empty,{fontSize: 20, fontFamily: "PoppinsLight"}]}>Keine Freunde</Text>
                 <Text style={styles.empty}>Tippe auf das + oben rechts</Text>
+                <View style={{alignSelf: "center"}}>
+                  <CustomLoader x={80}/>
+                </View>
               </>
               }
               </> : null}

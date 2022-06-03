@@ -15,23 +15,14 @@ import Swiper from "react-native-swiper";
 
 import {
   StyleSheet,
-  Text,
-  TouchableWithoutFeedbackBase,
   View,
-  Image,
-  ScrollView,
-  Pressable,
   Animated,
   Easing,
-  SafeAreaView,
-  FlatList,
   ActivityIndicator,
-  TextBase,
   TouchableNativeFeedback,
 } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { enableMultiTabIndexedDbPersistence } from "firebase/firestore";
 
 const Stats = ({ user }) => {
   const [view, setView] = useState("dashboard");
