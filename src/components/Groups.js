@@ -23,10 +23,8 @@ import FriendPage from "./FriendPage";
 import FriendListItem from "./FriendListItem";
 import SearchPanel from './SearchPanel'
 import Feather from 'react-native-vector-icons/Feather'
-import Antdesign from 'react-native-vector-icons/AntDesign'
 import FriendRequests from "./FriendRequests";
-import Feedback from "./Feedback";
-import Levels from './Levels'
+import Empty from "./Empty";
 import CustomLoader from "./CustomLoader";
 
 const Groups = ({ user, handleLogOut }) => {
@@ -149,27 +147,19 @@ const Groups = ({ user, handleLogOut }) => {
           </View>
         </View>
 
-      <ScrollView>
       {!loading ? <>
-        
-        {friendList.length != 0 ? friendList.map((friend) => {
+
+      {friendList.length != 0 ? <ScrollView>
+          {friendList.map((friend) => {
                   return <FriendListItem key={uuid.v4()} userid={friend} onPress={() => {
                     setActiveFriend(friend);
                     setShowFriend(true);
                   }}/>
-              })
-              : <>
-              <View style={{height: 50}}></View>
-                <Antdesign name="frowno" style={{fontSize: 70, color: "rgba(255,255,255,0.25)", textAlign: "center",marginBottom: 20}}/>
-                <Text style={[styles.empty,{fontSize: 20, fontFamily: "PoppinsLight"}]}>Keine Freunde</Text>
-                <Text style={styles.empty}>Tippe auf das + oben rechts</Text>
-                <View style={{alignSelf: "center"}}>
-                  <CustomLoader x={80}/>
-                </View>
-              </>
-              }
-              </> : null}
-      </ScrollView>
+              })}
+        </ScrollView> : <View style={{height: "90%", justifyContent: "center"}}><Empty title={"Du hast noch keine Freunde"} tip={"Tippe auf das + oben rechts."}/></View>}
+
+        
+      </> : <View style={{height: "90%", justifyContent: "center"}}><CustomLoader x={80}/></View>}
 
         <View style={{ height: 20 }}></View>
 

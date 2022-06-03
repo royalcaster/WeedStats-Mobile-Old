@@ -19,7 +19,7 @@ import MenuButton from "./MenuButton";
 
 export default function Home({ user, handleLogOut, toggleCounter }) {
 
-  const [view, setView] = useState("groups");
+  const [view, setView] = useState("main");
 
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),

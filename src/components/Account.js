@@ -233,7 +233,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
           <Text
             style={{
               alignSelf: "center",
-              color: "rgba(255,255,255,0.5)",
+              color: "rgba(255,255,255,0.75)",
               fontSize: 13,
               fontFamily: "PoppinsLight",
               letterSpacing: 2,

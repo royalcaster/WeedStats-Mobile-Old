@@ -8,13 +8,13 @@ const  Splash = ({onExit}) => {
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
-    const slideAnim = useRef(new Animated.Value(-1000)).current;
+    const slideAnim = useRef(new Animated.Value(500)).current;
 
   const fadeSplash = () => {
     Animated.timing(
         fadeAnim, {
             toValue: 1,
-            duration: 400,
+            duration: 500,
             useNativeDriver: true
         }
     ).start();

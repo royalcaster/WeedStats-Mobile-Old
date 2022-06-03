@@ -172,6 +172,7 @@ export default CustomLoader
 
 const styles = StyleSheet.create({
     container: {
+        alignSelf: "center"
     },
     img: {
         height: "100%",

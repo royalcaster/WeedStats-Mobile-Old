@@ -13,6 +13,8 @@ import {
   BackHandler,
 } from "react-native";
 
+import Empty from "./Empty";
+
 import BackButton from "./BackButton";
 import RequestItem from "./RequestItem";
 
@@ -27,6 +29,7 @@ import {
 import { firestore } from "./FirebaseConfig";
 
 import Antdesign from "react-native-vector-icons/AntDesign";
+import CustomLoader from "./CustomLoader";
 
 const FriendResquests = ({ user, onExit, refresh }) => {
   const screen_height = Dimensions.get("screen").height;
@@ -299,20 +302,14 @@ const FriendResquests = ({ user, onExit, refresh }) => {
         </View>
       </View>
 
-      <ScrollView
-        style={{ width: "100%", flex: 1, alignSelf: "center", marginTop: 20 }}
-      >
         {loading ? (
           <View style={{height: "100%", justifyContent: "center"}}>
-          <ActivityIndicator
-            color={"#0080FF"}
-            size={"large"}
-            style={{ marginTop: 50 }}
-          /></View>
+            <CustomLoader x={80}/>
+          </View>
         ) : (
           <>
             {results ? (
-              <>
+              <ScrollView style={{ width: "100%", flex: 1, alignSelf: "center", marginTop: 20 }}>
                 {results.length != 0 ? (
                   results.map((result) => {
                     return (
@@ -323,34 +320,13 @@ const FriendResquests = ({ user, onExit, refresh }) => {
                       />
                     );
                   })
-                ) : (
-                  <>
-                    <View style={{ height: 50 }}></View>
-                    <Antdesign
-                      name="frowno"
-                      style={{
-                        fontSize: 70,
-                        color: "rgba(255,255,255,0.25)",
-                        textAlign: "center",
-                        marginBottom: 20,
-                      }}
-                    />
-                    <Text
-                      style={[
-                        styles.empty,
-                        { fontSize: 20, fontFamily: "PoppinsLight" },
-                      ]}
-                    >
-                      Keine Anfragen
-                    </Text>
-                    <Text style={styles.empty}>Das wird schon noch!</Text>
-                  </>
-                )}
-              </>
-            ) : null}
+                ) : null}
+              </ScrollView>
+            ) : 
+            <View style={{height: "90%"}}><Empty title={"Du hast noch keine Anfragen."} tip={"Das wird schon noch!"}/></View>}
           </>
         )}
-      </ScrollView>
+
     </Animated.View>
   );
 };

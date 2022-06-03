@@ -8,7 +8,7 @@ import { db } from "./FirebaseConfig";
 //Unterkomponenten
 import StatsDashboard from "./StatsDashboard";
 import StatsHistory from "./StatsHistory";
-import StatsEmpty from "./StatsEmpty";
+import Empty from "./Empty";
 
 //TabView
 import Swiper from "react-native-swiper";
@@ -23,6 +23,7 @@ import {
 } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomLoader from "./CustomLoader";
 
 const Stats = ({ user }) => {
   const [view, setView] = useState("dashboard");
@@ -121,7 +122,7 @@ const Stats = ({ user }) => {
     <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
       <View style={{ height: 140 }}></View>
       {!localDataLoaded ? (
-        <ActivityIndicator animating={true} size="large" color="#0080FF" />
+        <View style={{heiht: "100%", justifyContent: "center"}}><CustomLoader x={80}/></View>
       ) : (
         <View style={{ flexDirection: "row" }}>
           <View
@@ -196,7 +197,7 @@ const Stats = ({ user }) => {
           </View>
         </View>
       )}
-      {localDataLoaded && localData.length == 0 ? <StatsEmpty /> : null}
+      {localDataLoaded && localData.length == 0 ? <Empty title={"Du hast noch keine Einträge gemacht."} tip={"Verwende die Counter, um deine Statistiken zu sehen."}/> : null}
       {localDataLoaded && localData.length != 0 && view == "dashboard" ? (
         <StatsDashboard user={user} localData={localData} />
       ) : null}
@@ -214,7 +215,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     height: "90%",
-    backgroundColor: "#121212"
+    backgroundColor: "#171717"
   },
   //Tab-View
   wrapper: {},

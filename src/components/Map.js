@@ -11,6 +11,8 @@ import {
   TouchableNativeFeedback,
 } from "react-native";
 
+import Empty from "./Empty";
+
 import uuid from "react-native-uuid";
 
 import MapView, {

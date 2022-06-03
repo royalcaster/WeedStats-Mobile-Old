@@ -16,6 +16,7 @@ import Button from "./Button";
 import ConfigItem from "./ConfigItem";
 import Toggle from "react-native-toggle-element";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomLoader from "./CustomLoader";
 
 const Config = () => {
   const [config, setConfig] = useState();
@@ -131,7 +132,7 @@ const Config = () => {
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
-            <ActivityIndicator size={"large"} color={"#0080FF"} />
+            <CustomLoader x={80}/>
           </View>
         ) : (
           <ScrollView style={{ width: "100%", flex: 1 }}>

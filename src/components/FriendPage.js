@@ -23,6 +23,7 @@ import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, firestore } from "./FirebaseConfig";
 
 import BackButton from "./BackButton";
+import CustomLoader from "./CustomLoader";
 
 const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
     
@@ -326,10 +327,11 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
             <BackButton onPress={() => {onExit();setLoading(true);}} />
           </View>
 
-          <Image
+          {loading ? <View style={{position: "absolute", justifyContent: "center", width: "100%", height: "50%"}}><CustomLoader x={80}/></View> : <Image
             style={[styles.image, { height: screen_width }]}
             source={{ uri: user.photoUrl }}
-          />
+          />}
+          
 
           <ScrollView style={{ zIndex: 5, position: "relative" }}>
             <View style={{ width: "100%", height: screen_width }}></View>
@@ -360,17 +362,17 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                 <View style={{ height: 30 }}></View>
                 {!loading ? <>
                 {user.main_counter ? (
-                  <Animated.View style={{opacity: opacityAnim,transform: [{translateX: slideAnim2}]}}>
+                  <Animated.View style={{height: 60, opacity: opacityAnim,transform: [{translateX: slideAnim2}]}}>
                     <Text style={styles.value}>{user.main_counter}</Text>
                   </Animated.View>
                 ) : (
-                  <Text style={styles.label}>
+                  <Text style={[styles.label,{height: 60}]}>
                     Dieser User teilt seinen Gesamt-Counter momentan nicht.
                   </Text>
                 )}
                 <Text style={[styles.label,{marginTop: -25}]}>GESAMT</Text>
                 </> : <View style={{height: 60, justifyContent: "center"}}>
-                <ActivityIndicator size={"small"} color={"#0080FF"}/>
+                <CustomLoader x={40}/>
               </View>}
                 <View style={{ height: 30 }}></View>
 
@@ -415,7 +417,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                 </Animated.View>
                   : 
                 <View style={{height: 70, justifyContent: "center"}}>
-                  <ActivityIndicator size={"small"} color={"#0080FF"}/>
+                  <CustomLoader x={40}/>
                 </View>}
 
                 <View style={{ height: 40 }}></View>
@@ -432,7 +434,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
 
                 : 
                 <View style={{height: 80, justifyContent: "center"}}>
-                  <ActivityIndicator size={"small"} color={"#0080FF"}/>
+                  <CustomLoader x={40}/>
                 </View>}
                 <View style={{ height: 35 }}></View>
               </View>

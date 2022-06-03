@@ -19,8 +19,8 @@ import {
   Pressable,
   Animated,
   Easing,
-  ActivityIndicator,
 } from "react-native";
+import CustomLoader from "./CustomLoader";
 
 const Main = ({ user, toggleCounter }) => {
   const headingAnim = useRef(new Animated.Value(-100)).current;
@@ -319,7 +319,7 @@ const Main = ({ user, toggleCounter }) => {
                 alignItems: "center",
               }}
             >
-              <ActivityIndicator size={"large"} color={"#0080FF"} />
+              <CustomLoader x={80}/>
             </View>
           ) : (
             <ScrollView style={styles.counters_container}>
