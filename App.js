@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import {
   StyleSheet,
   Platform,
-  ActivityIndicator,
   Text,
   View,
   Modal,
@@ -246,28 +245,6 @@ export default function App() {
       return { error: true };
     }
   };
-
-  /* const writeDb = async (type) => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Permission to access location was denied");
-      return;
-    }
-    let location = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.Highest,
-    });
-
-    const userListRef = ref(db, "users/" + user.id);
-    const newEntryRef = push(userListRef, {
-      number: user.main_counter + 1,
-      type: type,
-      timestamp: Date.now(),
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    });
-
-    return newEntryRef;
-  }; */
 
   const writeLocalStorage = async (new_entry) => {
     // Erstellt neuen Eintrag im AsyncStorage

@@ -120,7 +120,7 @@ const Stats = ({ user }) => {
 
   return (
     <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
-      <View style={{ height: 140 }}></View>
+      <View style={{ height: 50 }}></View>
       {!localDataLoaded ? (
         <View style={{heiht: "100%", justifyContent: "center"}}><CustomLoader x={80}/></View>
       ) : (
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     justifyContent: "center",
-    height: "90%",
+    height: "100%",
     backgroundColor: "#171717"
   },
   //Tab-View

@@ -6,6 +6,8 @@ import Entypo from "react-native-vector-icons/Entypo";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import moment from "moment";
 
+import AppIntroSlider from 'react-native-app-intro-slider';
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -136,108 +138,68 @@ const Main = ({ user, toggleCounter }) => {
     setSaved(true);
   };
 
+  const slides = [
+    {
+      key: 'one',
+      title: 'Counter',
+      text: 'Description.\nSay something cool',
+      image: require('./img/screenshots/counter.png'),
+      backgroundColor: '#0080FF',
+    },
+    {
+      key: 'two',
+      title: 'Stats',
+      text: 'Other cool stuff',
+      image: require('./img/screenshots/stats.png'),
+      backgroundColor: '#0080FF',
+    },
+    {
+      key: 'three',
+      title: 'Map',
+      text: 'I\'m already out of descriptions\n\nLorem ipsum bla bla bla',
+      image: require('./img/screenshots/map.png'),
+      backgroundColor: '#0080FF',
+    },
+    {
+      key: 'three',
+      title: 'Einstellungen',
+      text: 'I\'m already out of descriptions\n\nLorem ipsum bla bla bla',
+      image: require('./img/screenshots/config.png'),
+      backgroundColor: '#0080FF',
+    },
+    {
+      key: 'three',
+      title: 'Freunde',
+      text: 'I\'m already out of descriptions\n\nLorem ipsum bla bla bla',
+      image: require('./img/screenshots/friends.png'),
+      backgroundColor: '#0080FF',
+    }
+  ];
+
+  const renderItem = ({ item }) => {
+    return (
+      <View /* style={styles.slide} */>
+        <Text /* style={styles.title} */>{item.title}</Text>
+        <Image source={item.image} />
+        <Text /* style={styles.text} */>{item.text}</Text>
+      </View>
+    );
+  }
+
+  const onDone = () => {
+    setShowTutorial(false);
+    tutorialSeen();
+    console.log("Tutorial angesehen");
+  }
+
   return (
     <>
-      {showTutorial ? (
-        <Onboarding
-          onDone={() => {
-            setShowTutorial(false);
-          }}
-          nextLabel="Weiter"
-          skipLabel="Überspringen"
-          skipToPage={6}
-          titleStyles={styles.main_heading}
-          subTitleStyles={styles.blank_text}
-          imageContainerStyles={{ paddingBottom: 30 }}
-          pages={[
-            {
-              backgroundColor: "#171717",
-              image: (
-                <FontAwesome
-                  name="hand-peace-o"
-                  style={{ fontSize: 150, color: "#e0e0e0" }}
-                />
-              ),
-              title: "Willkommen!",
-              subtitle:
-                "WeedStats bietet verschiedenste Möglichkeiten zum Erfassen, Auswerten und Teilen deines Gras-Konsums. Diese kurze Tour wird dir die wesentlichen Funktionen der App beibringen.",
-            },
-            {
-              backgroundColor: "#171717",
-              image: (
-                <Image
-                  source={require("./img/logo_w.png")}
-                  style={styles.tut_img}
-                />
-              ),
-              title: "Counter",
-              subtitle:
-                "Jedes mal, wenn du etwas rauchst, solltest du den jeweiligen Counter um eins erhöhen.\nHalte dazu den Button für kurze Zeit gedrückt. Je nach Einstellung wird der Zeitpunkt und die aktuellen GPS-Daten gespeichert.",
-            },
-            {
-              backgroundColor: "#171717",
-              image: (
-                <FontAwesome
-                  name="sliders"
-                  style={{ fontSize: 150, color: "#e0e0e0" }}
-                />
-              ),
-              title: "Einstellungen",
-              subtitle:
-                "Hier kannst du unter u.A. Einstellungen für deine Privatsphäre treffen.",
-            },
-            {
-              backgroundColor: "#171717",
-              image: (
-                <FontAwesome
-                  name="user"
-                  style={{ fontSize: 150, color: "#e0e0e0" }}
-                />
-              ),
-              title: "Freunde",
-              subtitle:
-                "Füge Freunde hinzu, um deine Statistiken mit ihnen zu teilen und das volle Potential von WeedStats auszuschöpfen!\nAußerdem kannst du hier auf deinen Account zugreifen.",
-            },
-            {
-              backgroundColor: "#171717",
-              image: (
-                <Entypo
-                  name="area-graph"
-                  style={{ fontSize: 150, color: "#e0e0e0" }}
-                />
-              ),
-              title: "Statistiken",
-              subtitle:
-                "Hier findest du sowohl statistische Auswertungen und Diagramme zu deinem Konsum als auch eine Liste deiner letzten Einträge.",
-            },
-            {
-              backgroundColor: "#171717",
-              image: (
-                <FontAwesome
-                  name="map-marker"
-                  style={{ fontSize: 150, color: "#e0e0e0" }}
-                />
-              ),
-              title: "Map",
-              subtitle:
-                "Die Karte kann dir entweder eine Heatmap mit den Orten zeigen, an denen du am häufigsten geraucht hast, oder auch die letzten Einträge deiner Freunde.",
-            },
-            {
-              backgroundColor: "#171717",
-              image: (
-                <Entypo
-                  name="light-bulb"
-                  style={{ fontSize: 150, color: "#e0e0e0" }}
-                />
-              ),
-              title: "Tipps",
-              subtitle:
-                "Je gewissenhafter du deinen Konsum in der App einträgst, desto genauer werden deine Statistiken mit der Zeit.\nWir wünschen dir viel Spaß mit WeedStats!",
-            },
-          ]}
-        ></Onboarding>
-      ) : (
+
+        {showTutorial ? 
         <>
+          <AppIntroSlider renderItem={renderItem} data={slides} onDone={onDone}/>
+        </> : null}
+
           <View style={{ height: 50 }}></View>
           <View style={{ width: "100%", flexDirection: "row" }}>
             <Animated.View
@@ -363,8 +325,6 @@ const Main = ({ user, toggleCounter }) => {
               )}
             </ScrollView>
           )}
-        </>
-      )}
     </>
   );
 };
