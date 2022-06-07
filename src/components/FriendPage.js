@@ -14,6 +14,8 @@ import {
   ActivityIndicator,
 } from "react-native";
 
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+
 import Antdesign from "react-native-vector-icons/AntDesign";
 import levels from "../Levels.json";
 import Best from "./Best";
@@ -230,12 +232,32 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
     return user.best.type + "-" + calcLevelName(user.best.counter);
   };
 
+  const onSwipe = ( direction, state ) => {
+    console.debug(direction);
+    console.debug(state);
+  }
+
+  const config = {
+    velocityThreshold: 0.3,
+    directionalOffsetThreshold: 80
+  };
+
   return (
     <>
       {user ? (
+
+        
         <Animated.View
           style={[styles.container, { transform: [{ translateX: slideAnim }] }]}
         >
+          <GestureRecognizer
+        onSwipeRight={(state) => hide()}
+        config={config}
+        style={{
+          height: Dimensions.get("screen").height
+        }}
+        >
+
           <Modal
             animationType="slide"
             transparent={true}
@@ -509,7 +531,9 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
               </View>
             </View>
           </ScrollView>
+          </GestureRecognizer>
         </Animated.View>
+        
       ) : null}
     </>
   );
