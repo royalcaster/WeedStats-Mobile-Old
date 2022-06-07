@@ -6,7 +6,7 @@ import Entypo from "react-native-vector-icons/Entypo";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import moment from "moment";
 
-import AppIntroSlider from 'react-native-app-intro-slider';
+import Tutorial from "./Tutorial";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -23,6 +23,7 @@ import {
   Easing,
 } from "react-native";
 import CustomLoader from "./CustomLoader";
+import Empty from "./Empty";
 
 const Main = ({ user, toggleCounter }) => {
   const headingAnim = useRef(new Animated.Value(-100)).current;
@@ -140,48 +141,71 @@ const Main = ({ user, toggleCounter }) => {
 
   const slides = [
     {
+      key: 'zero',
+      title: 'Willkommen',
+      text: 'WeedStats bietet verschiedenste Möglichkeiten zum Erfassen, Auswerten und Teilen deines Gras-Konsums. \n\nDiese kurze Tour wird dir die wesentlichen Funktionen der App beibringen.',
+      backgroundColor: '#0080FF',
+    },
+    {
       key: 'one',
       title: 'Counter',
-      text: 'Description.\nSay something cool',
+      text: 'Jedes mal, wenn du etwas rauchst, solltest du den jeweiligen Counter um eins erhöhen. Halte dazu den Button für kurze Zeit gedrückt.\n\n Je nach Einstellung wird der Zeitpunkt und die aktuellen GPS-Daten gespeichert.',
       image: require('./img/screenshots/counter.png'),
       backgroundColor: '#0080FF',
     },
     {
       key: 'two',
       title: 'Stats',
-      text: 'Other cool stuff',
+      text: 'Hier findest du sowohl statistische Auswertungen und Diagramme zu deinem Konsum als auch eine Liste deiner letzten Einträge.',
       image: require('./img/screenshots/stats.png'),
       backgroundColor: '#0080FF',
     },
     {
       key: 'three',
       title: 'Map',
-      text: 'I\'m already out of descriptions\n\nLorem ipsum bla bla bla',
+      text: 'Die Karte kann dir entweder eine Heatmap mit den Orten zeigen, an denen du am häufigsten geraucht hast, oder auch die letzten Einträge deiner Freunde.',
       image: require('./img/screenshots/map.png'),
       backgroundColor: '#0080FF',
     },
     {
-      key: 'three',
+      key: 'four',
       title: 'Einstellungen',
-      text: 'I\'m already out of descriptions\n\nLorem ipsum bla bla bla',
+      text: 'Hier kannst du Einstellungen für deine Privatsphäre und die Anzeige treffen.',
       image: require('./img/screenshots/config.png'),
       backgroundColor: '#0080FF',
     },
     {
-      key: 'three',
+      key: 'five',
       title: 'Freunde',
-      text: 'I\'m already out of descriptions\n\nLorem ipsum bla bla bla',
+      text: 'Füge Freunde hinzu, um deine Statistiken mit ihnen zu teilen und das volle Potential von WeedStats auszuschöpfen!\n\nAußerdem kannst du hier auf deinen Account zugreifen.',
       image: require('./img/screenshots/friends.png'),
+      backgroundColor: '#0080FF',
+    },
+    {
+      key: 'six',
+      title: 'Unser Tipp',
+      text: 'Hier eventuell Hinweis auf Intention der App, keine Anregung zu Konsum, kein Konsum bei minderjährigen! \n\nJe gewissenhafter du deinen Konsum in der App einträgst, desto genauer werden deine Statistiken mit der Zeit.\n\nWir wünschen dir viel Spaß mit WeedStats!',
       backgroundColor: '#0080FF',
     }
   ];
 
   const renderItem = ({ item }) => {
     return (
-      <View /* style={styles.slide} */>
-        <Text /* style={styles.title} */>{item.title}</Text>
-        <Image source={item.image} />
-        <Text /* style={styles.text} */>{item.text}</Text>
+      <View style={{flexDirection: "column", height: "100%"}}>
+        <View style={{height: 50}}></View>
+        <View style={{flex: 1}}>
+          <Text style={{color: "white", fontFamily: "PoppinsBlack", fontSize: 25, textAlign: "center"}}>{item.title}</Text>
+        </View>
+
+        {item.image ? 
+        <View style={{flex: 5}}>
+          <Image source={item.image} style={{height: "100%", width: "55%", borderRadius: 25, alignSelf: "center"}}/>
+        </View> : null}
+
+        <View style={{flex: 4}}>
+          <Text style={{color: "white", fontFamily: "PoppinsLight", fontSize: 15, marginLeft: 30, textAlign: "center", maxWidth: "80%", marginTop: 20}}>{item.text}</Text>
+        </View>
+        
       </View>
     );
   }
@@ -197,8 +221,8 @@ const Main = ({ user, toggleCounter }) => {
 
         {showTutorial ? 
         <>
-          <AppIntroSlider renderItem={renderItem} data={slides} onDone={onDone}/>
-        </> : null}
+          <Tutorial renderItem={renderItem} slides={slides} onDone={onDone}/>
+        </> : <> 
 
           <View style={{ height: 50 }}></View>
           <View style={{ width: "100%", flexDirection: "row" }}>
@@ -284,34 +308,13 @@ const Main = ({ user, toggleCounter }) => {
               <CustomLoader x={80}/>
             </View>
           ) : (
-            <ScrollView style={styles.counters_container}>
+            <>
               {counterOrder.length == 0 ? (
-                <View style={{ justifyContent: "center" }}>
-                  <Text>{config.showBong}</Text>
-                  <EvilIcons
-                    style={{
-                      color: "rgba(255,255,255,0.3)",
-                      fontSize: 100,
-                      marginBottom: 20,
-                      alignSelf: "center",
-                    }}
-                    name="close"
-                  />
-                  <Text style={[styles.blank_text, { fontSize: 20 }]}>
-                    Keine Stats aktiviert
-                  </Text>
-                  <Text
-                    style={[
-                      styles.blank_text,
-                      { maxWidth: 200, textAlign: "center" },
-                    ]}
-                  >
-                    Konfiguriere deine Ansicht in den{" "}
-                    <FontAwesome style={{ fontSize: 20 }} name="sliders" />{" "}
-                    Einstellungen.
-                  </Text>
+                <View style={{height: "90%", justifyContent: "center"}}>
+                  <Empty title={"Keine Stats aktiviert"} tip={"Konfiguriere deine Ansicht in den Einstellungen."}/>
                 </View>
-              ) : (
+              ) : <ScrollView style={styles.counters_container}>
+                {
                 counterOrder.map((item) => {
                   return (
                     <CounterItem
@@ -321,10 +324,11 @@ const Main = ({ user, toggleCounter }) => {
                       toggleCounter={toggleCounter}
                     />
                   );
-                })
-              )}
-            </ScrollView>
+                })}
+              </ScrollView>}
+            </>
           )}
+          </>}
     </>
   );
 };
