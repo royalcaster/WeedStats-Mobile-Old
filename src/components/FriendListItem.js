@@ -95,7 +95,7 @@ const FriendListItem = ({ userid, onPress }) => {
   return (
     <>
       {!isLoading ? (
-        <Animated.View style={[{ opacity: opacityAnim }, styles.container]}>
+        <Animated.View style={[{ opacity: 1 }, styles.container]}>
           <TouchableNativeFeedback
             background={TouchableNativeFeedback.Ripple(
               "rgba(255,255,255,0.05)",
@@ -107,7 +107,7 @@ const FriendListItem = ({ userid, onPress }) => {
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <View style={{ width: 20 }}></View>
                 <Animated.View
-                  style={{ transform: [{ translateX: slide1Anim }], zIndex: 2 }}
+                  style={{ transform: [{ translateX: 0 }], zIndex: 2 }}
                 >
                   <ProfileImage x={45} type={1} url={user.photoUrl} />
                 </Animated.View>
@@ -115,7 +115,7 @@ const FriendListItem = ({ userid, onPress }) => {
                 <Animated.View
                   style={{
                     flexDirection: "column",
-                    transform: [{ translateX: slide2Anim }],
+                    transform: [{ translateX: 0 }],
                     zIndex: 1,
                   }}
                 >

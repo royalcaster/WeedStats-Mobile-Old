@@ -12,9 +12,10 @@ import {
   Modal,
   BackHandler,
   ActivityIndicator,
+  PanResponder,
 } from "react-native";
 
-import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import ProfileImage from './ProfileImage'
 
 import Antdesign from "react-native-vector-icons/AntDesign";
 import levels from "../Levels.json";
@@ -36,6 +37,9 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
 
   const [modalVisible, setModalVisible] = useState(false);
 
+  
+  const pan = useRef(new Animated.Value(0)).current;
+
   const slideAnim = useRef(new Animated.Value(screen_width)).current;
 
   const slideAnim2 = useRef(new Animated.Value(-50)).current;
@@ -46,28 +50,27 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
   useEffect(() => {
     if (userid) {
       getUser();
+      console.log("FriendPage gerendert");
     }
   }, [userid]);
 
   const slideCounters = () => {
-    console.log("test");
-
     slideAnim2.setValue(-50);
     opacityAnim.setValue(0);
     opacityAnim2.setValue(0);
 
     Animated.timing(slideAnim2,{
-      delay: 200,
+      delay: 0,
       toValue: 0,
-      duration: 500,
+      duration: 300,
       useNativeDriver: true,
       easing: Easing.bezier(0, 1.02, 0.21, 0.97)
     }).start();
 
     Animated.timing(opacityAnim,{
-      delay: 200,
+      delay: 0,
       toValue: 1,
-      duration: 300,
+      duration: 400,
       useNativeDriver: true,
     }).start();
 
@@ -122,7 +125,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
   };
 
   const slide = () => {
-    Animated.timing(slideAnim, {
+    Animated.timing(pan, {
       toValue: 0,
       duration: 700,
       useNativeDriver: true,
@@ -146,7 +149,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
   }, []);
 
   const hide = () => {
-    Animated.timing(slideAnim, {
+    Animated.timing(pan, {
       toValue: screen_width,
       duration: 400,
       useNativeDriver: true,
@@ -155,6 +158,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
       if (finished) {
         onExit();
         setUser({ ...user, photoUrl: " " });
+        setLoading(true);
       }
     });
   };
@@ -232,32 +236,40 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
     return user.best.type + "-" + calcLevelName(user.best.counter);
   };
 
-  const onSwipe = ( direction, state ) => {
-    console.debug(direction);
-    console.debug(state);
-  }
 
   const config = {
     velocityThreshold: 0.3,
     directionalOffsetThreshold: 80
   };
 
+
+  //PanResponder test -> so funktionierts endlich, so ein dreck ehrlich
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder: (event, gesture) => {
+      if (gesture?.moveX > gesture?.moveY) {
+        return false;
+      }
+      return true;
+    },
+    onPanResponderMove: (event, gesture) => {
+      pan.setValue(gesture.dx);
+      console.log();
+    },
+    onPanResponderRelease: (event, gesture) =>  {
+      gesture.dx > screen_width / 5 ? hide() : slide();
+    }
+ });
+
+
   return (
     <>
       {user ? (
-
         
         <Animated.View
-          style={[styles.container, { transform: [{ translateX: slideAnim }] }]}
+        {...panResponder.panHandlers}
+          style={[styles.container, { transform: [{ translateX: pan }] }]}
         >
-          <GestureRecognizer
-        onSwipeRight={(state) => hide()}
-        config={config}
-        style={{
-          height: Dimensions.get("screen").height
-        }}
-        >
-
           <Modal
             animationType="slide"
             transparent={true}
@@ -336,43 +348,43 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
             </View>
           </Modal>
 
-          {/* <View style={{height: 50, zIndex: 6, position: "absolute"}}></View> */}
-
           <View
             style={{
               zIndex: 6,
-              paddingLeft: 15,
               marginTop: 50,
-              position: "absolute",
+              position: "relative",
+              width: "100%",
+              justifyContent: "center"
             }}
           >
-            <BackButton onPress={() => {onExit();setLoading(true);}} />
-          </View>
+            <View style={{position: "absolute", zIndex: 20, left: 15, top: 15}}>
+              <BackButton onPress={() => {onExit();setLoading(true);}} />
+            </View>
 
-          {loading ? <View style={{position: "absolute", justifyContent: "center", width: "100%", height: "50%"}}><CustomLoader x={80}/></View> : <Image
-            style={[styles.image, { height: screen_width }]}
-            source={{ uri: user.photoUrl }}
-          />}
+            <View style={{justifyContent: "center", alignSelf: "center"}}>
+              <View style={{alignSelf: "center"}}>
+              <ProfileImage url={user.photoUrl} x={80} type={1}/>
+              </View>
+
+              <View style={{justifyContent: "center"}}>
+                <Text style={styles.username}>{!loading ? user.username : null}</Text>
+                <Text style={styles.member_since}>
+                  Mitglied seit: {user.member_since}
+                </Text>
+              </View>
+            </View>
+            
+          </View>    
+
+{/* 
           
-
-          <ScrollView style={{ zIndex: 5, position: "relative" }}>
-            <View style={{ width: "100%", height: screen_width }}></View>
             <View
               style={{
                 backgroundColor: "#171717",
-                height: 800,
                 position: "relative",
                 bottom: 0,
               }}
             >
-              <View style={{ height: 20 }}></View>
-
-              <Text style={styles.username}>{user.username}</Text>
-              <Text style={styles.member_since}>
-                Mitglied seit: {user.member_since}
-              </Text>
-
-              <View style={{ height: 20 }}></View>
 
               <View
                 style={{
@@ -516,7 +528,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                 <View style={{ height: 20 }}></View>
               </View>
 
-              <View style={{ bottom: 0, position: "absolute", width: "100%" }}>
+              <View style={{ bottom: 0, position: "relative", width: "100%" }}>
                 <TouchableNativeFeedback
                   background={TouchableNativeFeedback.Ripple(
                     "rgba(255,255,255,0.05)",
@@ -529,9 +541,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                   </View>
                 </TouchableNativeFeedback>
               </View>
-            </View>
-          </ScrollView>
-          </GestureRecognizer>
+            </View> */}
         </Animated.View>
         
       ) : null}
@@ -557,14 +567,13 @@ const styles = StyleSheet.create({
   username: {
     color: "white",
     fontSize: 35,
-    fontFamily: "PoppinsBlack",
-    marginLeft: 20,
+    fontFamily: "PoppinsBlack"
   },
   member_since: {
     color: "rgba(255,255,255,0.5)",
     fontFamily: "PoppinsLight",
-    marginLeft: 20,
-    marginTop: -15,
+    marginTop: -10,
+    marginBottom: 20,
   },
   label: {
     color: "rgba(255,255,255,0.75)",

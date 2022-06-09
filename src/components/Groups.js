@@ -8,7 +8,7 @@ import {
   Easing,
   TouchableNativeFeedback,
   ActivityIndicator,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import { useFonts } from "expo-font";
 import {
@@ -26,20 +26,21 @@ import Feather from 'react-native-vector-icons/Feather'
 import FriendRequests from "./FriendRequests";
 import Empty from "./Empty";
 import CustomLoader from "./CustomLoader";
+import FriendList from "./FriendList";
 
-const Groups = ({ user, handleLogOut }) => {
+const Groups = ({ user, friendList, handleLogOut }) => {
   
   const [rippleColor, setRippleColor] = useState("rgba(255,255,255,0.1)");
   const [rippleOverflow, setRippleOverflow] = useState(false);
 
-  const [friendList, setFriendList] = useState();
-
+/*   const [friendList, setFriendList] = useState();
+ */
   const [showFriend, setShowFriend] = useState(false);
   const [activeFriend, setActiveFriend] = useState();
 
   const [showAddFriend, setShowAddFriend] = useState(false);
 
-  const [loading, setLoading] = useState(true);
+  /* const [loading, setLoading] = useState(true); */
   const [showDonation, setShowDonation] = useState(false);
 
   const [showAccount, setShowAccount] = useState(false);
@@ -51,7 +52,8 @@ const Groups = ({ user, handleLogOut }) => {
   const accountAnim = useRef(new Animated.Value(100)).current;
 
   useEffect(() => {
-    getFriendList();
+    /* getFriendList(); */
+    console.log("Groups gerendert");
   }, []);
 
   React.useEffect(() => {
@@ -68,7 +70,7 @@ const Groups = ({ user, handleLogOut }) => {
     }).start();
   }, [showGroup]);
 
-  const getFriendList = async () => {
+  /* const getFriendList = async () => {
     const docRef = doc(firestore, "users", user.id);
     const docSnap = await getDoc(docRef);
 
@@ -76,7 +78,7 @@ const Groups = ({ user, handleLogOut }) => {
         setFriendList(docSnap.data().friends);
     }
     setLoading(false);
-  }
+  } */
 
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
@@ -93,7 +95,7 @@ const Groups = ({ user, handleLogOut }) => {
       <FriendPage 
         show={showFriend} 
         userid={activeFriend} 
-        onExit={() => {setShowFriend(false); setActiveFriend(null)}} 
+        onExit={() => {setShowFriend(false); setActiveFriend(null) }} 
         realuser={user} 
         refresh={() => {getFriendList(); setActiveFriend(null); setShowFriend(false);}}/>
 
@@ -106,7 +108,7 @@ const Groups = ({ user, handleLogOut }) => {
 
       <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
         <View style={{ height: 50 }}></View>
-        <View style={{ alignItems: "center", flexDirection: "row" }}>
+        <View style={{ alignItems: "center", flexDirection: "row", marginBottom: 20}}>
           <Text style={styles.heading}>Freunde</Text>
           <View
             style={{ flexDirection: "row", right: 0, position: "absolute" }}
@@ -147,19 +149,7 @@ const Groups = ({ user, handleLogOut }) => {
           </View>
         </View>
 
-      {!loading ? <>
-
-      {friendList.length != 0 ? <ScrollView>
-          {friendList.map((friend) => {
-                  return <FriendListItem key={uuid.v4()} userid={friend} onPress={() => {
-                    setActiveFriend(friend);
-                    setShowFriend(true);
-                  }}/>
-              })}
-        </ScrollView> : <View style={{height: "90%", justifyContent: "center"}}><Empty title={"Du hast noch keine Freunde"} tip={"Tippe auf das + oben rechts."}/></View>}
-
-        
-      </> : <View style={{height: "90%", justifyContent: "center"}}><CustomLoader x={80}/></View>}
+      <FriendList user={user}  setActiveFriend={setActiveFriend} setShowFriend={setShowFriend}/>
 
         <View style={{ height: 20 }}></View>
 

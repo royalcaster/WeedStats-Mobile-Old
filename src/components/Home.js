@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Animated,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
 } from "react-native";
 import { useFonts } from "expo-font";
 import { useState } from "react";
+
 
 import Stats from "./Stats";
 import Main from "./Main";
