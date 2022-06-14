@@ -18,24 +18,25 @@ import levels from "../Levels.json";
 
 import { useBackHandler } from '@react-native-community/hooks'
 
-const Levels = ({ onexit }) => {
+const Levels = ({ onexit, show }) => {
 
   const screen_width = Dimensions.get("window").width;
   const fadeAnim = useRef(new Animated.Value(screen_width)).current;
 
-  React.useEffect(() => {
+
+  /* useBackHandler(() => {
+    hide();
+    return true
+  }) */
+
+  const slide = () => {
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 300,
       easing: Easing.bezier(0,.79,0,.99),
       useNativeDriver: true,
     }).start();
-  }, [fadeAnim]);
-
-  useBackHandler(() => {
-    hide();
-    return true
-  })
+  }
 
   const hide = () => {
     Animated.timing(fadeAnim, {
@@ -50,6 +51,8 @@ const Levels = ({ onexit }) => {
     });
   };
 
+  show ? slide() : hide();
+
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
@@ -57,7 +60,6 @@ const Levels = ({ onexit }) => {
 
   return (
     <Animated.View style={[{ opacity: 1 , transform: [{translateX: fadeAnim}]}, styles.container]}>
-      <View style={{ height: 50 }}></View>
 
       <View style={{flexDirection: "row", alignContent: "center", alignItems: "center"}}>
                 <View style={{marginLeft: 20}}>
@@ -116,7 +118,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#1E1E1E",
     paddingBottom: 30,
     zIndex: 1,
-    position: "absolute"
+    position: "absolute",
+    borderTopRightRadius: 25,
+    borderTopLeftRadius: 25
   },
   heading: {
     color: "white",

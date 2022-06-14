@@ -50,9 +50,16 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
   useEffect(() => {
     if (userid) {
       getUser();
-      console.log("FriendPage gerendert");
     }
   }, [userid]);
+
+  useEffect(() => {
+    if (!show) {
+    setLoading(true);
+    }
+  }, [show]);
+
+  
 
   const slideCounters = () => {
     slideAnim2.setValue(-50);
@@ -157,8 +164,6 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
     }).start(({ finished }) => {
       if (finished) {
         onExit();
-        setUser({ ...user, photoUrl: " " });
-        setLoading(true);
       }
     });
   };
@@ -253,11 +258,11 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
       return true;
     },
     onPanResponderMove: (event, gesture) => {
-      pan.setValue(gesture.dx);
-      console.log();
+      gesture.dx > 0 ? pan.setValue(gesture.dx) : null;
     },
     onPanResponderRelease: (event, gesture) =>  {
-      gesture.dx > screen_width / 5 ? hide() : slide();
+      if (gesture.dx > screen_width / 10 || gesture.vx > 1) {
+        hide()} else{slide();}
     }
  });
 
@@ -363,11 +368,12 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
 
             <View style={{justifyContent: "center", alignSelf: "center"}}>
               <View style={{alignSelf: "center"}}>
-              <ProfileImage url={user.photoUrl} x={80} type={1}/>
+              {!loading ? 
+              <ProfileImage url={user.photoUrl} x={80} type={1}/> : <View style={{height: 80}}></View>}
               </View>
 
               <View style={{justifyContent: "center"}}>
-                <Text style={styles.username}>{!loading ? user.username : null}</Text>
+                <Text style={styles.username}>{!loading ? user.username : " "}</Text>
                 <Text style={styles.member_since}>
                   Mitglied seit: {user.member_since}
                 </Text>
@@ -376,7 +382,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
             
           </View>    
 
-{/* 
+ 
           
             <View
               style={{
@@ -397,14 +403,14 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                 {!loading ? <>
                 {user.main_counter ? (
                   <Animated.View style={{height: 60, opacity: opacityAnim,transform: [{translateX: slideAnim2}]}}>
-                    <Text style={styles.value}>{user.main_counter}</Text>
+                    {/* <Text style={styles.value}>{user.main_counter}</Text> */}
                   </Animated.View>
                 ) : (
                   <Text style={[styles.label,{height: 60}]}>
                     Dieser User teilt seinen Gesamt-Counter momentan nicht.
                   </Text>
                 )}
-                <Text style={[styles.label,{marginTop: -25}]}>GESAMT</Text>
+                <Text style={[styles.label,{marginTop: 0}]}>GESAMT</Text>
                 </> : <View style={{height: 60, justifyContent: "center"}}>
                 <CustomLoader x={40}/>
               </View>}
@@ -413,7 +419,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                 {!loading ? 
 
                 <Animated.View style={{width: "95%", flexDirection: "row", alignSelf: "center", height: 60}}>
-                    <View style={{flex: 1}}>
+                    {/* <View style={{flex: 1}}>
                       <Animated.View style={{opacity: opacityAnim, transform: [{translateX: slideAnim2}]}}>
                         <Text style={styles.small_counter}>{user.joint_counter}</Text>
                       </Animated.View>
@@ -447,10 +453,10 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                       </Animated.View>
                         <Text style={styles.small_label}>EDIBLE</Text>
                         <Animated.Image style={[styles.small_image,{height: 65, width: 60, marginTop: 0, opacity: opacityAnim2}]} source={require('./img/cookie.png')}/>
-                    </View>
+                    </View> */}
                 </Animated.View>
                   : 
-                <View style={{height: 70, justifyContent: "center"}}>
+                <View style={{height: 60, justifyContent: "center"}}>
                   <CustomLoader x={40}/>
                 </View>}
 
@@ -527,6 +533,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                 </View>
                 <View style={{ height: 20 }}></View>
               </View>
+            
 
               <View style={{ bottom: 0, position: "relative", width: "100%" }}>
                 <TouchableNativeFeedback
@@ -541,7 +548,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                   </View>
                 </TouchableNativeFeedback>
               </View>
-            </View> */}
+            </View>
         </Animated.View>
         
       ) : null}

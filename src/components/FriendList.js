@@ -24,8 +24,8 @@ const FriendList = memo(({ user, setActiveFriend, setShowFriend}) => {
 
     useEffect(() => {
         getFriendList();
-        console.log("FriendList gerendert");
     },[]);
+
 
     const getFriendList = async () => {
         const docRef = doc(firestore, "users", user.id);
@@ -39,7 +39,7 @@ const FriendList = memo(({ user, setActiveFriend, setShowFriend}) => {
 
 
     return (
-        <Animated.View style={styles.container}>
+        <Animated.View style={[styles.container,{height: "80%"}]}>
 
 
            {!loading ?  <>
@@ -64,7 +64,6 @@ export default FriendList
 
 const styles = StyleSheet.create({
     container: {
-        height: "100%",
         width: "100%",
     }
 });

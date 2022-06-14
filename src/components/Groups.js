@@ -53,8 +53,8 @@ const Groups = ({ user, friendList, handleLogOut }) => {
 
   useEffect(() => {
     /* getFriendList(); */
-    console.log("Groups gerendert");
-  }, []);
+    console.log(showAccount)
+  },[showAccount]);
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -95,7 +95,7 @@ const Groups = ({ user, friendList, handleLogOut }) => {
       <FriendPage 
         show={showFriend} 
         userid={activeFriend} 
-        onExit={() => {setShowFriend(false); setActiveFriend(null) }} 
+        onExit={() => {setShowFriend(false); setActiveFriend(null);}} 
         realuser={user} 
         refresh={() => {getFriendList(); setActiveFriend(null); setShowFriend(false);}}/>
 
@@ -149,9 +149,8 @@ const Groups = ({ user, friendList, handleLogOut }) => {
           </View>
         </View>
 
-      <FriendList user={user}  setActiveFriend={setActiveFriend} setShowFriend={setShowFriend}/>
+      <FriendList user={user} setActiveFriend={setActiveFriend} setShowFriend={setShowFriend}/>
 
-        <View style={{ height: 20 }}></View>
 
         <Animated.View
           style={{
@@ -171,7 +170,7 @@ const Groups = ({ user, friendList, handleLogOut }) => {
               "rgba(255,255,255,0.1)",
               rippleOverflow
             )}
-            onPress={() => setShowAccount(true)}
+            onPress={() => {setShowAccount(true)}}
             style={{ width: "100%", height: "100%" }}
           >
             <View style={styles.touchable}>

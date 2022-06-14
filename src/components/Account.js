@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useRef } from "react";
 import {
   View,
@@ -9,6 +9,7 @@ import {
   Dimensions,
   TouchableNativeFeedback,
   Modal,
+  PanResponder,
 } from "react-native";
 
 import Feedback from "./Feedback";
@@ -40,17 +41,28 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
   const [showDonation, setShowDonation] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
 
-  const opacityAnim = useRef(new Animated.Value(screen_height)).current;
+  const opacityAnim = useRef(new Animated.Value(0)).current;
+
+  const pan = useRef(new Animated.Value(0)).current;
 
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
   });
 
+  useEffect(() => {
+    console.log("Account useEffect");
+  },[]);
+
   const slide = () => {
     Animated.timing(opacityAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(pan, {
       toValue: 0,
-      duration: 600,
+      duration: 400,
       easing: Easing.bezier(0.2, 1, 0.21, 0.97),
       useNativeDriver: true,
     }).start();
@@ -58,24 +70,36 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
 
   const hide = () => {
     Animated.timing(opacityAnim, {
-      toValue: screen_height,
-      duration: 1200,
-      easing: Easing.bezier(0, 1.02, 0.21, 0.97),
+      toValue: 0,
+      duration: 200,
       useNativeDriver: true,
     }).start(({ finished }) => {
       if (finished) {
-        /* onexit(); */
+        setShowLevels(false);
+        setShowDonation(false);
+        setShowFeedback(false);
+        console.log("test");
+      }
+    });
+    Animated.timing(pan, {
+      toValue: screen_height,
+      duration: 1500,
+      easing: Easing.bezier(0.2, 1, 0.21, 0.97),
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished) {
+        onexit();
       }
     });
   };
 
   show ? slide() : hide();
 
-  useBackHandler(() => {
+/*   useBackHandler(() => {
     onexit();
     hide();
     return true;
-  });
+  }); */
 
   const deleteAccount = async () => {
     handleLogOut();
@@ -102,18 +126,37 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
 
   const [showDelete, setShowDelete] = useState(false);
 
+  //PanResponder test -> so funktionierts endlich, so ein dreck ehrlich
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder: (event, gesture) => {
+      /* if (gesture?.moveX > gesture?.moveY) {
+        return false;
+      } */
+      return true;
+    },
+    onPanResponderMove: (event, gesture) => {
+      if (gesture.dy > 0 ) {pan.setValue(gesture.dy); opacityAnim.setValue(1 - (gesture.dy / 700))}
+    },
+    onPanResponderRelease: (event, gesture) =>  {
+      if (gesture.dy > screen_height/ 10 || gesture.vy > 1) {onexit();hide()} else{slide();}
+    }
+ });
+
   return (
     <Animated.View
       style={[
         {
-          opacity: 1,
+          opacity: opacityAnim,
           height: "100%",
-          transform: [{ translateY: opacityAnim }],
+          transform: [{ translateY: pan }],
         },
         styles.container,
       ]}
-    >
-      {showLevels ? <Levels onexit={() => setShowLevels(false)} /> : null}
+      {...panResponder.panHandlers}
+    >{/* 
+      {showLevels ? <Levels onexit={() => setShowLevels(false)} /> : null} */}
+        <Levels onexit={() => setShowLevels(false)} show={showLevels}/>
       {showFeedback ? (
         <Feedback userid={user.id} onexit={() => setShowFeedback(false)} />
       ) : null}
@@ -209,7 +252,6 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
         </View>
       </Modal>
 
-      <View style={{ height: 50 }}></View>
 
       <View
         style={{
@@ -293,7 +335,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
 
         <Button
           fontColor={"white"}
-          onPress={() => setShowLevels(true)}
+          onPress={() =>{ setShowLevels(true); console.log(show)}}
           borderradius={100}
           color={"#1E1E1E"}
           title={" Levelübersicht"}
@@ -353,7 +395,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
       </View>
     </Animated.View>
   );
-};
+}
 
 export default Account;
 
@@ -364,6 +406,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: "#171717",
     alignSelf: "center",
+    marginTop: 50
   },
   username: {
     color: "white",

@@ -74,8 +74,6 @@ const Donation = ( { onexit } ) => {
     return (
         <Animated.View style={[{transform: [{translateX: fadeAnim}], opacity: opacityAnim, height: "100%"},styles.container]}>
 
-            <View style={{height: 50}} />
-
             <View style={{flexDirection: "row", alignContent: "center", alignItems: "center"}}>
                 <View style={{marginLeft: 20}}>
                     <BackButton onPress={() => hide()}/>
@@ -106,7 +104,9 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         flex: 1,
         position: "absolute",
-        zIndex: 21
+        zIndex: 21,
+        borderTopRightRadius: 25,
+        borderTopLeftRadius: 25
     },
     text: {
         alignSelf: "center",

@@ -21,14 +21,13 @@ const FriendListItem = ({ userid, onPress }) => {
   const animate = () => {
     Animated.timing(opacityAnim, {
       toValue: 1,
-      duration: 600,
+      duration: 400,
       useNativeDriver: true,
-      /* easing: Easing.bezier(0,1.02,.21,.97), */
     }).start();
 
     Animated.timing(slide1Anim, {
       toValue: 0,
-      duration: 550,
+      duration: 250,
       useNativeDriver: true,
       easing: Easing.bezier(0, 1.02, 0.21, 0.97),
     }).start();
@@ -95,7 +94,7 @@ const FriendListItem = ({ userid, onPress }) => {
   return (
     <>
       {!isLoading ? (
-        <Animated.View style={[{ opacity: 1 }, styles.container]}>
+        <Animated.View style={[{ opacity: opacityAnim }, styles.container]}>
           <TouchableNativeFeedback
             background={TouchableNativeFeedback.Ripple(
               "rgba(255,255,255,0.05)",
@@ -107,7 +106,7 @@ const FriendListItem = ({ userid, onPress }) => {
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <View style={{ width: 20 }}></View>
                 <Animated.View
-                  style={{ transform: [{ translateX: 0 }], zIndex: 2 }}
+                  style={{ transform: [{ translateX: slide1Anim }], zIndex: 2 }}
                 >
                   <ProfileImage x={45} type={1} url={user.photoUrl} />
                 </Animated.View>
@@ -115,7 +114,7 @@ const FriendListItem = ({ userid, onPress }) => {
                 <Animated.View
                   style={{
                     flexDirection: "column",
-                    transform: [{ translateX: 0 }],
+                    transform: [{ translateX: slide2Anim }],
                     zIndex: 1,
                   }}
                 >
