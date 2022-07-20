@@ -41,7 +41,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
       }).start()
     : Animated.timing(buttonFill, {
         toValue: 0,
-        duration: 50,
+        duration: 200,
         useNativeDriver: true,
       }).start();
 
@@ -87,8 +87,34 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
       : levels[indicator].colors;
   };
 
+  const grow = () => {
+    Animated.timing(
+      scaleAnim,
+      {
+        toValue: 1.05,
+        duration: 200,
+        useNativeDriver: true,
+      }
+    ).start();
+  }
+
+  const shrink = () => {
+    Animated.timing(
+      scaleAnim,
+      {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }
+    ).start();
+  }
+
   return (
     <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+
+      <Animated.View style={[styles.progress,{transform: [{scaleY: buttonFill}]}]}>
+      </Animated.View>
+
       <LinearGradient
         colors={getGradientColors(counter)}
         style={{
@@ -103,6 +129,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
           /* opacity: fadeAnim, */
         }}
       >
+        
         <View
           style={{
             borderWidth: 5,
@@ -112,6 +139,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
             borderRadius: 30,
           }}
         >
+
           {/* <Animated.View
       id="joint_container"
       style={{
@@ -153,14 +181,14 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
           <Statusbar status={calcLevelStatus(counter)}></Statusbar>
           <Text style={styles.level_label}>{calcLevelName(counter)}</Text>
           <Pressable
-            onPressIn={() => setButtonPressed(true)}
-            onPressOut={() => setButtonPressed(false)}
+            onPressIn={() => {setButtonPressed(true); grow();}}
+            onPressOut={() => {setButtonPressed(false); shrink();}}
             onLongPress={() => {
               toggleCounter(type.toLowerCase());
               setButtonPressed(false);
             }}
             style={({ pressed }) => [
-              { backgroundColor: pressed ? "#2b2b2b" : "#383838" },
+              { backgroundColor: pressed ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,1)" },
               styles.add_pressable,
             ]}
           >
@@ -260,4 +288,13 @@ const styles = StyleSheet.create({
     fontSize: 30,
     zIndex: 10,
   },
+  progress: {
+    backgroundColor: "#0080FF",
+    height: "100%",
+    width: "100%",
+    position: "absolute",
+    borderRadius: 30,
+    width: "83%",
+    alignSelf: "center"
+  }
 });

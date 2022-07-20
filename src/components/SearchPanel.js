@@ -15,6 +15,8 @@ const SearchPanel = ({user, onExit}) => {
     const screen_height = Dimensions.get("screen").height;
     const slideAnim = useRef(new Animated.Value(screen_height)).current;
 
+    const textInputRef = useRef(null);;
+
     const [modalVisible, setModalVisible] = useState(false);
     const [activeRequested, setActiveRequested] = useState(null);
     const [alreadySent, setAlreadySent] = useState(false);
@@ -34,18 +36,17 @@ const SearchPanel = ({user, onExit}) => {
     const hide = () => {
         Animated.timing(slideAnim,{
             toValue: screen_height,
-            duration: 1200,
+            duration: 300,
             useNativeDriver: true,
-            easing: Easing.bezier(0,1.02,.21,.97)
         }).start(({finished}) => {
             if (finished) {
                 onExit();
             }
         });
+        textInputRef.current.blur();
     }
 
     useBackHandler(() => {
-        console.log("test");
         hide();
         return true
     })
@@ -126,7 +127,7 @@ const SearchPanel = ({user, onExit}) => {
             <View style={{height: 50}}></View>
 
         <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
@@ -174,7 +175,7 @@ const SearchPanel = ({user, onExit}) => {
                     <BackButton onPress={() => hide()}/>
                 </View>
                 <View style={{flex: 4}}>
-                    <TextInput autoFocus={true} style={styles.input} onChangeText={(text) => {searchUsers(text)}}></TextInput>
+                    <TextInput ref={textInputRef} blurOnSubmit={true} autoFocus={true} style={styles.input} onChangeText={(text) => {searchUsers(text)}}></TextInput>
                 </View>
             </View>
             

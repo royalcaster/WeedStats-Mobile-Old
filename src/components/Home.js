@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Animated,
   StyleSheet,
@@ -22,6 +22,8 @@ export default function Home({ user, handleLogOut, toggleCounter }) {
 
   const [view, setView] = useState("main");
 
+  const navSlide = useRef(new Animated.Value(0)).current;
+
   const [loaded] = useFonts({
     PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
     PoppinsMedium: require("./fonts/Poppins-Medium.ttf"),
@@ -30,6 +32,24 @@ export default function Home({ user, handleLogOut, toggleCounter }) {
 
   if (!loaded) {
     return null;
+  }
+
+  const toggleNavbar = (x) => {
+    x == 1 ? 
+    Animated.timing(
+      navSlide,{
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }
+    ).start()
+    : Animated.timing(
+      navSlide,{
+        toValue: 100,
+        duration: 200,
+        useNativeDriver: true,
+      }
+    ).start();
   }
 
   return (
@@ -42,11 +62,11 @@ export default function Home({ user, handleLogOut, toggleCounter }) {
         {view == "map" ? <Map user={user} /> : null}
         {view == "config" ? <Config /> : null}
         {view == "groups" ? (
-          <Groups user={user} handleLogOut={handleLogOut} />
+          <Groups user={user} handleLogOut={handleLogOut} toggleNavbar={toggleNavbar}/>
         ) : null}
       </View>
 
-      <View style={styles.footer_container}>
+      <Animated.View style={[styles.footer_container,{transform:[{translateY: navSlide}]}]}>
         <View style={styles.options_container}>
           <View style={{ flexDirection: "row", width: "100%" }}>
             <MenuButton
@@ -126,7 +146,7 @@ export default function Home({ user, handleLogOut, toggleCounter }) {
             />
           </View>
         </View>
-      </View>
+      </Animated.View>
     </Animated.View>
   );
 }

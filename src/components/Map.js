@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState, useRef } from "react";
 import { useFonts } from "expo-font";
 import {
   StyleSheet,
@@ -10,6 +10,10 @@ import {
   TouchableOpacity,
   TouchableNativeFeedback,
 } from "react-native";
+
+import IconButton from "./IconButton";
+
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 import Empty from "./Empty";
 
@@ -53,28 +57,29 @@ const Map = ({ user }) => {
 
   const carouselRef = React.useRef(null);
 
-  const initRegion = {
+  const [mapType, setMapType] = useState("standard");
+
+  const [region, setRegion] = useState(null);
+
+  const [loading, setLoading] = useState(true);
+
+  const [markers, setMarkers] = useState([]);
+
+  /* const initRegion = {
     latitude: 50.612610476359684,
     longitude: 12.626925924754111,
     latitudeDelta: 0.25,
     longitudeDelta: 0.25,
-  };
-
-  const [loading, setLoading] = useState(true);
-  const [markers, setMarkers] = useState([]);
-
-  const [region, setRegion] = useState(initRegion);
+  }; */
 
   useEffect(() => {
     loadData(); //Freunde + deren letzte Einträge
     getLocalData(); //Einträge des Users für Heatmap
-    setRegion({
-      latitude: region.latitude,
-      longitude: region.longitude,
-      latitudeDelta: 0.25,
-      longitudeDelta: 0.25,
-    });
   }, []);
+
+  /* useEffect(() => {
+    console.log(markers.length);
+  },[markers]); */
 
   const loadData = async () => {
     try {
@@ -104,6 +109,12 @@ const Map = ({ user }) => {
             photoUrl: friendSnap.data().photoUrl,
             username: friendSnap.data().username,
           });
+          buffer.length == 1 ? setRegion({
+            latitude: friendSnap.data().last_entry_latitude,
+            longitude: friendSnap.data().last_entry_longitude,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          }) : null;
         }
       });
       setMarkers(buffer);
@@ -112,6 +123,10 @@ const Map = ({ user }) => {
       console.log("Load Data Error:", e);
     }
   };
+
+  const toggleMapType = () => {
+    mapType == "standard" ? setMapType("hybrid") : setMapType("standard");
+  }
 
   const chopTimeStamp = (timestamp) => {
     var a = new Date(timestamp);
@@ -129,6 +144,8 @@ const Map = ({ user }) => {
     return keys.filter((key) => key.includes(user.id + "_entry_"));
   };
 
+  const switch_icon = <AntDesign name={"picture"} style={{fontSize: 20, color: "white"}}/>
+
   const getLocalData = async () => {
     try {
       const jsonData = await AsyncStorage.multiGet(await getRelevantKeys());
@@ -137,12 +154,9 @@ const Map = ({ user }) => {
           return a.number - b.number;
         }); */
       setLocalDataLoaded(true);
-      console.debug(localData.length);
     } catch (e) {
       console.log("Error:", e);
     }
-
-    console.debug(localData);
   };
 
   const filterNull = (array) => {
@@ -331,12 +345,13 @@ const Map = ({ user }) => {
         </LinearGradient>
 
         {!loading && localDataLoaded ? (
+          <>
           <MapView
             provider={PROVIDER_GOOGLE}
-            initialRegion={initRegion}
             style={[{ height: windowHeight }, styles.map]}
             customMapStyle={mapStyle}
             showsUserLocation={true}
+            mapType={mapType}
             followsUserLocation={true}
             region={region}
             onRegionChangeComplete={(region) => setRegion(region)}
@@ -357,7 +372,8 @@ const Map = ({ user }) => {
                   };
                 })}
                 radius={40}
-              /> }</>: null}
+              /> } 
+              </>: null}
 
             {view == "friends" ? (
               <>
@@ -382,6 +398,10 @@ const Map = ({ user }) => {
               </>
             ) : null}
           </MapView>
+          <View style={{alignSelf: "center", bottom: 200, right: 20, position: "absolute"}}>
+            <IconButton icon={switch_icon} onPress={toggleMapType}/>
+          </View>
+          </>
         ) : null}
 
         {view == "friends" ? (

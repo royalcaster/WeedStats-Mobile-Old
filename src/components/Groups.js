@@ -28,7 +28,7 @@ import Empty from "./Empty";
 import CustomLoader from "./CustomLoader";
 import FriendList from "./FriendList";
 
-const Groups = ({ user, friendList, handleLogOut }) => {
+const Groups = ({ user, friendList, handleLogOut, toggleNavbar }) => {
   
   const [rippleColor, setRippleColor] = useState("rgba(255,255,255,0.1)");
   const [rippleOverflow, setRippleOverflow] = useState(false);
@@ -97,7 +97,9 @@ const Groups = ({ user, friendList, handleLogOut }) => {
         userid={activeFriend} 
         onExit={() => {setShowFriend(false); setActiveFriend(null);}} 
         realuser={user} 
-        refresh={() => {getFriendList(); setActiveFriend(null); setShowFriend(false);}}/>
+        refresh={() => {getFriendList(); setActiveFriend(null); setShowFriend(false);}}
+        toggleNavbar={toggleNavbar}
+        />
 
       <Account
         user={user}

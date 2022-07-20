@@ -50,10 +50,6 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
   });
 
-  useEffect(() => {
-    console.log("Account useEffect");
-  },[]);
-
   const slide = () => {
     Animated.timing(opacityAnim, {
       toValue: 1,
@@ -78,13 +74,12 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
         setShowLevels(false);
         setShowDonation(false);
         setShowFeedback(false);
-        console.log("test");
       }
     });
     Animated.timing(pan, {
       toValue: screen_height,
-      duration: 1500,
-      easing: Easing.bezier(0.2, 1, 0.21, 0.97),
+      duration: 200,
+      /* easing: Easing.bezier(0.2, 1, 0.21, 0.97), */
       useNativeDriver: true,
     }).start(({ finished }) => {
       if (finished) {
@@ -95,7 +90,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
 
   show ? slide() : hide();
 
-/*   useBackHandler(() => {
+  /* useBackHandler(() => {
     onexit();
     hide();
     return true;
@@ -118,6 +113,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
     }
   };
 
+  
   // Diese Funktion darf nach Bedarf mit neuer Funktionalität gefüllt werden und dient z.B. dazu, veraltete Einträge im AsyncStorage zu entfernen.
   // In der finalen Version der App fliegt diese Funktion natürlich raus.
   const doWhatever = async () => {
@@ -139,7 +135,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
       if (gesture.dy > 0 ) {pan.setValue(gesture.dy); opacityAnim.setValue(1 - (gesture.dy / 700))}
     },
     onPanResponderRelease: (event, gesture) =>  {
-      if (gesture.dy > screen_height/ 10 || gesture.vy > 1) {onexit();hide()} else{slide();}
+      if (gesture.dy > screen_height/ 10 || gesture.vy > 1) {hide()} else{slide();}
     }
  });
 
@@ -261,7 +257,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
           backgroundColor: "#0F0F0F",
         }}
       >
-        <View style={{ width: "100%", height: 60, justifyContent: "center" }}>
+        <View style={{ width: "100%", justifyContent: "center", flex: 1}}>
           <View style={{ marginLeft: 5, position: "absolute" }}>
             <View style={{ transform: [{ rotate: "-90deg" }] }}>
               <BackButton
@@ -322,16 +318,18 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
             MITGLED SEIT: {user.member_since}
           </Text>
         </View>
-        <Button
+        {/* <Button
           fontColor={"white"}
           onPress={doWhatever}
           borderradius={100}
           color={"#1E1E1E"}
           title={"Bugfix!"}
           icon={<FontAwesome name="gears" style={styles.money_icon} />}
-        />
+        /> */}
 
         <View style={{ height: 15 }}></View>
+
+        <View style={{flex: 4}}>
 
         <Button
           fontColor={"white"}
@@ -341,17 +339,18 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
           title={" Levelübersicht"}
           icon={<FontAwesome name="trophy" style={styles.money_icon} />}
         />
-
+        
+        {/*
         <View style={{ height: 15 }}></View>
 
-        <Button
+         <Button
           onPress={() => setShowFeedback(true)}
           title={" Feedback senden"}
           icon={<FontAwesome name="gears" style={styles.money_icon} />}
           borderradius={100}
           color={"#1E1E1E"}
           fontColor={"white"}
-        />
+        /> */}
 
         <View style={{ height: 15 }}></View>
 
@@ -392,6 +391,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
         </View>
 
         <View style={{ height: 10 }}></View>
+        </View>
       </View>
     </Animated.View>
   );

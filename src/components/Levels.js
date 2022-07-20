@@ -23,12 +23,6 @@ const Levels = ({ onexit, show }) => {
   const screen_width = Dimensions.get("window").width;
   const fadeAnim = useRef(new Animated.Value(screen_width)).current;
 
-
-  /* useBackHandler(() => {
-    hide();
-    return true
-  }) */
-
   const slide = () => {
     Animated.timing(fadeAnim, {
       toValue: 0,
@@ -41,8 +35,8 @@ const Levels = ({ onexit, show }) => {
   const hide = () => {
     Animated.timing(fadeAnim, {
       toValue: screen_width,
-      duration: 300,
-      easing: Easing.bezier(0,.79,0,.99),
+      duration: 300,/* 
+      easing: Easing.bezier(0,.79,0,.99), */
       useNativeDriver: true,
     }).start(({ finished }) => {
       if (finished) {

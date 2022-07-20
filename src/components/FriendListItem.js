@@ -11,8 +11,10 @@ import { db, firestore } from "./FirebaseConfig";
 
 const FriendListItem = ({ userid, onPress }) => {
   const opacityAnim = useRef(new Animated.Value(0)).current;
-  const slide1Anim = useRef(new Animated.Value(-500)).current;
-  const slide2Anim = useRef(new Animated.Value(-500)).current;
+  const slide1Anim = useRef(new Animated.Value(-200)).current;
+  const slide2Anim = useRef(new Animated.Value(-200)).current;
+
+  const scale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     loadUser();
@@ -21,7 +23,7 @@ const FriendListItem = ({ userid, onPress }) => {
   const animate = () => {
     Animated.timing(opacityAnim, {
       toValue: 1,
-      duration: 400,
+      duration: 200,
       useNativeDriver: true,
     }).start();
 
@@ -84,6 +86,28 @@ const FriendListItem = ({ userid, onPress }) => {
     return counters[0].type + "-" + calcLevelName(counters[0].counter);
   };
 
+  const hover = () => {
+    Animated.timing(
+      scale, {
+        toValue: 0.95,
+        duration: 50,
+        useNativeDriver: true,
+      }
+    ).start(({finished})=> {
+      finished ? dehover() : null;
+    });
+  }
+
+  const dehover = () => {
+    Animated.timing(
+      scale, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }
+    ).start();
+  }
+
   const calcLevelName = (counter) => {
     let indicator = Math.floor(counter / 70);
     return indicator > levels.length - 1
@@ -94,14 +118,7 @@ const FriendListItem = ({ userid, onPress }) => {
   return (
     <>
       {!isLoading ? (
-        <Animated.View style={[{ opacity: opacityAnim }, styles.container]}>
-          <TouchableNativeFeedback
-            background={TouchableNativeFeedback.Ripple(
-              "rgba(255,255,255,0.05)",
-              false
-            )}
-            onPress={onPress}
-          >
+        <Animated.View style={[{ opacity: opacityAnim, transform: [{scale: scale}]}, styles.container]} onTouchEnd={() => {hover(); onPress()}}>
             <View style={styles.touchable}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <View style={{ width: 20 }}></View>
@@ -143,7 +160,6 @@ const FriendListItem = ({ userid, onPress }) => {
                 </Animated.View>
               </View>
             </View>
-          </TouchableNativeFeedback>
         </Animated.View>
       ) : null}
     </>

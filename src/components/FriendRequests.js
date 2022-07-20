@@ -70,9 +70,8 @@ const FriendResquests = ({ user, onExit, refresh }) => {
   const hide = () => {
     Animated.timing(slideAnim, {
       toValue: screen_height,
-      duration: 600,
+      duration: 300,
       useNativeDriver: true,
-      easing: Easing.bezier(0, 1.02, 0.21, 0.97),
     }).start(({ finished }) => {
       if (finished) {
         onExit();
@@ -177,7 +176,7 @@ const FriendResquests = ({ user, onExit, refresh }) => {
       <View style={{ height: 50 }}></View>
 
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {

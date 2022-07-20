@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Pressable, Image, Text } from "react-native";
+import { StyleSheet, View, Pressable, Image, Text, TouchableNativeFeedback } from "react-native";
 import { useFonts } from "expo-font";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -19,20 +19,18 @@ const ConfigItem = ({ type, config, onToggle }) => {
   }
 
   return (
-    <Pressable
+      <TouchableNativeFeedback 
       onPress={() => {
         onToggle(type);
         setActive(!active);
       }}
-      style={{
-        flex: 1
-      }}
-    >
+      background={TouchableNativeFeedback.Ripple(
+        "rgba(255,255,255,0.1)",
+        true
+      )}>
+        
       <View style={active ? styles.container_active : styles.container}>
-        <MaterialIcons
-          name={active ? "check-box" : "check-box-outline-blank"}
-          style={active ? styles.checkbox_active : styles.checkbox}
-        ></MaterialIcons>
+      <View style={styles.touchable}>
         {type === "joint" ? (
           <>
             <Image
@@ -88,8 +86,9 @@ const ConfigItem = ({ type, config, onToggle }) => {
             </Text>
           </>
         ) : null}
+        </View>
       </View>
-    </Pressable>
+      </TouchableNativeFeedback>
   );
 };
 
@@ -104,6 +103,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     textAlign: "center",
     backgroundColor: "#171717",
+    flex: 1
   },
   container_active: {
     paddingTop: 10,
@@ -112,16 +112,17 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: "center",
     textAlign: "center",
-    backgroundColor: "#171717",
-
-    borderColor: "#0781E1",
-    borderWidth: 3,
+    backgroundColor: "#0781E1",
+    flex: 1
+  },
+  touchable: {
+    flex: 1,
   },
   bong_img: {
     height: 80,
     width: 45,
     alignSelf: "center",
-    opacity: 0.5,
+    opacity: 0.8,
   },
   bong_img_active: {
     height: 80,
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 30,
     alignSelf: "center",
-    opacity: 0.5,
+    opacity: 0.8,
   },
   joint_img_active: {
     height: 80,
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 45,
     alignSelf: "center",
-    opacity: 0.5,
+    opacity: 0.8,
   },
   vape_img_active: {
     height: 80,
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 45,
     alignSelf: "center",
-    opacity: 0.5,
+    opacity: 0.8,
   },
   pipe_img_active: {
     height: 80,
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 75,
     alignSelf: "center",
-    opacity: 0.5,
+    opacity: 0.8,
   },
   cookie_img_active: {
     height: 80,
@@ -178,7 +179,7 @@ const styles = StyleSheet.create({
     fontFamily: "PoppinsLight",
     marginTop: 10,
     marginBottom: 5,
-    opacity: 0.5,
+    opacity: 0.8,
     alignSelf: "center",
   },
   label_active: {

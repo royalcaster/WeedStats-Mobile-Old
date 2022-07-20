@@ -28,9 +28,10 @@ import { db, firestore } from "./FirebaseConfig";
 import BackButton from "./BackButton";
 import CustomLoader from "./CustomLoader";
 
-const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
+const FriendPage = ({ show, userid, onExit, realuser, refresh, toggleNavbar }) => {
     
   const screen_width = Dimensions.get("screen").width;
+  const screen_height = Dimensions.get("screen").height;
 
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
@@ -138,6 +139,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
       useNativeDriver: true,
       easing: Easing.bezier(0, 1.02, 0.21, 0.97),
     }).start();
+    toggleNavbar(0);
   };
 
   // Call back function when back button is pressed
@@ -166,6 +168,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
         onExit();
       }
     });
+    toggleNavbar(1);
   };
 
   show ? slide() : hide();
@@ -273,7 +276,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
         
         <Animated.View
         {...panResponder.panHandlers}
-          style={[styles.container, { transform: [{ translateX: pan }] }]}
+          style={[styles.container, { transform: [{ translateX: pan }], height: screen_height }]}
         >
           <Modal
             animationType="slide"
@@ -359,7 +362,8 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
               marginTop: 50,
               position: "relative",
               width: "100%",
-              justifyContent: "center"
+              justifyContent: "center",
+              flex:2
             }}
           >
             <View style={{position: "absolute", zIndex: 20, left: 15, top: 15}}>
@@ -373,53 +377,51 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
               </View>
 
               <View style={{justifyContent: "center"}}>
-                <Text style={styles.username}>{!loading ? user.username : " "}</Text>
-                <Text style={styles.member_since}>
-                  Mitglied seit: {user.member_since}
-                </Text>
+                <Animated.Text style={[styles.username,{opacity: opacityAnim}]}>{!loading ? user.username : " "}</Animated.Text>
+                <Animated.Text style={[styles.member_since,{opacity: opacityAnim}]}>
+                  {!loading ? (" Mitglied seit: " + user.member_since) : " "}
+                  
+                </Animated.Text>
               </View>
             </View>
             
           </View>    
 
- 
-          
-            <View
-              style={{
-                backgroundColor: "#171717",
-                position: "relative",
-                bottom: 0,
-              }}
-            >
 
               <View
                 style={{
                   width: "100%",
                   alignSelf: "center",
-                  backgroundColor: "#1E1E1E",
+                  position: "relative",
+                  flex: 3
                 }}
               >
-                <View style={{ height: 30 }}></View>
+                 <View style={{ height: 20 }}></View>
+                <Text style={styles.label}>COUNTER</Text>
+                <View style={{ height: 20 }}></View>
+                
                 {!loading ? <>
                 {user.main_counter ? (
-                  <Animated.View style={{height: 60, opacity: opacityAnim,transform: [{translateX: slideAnim2}]}}>
-                    {/* <Text style={styles.value}>{user.main_counter}</Text> */}
+                  <Animated.View style={{height: 50, opacity: opacityAnim,transform: [{translateX: slideAnim2}]}}>
+                    <Text style={styles.value}>{user.main_counter}</Text>
                   </Animated.View>
                 ) : (
-                  <Text style={[styles.label,{height: 60}]}>
-                    Dieser User teilt seinen Gesamt-Counter momentan nicht.
+                  <Text style={{height: 50, textAlign: "center", color: "#eb4034", fontFamily: "PoppinsLight", fontSize: 12}}>
+                    {"\n"}
+                    Dieser Nutzer teilt seinen Gesamt-Counter momentan nicht.
                   </Text>
                 )}
-                <Text style={[styles.label,{marginTop: 0}]}>GESAMT</Text>
-                </> : <View style={{height: 60, justifyContent: "center"}}>
+                <Text style={[styles.small_label,{marginTop: -0}]}>GESAMT</Text>
+                </> : <View style={{height: 50, justifyContent: "center"}}>
                 <CustomLoader x={40}/>
               </View>}
+              
                 <View style={{ height: 30 }}></View>
 
                 {!loading ? 
 
-                <Animated.View style={{width: "95%", flexDirection: "row", alignSelf: "center", height: 60}}>
-                    {/* <View style={{flex: 1}}>
+                <Animated.View style={{width: "95%", flexDirection: "row", alignSelf: "center", height: 40}}>
+                    <View style={{flex: 1}}>
                       <Animated.View style={{opacity: opacityAnim, transform: [{translateX: slideAnim2}]}}>
                         <Text style={styles.small_counter}>{user.joint_counter}</Text>
                       </Animated.View>
@@ -453,7 +455,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                       </Animated.View>
                         <Text style={styles.small_label}>EDIBLE</Text>
                         <Animated.Image style={[styles.small_image,{height: 65, width: 60, marginTop: 0, opacity: opacityAnim2}]} source={require('./img/cookie.png')}/>
-                    </View> */}
+                    </View>
                 </Animated.View>
                   : 
                 <View style={{height: 60, justifyContent: "center"}}>
@@ -464,8 +466,8 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
               </View>
 
 
-              <View style={{ width: "100%", alignSelf: "center", backgroundColor: "#0F0F0F"}}>
-                <View style={{ height: 30 }}></View>
+               <View style={{position: "relative", width: "100%", alignSelf: "center", backgroundColor: "#0F0F0F", flex: 2}}>
+                <View style={{ height: 20 }}></View>
                 <Text style={styles.label}>BESTLEISTUNG</Text>
                 <View style={{ height: 10 }}></View>
                 {!loading ? 
@@ -476,11 +478,11 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                 <View style={{height: 80, justifyContent: "center"}}>
                   <CustomLoader x={40}/>
                 </View>}
-                <View style={{ height: 35 }}></View>
+                <View style={{ height: 20 }}></View>
               </View>
 
-              <View style={{ width: "100%", alignSelf: "center" }}>
-                <View style={{ height: 30 }}></View>
+              <View style={{position: "relative", width: "100%", alignSelf: "center", flex: 2}}>
+                <View style={{ height: 20 }}></View>
                 <Text style={styles.label}>LETZTE AKTIVITÄT</Text>
                 <View style={{ height: 10 }}></View>
                 <View style={styles.activity_container}>
@@ -534,8 +536,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                 <View style={{ height: 20 }}></View>
               </View>
             
-
-              <View style={{ bottom: 0, position: "relative", width: "100%" }}>
+              <View style={{position: "relative", width: "100%", flex: 1}}>
                 <TouchableNativeFeedback
                   background={TouchableNativeFeedback.Ripple(
                     "rgba(255,255,255,0.05)",
@@ -548,7 +549,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh }) => {
                   </View>
                 </TouchableNativeFeedback>
               </View>
-            </View>
+
         </Animated.View>
         
       ) : null}
@@ -560,11 +561,11 @@ export default FriendPage;
 
 const styles = StyleSheet.create({
   container: {
-    height: "100%",
     width: "100%",
     backgroundColor: "#171717",
     zIndex: 5,
     position: "absolute",
+    flexDirection: "column"
   },
   image: {
     width: "100%",
@@ -702,6 +703,6 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,1)",
     fontFamily: "PoppinsLight",
     fontSize: 12,
-    marginTop: -15
+    marginTop: -5
   }
 });
