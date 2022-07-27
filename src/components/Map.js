@@ -372,9 +372,7 @@ const Map = ({ user }) => {
             showsIndoors={false}
             pitchEnabled={true}
             showsMyLocationButton={false}
-            camera={Camera1}
             ref={camref}
-            onMapReady={() => camref.current.animateCamera(Camera2)}
             loadingBackgroundColor={"#131520"}
           >
             {view == "heatmap" ? 

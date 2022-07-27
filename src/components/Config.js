@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useEffect, useRef } from "react";
-import { View } from "react-native";
+import { Dimensions, View } from "react-native";
 import { useFonts } from "expo-font";
 import { LogBox } from "react-native";
 import {
@@ -17,6 +17,12 @@ import ConfigItem from "./ConfigItem";
 import Toggle from "react-native-toggle-element";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomLoader from "./CustomLoader";
+
+import {
+  responsiveHeight,
+  responsiveWidth,
+  responsiveFontSize
+} from "react-native-responsive-dimensions";
 
 const Config = () => {
   const [config, setConfig] = useState();
@@ -79,15 +85,19 @@ const Config = () => {
               justifyContent: "center",
               backgroundColor: "rgba(0,0,0,0.5)",
               flex: 1,
+              height: Dimensions.get("screen").height,
+              top: 0,
+              zIndex: 1000
             }}
           >
+            <View style={{flex:1, justifyContent: "flex-start"}}></View>
             <View
               style={{
                 width: "90%",
-                height: 300,
-                backgroundColor: "#171717",
+                backgroundColor: "#1E2132",
                 alignSelf: "center",
                 borderRadius: 25,
+                height: "50%"
               }}
             >
               <View style={{ flex: 1 }}>
@@ -99,15 +109,15 @@ const Config = () => {
                       textAlign: "center",
                       height: "100%",
                       textAlignVertical: "center",
-                      fontSize: 22,
+                      fontSize: responsiveFontSize(2.5),
                     },
                   ]}
                 >
                   Ist alles gut?
                 </Text>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={[styles.text, { fontSize: 15 }]}>
+              <View style={{ flex: 2 }}>
+                <Text style={[styles.text, { fontSize: responsiveFontSize(1.8) }]}>
                   Uns ist aufgefallen, dass du den Lightmode aktivieren
                   wolltest. Um dich und deine Mitmenschen zu schützen, lassen
                   wir ihn ausgeschaltet.
@@ -123,6 +133,7 @@ const Config = () => {
                 />
               </View>
             </View>
+            <View style={{flex:1, justifyContent: "flex-end"}}></View>
           </View>
         </Modal>
 
@@ -508,7 +519,10 @@ const Config = () => {
                 color={"#0080FF"}
                 title={"Speichern"}
               />
+              
             )}
+
+          <View style={{ height: 30 }}></View>
           </ScrollView>
         )}
       </Animated.View>
@@ -527,13 +541,13 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: "white",
-    fontSize: 20,
+    fontSize: responsiveFontSize(2.3),
     fontFamily: "PoppinsBlack",
     marginLeft: 20,
   },
   label: {
     color: "rgba(255,255,255,0.75)",
-    fontSize: 15,
+    fontSize: responsiveFontSize(1.6),
     fontFamily: "PoppinsLight",
     marginLeft: 20,
   },

@@ -3,6 +3,7 @@ import { StyleSheet, View, Pressable, Image, Text, TouchableNativeFeedback } fro
 import { useFonts } from "expo-font";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { responsiveFontSize } from "react-native-responsive-dimensions";
 
 const ConfigItem = ({ type, config, onToggle }) => {
   /* const [test, setType] = useState(configtype); */
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
   },
   label: {
     color: "white",
-    fontSize: 13,
+    fontSize: responsiveFontSize(1.5),
     fontFamily: "PoppinsLight",
     marginTop: 10,
     marginBottom: 5,
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
   },
   label_active: {
     color: "white",
-    fontSize: 13,
+    fontSize: responsiveFontSize(1.5),
     fontFamily: "PoppinsLight",
     marginTop: 10,
     marginBottom: 5,

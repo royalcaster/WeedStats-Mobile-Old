@@ -166,6 +166,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh, toggleNavbar }) =
     }).start(({ finished }) => {
       if (finished) {
         onExit();
+        setModalVisible(false);
       }
     });
     toggleNavbar(1);
@@ -279,11 +280,10 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh, toggleNavbar }) =
           style={[styles.container, { transform: [{ translateX: pan }], height: screen_height }]}
         >
           <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
-              Alert.alert("Modal has been closed.");
               setModalVisible(!modalVisible);
             }}
           >
@@ -641,7 +641,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   modal_container: {
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#1E2132",
     width: "90%",
     height: 300,
     alignSelf: "center",
@@ -671,7 +671,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   activity_container: {
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#131520",
     borderRadius: 25,
     flexDirection: "row",
     width: "70%",
