@@ -53,7 +53,7 @@ const Groups = ({ user, friendList, handleLogOut, toggleNavbar }) => {
 
   useEffect(() => {
     /* getFriendList(); */
-    console.log(showAccount)
+    /* console.log(showAccount) */
   },[showAccount]);
 
   React.useEffect(() => {
@@ -122,7 +122,7 @@ const Groups = ({ user, friendList, handleLogOut, toggleNavbar }) => {
               <View
                 style={[
                   styles.touchable,
-                  { height: 50, backgroundColor: "#171717", width: 50 },
+                  { height: 50, backgroundColor: "#1E2132", width: 50 },
                 ]}
               >
                 <Feather name="plus" style={styles.icon} />
@@ -140,7 +140,7 @@ const Groups = ({ user, friendList, handleLogOut, toggleNavbar }) => {
               <View
                 style={[
                   styles.touchable,
-                  { height: 50, backgroundColor: "#171717", width: 50 },
+                  { height: 50, backgroundColor: "#1E2132", width: 50 },
                 ]}
               >
                 <Feather name="user-check" style={styles.icon} />
@@ -164,7 +164,7 @@ const Groups = ({ user, friendList, handleLogOut, toggleNavbar }) => {
             height: 60,
             width: "95%",
             alignSelf: "center",
-            borderTopColor: "#0080FF"
+            borderTopColor: "#131520"
           }}
         >
           <TouchableNativeFeedback
@@ -218,7 +218,7 @@ export default Groups;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#171717",
+    backgroundColor: "#1E2132",
     height: "100%",
     width: "100%",
     zIndex: 0
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-    backgroundColor: "#0F0F0F"
+    backgroundColor: "#131520"
   },
   empty: {
         color: "rgba(255,255,255,0.5)",

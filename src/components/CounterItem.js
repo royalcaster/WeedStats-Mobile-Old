@@ -84,7 +84,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
     let indicator = Math.floor(counter / 70);
     return indicator > levels.length - 1
       ? levels[levels.length - 1].colors
-      : levels[indicator].colors;
+      : levels[0].colors;
   };
 
   const grow = () => {
@@ -112,21 +112,16 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
   return (
     <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
 
-      <Animated.View style={[styles.progress,{transform: [{scaleY: buttonFill}]}]}>
-      </Animated.View>
-
       <LinearGradient
         colors={getGradientColors(counter)}
         style={{
           width: "80%",
           alignSelf: "center",
-          /* backgroundColor: bg_color, */
           alignItems: "center",
-          borderRadius: 30,
+          borderRadius: 20,
           marginTop: 20,
           marginBottom: 20,
           maxWidth: 700,
-          /* opacity: fadeAnim, */
         }}
       >
         
@@ -188,7 +183,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
               setButtonPressed(false);
             }}
             style={({ pressed }) => [
-              { backgroundColor: pressed ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,1)" },
+              { backgroundColor: pressed ? "rgba(0,0,0,0.75)" : "#131520" },
               styles.add_pressable,
             ]}
           >

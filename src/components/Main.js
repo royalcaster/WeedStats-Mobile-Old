@@ -236,7 +236,7 @@ const Main = ({ user, toggleCounter }) => {
             >
               <Text
                 style={{
-                  color: "#919191",
+                  color: "#737EBF",
                   fontFamily: "PoppinsLight",
                   marginBottom: -10,
                   fontSize: 12,
@@ -248,7 +248,7 @@ const Main = ({ user, toggleCounter }) => {
                 style={{
                   fontFamily: "PoppinsBlack",
                   fontSize: 25,
-                  color: "#919191",
+                  color: "#737EBF",
                 }}
               >
                 {user.main_counter}
@@ -275,7 +275,7 @@ const Main = ({ user, toggleCounter }) => {
               <Text
                 style={{
                   textAlign: "right",
-                  color: "#919191",
+                  color: "#737EBF",
                   fontFamily: "PoppinsLight",
                   marginBottom: -10,
                   fontSize: 12,
@@ -288,7 +288,7 @@ const Main = ({ user, toggleCounter }) => {
                   textAlign: "right",
                   fontFamily: "PoppinsBlack",
                   fontSize: 25,
-                  color: "#919191",
+                  color: "#737EBF",
                 }}
               >
                 {countdown}
@@ -338,7 +338,7 @@ export default Main;
 const styles = StyleSheet.create({
   counters_container: {
     flex: 5,
-    backgroundColor: "#171717",
+    backgroundColor: "#1E2132",
     width: "100%",
     height: "100%",
   },

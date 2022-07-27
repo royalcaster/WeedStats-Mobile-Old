@@ -222,7 +222,7 @@ const Config = () => {
                   }}
                   trackBar={{
                     activeBackgroundColor: "#0080FF",
-                    inActiveBackgroundColor: "#171717",
+                    inActiveBackgroundColor: "#131520",
                     width: 50,
                     height: 25,
                   }}
@@ -266,7 +266,7 @@ const Config = () => {
                   }}
                   trackBar={{
                     activeBackgroundColor: "#0080FF",
-                    inActiveBackgroundColor: "#171717",
+                    inActiveBackgroundColor: "#131520",
                     width: 50,
                     height: 25,
                   }}
@@ -309,7 +309,7 @@ const Config = () => {
                   }}
                   trackBar={{
                     activeBackgroundColor: "#0080FF",
-                    inActiveBackgroundColor: "#171717",
+                    inActiveBackgroundColor: "#131520",
                     width: 50,
                     height: 25,
                   }}
@@ -349,7 +349,7 @@ const Config = () => {
                   }}
                   trackBar={{
                     activeBackgroundColor: "#0080FF",
-                    inActiveBackgroundColor: "#171717",
+                    inActiveBackgroundColor: "#131520",
                     width: 50,
                     height: 25,
                   }}
@@ -393,7 +393,7 @@ const Config = () => {
                   }}
                   trackBar={{
                     activeBackgroundColor: "#0080FF",
-                    inActiveBackgroundColor: "#171717",
+                    inActiveBackgroundColor: "#131520",
                     width: 50,
                     height: 25,
                   }}
@@ -432,7 +432,7 @@ const Config = () => {
                   onPress={(val) => setLightMode(val)}
                   trackBar={{
                     activeBackgroundColor: "#0080FF",
-                    inActiveBackgroundColor: "#171717",
+                    inActiveBackgroundColor: "#131520",
                     width: 50,
                     height: 25,
                   }}
@@ -475,7 +475,7 @@ const Config = () => {
                   }}
                   trackBar={{
                     activeBackgroundColor: "#0080FF",
-                    inActiveBackgroundColor: "#171717",
+                    inActiveBackgroundColor: "#131520",
                     width: 50,
                     height: 25,
                   }}
@@ -495,7 +495,7 @@ const Config = () => {
                 fontColor={"rgba(255,255,255,0.5)"}
                 onPress={() => {}}
                 borderradius={100}
-                color={"#4a4a4a"}
+                color={"#131520"}
                 title={"Gespeichert"}
               />
             ) : (
@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: "100%",
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#1E2132",
     justifyContent: "center",
   },
   heading: {

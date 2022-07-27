@@ -154,7 +154,7 @@ const Login = ({ handleLogin }) => {
 
 const styles = StyleSheet.create({
   login_container: {
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#1E2132",
     height: "100%",
   },
   login_heading: {

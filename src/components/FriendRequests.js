@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
   container: {
     height: "100%",
     width: "100%",
-    backgroundColor: "#171717",
+    backgroundColor: "#131520",
     zIndex: 10,
     position: "absolute",
   },

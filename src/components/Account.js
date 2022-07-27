@@ -12,6 +12,8 @@ import {
   PanResponder,
 } from "react-native";
 
+import { convertMemberSince } from "../DateConversion";
+
 import Feedback from "./Feedback";
 import Donation from "./Donation";
 import Levels from "./Levels";
@@ -65,9 +67,9 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
   };
 
   const hide = () => {
-    Animated.timing(opacityAnim, {
+    /* Animated.timing(opacityAnim, {
       toValue: 0,
-      duration: 200,
+      duration: 300,
       useNativeDriver: true,
     }).start(({ finished }) => {
       if (finished) {
@@ -75,15 +77,15 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
         setShowDonation(false);
         setShowFeedback(false);
       }
-    });
+    });  */
     Animated.timing(pan, {
       toValue: screen_height,
-      duration: 200,
-      /* easing: Easing.bezier(0.2, 1, 0.21, 0.97), */
+      duration: 300,
       useNativeDriver: true,
     }).start(({ finished }) => {
       if (finished) {
         onexit();
+        opacityAnim.setValue(0);
       }
     });
   };
@@ -164,14 +166,14 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "rgba(0,0,0,0.5)",
-            flex: 1,
+            flex: 1
           }}
         >
           <View
             style={{
               width: "90%",
               height: 300,
-              backgroundColor: "#171717",
+              backgroundColor: "#1E2132",
               alignSelf: "center",
               borderRadius: 25,
             }}
@@ -192,9 +194,9 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
                 Achtung
               </Text>
             </View>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.text, { fontSize: 15 }]}>
-                Das kann nicht rückgängig gemacht werden. Dieses Konto wirklich
+            <View style={{ flex: 1}}>
+              <Text style={[styles.text, { fontSize: 15, maxWidth: "80%"}]}>
+                Das kann nicht rückgängig gemacht werden. Willst du dieses WeedStats-Konto wirklich
                 löschen?
               </Text>
             </View>
@@ -254,7 +256,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
           flex: 1,
           borderTopLeftRadius: 25,
           borderTopRightRadius: 25,
-          backgroundColor: "#0F0F0F",
+          backgroundColor: "#131520",
         }}
       >
         <View style={{ width: "100%", justifyContent: "center", flex: 1}}>
@@ -284,7 +286,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
         <View
           style={{
             alignItems: "center",
-            flex: 2,
+            flex: 3,
             flexDirection: "row",
             width: "100%",
             alignSelf: "center",
@@ -315,7 +317,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
               letterSpacing: 2,
             }}
           >
-            MITGLED SEIT: {user.member_since}
+            MITGLED SEIT: <Text style={{color: "#0781E1"}}>{convertMemberSince(user.member_since)}</Text>
           </Text>
         </View>
         {/* <Button
@@ -329,13 +331,13 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
 
         <View style={{ height: 15 }}></View>
 
-        <View style={{flex: 4}}>
+        <View style={{flex: 5}}>
 
         <Button
           fontColor={"white"}
-          onPress={() =>{ setShowLevels(true); console.log(show)}}
+          onPress={() =>{ setShowLevels(true)}}
           borderradius={100}
-          color={"#1E1E1E"}
+          color={"#1E2132"}
           title={" Levelübersicht"}
           icon={<FontAwesome name="trophy" style={styles.money_icon} />}
         />
@@ -359,7 +361,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
           title={"WeedStats unterstützen"}
           icon={<MaterialIcons name="euro" style={styles.money_icon} />}
           borderradius={100}
-          color={"#1E1E1E"}
+          color={"#1E2132"}
           fontColor={"white"}
         />
 
@@ -404,7 +406,7 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 1,
     position: "absolute",
-    backgroundColor: "#171717",
+    backgroundColor: "#1E2132",
     alignSelf: "center",
     marginTop: 50
   },

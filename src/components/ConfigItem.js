@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: "center",
     textAlign: "center",
-    backgroundColor: "#171717",
+    backgroundColor: "#131520",
     flex: 1
   },
   container_active: {

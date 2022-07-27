@@ -1,30 +1,30 @@
 [
   {
     "name":"Nappo",
-    "colors":["#50d036", "#2f831e"]
+    "colors":["#00DB4D", "#008F32"]
   },
   {
     "name":"Beginner",
-    "colors":["#c5680f", "#673608"]
+    "colors":["#FF792B", "#B3551E"]
   },
   {
     "name":"Amateur",
-    "colors":["#f8b127", "#b47805"]
+    "colors":["#FFBB24", "#B38219"]
   },
   {
     "name":"Fortgeschrittener",
-    "colors":["#279cf8", "#0567b4"]
+    "colors":["#409FFF", "#2D70B3"]
   },
   {
     "name":"Smurf",
-    "colors":["#6236d0", "#3b1e83"]
+    "colors":["#9114FF", "#660EB3"]
   },
   {
     "name":"Experte",
-    "colors":["#dc27f8", "#9c05b4"]
+    "colors":["#F2338C", "#B32567"]
   },
   {
     "name":"Legende",
-    "colors":["#f02e2e", "#ad0c0c"]
+    "colors":["#FC2044", "#B31731"]
   }
 ]

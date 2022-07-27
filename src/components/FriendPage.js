@@ -466,7 +466,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh, toggleNavbar }) =
               </View>
 
 
-               <View style={{position: "relative", width: "100%", alignSelf: "center", backgroundColor: "#0F0F0F", flex: 2}}>
+               <View style={{position: "relative", width: "100%", alignSelf: "center", backgroundColor: "#131520", flex: 2}}>
                 <View style={{ height: 20 }}></View>
                 <Text style={styles.label}>BESTLEISTUNG</Text>
                 <View style={{ height: 10 }}></View>
@@ -562,7 +562,7 @@ export default FriendPage;
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    backgroundColor: "#171717",
+    backgroundColor: "#1E2132",
     zIndex: 5,
     position: "absolute",
     flexDirection: "column"

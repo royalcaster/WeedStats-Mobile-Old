@@ -8,6 +8,7 @@ import {
   View,
   Modal,
   Vibration,
+  Dimensions,
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { LogBox } from "react-native";
@@ -45,7 +46,7 @@ export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
   const [writeComplete, setWriteComplete] = useState(false);
   const [sayingNr, setSayingNr] = useState(0);
-
+  const screen_height = Dimensions.get('screen').height;
   const [showSplash, setShowSplash] = useState(true);
 
   //Sucht im AsyncStorage nach dem letzten User der sich eingeloggt hat und loggt sich bei Erfolg automatisch ein
@@ -490,18 +491,20 @@ export default function App() {
               justifyContent: "center",
               backgroundColor: "rgba(0,0,0,0.5)",
               flex: 1,
+              height: screen_height
             }}
           >
-            {writeComplete ? (
-              <View
+            <View
                 style={{
                   width: "90%",
                   height: 300,
-                  backgroundColor: "#171717",
+                  backgroundColor: "#1E2132",
                   alignSelf: "center",
                   borderRadius: 25,
                 }}
               >
+            {writeComplete ? (
+              <>
                 <View style={{ flex: 1 }}>
                   <Text
                     style={[
@@ -542,12 +545,13 @@ export default function App() {
                       setWriteComplete(false);
                     }}
                   />
-                </View>
-              </View>
-            ) : (
+                </View></>
               
-              <CustomLoader x={100}/>
+            ) : (
+              <View style={{height: "100%", width: "100%", justifyContent: "center"}}>
+              <CustomLoader x={100}/></View>
             )}
+            </View>
           </View>
         </Modal>
 
@@ -572,7 +576,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#1E2132",
   },
   centeredView: {
     flex: 1,

@@ -722,8 +722,8 @@ const StatsDashboard = ({ user, localData }) => {
                   {streakData.longestStreak} Tage
                 </Text>
                 <Text style={[styles.card_value2]}>
-                  ({toGermanDate(streakData.rangeLongest.start)} -
-                  {toGermanDate(streakData.rangeLongest.end)})
+                  {<>{toGermanDate(streakData.rangeLongest.start)} -
+                  {toGermanDate(streakData.rangeLongest.end)}</>}
                 </Text>
               </Animated.View>
 
@@ -753,8 +753,8 @@ const StatsDashboard = ({ user, localData }) => {
                   {streakData.longestBreak} Tage
                 </Text>
                 <Text style={[styles.card_value2]}>
-                  ({toGermanDate(streakData.rangeLongestBreak.start)} -
-                  {toGermanDate(streakData.rangeLongestBreak.end)})
+                  {streakData.rangeLongestBreak != null ? <>{toGermanDate(streakData.rangeLongestBreak.start)} -
+                  {toGermanDate(streakData.rangeLongestBreak.end)}</> : null}
                 </Text>
               </Animated.View>
             </>

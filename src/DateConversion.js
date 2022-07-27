@@ -12,6 +12,13 @@ const toGermanDate = (date) => {
   );
 };
 
+export const convertMemberSince = (datestring) => {
+  if (!datestring) {
+    return null;
+  }
+  return datestring.substring(8,10) + "." + datestring.substring(5,7) + "." + datestring.substring(0,4); 
+};
+
 const addZero = (i) => {
   if (i < 10) {
     i = "0" + i;

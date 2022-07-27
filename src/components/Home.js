@@ -79,7 +79,7 @@ export default function Home({ user, handleLogOut, toggleCounter }) {
                 <Entypo
                   name="area-graph"
                   style={[
-                    { color: view == "stats" ? "#e0e0e0" : "#4a4a4a" },
+                    { color: view == "stats" ? "#e0e0e0" : "#484F78" },
                     styles.settings_icon,
                   ]}
                 />
@@ -95,7 +95,7 @@ export default function Home({ user, handleLogOut, toggleCounter }) {
                 <FontAwesome
                   name="map-marker"
                   style={[
-                    { color: view == "map" ? "#e0e0e0" : "#4a4a4a" },
+                    { color: view == "map" ? "#e0e0e0" : "#484F78" },
                     styles.settings_icon,
                   ]}
                 />
@@ -122,7 +122,7 @@ export default function Home({ user, handleLogOut, toggleCounter }) {
                 <FontAwesome
                   name="sliders"
                   style={[
-                    { color: view == "config" ? "#e0e0e0" : "#4a4a4a" },
+                    { color: view == "config" ? "#e0e0e0" : "#484F78" },
                     styles.settings_icon,
                   ]}
                 />
@@ -138,7 +138,7 @@ export default function Home({ user, handleLogOut, toggleCounter }) {
                 <FontAwesome
                   name="user"
                   style={[
-                    { color: view == "groups" ? "#e0e0e0" : "#4a4a4a" },
+                    { color: view == "groups" ? "#e0e0e0" : "#484F78" },
                     styles.settings_icon,
                   ]}
                 />
@@ -154,7 +154,7 @@ export default function Home({ user, handleLogOut, toggleCounter }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#171717",
+    backgroundColor: "#1E2132",
     alignItems: "center",
   },
   content_container: {
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     flexDirection: "column",
     height: "100%",
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#1E2132",
   },
   options_pressable: {
     flex: 1,

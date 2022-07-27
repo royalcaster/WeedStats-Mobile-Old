@@ -64,14 +64,14 @@ export default Splash
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#1E1E1E",
+        backgroundColor: "#1E2132",
         height: "100%",
         width: "100%",
         justifyContent: "center",
         alignItems: "center"
     },
     image: {
-        height: 300,
-        width: 300
+        height: 150,
+        width: 150
     }
 });

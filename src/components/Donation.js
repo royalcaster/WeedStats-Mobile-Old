@@ -62,7 +62,6 @@ const Donation = ( { onexit } ) => {
         Animated.timing(fadeAnim, {
             toValue: screen_width,
             duration: 300,
-            easing: Easing.bezier(0,.79,0,.99),
             useNativeDriver: true,
         }).start(({finished}) => {
             if (finished) {
@@ -74,11 +73,13 @@ const Donation = ( { onexit } ) => {
     return (
         <Animated.View style={[{transform: [{translateX: fadeAnim}], opacity: opacityAnim, height: "100%"},styles.container]}>
 
-            <View style={{flexDirection: "row", alignContent: "center", alignItems: "center"}}>
-                <View style={{marginLeft: 20}}>
+            <View style={{flexDirection: "row", justifyContent: "center", maxHeight: 60}}>
+                <View style={{marginLeft: 20, flex: 1, justifyContent: "center"}}>
                     <BackButton onPress={() => hide()}/>
                 </View>
-                <Text style={styles.heading}>WeedStats unterstützen</Text>
+                <View style={{flex: 5, justifyContent: "center"}}>
+                    <Text style={styles.heading}>WeedStats unterstützen</Text>
+                </View>
             </View>
 
                 <View style={{height: 80}} />
@@ -100,7 +101,7 @@ export default Donation
 const styles = StyleSheet.create({
     container: {
         width: "100%",
-        backgroundColor: "#1E1E1E",
+        backgroundColor: "#131520",
         flexDirection: "column",
         flex: 1,
         position: "absolute",
@@ -165,7 +166,6 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 20,
         fontFamily: "PoppinsBlack",
-        marginLeft: 20,
-        textAlign: "left"
+        marginLeft: 20
       },
 });

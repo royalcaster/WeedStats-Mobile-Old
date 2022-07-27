@@ -24,7 +24,7 @@ export default IconButton
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#171717",
+        backgroundColor: "#1E2132",
         borderRadius: 100,
         height: 60,
         width: 60

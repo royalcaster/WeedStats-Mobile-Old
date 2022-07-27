@@ -168,13 +168,13 @@ const SearchPanel = ({user, onExit}) => {
         </Modal>
 
                 
-            <Text style={styles.heading}>Finde neue Freunde</Text>
+            <Text style={styles.heading}>Suchen</Text>
             <View style={{height: 10}}></View>
             <View style={{width: "100%", flexDirection: "row", maxHeight: 60, flex: 1}} >
                 <View style={{flex: 1, alignItems: "center"}}>
                     <BackButton onPress={() => hide()}/>
                 </View>
-                <View style={{flex: 4}}>
+                <View style={{flex: 4, justifyContent: "center"}}>
                     <TextInput ref={textInputRef} blurOnSubmit={true} autoFocus={true} style={styles.input} onChangeText={(text) => {searchUsers(text)}}></TextInput>
                 </View>
             </View>
@@ -183,7 +183,7 @@ const SearchPanel = ({user, onExit}) => {
 
             {!results || results.length == 0 ? 
             <View style={{width: "100%", marginTop: 100}}>
-                <Text style={{fontFamily: "PoppinsBlack", fontSize: 15, color: "rgba(255,255,255,0.25)", alignSelf: "center"}}>Keine Suchergebnisse</Text>
+                <Text style={{fontFamily: "PoppinsBlack", fontSize: 15, color: "rgba(255,255,255,0.5)", alignSelf: "center"}}>Keine Suchergebnisse</Text>
             </View> : <>
             {loading ? <ActivityIndicator color={"#0080FF"} size={"large"} style={{marginTop: 50}}/> : (
                 results.map((result) => {
@@ -205,16 +205,16 @@ const styles = StyleSheet.create({
     container: {
         height: "100%",
         width: "100%",
-        backgroundColor: "#171717",
+        backgroundColor: "#131520",
         zIndex: 10,
         position: "absolute",
     },
     input: {
-        backgroundColor: "rgba(0,0,0,0.3)",
+        backgroundColor: "#1E2132",
         marginRight: 15,
         marginLeft: 0,
-        height: "100%",
-        borderRadius: 100,
+        height: "90%",
+        borderRadius: 10,
         paddingLeft: 20,
         color: "white",
         fontSize: 18,
