@@ -65,6 +65,18 @@ const Map = ({ user }) => {
 
   const [markers, setMarkers] = useState([]);
 
+  const camref = useRef(null);
+
+  const Camera1 = {
+  headering: "",
+   pitch: 0,
+  }
+
+  const Camera2 = {
+    headering: "",
+    pitch: 100,
+   }
+
   /* const initRegion = {
     latitude: 50.612610476359684,
     longitude: 12.626925924754111,
@@ -279,14 +291,14 @@ const Map = ({ user }) => {
 
       <View style={{ alignItems: "center" }}>
         <LinearGradient
-          colors={["rgba(0,0,0,0.85)", "rgba(0,0,0,0)"]}
+          colors={mapType != "standard" ? ["#1E2132", "rgba(0,0,0,0)"] : ["rgba(0,0,0,0.85)", "rgba(0,0,0,0)"]}
           style={{
             width: "100%",
             alignSelf: "center",
             alignItems: "center",
             zIndex: 3,
             position: "absolute",
-            height: 120,
+            height: 150,
             marginTop: -20,
           }}
         >
@@ -360,6 +372,10 @@ const Map = ({ user }) => {
             showsIndoors={false}
             pitchEnabled={true}
             showsMyLocationButton={false}
+            camera={Camera1}
+            ref={camref}
+            onMapReady={() => camref.current.animateCamera(Camera2)}
+            loadingBackgroundColor={"#131520"}
           >
             {view == "heatmap" ? 
             <>
@@ -432,7 +448,7 @@ export default Map;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#1E2132",
     width: "100%",
     height: "50%",
   },
@@ -446,10 +462,10 @@ const styles = StyleSheet.create({
     height: 80,
     width: "95%",
     alignSelf: "center",
-    backgroundColor: "#171717",
+    backgroundColor: "#1E2132",
     position: "absolute",
     zIndex: 2,
-    borderRadius: 25,
+    borderRadius: 10,
     overflow: "hidden",
     margin: 10,
   },
@@ -487,7 +503,7 @@ const mapStyle = [
     elementType: "geometry",
     stylers: [
       {
-        color: "#242f3e",
+        color: "#131520",
       },
     ],
   },
