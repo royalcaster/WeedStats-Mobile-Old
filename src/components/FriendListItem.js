@@ -5,6 +5,7 @@ import levels from "../Levels.json";
 
 import { TouchableNativeFeedback } from "react-native";
 
+import { responsiveFontSize } from "react-native-responsive-dimensions";
 //Firebase
 import { setDoc, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
 import { db, firestore } from "./FirebaseConfig";
@@ -149,7 +150,7 @@ const FriendListItem = ({ userid, onPress }) => {
                         styles.username,
                         {
                           fontFamily: "PoppinsLight",
-                          fontSize: 12,
+                          fontSize: responsiveFontSize(1.5),
                           textAlignVertical: "center",
                         },
                       ]}
@@ -174,9 +175,9 @@ const styles = StyleSheet.create({
     height: 80,
   },
   username: {
-    color: "rgba(255,255,255,0.8)",
+    color: "rgba(255,255,255,1)",
     fontFamily: "PoppinsBlack",
-    fontSize: 15,
+    fontSize: responsiveFontSize(1.8),
   },
   touchable: {
     width: "100%",

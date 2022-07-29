@@ -137,7 +137,7 @@ const Config = () => {
           </View>
         </Modal>
 
-        <View style={{ height: 50 }}></View>
+        <View style={{ height: responsiveHeight(7) }}></View>
 
         {loading ? (
           <View
