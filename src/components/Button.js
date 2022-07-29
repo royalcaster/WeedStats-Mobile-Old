@@ -7,6 +7,7 @@ import {
   Easing,
   TouchableNativeFeedback,
 } from "react-native";
+import { responsiveFontSize } from "react-native-responsive-dimensions";
 
 const Button = ({
   icon,
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   title: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(1.8),
     fontFamily: "PoppinsLight",
     zIndex: 6,
     marginTop: 3,

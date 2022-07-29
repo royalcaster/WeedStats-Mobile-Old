@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
 
     },
     activity_container: {
-        backgroundColor: "#1E1E1E",
         borderRadius: 25,
         flexDirection: "row",
         width: "70%",

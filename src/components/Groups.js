@@ -9,6 +9,7 @@ import {
   TouchableNativeFeedback,
   ActivityIndicator,
   ScrollView,
+  StatusBar
 } from "react-native";
 import { useFonts } from "expo-font";
 import {
@@ -27,6 +28,7 @@ import FriendRequests from "./FriendRequests";
 import Empty from "./Empty";
 import CustomLoader from "./CustomLoader";
 import FriendList from "./FriendList";
+import { responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
 
 const Groups = ({ user, friendList, handleLogOut, toggleNavbar }) => {
   
@@ -109,7 +111,7 @@ const Groups = ({ user, friendList, handleLogOut, toggleNavbar }) => {
       />
 
       <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
-        <View style={{ height: 50 }}></View>
+        <View style={{ height: responsiveHeight(7) }}></View>
         <View style={{ alignItems: "center", flexDirection: "row", marginBottom: 20}}>
           <Text style={styles.heading}>Freunde</Text>
           <View
@@ -188,7 +190,7 @@ const Groups = ({ user, friendList, handleLogOut, toggleNavbar }) => {
                     left: 15,
                     fontFamily: "PoppinsBlack",
                     color: "white",
-                    fontSize: 16,
+                    fontSize: responsiveFontSize(2.0),
                   }}
                 >
                   {user.username}
@@ -198,7 +200,7 @@ const Groups = ({ user, friendList, handleLogOut, toggleNavbar }) => {
                     left: 15,
                     fontFamily: "PoppinsLight",
                     color: "#c4c4c4",
-                    fontSize: 12,
+                    fontSize: responsiveFontSize(1.6),
                     marginTop: -3,
                   }}
                 >
@@ -226,13 +228,13 @@ const styles = StyleSheet.create({
   heading: {
     fontFamily: "PoppinsBlack",
     color: "white",
-    fontSize: 20,
+    fontSize: responsiveFontSize(2.3),
     marginLeft: 30,
   },
   icon: {
     textAlignVertical: "center",
     color: "white",
-    fontSize: 20,
+    fontSize: responsiveFontSize(2.3),
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 10

@@ -35,6 +35,7 @@ import { firestore } from "./FirebaseConfig";
 
 import Button from "./Button";
 import BackButton from "./BackButton";
+import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
 
 const Account = ({ user, handleLogOut, onexit, show }) => {
   const screen_height = Dimensions.get("screen").height;
@@ -59,7 +60,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
       useNativeDriver: true,
     }).start();
     Animated.timing(pan, {
-      toValue: 0,
+      toValue: responsiveHeight(-1),
       duration: 400,
       easing: Easing.bezier(0.2, 1, 0.21, 0.97),
       useNativeDriver: true,
@@ -274,7 +275,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
             style={{
               alignSelf: "center",
               color: "rgba(255,255,255,0.75)",
-              fontSize: 13,
+              fontSize: responsiveFontSize(1.7),
               fontFamily: "PoppinsLight",
               letterSpacing: 2,
             }}
@@ -312,7 +313,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
             style={{
               alignSelf: "center",
               color: "rgba(255,255,255,0.75)",
-              fontSize: 15,
+              fontSize: responsiveFontSize(1.7),
               fontFamily: "PoppinsLight",
               letterSpacing: 2,
             }}
@@ -331,7 +332,7 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
 
         <View style={{ height: 15 }}></View>
 
-        <View style={{flex: 5}}>
+        <View style={{flex: 6}}>
 
         <Button
           fontColor={"white"}
@@ -391,8 +392,6 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
             </View>
           </TouchableNativeFeedback>
         </View>
-
-        <View style={{ height: 10 }}></View>
         </View>
       </View>
     </Animated.View>
@@ -412,12 +411,12 @@ const styles = StyleSheet.create({
   },
   username: {
     color: "white",
-    fontSize: 18,
+    fontSize: responsiveFontSize(2.2),
     fontFamily: "PoppinsBlack",
   },
   email: {
     color: "rgba(255,255,255,0.75)",
-    fontSize: 14,
+    fontSize: responsiveFontSize(1.6),
     fontFamily: "PoppinsLight",
   },
   money_icon: {

@@ -9,6 +9,7 @@ import {
   Modal,
   Vibration,
   Dimensions,
+  StatusBar
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { LogBox } from "react-native";
@@ -56,6 +57,7 @@ export default function App() {
       current_user != null ? refreshUser(current_user) : null;
       setUserLoaded(true);
     }
+    StatusBar.setBackgroundColor("rgba(255,255,255,0)");
   }, []);
 
   // Lädt das User-Objekt aus dem AsyncStorage
@@ -585,7 +587,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#1E2132",
     borderRadius: 20,
     padding: 15,
     alignItems: "center",

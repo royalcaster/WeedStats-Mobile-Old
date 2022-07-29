@@ -291,12 +291,12 @@ const FriendResquests = ({ user, onExit, refresh }) => {
       </Modal>
 
       <View
-        style={{ width: "100%", flexDirection: "row", maxHeight: 60, flex: 1 }}
+        style={{ width: "100%", flexDirection: "row"}}
       >
         <View style={{ flex: 1, alignItems: "center" }}>
           <BackButton onPress={() => hide()} />
         </View>
-        <View style={{ flex: 4, justifyContent: "center" }}>
+        <View style={{ flex: 4, justifyContent: "center"}}>
           <Text style={styles.heading}>Anfragen</Text>
         </View>
       </View>

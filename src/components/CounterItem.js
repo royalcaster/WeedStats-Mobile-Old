@@ -77,7 +77,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
     let indicator = Math.floor(counter / 70);
     return indicator > levels.length - 1
       ? levels[levels.length - 1].name
-      : levels[indicator].name;
+      : levels[0].name;
   };
 
   const getGradientColors = (counter) => {
@@ -118,7 +118,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
           width: "80%",
           alignSelf: "center",
           alignItems: "center",
-          borderRadius: 20,
+          borderRadius: 15,
           marginTop: 20,
           marginBottom: 20,
           maxWidth: 700,
@@ -131,7 +131,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
             borderColor: counter > 419 ? "#E6C743" : "rgba(255,255,255,0)",
             width: "100%",
             alignItems: "center",
-            borderRadius: 30,
+            borderRadius: 15,
           }}
         >
 
@@ -183,7 +183,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
               setButtonPressed(false);
             }}
             style={({ pressed }) => [
-              { backgroundColor: pressed ? "rgba(0,0,0,0.75)" : "#131520" },
+              { backgroundColor: pressed ? "#131520" : "#131520" },
               styles.add_pressable,
             ]}
           >
