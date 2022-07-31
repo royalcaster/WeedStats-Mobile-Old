@@ -279,7 +279,7 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh, toggleNavbar }) =
         
         <Animated.View
         {...panResponder.panHandlers}
-          style={[styles.container, { transform: [{ translateX: pan }], height: screen_height }]}
+          style={[styles.container, { transform: [{ translateX: pan }], height: Dimensions.get("window").height }]}
         >
           <Modal
             animationType="fade"
@@ -358,7 +358,12 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh, toggleNavbar }) =
             </View>
           </Modal>
 
-          <View style={{height: responsiveHeight(7)}}></View>
+         { //hier beginnt Sichtbarer Komponent
+         }
+
+          <View style={{height: 50}}></View>
+
+          <View style={{flexDirection: "column", flex: 1}}>
 
           <View
             style={{
@@ -366,7 +371,8 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh, toggleNavbar }) =
               marginTop: 0,
               position: "relative",
               width: "100%",
-              justifyContent: "center"
+              justifyContent: "center",
+              flex: 3
             }}
           >
             <View style={{position: "absolute", zIndex: 20, left: 15, top: responsiveHeight(1)}}>
@@ -390,20 +396,18 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh, toggleNavbar }) =
                 </Animated.Text>
               </View>
             </View>
-
             <View style={{height: responsiveHeight(1)}}></View>
-            
           </View>    
 
-
+           
               <View
                 style={{
                   width: "100%",
                   alignSelf: "center",
-                  position: "relative"
+                  position: "relative",
+                  flex: 4
                 }}
               >
-                 <View style={{ height: responsiveHeight(1.5) }}></View>
                 <Text style={styles.label}>COUNTER</Text>
                 
                 {!loading ? <>
@@ -471,9 +475,9 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh, toggleNavbar }) =
                 <View style={{ height: 40 }}></View>
               </View>
 
-
-               <View style={{position: "relative", width: "100%", alignSelf: "center", backgroundColor: "#131520", flex: 2}}>
-                <View style={{ height: 20 }}></View>
+                  
+              <View style={{position: "relative", width: "100%", alignSelf: "center", backgroundColor: "#131520", flex: 3}}>
+                <View style={{ height: 10 }}></View>
                 <Text style={styles.label}>BESTLEISTUNG</Text>
                 <View style={{ height: 10 }}></View>
                 {!loading ? 
@@ -484,11 +488,12 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh, toggleNavbar }) =
                 <View style={{height: 80, justifyContent: "center"}}>
                   <CustomLoader x={40}/>
                 </View>}
-                <View style={{ height: 20 }}></View>
               </View>
 
-              <View style={{position: "relative", width: "100%", alignSelf: "center", flex: 2}}>
-                <View style={{ height: 20 }}></View>
+              
+
+              <View style={{position: "relative", width: "100%", alignSelf: "center", flex: 3}}>
+                <View style={{ height: 10 }}></View>
                 <Text style={styles.label}>LETZTE AKTIVITÄT</Text>
                 <View style={{ height: 10 }}></View>
                 <View style={styles.activity_container}>
@@ -539,10 +544,11 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh, toggleNavbar }) =
                     </Text>
                   )}
                 </View>
-                <View style={{ height: 20 }}></View>
               </View>
+
+              
             
-              <View style={{position: "relative", width: "100%", flex: 1}}>
+              <View style={{position: "relative", width: "100%", flex: 1, marginBottom: 20}}>
                 <TouchableNativeFeedback
                   background={TouchableNativeFeedback.Ripple(
                     "rgba(255,255,255,0.05)",
@@ -554,8 +560,8 @@ const FriendPage = ({ show, userid, onExit, realuser, refresh, toggleNavbar }) =
                     <Text style={styles.delete_text}>Als Freund entfernen</Text>
                   </View>
                 </TouchableNativeFeedback>
-              </View>
-
+              </View>{/* */}
+          </View>
         </Animated.View>
         
       ) : null}
@@ -591,7 +597,7 @@ const styles = StyleSheet.create({
   },
   label: {
     color: "rgba(255,255,255,0.75)",
-    fontSize: responsiveFontSize(1.5),
+    fontSize: responsiveFontSize(1.3),
     fontFamily: "PoppinsLight",
     letterSpacing: 3,
     textAlignVertical: "center",
@@ -599,7 +605,7 @@ const styles = StyleSheet.create({
   },
   value: {
     color: "white",
-    fontSize: responsiveFontSize(6),
+    fontSize: responsiveFontSize(5),
     fontFamily: "PoppinsBlack",
     textAlignVertical: "center",
     textAlign: "center",
@@ -607,16 +613,16 @@ const styles = StyleSheet.create({
   },
   date: {
     color: "white",
-    fontSize: 16,
+    fontSize: responsiveFontSize(1.75),
     fontFamily: "PoppinsLight",
     textAlignVertical: "center",
     textAlign: "left",
   },
   type_image_joint: {
-    width: 30,
-    height: 80,
-    marginTop: 5,
-    marginBottom: 10,
+    width: responsiveFontSize(2),
+    height: responsiveHeight(8),
+    marginTop: 15,
+    marginBottom: 15,
     alignSelf: "center",
   },
   type_image_bong: {
@@ -678,7 +684,7 @@ const styles = StyleSheet.create({
   },
   activity_container: {
     backgroundColor: "#131520",
-    borderRadius: 25,
+    borderRadius: 10,
     flexDirection: "row",
     width: "70%",
     alignItems: "center",

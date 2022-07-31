@@ -14,7 +14,7 @@ export default Tutorial
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#0080FF',
+        backgroundColor: "#1E2132",
         width: "100%",
         position: "absolute",
         zIndex: 1000

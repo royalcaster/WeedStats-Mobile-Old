@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import { Animated, View, StyleSheet, Text, Easing } from "react-native";
 import LevelImage from "./LevelImage";
 import { LinearGradient } from "expo-linear-gradient";
+import { responsiveFontSize } from "react-native-responsive-dimensions";
 
 const Best = ({ colors, level_index, title}) => {
 
@@ -21,8 +22,8 @@ const Best = ({ colors, level_index, title}) => {
     return (
         <Animated.View style={[styles.container,{transform: [{scale: scale_anim}]}]}>
                 <LinearGradient colors={colors} style={[styles.activity_container,{height: 80}]}>
-                  <LevelImage index={level_index} style={{marginTop: -10, marginLeft: -20}}/>
-                  <Text style={{color: "white", fontSize: 18, fontFamily: "PoppinsBlack"}}>{title}</Text>
+                  <LevelImage index={level_index} style={{marginTop: -5, marginLeft: -25}}/>
+                  <Text style={{color: "white", fontSize: responsiveFontSize(1.8), fontFamily: "PoppinsBlack"}}>{title}</Text>
                 </LinearGradient>
         </Animated.View>
     );
@@ -35,11 +36,11 @@ const styles = StyleSheet.create({
 
     },
     activity_container: {
-        borderRadius: 25,
+        borderRadius: 10,
         flexDirection: "row",
         width: "70%",
         alignItems: "center",
         alignContent: "center",
-        alignSelf: "center",
+        alignSelf: "center"
       },
 });

@@ -16,6 +16,9 @@ import { LogBox } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "./src/components/Button";
 
+//Service
+import { userExists, getUserObject } from "./src/Service";
+
 //Components
 import Home from "./src/components/Home";
 import Login from "./src/components/Login";
@@ -57,6 +60,8 @@ export default function App() {
       current_user != null ? refreshUser(current_user) : null;
       setUserLoaded(true);
     }
+    /* console.debug(getUserObject()) */
+    if (userExists()) {console.debug(getUserObject())}
     StatusBar.setBackgroundColor("rgba(255,255,255,0)");
   }, []);
 
