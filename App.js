@@ -215,7 +215,9 @@ export default function App() {
       await Google.logOutAsync({
         androidClientId:
           "31827165734-rdbihglcac1juesc6fkjd4bgp1c1oj2s.apps.googleusercontent.com",
-        scopes: ["profile", "email"],
+        iosClientId:
+        "31827165734-cjrhm51isdg9bjjfji9h2ike188n9d6j.apps.googleusercontent.com",
+        scopes: ["profile", "email"], 
       });
     } catch (e) {
       console.log("Error:", e);
