@@ -96,8 +96,6 @@ const StatsHistory = ({ user, history }) => {
               customMapStyle={mapStyle}
               showsUserLocation={true}
               followsUserLocation={true}
-              /* region={region} */
-              /* onRegionChangeComplete={(region) => setRegion(region)} */
               showsCompass={false}
               showsTraffic={false}
               showsIndoors={true}
@@ -121,20 +119,11 @@ const StatsHistory = ({ user, history }) => {
                         timestamp={activeEvent.timestamp}
                       />
                     </Marker>
-
-                    
-                
                 </>
 
             </MapView>
         </Modal>
       : null}
-      
-
-
-
-
-      <View style={{ height: 10 }}></View>
 
       <FlatList
         data={history.slice().reverse()}
@@ -149,7 +138,7 @@ export default StatsHistory;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#1E2132",
     width: "100%",
   },
   heading: {

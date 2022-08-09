@@ -11,6 +11,8 @@ import {
   TouchableNativeFeedback,
 } from "react-native";
 
+import { mapStyle } from "../CustomMapStyle";
+
 import IconButton from "./IconButton";
 
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -66,6 +68,8 @@ const Map = ({ user }) => {
   const [markers, setMarkers] = useState([]);
 
   const camref = useRef(null);
+
+  const [mapReady, setMapReady] = useState(false);
 
   const Camera1 = {
   headering: "",
@@ -373,7 +377,9 @@ const Map = ({ user }) => {
             pitchEnabled={true}
             showsMyLocationButton={false}
             ref={camref}
+            loadingEnabled={true}
             loadingBackgroundColor={"#131520"}
+            loadingIndicatorColor={"#484F78"}
           >
             {view == "heatmap" ? 
             <>
@@ -415,8 +421,10 @@ const Map = ({ user }) => {
           <View style={{alignSelf: "center", bottom: 200, right: 20, position: "absolute"}}>
             <IconButton icon={switch_icon} onPress={toggleMapType}/>
           </View>
+                  
           </>
         ) : null}
+
 
         {view == "friends" ? (
           <View style={styles.carousel}>
@@ -437,6 +445,7 @@ const Map = ({ user }) => {
             </Pages>
           </View>
         ) : null}
+
       </View>
     </ScrollView>
   );
@@ -487,173 +496,3 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
   },
 });
-
-const mapStyle = [
-  {
-    elementType: "labels",
-    stylers: [
-      {
-        visibility: "off",
-      },
-    ],
-  },
-  {
-    elementType: "geometry",
-    stylers: [
-      {
-        color: "#131520",
-      },
-    ],
-  },
-  {
-    elementType: "labels.text.fill",
-    stylers: [
-      {
-        color: "#746855",
-      },
-    ],
-  },
-  {
-    elementType: "labels.text.stroke",
-    stylers: [
-      {
-        color: "#242f3e",
-      },
-    ],
-  },
-  {
-    featureType: "administrative.locality",
-    elementType: "labels.text.fill",
-    stylers: [
-      {
-        color: "#d59563",
-      },
-    ],
-  },
-  {
-    featureType: "poi",
-    elementType: "labels.text.fill",
-    stylers: [
-      {
-        color: "#d59563",
-      },
-    ],
-  },
-  {
-    featureType: "poi.park",
-    elementType: "geometry",
-    stylers: [
-      {
-        color: "#263c3f",
-      },
-    ],
-  },
-  {
-    featureType: "poi.park",
-    elementType: "labels.text.fill",
-    stylers: [
-      {
-        color: "#6b9a76",
-      },
-    ],
-  },
-  {
-    featureType: "road",
-    elementType: "geometry",
-    stylers: [
-      {
-        color: "#38414e",
-      },
-    ],
-  },
-  {
-    featureType: "road",
-    elementType: "geometry.stroke",
-    stylers: [
-      {
-        color: "#212a37",
-      },
-    ],
-  },
-  {
-    featureType: "road",
-    elementType: "labels.text.fill",
-    stylers: [
-      {
-        color: "#9ca5b3",
-      },
-    ],
-  },
-  {
-    featureType: "road.highway",
-    elementType: "geometry",
-    stylers: [
-      {
-        color: "#746855",
-      },
-    ],
-  },
-  {
-    featureType: "road.highway",
-    elementType: "geometry.stroke",
-    stylers: [
-      {
-        color: "#1f2835",
-      },
-    ],
-  },
-  {
-    featureType: "road.highway",
-    elementType: "labels.text.fill",
-    stylers: [
-      {
-        color: "#f3d19c",
-      },
-    ],
-  },
-  {
-    featureType: "transit",
-    elementType: "geometry",
-    stylers: [
-      {
-        color: "#2f3948",
-      },
-    ],
-  },
-  {
-    featureType: "transit.station",
-    elementType: "labels.text.fill",
-    stylers: [
-      {
-        color: "#d59563",
-      },
-    ],
-  },
-  {
-    featureType: "water",
-    elementType: "geometry",
-    stylers: [
-      {
-        color: "#17263c",
-      },
-    ],
-  },
-  {
-    featureType: "water",
-    elementType: "labels.text.fill",
-    stylers: [
-      {
-        color: "#515c6d",
-      },
-    ],
-  },
-  {
-    featureType: "water",
-    elementType: "labels.text.stroke",
-    stylers: [
-      {
-        color: "#17263c",
-      },
-    ],
-  },
-];

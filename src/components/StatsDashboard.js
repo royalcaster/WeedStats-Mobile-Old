@@ -1,37 +1,50 @@
+//React
 import React from "react";
-import { useState, useEffect, useRef } from "react";
-import { useFonts } from "expo-font";
+import { useState, useEffect, useRef} from "react";
 import {
   StyleSheet,
   Image,
   View,
   Text,
-  Pressable,
   ScrollView,
   Dimensions,
   Picker,
   Animated,
   Easing,
+  TouchableNativeFeedback
 } from "react-native";
 
+//Expo
+import { useFonts } from "expo-font";
+
+//Custom Components
+import History from "./History";
+import Levels from "../Levels.json";
+
+//Icons
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
+
+//Tools
 import toGermanDate from "../DateConversion";
 
-import SwitchSelector from "react-native-switch-selector";
 
+//Third Party
+import SwitchSelector from "react-native-switch-selector";
 import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
-import { summary, streakRanges, trackRecord } from "date-streaks";
 import { LinearGradient } from "expo-linear-gradient";
 
+//Service
+import { calcDailyAverage, filterByType, filterByMostRecent, getEntryDates, getBreakDates, createLineChartData, createBarChartData, calcStreak } from "../Service";
+
 const StatsDashboard = ({ user, localData }) => {
-  const [loaded] = useFonts({
-    PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
-    PoppinsLight: require("./fonts/Poppins-Light.ttf"),
-  });
+  
   const [selectedType, setSelectedType] = useState("main");
   const [selectedTime, setSelectedTime] = useState(0);
 
+  const [showHistory, setShowHistory] = useState(false);
+
   const icon_slide = useRef(new Animated.Value(-50)).current;
-  const icon_opacity = useRef(new Animated.Value(0)).current;
+  const icon_opacity = useRef(new Animated.Value(1)).current;
   useEffect(() => {
     icon_slide.setValue(-50);
     Animated.timing(
@@ -55,43 +68,14 @@ const StatsDashboard = ({ user, localData }) => {
   },[selectedType]);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
+  /* useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
       useNativeDriver: true,
       easing: Easing.bezier(0.07, 1, 0.33, 0.89),
     }).start();
-  }, []);
-
-  const calcDailyAverage = (array) => {
-    return (
-      array.length /
-      ((localData[localData.length - 1].timestamp - localData[0].timestamp) /
-        (60 * 60 * 24 * 1000))
-    );
-  };
-
-  const filterByType = (array, type) => {
-    if (type === "main") {
-      return array;
-    }
-    return array.filter((entry) => {
-      return entry.type === type;
-    });
-  };
-
-  const filterByMostRecent = (array, days) => {
-    if (days === 0) {
-      return array;
-    }
-
-    const now = Date.now();
-
-    return array.filter((entry) => {
-      return now - entry.timestamp <= days * 1000 * 60 * 60 * 24;
-    });
-  };
+  }, []); */
 
   /*   const isNextDay = (daysDiff, absDiff, monat, jahr) => {
     const monat31 = [1, 3, 5, 7, 8, 10, 12];
@@ -204,105 +188,10 @@ const StatsDashboard = ({ user, localData }) => {
     ];
   }; */
 
-  const calcStreak = (array) => {
-    const dates = getEntryDates(array);
-    const length = Math.ceil((Date.now() - dates[0]) / (1000 * 60 * 60 * 24));
-    const rec = trackRecord({ dates, length });
-    const sum1 = summary(dates);
-    const ranges1 = streakRanges(dates);
-    const breakDates = getBreakDates({ rec });
-    const sum2 = summary(breakDates);
-    const ranges2 = streakRanges(breakDates);
+  
 
-    return {
-      currentStreak: sum1.currentStreak,
-      longestStreak: sum1.longestStreak,
-      today: sum1.todayInStreak,
-      within: sum1.withinCurrentStreak,
-      startCurrent: toGermanDate(ranges1[0].start),
-      rangeLongest: ranges1.find(
-        ({ duration }) => duration === sum1.longestStreak
-      ),
-      currentBreak: sum2.currentStreak,
-      longestBreak: sum2.longestStreak,
-      startCurrentBreak: ranges2[0] ? toGermanDate(ranges2[0].start) : null,
-      rangeLongestBreak: ranges2[0]
-        ? ranges2.find(({ duration }) => duration === sum2.longestStreak)
-        : null,
-    };
-  };
 
-  const getEntryDates = (array) => {
-    let dates = array.map((entry) => {
-      let date = new Date(entry.timestamp);
-      date.setUTCHours(0, 0, 0, 0);
-      return +date;
-    });
-
-    dates = dates.filter(function (value, index, array) {
-      return array.indexOf(value) === index;
-    });
-
-    return dates;
-  };
-
-  const getBreakDates = ({ rec }) => {
-    // Konvertiert Object in verschachteltes Array
-    let dates = Object.entries(rec);
-
-    // Filtert nach den Daten, an denen nicht gesmoked wurde
-    dates = dates.filter((entry) => entry[1] === false);
-
-    // Wirft das überflüssige zweite property weg -> eindim. Array
-    dates = dates.map((entry) => Date.parse(entry[0]));
-
-    return dates;
-  };
-
-  const createLineChartData = (array, datapoints) => {
-    if (array.length == 0) {
-      return [
-        ["keine Angaben", "keine Angaben"],
-        [0, 0],
-      ];
-    }
-
-    const first = array[0].timestamp;
-    const step = (Date.now() - first) / datapoints;
-    let chartData = new Array(datapoints).fill(0);
-    let chartLabels = new Array(datapoints);
-
-    array.forEach((entry) => {
-      for (let i = 0; i < datapoints; i++) {
-        if (
-          first + i * step <= entry.timestamp &&
-          entry.timestamp < first + (i + 1) * step
-        ) {
-          chartData[i]++;
-          break;
-        }
-      }
-    });
-
-    for (let i = 0; i < datapoints; i++) {
-      chartLabels[i] = toGermanDate(new Date(first + (i + 0.5) * step));
-    }
-
-    return [chartLabels, chartData];
-  };
-
-  const createBarChartData = (array) => {
-    let chartData = new Array(7).fill(0);
-    let i;
-
-    array.forEach((entry) => {
-      i = new Date(entry.timestamp).getDay();
-      i == 0 ? (i = 6) : (i = i - 1);
-      chartData[i]++;
-    });
-
-    return chartData;
-  };
+  
 
   const [streakData, setStreakData] = useState(calcStreak(localData));
 
@@ -358,11 +247,44 @@ const StatsDashboard = ({ user, localData }) => {
   };
 
   return (
+
+    <>
+
+    {showHistory ? <History show={showHistory} user={user} onExit={() => setShowHistory(false)} history={localData}/> : null}
+
     <ScrollView style={styles.container}>
-      <Animated.View style={{ opacity: fadeAnim, alignItems: "center" }}>
-        <View style={{ height: 20 }}></View>
+      <Animated.View style={{ opacity: 1, alignItems: "center"}}>
+        <View style={{ height: 50 }}></View>
+        <View style={{flexDirection: "row", width: "100%"}}>
         <Text style={styles.heading2}>Überblick</Text>
-        <View style={{ height: 10 }}></View>
+        <View style={{flexDirection: "row",right: 10, top: -10,position: "absolute"}}>
+        <TouchableNativeFeedback
+              background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.1)", true)}
+              onPress={() => setShowHistory(true)}
+            >
+              <View
+                style={[
+                  styles.touchable,
+                  { height: 50, backgroundColor: "#1E2132", width: 50 },
+                ]}
+              >
+                <EvilIcons
+                  name="clock"
+                  style={{
+                    color: "white",
+                    fontSize: 30,
+                    height: "100%",
+                    textAlignVertical: "center",
+                    alignSelf: "center"
+                  }}
+                />
+              </View>
+            </TouchableNativeFeedback>
+            </View>
+        </View>
+        <View style={{ height: 20 }}></View>
+
+        
 
         <View style={{ width: "95%" }}>
           <SwitchSelector
@@ -370,97 +292,15 @@ const StatsDashboard = ({ user, localData }) => {
             initial={0}
             onPress={(value) => toggleSelection(value)}
             textColor={"white"}
-            backgroundColor={"#171717"}
+            backgroundColor={"#131520"}
             selectedColor={"white"}
             buttonColor={"#0080FF"}
-            textStyle={{ fontFamily: "PoppinsLight", fontSize: 12}}
+            textStyle={{ fontFamily: "PoppinsLight", fontSize: 12, height: "100%", width: "100%"}}
             selectedTextStyle={{ fontFamily: "PoppinsBlack", fontSize: 12}}
+            style={{backgroundColor: "#131520", borderRadius: 10}}
+            selectedTextContainerStyle={{borderRadius: 10, backgroundColor: "#0080FF", height: "100%", width: "100%"}}
           />
         </View>
-
-        {/* <View
-          style={{
-            flexDirection: "row",
-            width: "98%",
-            justifyContent: "center",
-          }}
-        >
-          <Pressable
-            style={
-              selectedType == "main"
-                ? styles.switch_item_active
-                : styles.switch_item
-            }
-            onPress={() => setSelectedType("main")}
-          >
-            <Text
-              style={
-                selectedType == "main"
-                  ? [
-                      styles.switch_text_active,
-                      { textDecorationLine: "underline" },
-                    ]
-                  : [styles.text_item, { textDecorationLine: "underline" }]
-              }
-            >
-              Gesamt
-            </Text>
-          </Pressable>
-          <Pressable
-            style={
-              selectedType == "joint"
-                ? styles.switch_item_active
-                : styles.switch_item
-            }
-            onPress={() => setSelectedType("joint")}
-          >
-            <Text
-              style={
-                selectedType == "joint"
-                  ? styles.switch_text_active
-                  : styles.text_item
-              }
-            >
-              Joint
-            </Text>
-          </Pressable>
-          <Pressable
-            style={
-              selectedType == "bong"
-                ? styles.switch_item_active
-                : styles.switch_item
-            }
-            onPress={() => setSelectedType("bong")}
-          >
-            <Text
-              style={
-                selectedType == "bong"
-                  ? styles.switch_text_active
-                  : styles.text_item
-              }
-            >
-              Bong
-            </Text>
-          </Pressable>
-          <Pressable
-            style={
-              selectedType == "vape"
-                ? styles.switch_item_active
-                : styles.switch_item
-            }
-            onPress={() => setSelectedType("vape")}
-          >
-            <Text
-              style={
-                selectedType == "vape"
-                  ? styles.switch_text_active
-                  : styles.text_item
-              }
-            >
-              Vape
-            </Text>
-          </Pressable>
-        </View> */}
 
         <View style={{ height: 30 }}></View>
 
@@ -469,7 +309,7 @@ const StatsDashboard = ({ user, localData }) => {
           <LinearGradient colors={["#369bff","#0080FF","#004e9c"]} style={{borderRadius: 25, padding: 20, width: 250}}>
           {selectedType === "main" ? (
             <Animated.View
-              style={{transform: [{translateX: icon_slide}], opacity: icon_opacity, width: "50%", alignSelf: "center"}}
+              style={{width: "50%", alignSelf: "center"}}
               source={require("./img/joint.png")}>
               <Image style={{height: 40, width: 15, position: "absolute"}} source={require("./img/joint.png")}/>
               <Image style={{height: 40, width: 25, position: "absolute", left: "12%"}} source={require("./img/bong.png")}/>
@@ -480,22 +320,22 @@ const StatsDashboard = ({ user, localData }) => {
           ) : null}
           {selectedType === "joint" ? (
             <Animated.Image
-              style={[styles.joint_img,{transform: [{translateX: icon_slide}], opacity: icon_opacity}]}
+              style={[styles.joint_img]}
               source={require("./img/joint.png")}
             />
           ) : null}
           {selectedType === "bong" ? (
-            <Animated.Image style={[styles.bong_img,{transform: [{translateX: icon_slide}], opacity: icon_opacity}]} source={require("./img/bong.png")} />
+            <Animated.Image style={[styles.bong_img]} source={require("./img/bong.png")} />
           ) : null}
           {selectedType === "vape" ? (
-            <Animated.Image style={[styles.vape_img, {transform: [{translateX: icon_slide}], opacity: icon_opacity}]} source={require("./img/vape.png")} />
+            <Animated.Image style={[styles.vape_img]} source={require("./img/vape.png")} />
           ) : null}
           {selectedType === "pipe" ? (
-            <Animated.Image style={[styles.pipe_img, {transform: [{translateX: icon_slide}], opacity: icon_opacity}]} source={require("./img/pipe.png")} />
+            <Animated.Image style={[styles.pipe_img]} source={require("./img/pipe.png")} />
           ) : null}
           {selectedType === "cookie" ? (
             <Animated.Image
-              style={[styles.cookie_img, {transform: [{translateX: icon_slide}], opacity: icon_opacity}]}
+              style={[styles.cookie_img]}
               source={require("./img/cookie.png")}
             />
           ) : null}
@@ -506,13 +346,11 @@ const StatsDashboard = ({ user, localData }) => {
               fontSize: 60,
               color: "white",
               fontFamily: "PoppinsBlack",
-              marginBottom: -25,
-              transform: [{translateX: icon_slide}],
-              opacity: icon_opacity
+              marginBottom: -25
             }}
           >
             {Math.round(
-              calcDailyAverage(filterByType(localData, selectedType)) * 100
+              calcDailyAverage(filterByType(localData, selectedType), localData) * 100
             ) / 100}
           </Animated.Text>
           <Text
@@ -527,7 +365,7 @@ const StatsDashboard = ({ user, localData }) => {
           </View>
 
           </LinearGradient>
-
+ 
           <View style={{ height: 30 }}></View>
 
           <View
@@ -539,10 +377,9 @@ const StatsDashboard = ({ user, localData }) => {
           >
             <View style={styles.card_container}>
               <Text style={styles.card_label}>Ø Woche</Text>
-              <Animated.Text style={[styles.card_value,{transform: [{translateY: icon_slide}],
-              opacity: icon_opacity}]}>
+              <Animated.Text style={[styles.card_value]}>
                 {Math.round(
-                  calcDailyAverage(filterByType(localData, selectedType)) *
+                  calcDailyAverage(filterByType(localData, selectedType), localData) *
                     7 *
                     10
                 ) / 10}
@@ -551,10 +388,9 @@ const StatsDashboard = ({ user, localData }) => {
 
             <View style={styles.card_container}>
               <Text style={styles.card_label}>Ø Monat</Text>
-              <Animated.Text style={[styles.card_value,{transform: [{translateY: icon_slide}],
-              opacity: icon_opacity}]}>
+              <Animated.Text style={[styles.card_value]}>
                 {Math.round(
-                  calcDailyAverage(filterByType(localData, selectedType)) *
+                  calcDailyAverage(filterByType(localData, selectedType), localData) *
                     30.5 *
                     10
                 ) / 10}
@@ -563,10 +399,9 @@ const StatsDashboard = ({ user, localData }) => {
 
             <View style={styles.card_container}>
               <Text style={styles.card_label}>Ø Jahr</Text>
-              <Animated.Text style={[styles.card_value,{transform: [{translateY: icon_slide}],
-              opacity: icon_opacity}]}>
+              <Animated.Text style={[styles.card_value]}>
                 {Math.round(
-                  calcDailyAverage(filterByType(localData, selectedType)) * 365
+                  calcDailyAverage(filterByType(localData, selectedType), localData) * 365
                 )}
               </Animated.Text>
             </View>
@@ -611,9 +446,7 @@ const StatsDashboard = ({ user, localData }) => {
                     borderTopColor: "#0080FF",
                     borderTopWidth: 2,
                     marginTop: 0,
-                    textAlign: "center",
-                    transform: [{translateY: icon_slide}],
-                  opacity: icon_opacity
+                    textAlign: "center"
                   },
                 ]}
               >
@@ -641,9 +474,7 @@ const StatsDashboard = ({ user, localData }) => {
                     paddingRight: 10,
                     paddingLeft: 10,
                     marginTop: 0,
-                    textAlign: "center",
-                    transform: [{translateY: icon_slide}],
-                    opacity: icon_opacity
+                    textAlign: "center"
                   },
                 ]}
               >
@@ -671,9 +502,7 @@ const StatsDashboard = ({ user, localData }) => {
                     paddingRight: 10,
                     paddingLeft: 10,
                     marginTop: 0,
-                    textAlign: "center",
-                    transform: [{translateY: icon_slide}],
-                    opacity: icon_opacity
+                    textAlign: "center"
                   },
                 ]}
               >
@@ -698,8 +527,7 @@ const StatsDashboard = ({ user, localData }) => {
 
               
 
-              <Animated.View style={[styles.card_container_wide,{transform: [{translateY: icon_slide}],
-              opacity: icon_opacity}]}>
+              <Animated.View style={styles.card_container_wide}>
                 <Text style={styles.card_label}>Aktueller Streak</Text>
                 <Text
                   style={[
@@ -729,8 +557,7 @@ const StatsDashboard = ({ user, localData }) => {
 
               <View style={{ height: 10 }}></View>
 
-              <Animated.View style={[styles.card_container_wide,{transform: [{translateY: icon_slide}],
-              opacity: icon_opacity}]}>
+              <Animated.View style={styles.card_container_wide}>
                 <Text style={styles.card_label}>Aktuelle Pause</Text>
                 <Text
                   style={[
@@ -774,101 +601,18 @@ const StatsDashboard = ({ user, localData }) => {
             initial={0}
             onPress={(value) => toggleSelection(value)}
             textColor={"white"}
-            backgroundColor={"#171717"}
+            backgroundColor={"#131520"}
             selectedColor={"white"}
             buttonColor={"#0080FF"}
-            textStyle={{ fontFamily: "PoppinsLight", fontSize: 12}}
-            selectedTextStyle={{ fontFamily: "PoppinsLight", fontSize: 12 }}
-            style={{ width: "95%" }}
+            textStyle={{ fontFamily: "PoppinsLight", fontSize: 12, height: "100%", width: "100%"}}
+            selectedTextStyle={{ fontFamily: "PoppinsBlack", fontSize: 12}}
+            style={{backgroundColor: "#131520", borderRadius: 10, width: "95%"}}
+            selectedTextContainerStyle={{borderRadius: 10, backgroundColor: "#0080FF", height: "100%", width: "100%"}}
           />
-
-          {/*  <View
-            style={{
-              flexDirection: "row",
-              width: "98%",
-              justifyContent: "center",
-            }}
-          >
-            <Pressable
-              style={
-                selectedTime == 0
-                  ? styles.switch_item_active
-                  : styles.switch_item
-              }
-              onPress={() => setSelectedTime(0)}
-            >
-              <Text
-                style={
-                  selectedTime == 0
-                    ? [
-                        styles.switch_text_active,
-                        { textDecorationLine: "underline" },
-                      ]
-                    : [styles.text_item, { textDecorationLine: "underline" }]
-                }
-              >
-                Gesamt
-              </Text>
-            </Pressable>
-            <Pressable
-              style={
-                selectedTime == 7
-                  ? styles.switch_item_active
-                  : styles.switch_item
-              }
-              onPress={() => setSelectedTime(7)}
-            >
-              <Text
-                style={
-                  selectedTime == 7
-                    ? styles.switch_text_active
-                    : styles.text_item
-                }
-              >
-                letzte Woche
-              </Text>
-            </Pressable>
-            <Pressable
-              style={
-                selectedTime == 30
-                  ? styles.switch_item_active
-                  : styles.switch_item
-              }
-              onPress={() => setSelectedTime(30)}
-            >
-              <Text
-                style={
-                  selectedTime == 30
-                    ? styles.switch_text_active
-                    : styles.text_item
-                }
-              >
-                letzter Monat
-              </Text>
-            </Pressable>
-            <Pressable
-              style={
-                selectedTime == 365
-                  ? styles.switch_item_active
-                  : styles.switch_item
-              }
-              onPress={() => setSelectedTime(365)}
-            >
-              <Text
-                style={
-                  selectedTime == 365
-                    ? styles.switch_text_active
-                    : styles.text_item
-                }
-              >
-                letztes Jahr
-              </Text>
-            </Pressable>
-          </View> */}
 
           <View style={{ height: 20 }}></View>
 
-          <LineChart
+           <LineChart
             style={{
               marginVertical: 10,
               borderRadius: 25
@@ -898,8 +642,8 @@ const StatsDashboard = ({ user, localData }) => {
             yAxisInterval={1} // optional, defaults to 1
             verticalLabelRotation={20}
             chartConfig={{
-              backgroundGradientFrom: "#121212",
-              backgroundGradientTo: "#171717",
+              backgroundGradientFrom: "#131520",
+              backgroundGradientTo: "#131520",
               decimalPlaces: 0, // optional, defaults to 2dp
               color: () =>  {return "rgba(255,255,255,0.35)"},
               labelColor: () =>  {return "rgba(255,255,255,0.5)"},
@@ -937,8 +681,8 @@ const StatsDashboard = ({ user, localData }) => {
             width={Dimensions.get("window").width - 40}
             height={250}
             chartConfig={{
-              backgroundGradientFrom: "#121212",
-              backgroundGradientTo: "#171717",
+              backgroundGradientFrom: "#131520",
+              backgroundGradientTo: "#131520",
               decimalPlaces: 0, // optional, defaults to 2dp
               color: () =>  {return "rgba(255,255,255,0.35)"},
               labelColor: () =>  {return "rgba(255,255,255,0.5)"},
@@ -958,7 +702,7 @@ const StatsDashboard = ({ user, localData }) => {
                     filterByType(localData, "joint"),
                     selectedTime
                   ).length,
-                  color: "#c4c4c4",
+                  color: Levels[0].colors[0],
                   legendFontColor: "#7F7F7F",
                   legendFontSize: 15,
                 },
@@ -968,7 +712,7 @@ const StatsDashboard = ({ user, localData }) => {
                     filterByType(localData, "bong"),
                     selectedTime
                   ).length,
-                  color: "gray",
+                  color: Levels[1].colors[0],
                   legendFontColor: "#7F7F7F",
                   legendFontSize: 15,
                 },
@@ -978,7 +722,7 @@ const StatsDashboard = ({ user, localData }) => {
                     filterByType(localData, "vape"),
                     selectedTime
                   ).length,
-                  color: "black",
+                  color: Levels[2].colors[0],
                   legendFontColor: "#7F7F7F",
                   legendFontSize: 15,
                 },
@@ -988,7 +732,7 @@ const StatsDashboard = ({ user, localData }) => {
                     filterByType(localData, "pipe"),
                     selectedTime
                   ).length,
-                  color: "#0080FF",
+                  color: Levels[3].colors[0],
                   legendFontColor: "#7F7F7F",
                   legendFontSize: 15,
                 },
@@ -998,14 +742,14 @@ const StatsDashboard = ({ user, localData }) => {
                     filterByType(localData, "cookie"),
                     selectedTime
                   ).length,
-                  color: "red",
+                  color: Levels[4].colors[0],
                   legendFontColor: "#7F7F7F",
                   legendFontSize: 15,
                 },
               ]}
               width={Dimensions.get("window").width - 40}
               height={250}
-              backgroundColor={"#171717"}
+              backgroundColor={"#131520"}
               chartConfig={{
                 color: () =>  {return "rgba(255,255,255,0.35)"},
                 labelColor: () =>  {return "rgba(255,255,255,0.5)"},
@@ -1017,6 +761,7 @@ const StatsDashboard = ({ user, localData }) => {
         </View>
       </Animated.View>
     </ScrollView>
+    </>
   );
 };
 
@@ -1024,7 +769,7 @@ export default StatsDashboard;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#1E2132",
     width: "100%",
   },
   heading: {
@@ -1034,7 +779,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   card_container: {
-    backgroundColor: "#171717",
+    backgroundColor: "#131520",
     width: "30%",
     margin: 5,
     padding: 10,
@@ -1066,7 +811,7 @@ const styles = StyleSheet.create({
     opacity: 0.75
   },
   card_container_wide: {
-    backgroundColor: "#171717",
+    backgroundColor: "#131520",
     margin: 10,
     padding: 15,
     borderRadius: 25,

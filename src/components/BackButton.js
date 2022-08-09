@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     },   
     icon_back: {
         color: "rgba(255,255,255,0.75)", 
-        fontSize: 30, 
+        fontSize: 25, 
         padding: 15
     },
     touchable: {

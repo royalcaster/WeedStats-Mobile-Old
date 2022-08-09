@@ -4,6 +4,10 @@ import { firestore } from "./components/FirebaseConfig";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
+//Tools
+import toGermanDate from "./DateConversion";
+import { summary, streakRanges, trackRecord } from "date-streaks";
+
 // Lädt das Nutzer-Objekt aus dem AsyncStorage
 const getLocalUser = async () => {
   try {
@@ -161,4 +165,168 @@ const refreshUser = async () => {
       console.log("Error in beim erstellen des lokalen Counter-Objekt: ", e);
     }
   }
+};
+
+// Holt alle Einträge aus dem lokalen Speicher
+export const getRelevantKeys = async (user) => {
+  let keys = [];
+  try {
+    keys = await AsyncStorage.getAllKeys();
+  } catch (e) {
+    console.log("Fehler beim Laden der Einträge-Keys aus dem lokalen Speicher:", e);
+  }
+
+  return keys.filter((key) => key.includes(user.id + "_entry_"));
+};
+
+// Holt alle Einträge-Daten aus dem lokalen Speicher
+export const getLocalData = async (user) => {
+  let buffer = [];
+  try {
+    const jsonData = await AsyncStorage.multiGet(await getRelevantKeys(user));
+    jsonData.forEach((entry) => buffer.push(JSON.parse(entry[1])));
+    buffer.sort((a, b) => {
+      return a.number - b.number;
+    });
+    return buffer;
+  } catch (e) {
+    console.log("Fehler beim Laden der Einträge Daten aus dem Lokalen Speicher:", e);
+  }
+};
+
+// -------------------
+export const calcDailyAverage = (array, localData) => {
+  return (
+    array.length /
+    ((localData[localData.length - 1].timestamp - localData[0].timestamp) /
+      (60 * 60 * 24 * 1000))
+  );
+};
+
+// -------------------
+export const filterByType = (array, type) => {
+  if (type === "main") {
+    return array;
+  }
+  return array.filter((entry) => {
+    return entry.type === type;
+  });
+};
+
+// -------------------
+export const filterByMostRecent = (array, days) => {
+  if (days === 0) {
+    return array;
+  }
+
+  const now = Date.now();
+
+  return array.filter((entry) => {
+    return now - entry.timestamp <= days * 1000 * 60 * 60 * 24;
+  });
+};
+
+// -------------------
+export const getEntryDates = (array) => {
+  let dates = array.map((entry) => {
+    let date = new Date(entry.timestamp);
+    date.setUTCHours(0, 0, 0, 0);
+    return +date;
+  });
+
+  dates = dates.filter(function (value, index, array) {
+    return array.indexOf(value) === index;
+  });
+
+  return dates;
+};
+
+// -------------------
+export const getBreakDates = ({ rec }) => {
+  // Konvertiert Object in verschachteltes Array
+  let dates = Object.entries(rec);
+
+  // Filtert nach den Daten, an denen nicht gesmoked wurde
+  dates = dates.filter((entry) => entry[1] === false);
+
+  // Wirft das überflüssige zweite property weg -> eindim. Array
+  dates = dates.map((entry) => Date.parse(entry[0]));
+
+  return dates;
+};
+
+// -------------------
+export const createLineChartData = (array, datapoints) => {
+  if (array.length == 0) {
+    return [
+      ["keine Angaben", "keine Angaben"],
+      [0, 0],
+    ];
+  }
+
+  const first = array[0].timestamp;
+  const step = (Date.now() - first) / datapoints;
+  let chartData = new Array(datapoints).fill(0);
+  let chartLabels = new Array(datapoints);
+
+  array.forEach((entry) => {
+    for (let i = 0; i < datapoints; i++) {
+      if (
+        first + i * step <= entry.timestamp &&
+        entry.timestamp < first + (i + 1) * step
+      ) {
+        chartData[i]++;
+        break;
+      }
+    }
+  });
+
+  for (let i = 0; i < datapoints; i++) {
+    chartLabels[i] = toGermanDate(new Date(first + (i + 0.5) * step));
+  }
+
+  return [chartLabels, chartData];
+};
+
+// -------------------
+export const createBarChartData = (array) => {
+  let chartData = new Array(7).fill(0);
+  let i;
+
+  array.forEach((entry) => {
+    i = new Date(entry.timestamp).getDay();
+    i == 0 ? (i = 6) : (i = i - 1);
+    chartData[i]++;
+  });
+
+  return chartData;
+};
+
+// -------------------
+export const calcStreak = (array) => {
+  const dates = getEntryDates(array);
+  const length = Math.ceil((Date.now() - dates[0]) / (1000 * 60 * 60 * 24));
+  const rec = trackRecord({ dates, length });
+  const sum1 = summary(dates);
+  const ranges1 = streakRanges(dates);
+  const breakDates = getBreakDates({ rec });
+  const sum2 = summary(breakDates);
+  const ranges2 = streakRanges(breakDates);
+
+  return {
+    currentStreak: sum1.currentStreak,
+    longestStreak: sum1.longestStreak,
+    today: sum1.todayInStreak,
+    within: sum1.withinCurrentStreak,
+    startCurrent: toGermanDate(ranges1[0].start),
+    rangeLongest: ranges1.find(
+      ({ duration }) => duration === sum1.longestStreak
+    ),
+    currentBreak: sum2.currentStreak,
+    longestBreak: sum2.longestStreak,
+    startCurrentBreak: ranges2[0] ? toGermanDate(ranges2[0].start) : null,
+    rangeLongestBreak: ranges2[0]
+      ? ranges2.find(({ duration }) => duration === sum2.longestStreak)
+      : null,
+  };
 };

@@ -64,15 +64,15 @@ const HistoryTable = ({ event, showOnMap }) => {
           {new Date(event.timestamp).toLocaleTimeString("de-DE").substring(0,5)}
         </Text>
       </View>
-      <View style={{ flex: 1.5, borderRadius: 30 }}>
+      <View style={{ flex: 1.5, borderRadius: 10 }}>
         <Pressable
           style={({ pressed }) => [
             {
               alignItems: "center",
-              backgroundColor: pressed ? "#1a1a1a" : "#1E1E1E",
+              backgroundColor: pressed ? "#1a1a1a" : "#131520",
               flex: 1,
               justifyContent: "center",
-              borderRadius: 30,
+              borderRadius: 10,
             },
           ]}
           onPress={() => showOnMap(event)}
