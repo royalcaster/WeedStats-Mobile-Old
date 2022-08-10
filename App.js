@@ -14,27 +14,28 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { LogBox } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Button from "./src/components/Button";
+import Button from "./src/components/common/Button";
 
 //Service
-import { userExists, getUserObject } from "./src/Service";
+import { userExists, getUserObject } from "./src/data/Service";
 
 //Components
-import Home from "./src/components/Home";
-import Login from "./src/components/Login";
-import sayings from "./src/Sayings.json";
-import Splash from "./src/components/Splash";
+import Home from "./src/components/Home/Home";
+import Login from "./src/components/Login/Login";
+import sayings from "./src/data/Sayings.json";
+import Splash from "./src/components/Splash/Splash";
+import CustomLoader from "./src/components/common/CustomLoader";
 
 //Firebase
 import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
-import { firestore } from "./src/components/FirebaseConfig";
+import { firestore } from "./src/data/FirebaseConfig";
 import { AppRegistry } from "react-native";
 
 //Expo
 import { useFonts } from "expo-font";
 import * as Google from "expo-google-app-auth";
 import * as Location from "expo-location";
-import CustomLoader from "./src/components/CustomLoader";
+
 
 try {
   LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
@@ -64,6 +65,13 @@ export default function App() {
     if (userExists()) {console.debug(getUserObject())}
     StatusBar.setBackgroundColor("rgba(255,255,255,0)");
   }, []);
+
+  //Schriftarten Laden
+  const [test] = useFonts({
+    PoppinsBlack: require("./src/fonts/Poppins-Black.ttf"),
+    PoppinsMedium: require("./src/fonts/Poppins-Medium.ttf"),
+    PoppinsLight: require("./src/fonts/Poppins-Light.ttf"),
+  });
 
   // Lädt das User-Objekt aus dem AsyncStorage
   const getCurrentUser = async () => {
