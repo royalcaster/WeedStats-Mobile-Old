@@ -1,10 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
-import { View, Text, StyleSheet, Animated, Easing, TouchableNativeFeedback, Image } from "react-native";
+//React
+import React from "react";
+import { View, StyleSheet,TouchableNativeFeedback, Image } from "react-native";
 
-const MenuButton = ({type, url, icon, title, color, hovercolor, borderradius, onPress, selected}) => {
-
-  const [rippleColor, setRippleColor] = useState(hovercolor);
-  const [rippleOverflow, setRippleOverflow] = useState(true);
+const MenuButton = ({type, url, icon, color, borderradius, onPress}) => {
         
     return (
       <View style={[{backgroundColor: color, borderRadius: borderradius},styles.container]}>

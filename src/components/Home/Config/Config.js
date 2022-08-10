@@ -1,35 +1,35 @@
-import React, { useState } from "react";
-import { useEffect, useRef } from "react";
-import { Dimensions, View } from "react-native";
-import { useFonts } from "expo-font";
-import { LogBox } from "react-native";
+//React
+import React, { useState, useEffect, useRef } from "react";
 import {
+  Dimensions,
+  View,
+  LogBox,
   StyleSheet,
   Text,
   Animated,
   ScrollView,
   Modal,
-  ActivityIndicator,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+//Custom Components
 import Button from "../../common/Button";
 import ConfigItem from "./ConfigItem/ConfigItem";
-import Toggle from "react-native-toggle-element";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomLoader from "../../common/CustomLoader";
 
+//Thirt Party
+import Toggle from "react-native-toggle-element";
 import {
   responsiveHeight,
-  responsiveWidth,
   responsiveFontSize
 } from "react-native-responsive-dimensions";
 
 const Config = () => {
+
   const [config, setConfig] = useState();
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(true);
   const [lightmode, setLightMode] = useState(false);
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -65,15 +65,6 @@ const Config = () => {
       useNativeDriver: true,
     }).start();
   }, [fadeAnim]);
-
-/*   const [loaded] = useFonts({
-    PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
-    PoppinsLight: require("./fonts/Poppins-Light.ttf"),
-  }); */
-
-  if (!loaded) {
-    return null;
-  }
 
   return (
     <>

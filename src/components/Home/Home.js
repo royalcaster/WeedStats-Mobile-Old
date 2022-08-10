@@ -1,38 +1,27 @@
-import React, { useEffect, useRef } from "react";
+//Reaect
+import React, { useState, useRef } from "react";
 import {
   Animated,
   StyleSheet,
   View,
 } from "react-native";
-import { useFonts } from "expo-font";
-import { useState } from "react";
 
-
+//Custom Components
 import Stats from "./Stats/Stats";
 import Main from "./Main/Main";
 import Map from "./Map/Map";
 import Config from "./Config/Config";
 import Groups from "./Friends/Groups";
+import MenuButton from "./MenuButton";
 
+//Third Party
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Entypo from "react-native-vector-icons/Entypo";
-import MenuButton from "./MenuButton";
 
 export default function Home({ user, handleLogOut, toggleCounter }) {
 
   const [view, setView] = useState("main");
-
   const navSlide = useRef(new Animated.Value(0)).current;
-
-  /* const [loaded] = useFonts({
-    PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
-    PoppinsMedium: require("./fonts/Poppins-Medium.ttf"),
-    PoppinsLight: require("./fonts/Poppins-Light.ttf"),
-  }); */
-
-  if (!loaded) {
-    return null;
-  }
 
   const toggleNavbar = (x) => {
     x == 1 ? 

@@ -1,27 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { useFonts } from "expo-font";
-import {
-  SnapshotViewIOSBase,
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  Text,
-  Image,
-  Pressable,
-} from "react-native";
+//React
+import React from "react";
+import { StyleSheet, View, Text, Image, Pressable } from "react-native";
 
+//Tools
 import toGermanDate from "../../../../../../data/DateConversion";
 
+//Third Party
 import AntDesign from "react-native-vector-icons/AntDesign";
-
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const HistoryTable = ({ event, showOnMap }) => {
-  const [loaded] = useFonts({
-    PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
-    PoppinsLight: require("./fonts/Poppins-Light.ttf"),
-  });
 
   return (
     <View
@@ -37,19 +26,19 @@ const HistoryTable = ({ event, showOnMap }) => {
     >
       <View style={{ flex: 1 }}>
         {event.type == "joint" ? (
-          <Image style={styles.j_img} source={require("./img/joint.png")} />
+          <Image style={styles.j_img} source={require("../../../../../../data/img/joint.png")} />
         ) : null}
         {event.type == "bong" ? (
-          <Image style={styles.b_img} source={require("./img/bong.png")} />
+          <Image style={styles.b_img} source={require("../../../../../../data/img/bong.png")} />
         ) : null}
         {event.type == "vape" ? (
-          <Image style={styles.v_img} source={require("./img/vape.png")} />
+          <Image style={styles.v_img} source={require("../../../../../../data/img/vape.png")} />
         ) : null}
         {event.type == "pipe" ? (
-          <Image style={styles.p_img} source={require("./img/pipe.png")} />
+          <Image style={styles.p_img} source={require("../../../../../../data/img/pipe.png")} />
         ) : null}
         {event.type == "cookie" ? (
-          <Image style={styles.c_img} source={require("./img/cookie.png")} />
+          <Image style={styles.c_img} source={require("../../../../../../data/img/cookie.png")} />
         ) : null}
       </View>
       <View style={{ flex: 2, justifyContent: "center" }}>

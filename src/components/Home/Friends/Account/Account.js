@@ -1,55 +1,38 @@
-import React, { useState } from "react";
-import { useRef } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  Animated,
-  Easing,
-  Dimensions,
-  TouchableNativeFeedback,
-  Modal,
-  PanResponder,
-} from "react-native";
+//React
+import React, { useState, useRef } from "react";
+import { View, StyleSheet, Text, Animated, Easing, Dimensions, TouchableNativeFeedback, Modal, PanResponder } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { convertMemberSince } from "../../../../data/DateConversion";
-
+//Custom Components
 import Feedback from "./Feedback/Feedback";
 import Donation from "./Donation/Donation";
 import Levels from "./Levels/Levels";
+import ProfileImage from "../../../common/ProfileImage";
+import Button from "../../../common/Button";
+import BackButton from "../../../common/BackButton";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
+//Tools
+import { convertMemberSince } from "../../../../data/DateConversion";
 
-import { useFonts } from "expo-font";
+//Third Party
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Antdesign from "react-native-vector-icons/AntDesign";
-
-import ProfileImage from "../../../common/ProfileImage";
+import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
 
 //Firebase
 import { doc, deleteDoc } from "firebase/firestore";
 import { firestore } from "../../../../data/FirebaseConfig";
 
-import Button from "../../../common/Button";
-import BackButton from "../../../common/BackButton";
-import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
-
 const Account = ({ user, handleLogOut, onexit, show }) => {
+  
   const screen_height = Dimensions.get("screen").height;
-
   const [showLevels, setShowLevels] = useState(false);
   const [showDonation, setShowDonation] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
 
   const opacityAnim = useRef(new Animated.Value(0)).current;
-
   const pan = useRef(new Animated.Value(0)).current;
-
-  /* const [loaded] = useFonts({
-    PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
-    PoppinsLight: require("./fonts/Poppins-Light.ttf"),
-  }); */
 
   const slide = () => {
     Animated.timing(opacityAnim, {
@@ -66,17 +49,6 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
   };
 
   const hide = () => {
-    /* Animated.timing(opacityAnim, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(({ finished }) => {
-      if (finished) {
-        setShowLevels(false);
-        setShowDonation(false);
-        setShowFeedback(false);
-      }
-    });  */
     Animated.timing(pan, {
       toValue: screen_height,
       duration: 300,
@@ -90,12 +62,6 @@ const Account = ({ user, handleLogOut, onexit, show }) => {
   };
 
   show ? slide() : hide();
-
-  /* useBackHandler(() => {
-    onexit();
-    hide();
-    return true;
-  }); */
 
   const deleteAccount = async () => {
     handleLogOut();

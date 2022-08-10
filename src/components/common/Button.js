@@ -1,23 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Animated,
-  Easing,
-  TouchableNativeFeedback,
-} from "react-native";
+//React
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableNativeFeedback } from "react-native";
+
+//Third Party
 import { responsiveFontSize } from "react-native-responsive-dimensions";
 
-const Button = ({
-  icon,
-  title,
-  color,
-  hovercolor,
-  borderradius,
-  onPress,
-  fontColor,
-}) => {
+const Button = ({ icon, title, color, hovercolor, borderradius, onPress,fontColor }) => {
+
   const [rippleColor, setRippleColor] = useState(hovercolor);
   const [rippleOverflow, setRippleOverflow] = useState(true);
 

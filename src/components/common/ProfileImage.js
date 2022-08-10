@@ -1,5 +1,6 @@
+//React
 import React from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image} from "react-native";
 
 const ProfileImage = ({ x, url, type }) => {
   return (

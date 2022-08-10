@@ -1,5 +1,6 @@
-import React, {useEffect, useRef, useState} from "react";
-import { Animated, View, StyleSheet } from "react-native";
+//React
+import React from "react";
+import { Animated, StyleSheet } from "react-native";
 
 const Template = () => {
     return (

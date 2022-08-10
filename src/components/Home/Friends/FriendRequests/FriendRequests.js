@@ -1,3 +1,4 @@
+//React
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -7,18 +8,20 @@ import {
   Easing,
   Text,
   ScrollView,
-  ActivityIndicator,
   TouchableNativeFeedback,
   Modal,
   BackHandler,
 } from "react-native";
 
+//Custom Components
 import Empty from "../../../common/Empty";
-
 import BackButton from "../../../common/BackButton";
 import RequestItem from "./RequestItem/RequestItem";
+import CustomLoader from "../../../common/CustomLoader";
 
+//Third Party
 import uuid from "react-native-uuid";
+import Antdesign from "react-native-vector-icons/AntDesign";
 
 //Firebase
 import {
@@ -28,19 +31,16 @@ import {
 } from "firebase/firestore";
 import { firestore } from "../../../../data/FirebaseConfig";
 
-import Antdesign from "react-native-vector-icons/AntDesign";
-import CustomLoader from "../../../common/CustomLoader";
-
 const FriendResquests = ({ user, onExit, refresh }) => {
-  const screen_height = Dimensions.get("screen").height;
-  const slideAnim = useRef(new Animated.Value(screen_height)).current;
 
+  const screen_height = Dimensions.get("screen").height;
   const [modalVisible, setModalVisible] = useState(false);
   const [activeRequested, setActiveRequested] = useState(null);
   const [alreadySent, setAlreadySent] = useState(false);
-
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const slideAnim = useRef(new Animated.Value(screen_height)).current;
 
   useEffect(() => {
     Animated.timing(slideAnim, {

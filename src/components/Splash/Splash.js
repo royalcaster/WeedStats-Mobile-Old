@@ -1,14 +1,11 @@
-import React from "react";
-import { useState, useRef, useEffect } from "react";
-import {View, Pressable, StyleSheet, Text, Animated, Image, Easing } from 'react-native'
+//React
+import React, { useRef, useEffect } from "react";
+import { StyleSheet, Animated, Image, Easing } from 'react-native'
 
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+const Splash = ({onExit}) => {
 
-const  Splash = ({onExit}) => {
-
-    const fadeAnim = useRef(new Animated.Value(0)).current;
-
-    const slideAnim = useRef(new Animated.Value(500)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(500)).current;
 
   const fadeSplash = () => {
     Animated.timing(

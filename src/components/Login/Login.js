@@ -1,25 +1,15 @@
-import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Animated,
-  Dimensions,
-} from "react-native";
-import { useFonts } from "expo-font";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import Button from "../../components/common/Button";
+//React
+import { StyleSheet, Animated, Dimensions } from "react-native";
 import { useEffect, useRef } from "react";
 
-import Svg, { Circle, Line } from "react-native-svg";
+//Third Party
+import Svg, { Circle } from "react-native-svg";
+
+//Custom Components
 import LoginNumber from "./LoginNumber/LoginNumber";
 import LoginLine from "./LoginLine/LoginLine";
 
 const Login = ({ handleLogin }) => {
-  const icon = (
-    <FontAwesome name="google" style={{ fontSize: 25, color: "black" }} />
-  );
 
   const screen_width = Dimensions.get("screen").width;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -31,21 +21,7 @@ const Login = ({ handleLogin }) => {
       useNativeDriver: true,
     }).start();
 
-   /*  startLoginMovie(); */
-  }, []);
-
-  /* const [loaded] = useFonts({
-    PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
-    PoppinsLight: require("./fonts/Poppins-Medium.ttf"),
-  }); */
-
-  if (!loaded) {
-    return null;
-  }
-
-/*   const startLoginMovie = () => {
-
-  } */
+    }, []);
 
   return (
     <Animated.View style={[{ opacity: fadeAnim }, styles.login_container]}>

@@ -1,37 +1,16 @@
-import React from 'react';
-import { useRef, useEffect } from 'react';
-import { StyleSheet, Image, View, Text, Pressable, Animated, Easing, Dimensions, BackHandler} from 'react-native';
-import ReactDOM from "react-dom";
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
-import uuid from 'react-native-uuid'
-
-import BackButton from '../../../../common/BackButton';
-
-import { useFonts } from 'expo-font';
-
+//React
+import React, { useRef, useEffect } from 'react';
+import { StyleSheet, Image, View, Text, Pressable, Animated, Easing, Dimensions } from 'react-native';
 import { useBackHandler } from '@react-native-community/hooks'
 
+//Custom Components
+import BackButton from '../../../../common/BackButton';
+
 const Donation = ( { onexit } ) => {
-
-    /* const PayPalButton = window.paypal.Buttons.driver("react", { React, ReactDOM });
-
-    const createOrder = (data, actions) => {
-        return actions.order.create({
-          purchase_units: [
-            {
-              amount: {
-                value: "1",
-              },
-            },
-          ],
-        });
-    } */
 
     const screen_width = Dimensions.get("screen").width;
     const fadeAnim = useRef(new Animated.Value(screen_width)).current;
     const opacityAnim = useRef(new Animated.Value(0)).current;
-    
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
@@ -47,11 +26,6 @@ const Donation = ( { onexit } ) => {
             useNativeDriver: true,
           }).start();
       }, [fadeAnim, opacityAnim]);
-
-    /* const [loaded] = useFonts({
-        PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
-        PoppinsLight: require('./fonts/Poppins-Light.ttf')
-    }); */
 
     useBackHandler(() => {
         hide();

@@ -1,6 +1,5 @@
-import React, {useEffect, useRef, useState} from "react";
-import { Animated, View, StyleSheet } from "react-native";
-import { TouchableNativeFeedback } from "react-native";
+import React from "react";
+import { Animated, View, StyleSheet,TouchableNativeFeedback } from "react-native";
 
 const IconButton = ({icon, onPress}) => {
     return (

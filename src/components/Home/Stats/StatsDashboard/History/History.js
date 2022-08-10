@@ -1,45 +1,35 @@
+//React
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Animated,
-  Easing,
-  View,
-  StyleSheet,
-  Dimensions,
-  Modal,
-  FlatList,
-  Text
-} from "react-native";
+import { Animated, Easing, View, StyleSheet, Dimensions, Modal, FlatList, Text } from "react-native";
+import { useBackHandler } from "@react-native-community/hooks";
 
-import AntDesign from 'react-native-vector-icons/AntDesign'
-
+//Custom Components
 import HistoryItem from './HistoryItem/HistoryItem'
 import IconButton from '../../../../common/IconButton'
 import Button from '../../../../common/Button'
-import MapView, {
-  PROVIDER_GOOGLE,
-  Marker,
-} from "react-native-maps";
+import CustomMarker from "../../../../common/CustomMarker";
+import BackButton from "../../../../common/BackButton";
 
-import { mapStyle } from "../../../../../data/CustomMapStyle";
+//Third Party
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
+import { responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
 import uuid from 'react-native-uuid'
 
-import CustomMarker from "../../../../common/CustomMarker";
-
-import { responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
-
-import BackButton from "../../../../common/BackButton";
-import { useBackHandler } from "@react-native-community/hooks";
+//Konstanten
+import { mapStyle } from "../../../../../data/CustomMapStyle";
 
 const History = ({ show, onExit, user, history}) => {
     
   const screen_width = Dimensions.get("screen").width;
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
-  const pan = useRef(new Animated.Value(screen_width * -1)).current;
   const [showMap, setShowMap] = useState(false);
   const [activeEvent, setActiveEvent] = useState(null);
   const [mapType, setMapType] = useState("standard");
   const switch_icon = <AntDesign name={"picture"} style={{fontSize: 20, color: "white"}}/>
+
+  const pan = useRef(new Animated.Value(screen_width * -1)).current;
 
   useEffect(() => {
     if (!show) {

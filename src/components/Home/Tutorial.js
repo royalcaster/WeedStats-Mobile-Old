@@ -1,5 +1,8 @@
-import React, {useEffect, useRef, useState} from "react";
-import { Animated, View, StyleSheet, Dimensions } from "react-native";
+//React
+import React from "react";
+import { Animated, StyleSheet, Dimensions } from "react-native";
+
+//Third Party
 import AppIntroSlider from 'react-native-app-intro-slider';
 
 const Tutorial = ({renderItem, slides, onDone }) => {

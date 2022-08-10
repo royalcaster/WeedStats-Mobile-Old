@@ -1,4 +1,5 @@
-import React from "react";
+//React
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -7,48 +8,32 @@ import {
   Animated,
   Easing,
   TouchableNativeFeedback,
-  ActivityIndicator,
-  ScrollView,
-  StatusBar
 } from "react-native";
-import { useFonts } from "expo-font";
-import { useState, useEffect, useRef } from "react";
-import uuid from "react-native-uuid";
+
+//Custom Components
 import Account from "./Account/Account";
 import FriendPage from "./FriendPage/FriendPage";
 import SearchPanel from './SearchPanel/SearchPanel'
-import Feather from 'react-native-vector-icons/Feather'
 import FriendRequests from "../Friends/FriendRequests/FriendRequests";
 import FriendList from "./FriendList/FriendList";
+
+//Third Party
+import Feather from 'react-native-vector-icons/Feather'
 import { responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
 
-const Groups = ({ user, friendList, handleLogOut, toggleNavbar }) => {
+const Groups = ({ user, handleLogOut, toggleNavbar }) => {
   
   const [rippleColor, setRippleColor] = useState("rgba(255,255,255,0.1)");
   const [rippleOverflow, setRippleOverflow] = useState(false);
-
-/*   const [friendList, setFriendList] = useState();
- */
   const [showFriend, setShowFriend] = useState(false);
   const [activeFriend, setActiveFriend] = useState();
-
   const [showAddFriend, setShowAddFriend] = useState(false);
-
-  /* const [loading, setLoading] = useState(true); */
-  const [showDonation, setShowDonation] = useState(false);
-
   const [showAccount, setShowAccount] = useState(false);
   const [showGroup, setShowGroup] = useState(false);
   const [showRequests, setShowRequests] = useState();
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  const accountAnim = useRef(new Animated.Value(100)).current;
-
-  useEffect(() => {
-    /* getFriendList(); */
-    /* console.log(showAccount) */
-  },[showAccount]);
+  const accountAnim = useRef(new Animated.Value(100)).current;;
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -63,23 +48,6 @@ const Groups = ({ user, friendList, handleLogOut, toggleNavbar }) => {
       useNativeDriver: true,
     }).start();
   }, [showGroup]);
-
-  /* const getFriendList = async () => {
-    const docRef = doc(firestore, "users", user.id);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-        setFriendList(docSnap.data().friends);
-    }
-    setLoading(false);
-  } */
-
-  /* const [loaded] = useFonts({
-    PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
-    PoppinsMedium: require("./fonts/Poppins-Medium.ttf"),
-    PoppinsLight: require("./fonts/Poppins-Light.ttf"),
-  }); */
-
 
   return (
     <>

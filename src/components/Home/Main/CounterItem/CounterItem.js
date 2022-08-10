@@ -58,9 +58,9 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
     PoppinsLight: require("./fonts/Poppins-Light.ttf"),
   }); */
 
-  if (!loaded) {
+ /*  if (!loaded) {
     return null;
-  }
+  } */
 
   const calcLevelStatus = (counter) => {
     if (counter >= 420) {

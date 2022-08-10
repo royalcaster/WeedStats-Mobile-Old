@@ -1,3 +1,4 @@
+//React
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -13,39 +14,34 @@ import {
   PanResponder,
 } from "react-native";
 
+//Custom Components
 import ProfileImage from '../../../common/ProfileImage'
-
-import { responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
-
-import Antdesign from "react-native-vector-icons/AntDesign";
-import levels from "../../../../data/Levels.json";
 import Best from "./Best/Best";
-
-//Firebase
-import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
-import { db, firestore } from "../../../../data/FirebaseConfig";
-
 import BackButton from "../../../common/BackButton";
 import CustomLoader from "../../../common/CustomLoader";
+
+//Third Party
+import { responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
+import Antdesign from "react-native-vector-icons/AntDesign";
+
+//Konstanten
+import levels from "../../../../data/Levels.json";
+
+//Firebase
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { firestore } from "../../../../data/FirebaseConfig";
 
 const FriendPage = ({ show, userid, onExit, realuser, refresh, toggleNavbar }) => {
     
   const screen_width = Dimensions.get("screen").width;
-  const screen_height = Dimensions.get("screen").height;
-
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
-
   const [modalVisible, setModalVisible] = useState(false);
 
-  
   const pan = useRef(new Animated.Value(0)).current;
-
   const slideAnim = useRef(new Animated.Value(screen_width)).current;
-
   const slideAnim2 = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
-
   const opacityAnim2 = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {

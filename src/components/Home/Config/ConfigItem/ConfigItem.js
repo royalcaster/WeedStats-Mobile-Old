@@ -1,23 +1,13 @@
+//React
 import React, { useState } from "react";
-import { StyleSheet, View, Pressable, Image, Text, TouchableNativeFeedback } from "react-native";
-import { useFonts } from "expo-font";
+import { StyleSheet, View, Image, Text, TouchableNativeFeedback } from "react-native";
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+//Third Party
 import { responsiveFontSize } from "react-native-responsive-dimensions";
 
 const ConfigItem = ({ type, config, onToggle }) => {
-  /* const [test, setType] = useState(configtype); */
 
   const [active, setActive] = useState(config);
-
-  /* const [loaded] = useFonts({
-    PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
-    PoppinsLight: require("./fonts/Poppins-Light.ttf"),
-  }); */
-
-  if (!loaded) {
-    return null;
-  }
 
   return (
       <TouchableNativeFeedback 

@@ -1,16 +1,19 @@
+//React
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, View, StyleSheet, Text, Easing } from "react-native";
-import ProfileImage from "./ProfileImage";
+import { Animated, View, StyleSheet, Text, Easing, TouchableNativeFeedback } from "react-native";
 
-import { TouchableNativeFeedback } from "react-native";
+//Custom Components
+import ProfileImage from "../../../../common/ProfileImage";
 
 //Firebase
-import { setDoc, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
-import { db, firestore } from "../../../../../data/FirebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
+import { firestore } from "../../../../../data/FirebaseConfig";
 
+//Third Party
 import Feather from "react-native-vector-icons/Feather";
 
 const RequestItem = ({ userid, onAccept, onDecline }) => {
+  
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const slide1Anim = useRef(new Animated.Value(-500)).current;
   const slide2Anim = useRef(new Animated.Value(-500)).current;

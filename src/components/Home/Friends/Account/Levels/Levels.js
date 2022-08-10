@@ -1,22 +1,13 @@
-import React from "react";
-import { useEffect, useRef } from "react";
-import {
-  View,
-  Image,
-  StyleSheet,
-  Text,
-  Animated,
-  Pressable,
-  Easing,
-  BackHandler,
-  Dimensions,
-} from "react-native";
-import { useFonts } from "expo-font";
+//React
+import React, { useRef } from "react";
+import { View, StyleSheet, Text, Animated, Easing, Dimensions } from "react-native";
+
+//Custom Components
 import BackButton from "../../../../common/BackButton";
 import LevelImage from "../../../../common/LevelImage";
-import levels from "../Levels.json";
 
-import { useBackHandler } from '@react-native-community/hooks'
+//Konstanten
+import levels from "../../../../../data/Levels.json";
 
 const Levels = ({ onexit, show }) => {
 
@@ -35,8 +26,7 @@ const Levels = ({ onexit, show }) => {
   const hide = () => {
     Animated.timing(fadeAnim, {
       toValue: screen_width,
-      duration: 300,/* 
-      easing: Easing.bezier(0,.79,0,.99), */
+      duration: 300,
       useNativeDriver: true,
     }).start(({ finished }) => {
       if (finished) {
@@ -46,11 +36,6 @@ const Levels = ({ onexit, show }) => {
   };
 
   show ? slide() : hide();
-
-  const [loaded] = useFonts({
-    PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
-    PoppinsLight: require("./fonts/Poppins-Light.ttf"),
-  });
 
   return (
     <Animated.View style={[{ opacity: 1 , transform: [{translateX: fadeAnim}]}, styles.container]}>

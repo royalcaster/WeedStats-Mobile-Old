@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import { View, Image, StyleSheet, Text, TouchableNativeFeedback, Animated, Easing } from 'react-native'
+//React
+import React from "react";
+import { View, StyleSheet, Animated } from 'react-native'
 
+//Custom Components
 import ProfileImage from "./ProfileImage";
 
-const CustomMarker = ({ photoUrl, username, type, timestamp }) => {
-
+const CustomMarker = ({ photoUrl }) => {
 
     return (
         <>

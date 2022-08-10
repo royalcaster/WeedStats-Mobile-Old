@@ -1,6 +1,11 @@
-import React, {useEffect, useRef, useState} from "react";
-import { Animated, View, StyleSheet, Text, Easing } from "react-native";
+//React
+import React, {useEffect, useRef } from "react";
+import { Animated, StyleSheet, Text, Easing } from "react-native";
+
+//Custom Components
 import LevelImage from "../../../../common/LevelImage";
+
+//Third Party
 import { LinearGradient } from "expo-linear-gradient";
 import { responsiveFontSize } from "react-native-responsive-dimensions";
 

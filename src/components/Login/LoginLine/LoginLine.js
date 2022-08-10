@@ -1,6 +1,7 @@
-import React, {useEffect, useRef, useState} from "react";
-import { Animated, View, StyleSheet, Text } from "react-native";
-import Svg, { Circle, Line } from "react-native-svg";
+//React
+import React, {useEffect, useRef } from "react";
+import { Animated } from "react-native";
+import {Line } from "react-native-svg";
 
 const LoginLine = ({ x1,  y1,  x2,  y2,  stroke,  strokeWidth, delay }) => {
 
@@ -23,9 +24,3 @@ const LoginLine = ({ x1,  y1,  x2,  y2,  stroke,  strokeWidth, delay }) => {
 }
 
 export default LoginLine
-
-const styles = StyleSheet.create({
-    container: {
-
-    }
-});

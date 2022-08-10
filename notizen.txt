@@ -1,5 +1,0 @@
-Einstellungen:
-
-    - Gesamt Counter und Main teilen
-    - Letzten Eintrag (Typ und Zeitpunkt) teilen
-    - Standort teilen

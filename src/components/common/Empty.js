@@ -1,19 +1,11 @@
+//React
 import React, { useEffect, useRef } from "react";
-import { useFonts } from "expo-font";
+import { StyleSheet, View, Text, Animated, Easing } from "react-native";
+
+//Third Party
 import Ionicons from "react-native-vector-icons/Ionicons";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Animated,
-  Easing
-} from "react-native";
 
 const Empty = ({ title, tip }) => {
-  /* const [loaded] = useFonts({
-    PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
-    PoppinsLight: require("./fonts/Poppins-Light.ttf"),
-  }); */
 
   const fadeAnim = useRef(new Animated.Value(100)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;

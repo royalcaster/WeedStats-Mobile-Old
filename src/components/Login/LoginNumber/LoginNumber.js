@@ -1,20 +1,21 @@
-import React, {useEffect, useRef, useState} from "react";
-import { Animated, View, StyleSheet, Text, Easing } from "react-native";
+//React
+import React, {useEffect, useRef } from "react";
+import { Animated, StyleSheet, Easing } from "react-native";
 
 const LoginNumber = ({ fontFamily, color, top, left, fontSize, number, delay }) => {
 
 const scaleAnim = useRef(new Animated.Value(0)).current;
 
-useEffect(() => {
-    Animated.timing(scaleAnim,
-        {
-            toValue: 1,
-            delay: delay,
-            useNativeDriver: true,
-            duration: 500,
-            easing: Easing.bounce
-        }).start()
-},[]);
+    useEffect(() => {
+        Animated.timing(scaleAnim,
+            {
+                toValue: 1,
+                delay: delay,
+                useNativeDriver: true,
+                duration: 500,
+                easing: Easing.bounce
+            }).start()
+    },[]);
 
     return  (
                 <Animated.Text style={{
@@ -37,9 +38,3 @@ useEffect(() => {
 }
 
 export default LoginNumber
-
-const styles = StyleSheet.create({
-    container: {
-
-    }
-});

@@ -1,9 +1,9 @@
-import React, {useEffect, useRef, useState} from "react";
-import { Animated, View, StyleSheet } from "react-native";
+//React
+import React from "react";
+import { Animated, View, StyleSheet, TouchableNativeFeedback } from "react-native";
 
+//Third Party
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-
-import { TouchableNativeFeedback } from "react-native";
 
 const BackButton = ({onPress}) => {
     return (

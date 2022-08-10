@@ -1,4 +1,5 @@
-import React, {useEffect, useRef, useState} from "react";
+//React
+import React, {useEffect, useRef } from "react";
 import { Animated, StyleSheet, Easing } from "react-native";
 
 const CustomLoader = ({ x }) => {

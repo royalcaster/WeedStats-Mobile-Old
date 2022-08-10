@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { useRef, useEffect } from 'react';
+//React
+import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, View, Text, Animated, Easing, Dimensions, TextInput, Modal } from 'react-native';
-import moment from "moment";
-import { useFonts } from 'expo-font';
+import { useBackHandler } from '@react-native-community/hooks'
+
+//Third Party
 import BackButton from '../../../../common/BackButton';
 import Button from '../../../../common/Button';
+
+//Third Party
+import moment from "moment";
 import RNTextArea from "@freakycoder/react-native-text-area";
 import uuid from 'react-native-uuid'
-import {
-    setDoc,
-    doc,
-    getDoc,
-    updateDoc
-  } from "firebase/firestore";
+
+//Firebase
+import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../../../../data/FirebaseConfig";
-import { useBackHandler } from '@react-native-community/hooks'
 
 const Feedback = ( { onexit, userid } ) => {
 
@@ -44,21 +44,13 @@ const Feedback = ( { onexit, userid } ) => {
       }, [fadeAnim, opacityAnim]);
 
       useEffect(() => {
-
         getUser();
-
         const [buttonBlocked, setButtonBlocked] = useState(false);
         if (moment(new Date(Date.now())).diff(moment(new Date(user.last_feedback * 1000)), "days")<7 &&
         moment(new Date(Date.now())).diff(moment(new Date(user.last_feedback * 1000)), "days")>0) {
         setButtonBlocked(true);
         }
-        
       });
-
-    /* const [loaded] = useFonts({
-        PoppinsBlack: require('./fonts/Poppins-Black.ttf'),
-        PoppinsLight: require('./fonts/Poppins-Light.ttf')
-    }); */
 
     const getUser = async () => {
         const docRef = doc(firestore, "users", userid);

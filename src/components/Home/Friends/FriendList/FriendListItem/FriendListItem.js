@@ -1,20 +1,29 @@
+//React
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, View, StyleSheet, Text, Easing, Image} from "react-native";
+import { Animated, View, StyleSheet, Text, Easing, Image } from "react-native";
+
+//Custom Components
 import ProfileImage from "../../../../common/ProfileImage";
-import levels from "../Levels.json";
 
-import { TouchableNativeFeedback } from "react-native";
+//Konstanten
+import levels from "../../../../../data/Levels.json";
 
+//Third Party
 import { responsiveFontSize } from "react-native-responsive-dimensions";
+
 //Firebase
-import { setDoc, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
-import { db, firestore } from "../../../../../data/FirebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
+import { firestore } from "../../../../../data/FirebaseConfig";
 
 const FriendListItem = ({ userid, onPress }) => {
+
+  const [user, setUser] = useState();
+  const [counters, setCounters] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const slide1Anim = useRef(new Animated.Value(-200)).current;
   const slide2Anim = useRef(new Animated.Value(-200)).current;
-
   const scale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -42,10 +51,6 @@ const FriendListItem = ({ userid, onPress }) => {
       easing: Easing.bezier(0, 1.02, 0.21, 0.97),
     }).start();
   };
-
-  const [user, setUser] = useState();
-  const [counters, setCounters] = useState();
-  const [isLoading, setIsLoading] = useState(true);
 
   const loadUser = async () => {
     try {
@@ -138,13 +143,13 @@ const FriendListItem = ({ userid, onPress }) => {
                 >
                   <Text style={styles.username}>{user.username}</Text>
                   <View style={{flexDirection: "row", maxHeight: 30}}>
-                    {Math.floor(counters[0].counter / 70) == 0 ? <Image style={styles.lvl_image} source={require('./img/lvl7.png')}/> : null}
-                    {Math.floor(counters[0].counter / 70) == 1 ? <Image style={styles.lvl_image} source={require('./img/lvl2.png')}/> : null}
-                    {/* {Math.floor(counters[0].counter / 70) == 2 ? <Image style={styles.lvl_image} source={require('./img/lvl3.png')}/> : null} */}
-                    {/* {Math.floor(counters[0].counter / 70) == 3 ? <Image style={styles.lvl_image} source={require('./img/lvl4.png')}/> : null} */}
-                    {/* {Math.floor(counters[0].counter / 70) == 4 ? <Image style={styles.lvl_image} source={require('./img/lvl5.png')}/> : null} */}
-                    {/* {Math.floor(counters[0].counter / 70) == 5 ? <Image style={styles.lvl_image} source={require('./img/lvl6.png')}/> : null} */}
-                    {Math.floor(counters[0].counter / 70) == 6 ? <Image style={styles.lvl_image} source={require('./img/lvl7.png')}/> : null}
+                    {Math.floor(counters[0].counter / 70) == 0 ? <Image style={styles.lvl_image} source={require('../../../../../data/img/lvl7.png')}/> : null}
+                    {Math.floor(counters[0].counter / 70) == 1 ? <Image style={styles.lvl_image} source={require('../../../../../data/img/lvl2.png')}/> : null}
+                    {/* {Math.floor(counters[0].counter / 70) == 2 ? <Image style={styles.lvl_image} source={require('../../../../../data/img/lvl3.png')}/> : null} */}
+                    {/* {Math.floor(counters[0].counter / 70) == 3 ? <Image style={styles.lvl_image} source={require('../../../../../data/img/lvl4.png')}/> : null} */}
+                    {/* {Math.floor(counters[0].counter / 70) == 4 ? <Image style={styles.lvl_image} source={require('../../../../../data/img/lvl5.png')}/> : null} */}
+                    {/* {Math.floor(counters[0].counter / 70) == 5 ? <Image style={styles.lvl_image} source={require('../../../../../data/img/lvl6.png')}/> : null} */}
+                    {Math.floor(counters[0].counter / 70) == 6 ? <Image style={styles.lvl_image} source={require('../../../../../data/img/lvl7.png')}/> : null}
                     <Text
                       style={[
                         styles.username,

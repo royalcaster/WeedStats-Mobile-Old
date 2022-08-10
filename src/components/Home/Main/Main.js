@@ -136,7 +136,7 @@ const Main = ({ user, toggleCounter }) => {
       console.log("Error in Config beim Speichern: ", e);
     }
     setLoading(false);
-    setSaved(true);
+    /* setSaved(true); */
   };
 
   const slides = [

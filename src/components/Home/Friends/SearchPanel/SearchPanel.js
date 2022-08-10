@@ -1,28 +1,31 @@
+//React
 import React, {useEffect, useRef, useState} from "react";
 import { Animated, View, StyleSheet, TextInput, Dimensions, Easing, Text, ScrollView, ActivityIndicator, TouchableNativeFeedback, Modal } from "react-native";
+import { useBackHandler } from '@react-native-community/hooks'
+
+//Custom Components
 import BackButton from '../../../common/BackButton'
-import uuid from 'react-native-uuid'
+import FriendListItem from "../FriendList/FriendListItem/FriendListItem";
 
 //Firebase
 import { doc, getDoc, updateDoc, getDocs, collection, query, where } from "firebase/firestore";
 import { firestore } from "../../../../data/FirebaseConfig";
-import FriendListItem from "../FriendList/FriendListItem/FriendListItem";
 import Antdesign from 'react-native-vector-icons/AntDesign'
-import { useBackHandler } from '@react-native-community/hooks'
+
+//Third Party
+import uuid from 'react-native-uuid'
 
 const SearchPanel = ({user, onExit}) => {
 
     const screen_height = Dimensions.get("screen").height;
-    const slideAnim = useRef(new Animated.Value(screen_height)).current;
-
-    const textInputRef = useRef(null);;
-
     const [modalVisible, setModalVisible] = useState(false);
     const [activeRequested, setActiveRequested] = useState(null);
     const [alreadySent, setAlreadySent] = useState(false);
-
     const [results, setResults] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const slideAnim = useRef(new Animated.Value(screen_height)).current;
+    const textInputRef = useRef(null);
 
     useEffect(() => {
         Animated.timing(slideAnim,{
