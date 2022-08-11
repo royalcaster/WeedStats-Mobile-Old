@@ -1,6 +1,7 @@
 //React
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {StyleSheet, Animated, Easing} from "react-native";
+import { UserContext } from "../../../data/UserContext";
 
 //Custom Components
 import StatsDashboard from "./StatsDashboard/StatsDashboard";
@@ -9,7 +10,10 @@ import CustomLoader from "../.././common/CustomLoader";
 //Service
 import { getLocalData } from "./../../../data/Service";
 
-const Stats = ({ user }) => {
+const Stats = () => {
+
+  const user = useContext(UserContext);
+
   const [localData, setLocalData] = useState([]);
   const [localDataLoaded, setLocalDataLoaded] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -52,7 +56,7 @@ const Stats = ({ user }) => {
   return (
     <Animated.View style={[{ opacity: 1 }, styles.container]}>
       {localDataLoaded && localData.length != 0 ? (
-        <StatsDashboard user={user} localData={localData} />
+        <StatsDashboard localData={localData} />
       ) : <CustomLoader x={80}/>}
     </Animated.View>
   );

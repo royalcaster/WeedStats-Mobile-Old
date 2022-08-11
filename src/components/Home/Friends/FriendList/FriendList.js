@@ -1,5 +1,5 @@
 //React
-import React, {useEffect, useRef, useState, memo} from "react";
+import React, {useEffect, useRef, useState, memo, useContext} from "react";
 import { Animated, View, StyleSheet, ScrollView } from "react-native";
 
 //Custom Components
@@ -14,8 +14,13 @@ import uuid from 'react-native-uuid'
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../../../data/FirebaseConfig";
 
+//Service
+import { UserContext } from "../../../../data/UserContext";
 
-const FriendList = memo(({ user, setActiveFriend, setShowFriend}) => {
+
+const FriendList = memo(({ setActiveFriend, setShowFriend}) => {
+
+    const user = useContext(UserContext);
 
     const [friendList, setFriendList] = useState();
     const [loading, setLoading] = useState(true);

@@ -1,21 +1,7 @@
 //React
 import React from "react";
-import { useState, useEffect, useRef} from "react";
-import {
-  StyleSheet,
-  Image,
-  View,
-  Text,
-  ScrollView,
-  Dimensions,
-  Picker,
-  Animated,
-  Easing,
-  TouchableNativeFeedback
-} from "react-native";
-
-//Expo
-import { useFonts } from "expo-font";
+import { useState, useEffect, useRef, useContext} from "react";
+import { StyleSheet, Image, View, Text, ScrollView, Dimensions, Animated, Easing, TouchableNativeFeedback } from "react-native";
 
 //Custom Components
 import History from "./History/History";
@@ -27,7 +13,6 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons'
 //Tools
 import toGermanDate from "../../../../data/DateConversion";
 
-
 //Third Party
 import SwitchSelector from "react-native-switch-selector";
 import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
@@ -35,8 +20,9 @@ import { LinearGradient } from "expo-linear-gradient";
 
 //Service
 import { calcDailyAverage, filterByType, filterByMostRecent, getEntryDates, getBreakDates, createLineChartData, createBarChartData, calcStreak } from "../../../../data/Service";
+import { UserContext } from "../../../../data/UserContext";
 
-const StatsDashboard = ({ user, localData }) => {
+const StatsDashboard = ({ localData }) => {
   
   const [selectedType, setSelectedType] = useState("main");
   const [selectedTime, setSelectedTime] = useState(0);
@@ -250,7 +236,7 @@ const StatsDashboard = ({ user, localData }) => {
 
     <>
 
-    {showHistory ? <History show={showHistory} user={user} onExit={() => setShowHistory(false)} history={localData}/> : null}
+    {showHistory ? <History show={showHistory} onExit={() => setShowHistory(false)} history={localData}/> : null}
 
     <ScrollView style={styles.container}>
       <Animated.View style={{ opacity: 1, alignItems: "center"}}>

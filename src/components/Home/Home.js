@@ -1,5 +1,5 @@
-//Reaect
-import React, { useState, useRef } from "react";
+//React
+import React, { useState, useRef, useContext } from "react";
 import {
   Animated,
   StyleSheet,
@@ -17,8 +17,9 @@ import MenuButton from "./MenuButton";
 //Third Party
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Entypo from "react-native-vector-icons/Entypo";
+import { UserContext } from "../../data/UserContext";
 
-export default function Home({ user, handleLogOut, toggleCounter }) {
+export default function Home({ handleLogOut, toggleCounter }) {
 
   const [view, setView] = useState("main");
   const navSlide = useRef(new Animated.Value(0)).current;
@@ -45,13 +46,13 @@ export default function Home({ user, handleLogOut, toggleCounter }) {
     <Animated.View style={[{ opacity: 1 }, styles.container]}>
       <View style={styles.content_container}>
         {view == "main" ? (
-          <Main user={user} toggleCounter={toggleCounter} />
+          <Main toggleCounter={toggleCounter} />
         ) : null}
-        {view == "stats" ? <Stats user={user}/> : null}
-        {view == "map" ? <Map user={user} /> : null}
+        {view == "stats" ? <Stats/> : null}
+        {view == "map" ? <Map/> : null}
         {view == "config" ? <Config /> : null}
         {view == "groups" ? (
-          <Groups user={user} handleLogOut={handleLogOut} toggleNavbar={toggleNavbar}/>
+          <Groups handleLogOut={handleLogOut} toggleNavbar={toggleNavbar}/>
         ) : null}
       </View>
 

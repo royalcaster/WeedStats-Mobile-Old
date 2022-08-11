@@ -1,23 +1,20 @@
-import React from "react";
-import { useEffect, useRef, useState } from "react";
-import { useFonts } from "expo-font";
-import Statusbar from "./StatusBar/Statusbar";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import LevelImage from "../../../common/LevelImage";
-import levels from "../../../../data/Levels.json";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Pressable,
-  Animated,
-  Easing,
-} from "react-native";
+//React
+import React, { useEffect, useRef, useState } from "react";
+import { StyleSheet, Text, View, Image, Pressable, Animated, Easing } from "react-native";
 
+//Custom Components
+import Statusbar from "./StatusBar/Statusbar";
+import LevelImage from "../../../common/LevelImage";
+
+//Third Party
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
 
+//Data
+import levels from "../../../../data/Levels.json";
+
 const CounterItem = ({ type, counter, toggleCounter }) => {
+
   const [buttonPressed, setButtonPressed] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -74,17 +71,27 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
   };
 
   const calcLevelName = (counter) => {
+    if (counter) {
     let indicator = Math.floor(counter / 70);
     return indicator > levels.length - 1
       ? levels[levels.length - 1].name
-      : levels[0].name;
+      : levels[indicator].name;
+    }
+    else {
+      return levels[0].name;
+    }
   };
 
   const getGradientColors = (counter) => {
+    if (counter) {
     let indicator = Math.floor(counter / 70);
     return indicator > levels.length - 1
       ? levels[levels.length - 1].colors
-      : levels[0].colors;
+      : levels[indicator].colors;
+    }
+    else {
+      return levels[0].colors;
+    }
   };
 
   const grow = () => {

@@ -1,6 +1,6 @@
 //React
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, View, StyleSheet, Text, Easing, Image } from "react-native";
+import { View, Animated, StyleSheet, Text, Easing, Image } from "react-native";
 
 //Custom Components
 import ProfileImage from "../../../../common/ProfileImage";

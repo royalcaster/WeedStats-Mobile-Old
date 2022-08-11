@@ -19,7 +19,7 @@ import uuid from 'react-native-uuid'
 //Konstanten
 import { mapStyle } from "../../../../../data/CustomMapStyle";
 
-const History = ({ show, onExit, user, history}) => {
+const History = ({ show, onExit, history}) => {
     
   const screen_width = Dimensions.get("screen").width;
   const [loading, setLoading] = useState(true);
@@ -128,9 +128,7 @@ const History = ({ show, onExit, user, history}) => {
                     >
                       <CustomMarker
                         photoUrl={user.photoUrl}
-                        username={user.uername}
                         type={activeEvent.type}
-                        timestamp={activeEvent.timestamp}
                       />
                     </Marker>
                 </>

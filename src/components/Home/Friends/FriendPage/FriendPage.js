@@ -1,18 +1,6 @@
 //React
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Animated,
-  Easing,
-  View,
-  StyleSheet,
-  Dimensions,
-  Text,
-  Image,
-  TouchableNativeFeedback,
-  Modal,
-  BackHandler,
-  PanResponder,
-} from "react-native";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Animated, Easing, View, StyleSheet, Dimensions, Text, Image, TouchableNativeFeedback, Modal, BackHandler, PanResponder } from "react-native";
 
 //Custom Components
 import ProfileImage from '../../../common/ProfileImage'
@@ -31,7 +19,12 @@ import levels from "../../../../data/Levels.json";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../../../data/FirebaseConfig";
 
-const FriendPage = ({ show, userid, onExit, realuser, refresh, toggleNavbar }) => {
+//Service
+import {UserContext} from '../../../../data/UserContext'
+
+const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
+
+  const realuser = useContext(UserContext);
     
   const screen_width = Dimensions.get("screen").width;
   const [user, setUser] = useState();

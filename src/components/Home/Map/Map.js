@@ -1,99 +1,50 @@
-import React, { useEffect, useReducer, useState, useRef } from "react";
-import { useFonts } from "expo-font";
-import {
-  StyleSheet,
-  Image,
-  View,
-  Text,
-  ScrollView,
-  Dimensions,
-  TouchableOpacity,
-  TouchableNativeFeedback,
-} from "react-native";
-
-import { mapStyle } from "../../../data/CustomMapStyle";
-
-import IconButton from "../../common/IconButton";
-
-import AntDesign from "react-native-vector-icons/AntDesign";
-
-import uuid from "react-native-uuid";
-
-import MapView, {
-  PROVIDER_GOOGLE,
-  Marker,
-  Heatmap,
-} from "react-native-maps";
-
+//React
+import React, { useEffect, useState, useRef, useContext } from "react";
+import { StyleSheet, LogBox, Image, View, Text, ScrollView, Dimensions, TouchableOpacity, TouchableNativeFeedback } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+//Custom Components
+import IconButton from "../../common/IconButton";
 import ProfileImage from "../../common/ProfileImage";
-
-import { Pages } from "react-native-pages";
-
 import CustomMarker from "../../common/CustomMarker";
 
+//Konstanten
+import { mapStyle } from "../../../data/CustomMapStyle";
+
+//Third Party
+import AntDesign from "react-native-vector-icons/AntDesign";
+import uuid from "react-native-uuid";
+import MapView, { PROVIDER_GOOGLE, Marker, Heatmap } from "react-native-maps";
+import { Pages } from "react-native-pages";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { LogBox } from "react-native";
-
-import {
-  doc,
-  getDoc,
-} from "firebase/firestore";
-
+//Firebase
+import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../../data/FirebaseConfig";
 
-const Map = ({ user }) => {
+//Service
+import { UserContext } from "../../../data/UserContext";
+
+const Map = () => {
   LogBox.ignoreAllLogs();
 
+  const user = useContext(UserContext);
+
   const windowHeight = Dimensions.get("window").height;
-
   const [view, setView] = useState("friends");
-
   const [localData, setLocalData] = useState([]);
-
   const [localDataLoaded, setLocalDataLoaded] = useState(false);
-
   const carouselRef = React.useRef(null);
-
   const [mapType, setMapType] = useState("standard");
-
   const [region, setRegion] = useState(null);
-
   const [loading, setLoading] = useState(true);
-
   const [markers, setMarkers] = useState([]);
-
   const camref = useRef(null);
-
-  const [mapReady, setMapReady] = useState(false);
-
-  const Camera1 = {
-  headering: "",
-   pitch: 0,
-  }
-
-  const Camera2 = {
-    headering: "",
-    pitch: 100,
-   }
-
-  /* const initRegion = {
-    latitude: 50.612610476359684,
-    longitude: 12.626925924754111,
-    latitudeDelta: 0.25,
-    longitudeDelta: 0.25,
-  }; */
 
   useEffect(() => {
     loadData(); //Freunde + deren letzte Einträge
     getLocalData(); //Einträge des Users für Heatmap
   }, []);
-
-  /* useEffect(() => {
-    console.log(markers.length);
-  },[markers]); */
 
   const loadData = async () => {
     try {
@@ -407,9 +358,7 @@ const Map = ({ user }) => {
                   >
                     <CustomMarker
                       photoUrl={marker.photoUrl}
-                      username={"test"}
                       type={marker.type}
-                      timestamp={marker.timestamp}
                     />
                   </Marker>
                 ))}

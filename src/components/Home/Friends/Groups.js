@@ -1,5 +1,5 @@
 //React
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   View,
   Text,
@@ -21,7 +21,12 @@ import FriendList from "./FriendList/FriendList";
 import Feather from 'react-native-vector-icons/Feather'
 import { responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
 
-const Groups = ({ user, handleLogOut, toggleNavbar }) => {
+//Serice
+import { UserContext } from "../../../data/UserContext";
+
+const Groups = ({ handleLogOut, toggleNavbar }) => {
+
+  const user = useContext(UserContext);
   
   const [rippleColor, setRippleColor] = useState("rgba(255,255,255,0.1)");
   const [rippleOverflow, setRippleOverflow] = useState(false);
@@ -38,7 +43,7 @@ const Groups = ({ user, handleLogOut, toggleNavbar }) => {
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 500,
+      duration: 200,
       useNativeDriver: true,
     }).start();
     Animated.timing(accountAnim, {
@@ -51,20 +56,18 @@ const Groups = ({ user, handleLogOut, toggleNavbar }) => {
 
   return (
     <>
-      {showAddFriend ? <SearchPanel user={user} onExit={() => setShowAddFriend(false)}/> : null}
-      {showRequests ? <FriendRequests user={user} onExit={() => setShowRequests(false)} refresh={() => {getFriendList()}}/> : null}
+      {showAddFriend ? <SearchPanel onExit={() => setShowAddFriend(false)}/> : null}
+      {showRequests ? <FriendRequests onExit={() => setShowRequests(false)} refresh={() => {getFriendList()}}/> : null}
 
       <FriendPage 
         show={showFriend} 
         userid={activeFriend} 
-        onExit={() => {setShowFriend(false); setActiveFriend(null);}} 
-        realuser={user} 
+        onExit={() => {setShowFriend(false); setActiveFriend(null);}}
         refresh={() => {getFriendList(); setActiveFriend(null); setShowFriend(false);}}
         toggleNavbar={toggleNavbar}
         />
 
       <Account
-        user={user}
         handleLogOut={handleLogOut}
         onexit={() => setShowAccount(false)}
         show={showAccount}
@@ -113,7 +116,7 @@ const Groups = ({ user, handleLogOut, toggleNavbar }) => {
           </View>
         </View>
 
-      <FriendList user={user} setActiveFriend={setActiveFriend} setShowFriend={setShowFriend}/>
+      <FriendList setActiveFriend={setActiveFriend} setShowFriend={setShowFriend}/>
 
 
         <Animated.View

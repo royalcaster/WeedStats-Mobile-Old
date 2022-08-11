@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "weedstats-mobile",
+    "name": "WeedStats",
     "slug": "weedstats-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -33,6 +33,7 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": ""
+    "description": "v0.1",
+    "githubUrl": "https://github.com/royalcaster/WeedStats-Mobile"
   }
 }

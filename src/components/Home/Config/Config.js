@@ -61,7 +61,7 @@ const Config = () => {
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 500,
+      duration: 200,
       useNativeDriver: true,
     }).start();
   }, [fadeAnim]);

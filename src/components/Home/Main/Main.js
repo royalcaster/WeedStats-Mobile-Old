@@ -1,37 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
-import CounterItem from "./CounterItem/CounterItem";
-import Onboarding from "react-native-onboarding-swiper";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import Entypo from "react-native-vector-icons/Entypo";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
-import moment from "moment";
-
-import Tutorial from "../../Home/Tutorial";
-
+//React
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { StyleSheet, Text, View, Image, ScrollView, Animated, Easing } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserContext } from "../../../data/UserContext";
 
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  Pressable,
-  Animated,
-  Easing,
-} from "react-native";
+//Custom Components
+import CounterItem from "./CounterItem/CounterItem";
+import Tutorial from "../../Home/Tutorial";
 import CustomLoader from "../../common/CustomLoader";
 import Empty from "../../common/Empty";
 
-const Main = ({ user, toggleCounter }) => {
-  const headingAnim = useRef(new Animated.Value(-100)).current;
+//Tools
+import moment from "moment";
 
+const Main = ({ toggleCounter }) => {
+
+  const user = useContext(UserContext);
+  const headingAnim = useRef(new Animated.Value(-100)).current;
   const leftAnim = useRef(new Animated.Value(-70)).current;
   const rightAnim = useRef(new Animated.Value(70)).current;
-
-  const Tab = createMaterialTopTabNavigator();
 
   let config = {};
   const [loading, setLoading] = useState(true);

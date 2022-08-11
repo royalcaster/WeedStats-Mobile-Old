@@ -1,6 +1,6 @@
 //React
-import { StyleSheet, Animated, Dimensions } from "react-native";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
+import { View, StyleSheet, Animated, Dimensions, Image, Text } from "react-native";
 
 //Third Party
 import Svg, { Circle } from "react-native-svg";
@@ -8,6 +8,7 @@ import Svg, { Circle } from "react-native-svg";
 //Custom Components
 import LoginNumber from "./LoginNumber/LoginNumber";
 import LoginLine from "./LoginLine/LoginLine";
+import Button from '../common/Button'
 
 const Login = ({ handleLogin }) => {
 
@@ -97,7 +98,6 @@ const Login = ({ handleLogin }) => {
       >
         <Button
           fontColor={"black"}
-          icon={icon}
           title={" Mit Google Anmelden"}
           borderradius={100}
           color={"white"}
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   info_container: {
     width: "85%",
     flex: 4,
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#1E2132",
     alignSelf: "center",
     borderRadius: 20,
   },

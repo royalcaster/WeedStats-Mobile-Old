@@ -1,5 +1,5 @@
 //React
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { View, StyleSheet, Text, Animated, Easing, Dimensions, TouchableNativeFeedback, Modal, PanResponder } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -24,7 +24,12 @@ import { responsiveFontSize, responsiveHeight } from "react-native-responsive-di
 import { doc, deleteDoc } from "firebase/firestore";
 import { firestore } from "../../../../data/FirebaseConfig";
 
-const Account = ({ user, handleLogOut, onexit, show }) => {
+//Service
+import { UserContext } from "../../../../data/UserContext";
+
+const Account = ({ handleLogOut, onexit, show }) => {
+
+  const user = useContext(UserContext);
   
   const screen_height = Dimensions.get("screen").height;
   const [showLevels, setShowLevels] = useState(false);

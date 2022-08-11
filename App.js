@@ -35,6 +35,7 @@ import { AppRegistry } from "react-native";
 import { useFonts } from "expo-font";
 import * as Google from "expo-google-app-auth";
 import * as Location from "expo-location";
+import { UserContext } from "./src/data/UserContext";
 
 
 try {
@@ -61,8 +62,6 @@ export default function App() {
       current_user != null ? refreshUser(current_user) : null;
       setUserLoaded(true);
     }
-    /* console.debug(getUserObject()) */
-    if (userExists()) {console.debug(getUserObject())}
     StatusBar.setBackgroundColor("rgba(255,255,255,0)");
   }, []);
 
@@ -576,11 +575,12 @@ export default function App() {
           {showSplash ? <Splash onExit={() => setShowSplash(false)} /> : null}
 
           {user ? (
-            <Home
-              user={user}
-              handleLogOut={handleLogOut}
-              toggleCounter={toggleCounter}
-            />
+            <UserContext.Provider value={user}>
+              <Home
+                handleLogOut={handleLogOut}
+                toggleCounter={toggleCounter}
+              />
+            </UserContext.Provider>
           ) : (
             <Login handleLogin={handleLogin} />
           )}

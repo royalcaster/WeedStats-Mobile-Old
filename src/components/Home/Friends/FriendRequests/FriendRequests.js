@@ -1,5 +1,5 @@
 //React
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   Animated,
   View,
@@ -31,7 +31,12 @@ import {
 } from "firebase/firestore";
 import { firestore } from "../../../../data/FirebaseConfig";
 
-const FriendResquests = ({ user, onExit, refresh }) => {
+//Service
+import { UserContext } from "../../../../data/UserContext";
+
+const FriendResquests = ({ onExit, refresh }) => {
+
+  const user = useContext(UserContext);
 
   const screen_height = Dimensions.get("screen").height;
   const [modalVisible, setModalVisible] = useState(false);

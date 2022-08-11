@@ -1,5 +1,5 @@
 //React
-import React, {useEffect, useRef, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import { Animated, View, StyleSheet, TextInput, Dimensions, Easing, Text, ScrollView, ActivityIndicator, TouchableNativeFeedback, Modal } from "react-native";
 import { useBackHandler } from '@react-native-community/hooks'
 
@@ -15,7 +15,12 @@ import Antdesign from 'react-native-vector-icons/AntDesign'
 //Third Party
 import uuid from 'react-native-uuid'
 
-const SearchPanel = ({user, onExit}) => {
+//Service
+import { UserContext } from "../../../../data/UserContext";
+
+const SearchPanel = ({onExit}) => {
+
+    const user = useContext(UserContext)
 
     const screen_height = Dimensions.get("screen").height;
     const [modalVisible, setModalVisible] = useState(false);
