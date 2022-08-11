@@ -1,7 +1,6 @@
 //Firebase
-import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { setDoc, doc, getDoc } from "firebase/firestore";
 import { firestore } from "./FirebaseConfig";
-import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
 //Tools
@@ -19,8 +18,6 @@ const getLocalUser = async () => {
 };
 
 const user = getLocalUser();
-const config = null;
-const entries = null;
 
 //gibt Ausssage über Existent des Nutzerobjekts zurück -> nicht über Existenz des Eintrags in der DB!
 export const userExists = () => {

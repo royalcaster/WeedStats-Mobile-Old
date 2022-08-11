@@ -565,7 +565,7 @@ export default function App() {
               
             ) : (
               <View style={{height: "100%", width: "100%", justifyContent: "center"}}>
-              <CustomLoader x={160}/></View>
+              <CustomLoader x={80}/></View>
             )}
             </View>
           </View>

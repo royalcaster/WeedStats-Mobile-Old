@@ -141,22 +141,6 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
             borderRadius: 15,
           }}
         >
-
-          {/* <Animated.View
-      id="joint_container"
-      style={{
-        width: "80%",
-        alignSelf: "center",
-        backgroundColor: bg_color,
-        alignItems: "center",
-        borderRadius: 30,
-        marginTop: 20,
-        marginBottom: 20,
-        maxWidth: 700,
-        opacity: fadeAnim,
-      }}
-    > */}
-
           {type === "joint" ? (
             <Image
               style={styles.joint_img}
