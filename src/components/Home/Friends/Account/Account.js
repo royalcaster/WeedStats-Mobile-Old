@@ -18,6 +18,7 @@ import { convertMemberSince } from "../../../../data/DateConversion";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Antdesign from "react-native-vector-icons/AntDesign";
+import Feather from "react-native-vector-icons/Feather";
 import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
 
 //Firebase
@@ -26,6 +27,7 @@ import { firestore } from "../../../../data/FirebaseConfig";
 
 //Service
 import { UserContext } from "../../../../data/UserContext";
+import TutorialPanel from "./TutorialPanel/TutorialPanel";
 
 const Account = ({ handleLogOut, onexit, show }) => {
 
@@ -35,6 +37,7 @@ const Account = ({ handleLogOut, onexit, show }) => {
   const [showLevels, setShowLevels] = useState(false);
   const [showDonation, setShowDonation] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const pan = useRef(new Animated.Value(0)).current;
@@ -88,9 +91,9 @@ const Account = ({ handleLogOut, onexit, show }) => {
   
   // Diese Funktion darf nach Bedarf mit neuer Funktionalität gefüllt werden und dient z.B. dazu, veraltete Einträge im AsyncStorage zu entfernen.
   // In der finalen Version der App fliegt diese Funktion natürlich raus.
-  const doWhatever = async () => {
+  /* const doWhatever = async () => {
     console.log("Aktuell passiert hier garnix.");
-  };
+  }; */
 
   const [showDelete, setShowDelete] = useState(false);
 
@@ -98,13 +101,14 @@ const Account = ({ handleLogOut, onexit, show }) => {
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: (event, gesture) => {
-      /* if (gesture?.moveX > gesture?.moveY) {
-        return false;
-      } */
       return true;
     },
     onPanResponderMove: (event, gesture) => {
       if (gesture.dy > 0 ) {pan.setValue(gesture.dy); opacityAnim.setValue(1 - (gesture.dy / 700))}
+      /* setShowLevels(false);
+      setShowFeedback(false);
+      setShowTutorial(false);
+      setShowDonation(false); */
     },
     onPanResponderRelease: (event, gesture) =>  {
       if (gesture.dy > screen_height/ 10 || gesture.vy > 1) {hide()} else{slide();}
@@ -122,13 +126,11 @@ const Account = ({ handleLogOut, onexit, show }) => {
         styles.container,
       ]}
       {...panResponder.panHandlers}
-    >{/* 
-      {showLevels ? <Levels onexit={() => setShowLevels(false)} /> : null} */}
-        <Levels onexit={() => setShowLevels(false)} show={showLevels}/>
-      {showFeedback ? (
-        <Feedback userid={user.id} onexit={() => setShowFeedback(false)} />
-      ) : null}
-      {showDonation ? <Donation onexit={() => setShowDonation(false)} /> : null}
+    >
+      {showLevels   ? <Levels onexit={() => setShowLevels(false)} show={showLevels}/>             : null}
+      {showFeedback ? <Feedback userid={user.id} onexit={() => setShowFeedback(false)}/>          : null}
+      {showDonation ? <Donation onexit={() => setShowDonation(false)}/>                           : null}
+      {showTutorial ? <TutorialPanel onexit={() => setShowTutorial(false)} show={showTutorial}/>  : null}
 
       <Modal animationType="fade" transparent={true} visible={showDelete}>
         <View
@@ -256,7 +258,7 @@ const Account = ({ handleLogOut, onexit, show }) => {
         <View
           style={{
             alignItems: "center",
-            flex: 3,
+            flex: 2,
             flexDirection: "row",
             width: "100%",
             alignSelf: "center",
@@ -290,14 +292,6 @@ const Account = ({ handleLogOut, onexit, show }) => {
             MITGLED SEIT: <Text style={{color: "#0781E1"}}>{convertMemberSince(user.member_since)}</Text>
           </Text>
         </View>
-        {/* <Button
-          fontColor={"white"}
-          onPress={doWhatever}
-          borderradius={100}
-          color={"#1E1E1E"}
-          title={"Bugfix!"}
-          icon={<FontAwesome name="gears" style={styles.money_icon} />}
-        /> */}
 
         <View style={{ height: 15 }}></View>
 
@@ -311,18 +305,17 @@ const Account = ({ handleLogOut, onexit, show }) => {
           title={" Levelübersicht"}
           icon={<FontAwesome name="trophy" style={styles.money_icon} />}
         />
-        
-        {/*
+
         <View style={{ height: 15 }}></View>
 
-         <Button
-          onPress={() => setShowFeedback(true)}
-          title={" Feedback senden"}
-          icon={<FontAwesome name="gears" style={styles.money_icon} />}
+        <Button
+          onPress={() => setShowTutorial(true)}
+          title={"Tutorial anzeigen"}
+          icon={<Feather name="help-circle" style={styles.money_icon} />}
           borderradius={100}
-          color={"#1E1E1E"}
+          color={"#1E2132"}
           fontColor={"white"}
-        /> */}
+        />
 
         <View style={{ height: 15 }}></View>
 

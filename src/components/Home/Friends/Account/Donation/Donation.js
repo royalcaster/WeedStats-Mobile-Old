@@ -47,11 +47,11 @@ const Donation = ( { onexit } ) => {
     return (
         <Animated.View style={[{transform: [{translateX: fadeAnim}], opacity: opacityAnim, height: "100%"},styles.container]}>
 
-            <View style={{flexDirection: "row", justifyContent: "center", maxHeight: 60}}>
-                <View style={{marginLeft: 20, flex: 1, justifyContent: "center"}}>
+            <View style={{flexDirection: "row", maxHeight: 60, alignItems: "center"}}>
+                <View style={{marginLeft: 20, justifyContent: "center"}}>
                     <BackButton onPress={() => hide()}/>
                 </View>
-                <View style={{flex: 5, justifyContent: "center"}}>
+                <View >
                     <Text style={styles.heading}>WeedStats unterstützen</Text>
                 </View>
             </View>
@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 20,
         fontFamily: "PoppinsBlack",
-        marginLeft: 20
+        marginLeft: 20,
+        marginTop:5
       },
 });

@@ -360,6 +360,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "left",
     marginLeft: 10,
+    marginTop: 5
   },
   touchable: {
     height: "100%",

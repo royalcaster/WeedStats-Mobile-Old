@@ -178,7 +178,7 @@ const SearchPanel = ({onExit}) => {
                 
             <Text style={styles.heading}>Suchen</Text>
             <View style={{height: 10}}></View>
-            <View style={{width: "100%", flexDirection: "row", maxHeight: 60, flex: 1}} >
+            <View style={{width: "100%", flexDirection: "row", maxHeight: 60, flex: 1, alignItems: "center"}} >
                 <View style={{flex: 1, alignItems: "center"}}>
                     <BackButton onPress={() => hide()}/>
                 </View>
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#1E2132",
         marginRight: 15,
         marginLeft: 0,
-        height: "90%",
+        height: "100%",
         borderRadius: 10,
         paddingLeft: 20,
         color: "white",

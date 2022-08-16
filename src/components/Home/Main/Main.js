@@ -1,12 +1,12 @@
 //React
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { StyleSheet, Text, View, Image, ScrollView, Animated, Easing } from "react-native";
+import { StyleSheet, Text, View, Image, ScrollView, Animated, Easing, Dimensions } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserContext } from "../../../data/UserContext";
 
 //Custom Components
 import CounterItem from "./CounterItem/CounterItem";
-import Tutorial from "../../Home/Tutorial";
+import Tutorial from '../../common/Tutorial';
 import CustomLoader from "../../common/CustomLoader";
 import Empty from "../../common/Empty";
 
@@ -65,7 +65,7 @@ const Main = ({ toggleCounter }) => {
 
       let buffer = counterOrder.filter((item) => !settings.includes(item.type));
       setCounterOrder(buffer);
-      setShowTutorial(config.showTutorial);
+      setShowTutorial(true);
       setLoading(false);
 
       config.showTutorial = false;
@@ -198,18 +198,18 @@ const Main = ({ toggleCounter }) => {
   }
 
   const onDone = () => {
+    console.debug(config);
     setShowTutorial(false);
     tutorialSeen();
-    console.log("Tutorial angesehen");
   }
 
   return (
     <>
 
         {showTutorial ? 
-        <>
-          <Tutorial renderItem={renderItem} slides={slides} onDone={onDone}/>
-        </> : <> 
+        <View style={{zIndex: 3000, position: "absolute", height: Dimensions.get("screen").height, width: "100%"}}>
+          <Tutorial renderItem={renderItem} slides={slides} onDone={onDone} extraHeight={50}/>
+        </View> : <> 
 
           <View style={{ height: 50 }}></View>
           <View style={{ width: "100%", flexDirection: "row" }}>

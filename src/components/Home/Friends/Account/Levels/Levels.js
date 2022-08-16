@@ -41,11 +41,11 @@ const Levels = ({ onexit, show }) => {
     <Animated.View style={[{ opacity: 1 , transform: [{translateX: fadeAnim}]}, styles.container]}>
 
       <View style={{flexDirection: "row", alignContent: "center", alignItems: "center"}}>
-                <View style={{marginLeft: 20}}>
-                    <BackButton onPress={() => hide()}/>
-                </View>
-                <Text style={styles.heading}>Levelübersicht</Text>
-            </View>
+        <View style={{marginLeft: 20}}>
+            <BackButton onPress={() => hide()}/>
+        </View>
+        <Text style={styles.heading}>Levelübersicht</Text>
+      </View>
 
       <View style={{ height: 10 }}></View>
 
@@ -81,7 +81,7 @@ const Levels = ({ onexit, show }) => {
           </View>
         );
       })}
-      {/* <Button title={"Zurück"} icon={<Feather name="arrow-left" style={styles.cancel_icon}/>} color={"#eb4034"} fontColor={"white"} onPress={() => hide()} borderradius={100}/> */}
+      
     </Animated.View>
   );
 };
