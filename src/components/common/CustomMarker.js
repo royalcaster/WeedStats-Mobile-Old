@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     image: {
         width: 57,
         height: 57,
-        backgroundColor: "#1E1E1E",
+        backgroundColor: "#1E2132",
         alignItems: "center",
         borderRadius: 100,
         paddingTop: 3.5,

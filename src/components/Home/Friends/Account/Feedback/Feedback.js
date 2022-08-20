@@ -242,7 +242,7 @@ export default Feedback
 const styles = StyleSheet.create({
     container: {
         width: "100%",
-        backgroundColor: "#1E1E1E",
+        backgroundColor: "#1E2132",
         flexDirection: "column",
         flex: 1,
         position: "absolute",

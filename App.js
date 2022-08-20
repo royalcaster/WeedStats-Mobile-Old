@@ -141,18 +141,18 @@ export default function App() {
           photoUrl: user.photoUrl,
           friends: [],
           username_array: createUsernameArray(user.name),
-          joint_counter: null,
-          bong_counter: null,
-          vape_counter: null,
-          pipe_counter: null,
-          cookie_counter: null,
+          joint_counter: 0,
+          bong_counter: 0,
+          vape_counter: 0,
+          pipe_counter: 0,
+          cookie_counter: 0,
           last_entry_timestamp: null,
           last_entry_latitude: null,
           last_entry_longitude: null,
           last_entry_type: null,
           last_feedback: null,
           member_since: new Date().toISOString().slice(0, 10),
-          main_counter: null,
+          main_counter: 0,
         });
         const docSnap = await getDoc(doc(firestore, "users", user.id));
         if (docSnap.exists()) {
@@ -571,7 +571,7 @@ export default function App() {
           </View>
         </Modal>
 
-        <View style={{ flex: 1, backgroundColor: "#171717" }}>
+        <View style={{ flex: 1, backgroundColor: "#1E2132" }}>
           {showSplash ? <Splash onExit={() => setShowSplash(false)} /> : null}
 
           {user ? (

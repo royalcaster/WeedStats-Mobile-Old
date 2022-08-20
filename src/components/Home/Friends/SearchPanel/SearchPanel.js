@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
         fontFamily: "PoppinsMedium",
     },
     modal_container: {
-        backgroundColor: "#1E1E1E",
+        backgroundColor: "#1E2132",
         width: "90%",
         height: 300,
         alignSelf: "center",

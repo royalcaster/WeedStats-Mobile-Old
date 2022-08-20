@@ -63,9 +63,6 @@ const Donation = ( { onexit } ) => {
                 <View style={{height: 10}} />
                 <Text style={[styles.text]}>Gib uns einen Döner aus!</Text>
 
-                <Pressable onPress={hide} style={({pressed}) => [{backgroundColor: pressed ? "#292929" : "#1E1E1E"},styles.close_text]}>
-                </Pressable>
-
         </Animated.View>
     )
 }

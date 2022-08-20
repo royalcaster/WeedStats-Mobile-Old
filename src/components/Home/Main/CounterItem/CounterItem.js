@@ -66,7 +66,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
       return "0%";
     } else {
       var indicator = Math.ceil(counter / 70);
-      return (100 * (counter - 70 * (indicator - 1))) / 70 + "%";
+      return (100 * (counter - 70 * (indicator - 1))) / 70;
     }
   };
 

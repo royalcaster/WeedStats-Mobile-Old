@@ -73,13 +73,6 @@ const styles = StyleSheet.create({
   },
   //Tab-View
   wrapper: {},
-  slide: {
-    width: "100%",
-    height: "94%",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#1E1E1E",
-  },
   text: {
     color: "#fff",
     fontSize: 30,

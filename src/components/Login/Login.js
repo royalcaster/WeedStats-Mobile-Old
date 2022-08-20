@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   login_heading: {
-    color: "#1E1E1E",
+    color: "#1E2132",
     fontSize: 25,
     fontFamily: "PoppinsBlack",
     textAlign: "center",
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontFamily: "PoppinsLight",
     fontSize: 18,
-    color: "#1E1E1E",
+    color: "#1E2132",
   },
   login_logo: {
     width: 80,

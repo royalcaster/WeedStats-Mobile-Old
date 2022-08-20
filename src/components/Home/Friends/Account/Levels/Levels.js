@@ -106,7 +106,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: "PoppinsBlack",
     marginLeft: 20,
-    textAlign: "left"
+    textAlign: "left",
+    marginTop: 3
   },
   lvl_img: {
     height: 80,

@@ -65,7 +65,7 @@ const Main = ({ toggleCounter }) => {
 
       let buffer = counterOrder.filter((item) => !settings.includes(item.type));
       setCounterOrder(buffer);
-      setShowTutorial(true);
+      setShowTutorial(config.showTutorial);
       setLoading(false);
 
       config.showTutorial = false;
