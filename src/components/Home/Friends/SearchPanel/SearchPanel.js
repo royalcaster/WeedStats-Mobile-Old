@@ -145,7 +145,7 @@ const SearchPanel = ({onExit}) => {
             <View style={{flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.5)"}}>
                 <View style={styles.modal_container}>
                     {!alreadySent ? <><View style={{flex: 1, justifyContent: "center"}}>
-                        <Text style={styles.heading}>Freundschaftsanfrage an <Text>{activeRequested ? activeRequested.username : null}</Text> senden?</Text>
+                        <Text style={styles.heading}>Freundschaftsanfrage an <Text style={[{color: "#0080FF"}]}>{activeRequested ? activeRequested.username : null}</Text> senden?</Text>
                     </View>
                     <View style={{flex: 1, flexDirection: "row"}}>
                         <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>

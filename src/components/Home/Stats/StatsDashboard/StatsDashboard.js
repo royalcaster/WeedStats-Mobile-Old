@@ -1,11 +1,13 @@
 //React
 import React from "react";
 import { useState, useEffect, useRef, useContext} from "react";
-import { StyleSheet, Image, View, Text, ScrollView, Dimensions, Animated, Easing, TouchableNativeFeedback } from "react-native";
+import { StyleSheet, View, Text, ScrollView, Dimensions, Animated, Easing, TouchableNativeFeedback } from "react-native";
 
 //Custom Components
 import History from "./History/History";
 import Levels from "../../../../data/Levels.json";
+import DailyAveragePanel from "./DailyAveragePanel/DailyAveragePanel";
+import StatsCard from './StatsCard/StatsCard'
 
 //Icons
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
@@ -16,11 +18,11 @@ import toGermanDate from "../../../../data/DateConversion";
 //Third Party
 import SwitchSelector from "react-native-switch-selector";
 import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
-import { LinearGradient } from "expo-linear-gradient";
 
 //Service
 import { calcDailyAverage, filterByType, filterByMostRecent, getEntryDates, getBreakDates, createLineChartData, createBarChartData, calcStreak } from "../../../../data/Service";
-import { UserContext } from "../../../../data/UserContext";
+import StreakPanel from "./StreakPanel/StreakPanel";
+import BreakPanel from "./BreakPanel/BreakPanel";
 
 const StatsDashboard = ({ localData }) => {
   
@@ -180,7 +182,7 @@ const StatsDashboard = ({ localData }) => {
   
 
   const [streakData, setStreakData] = useState(calcStreak(localData));
-
+  
   const options_type = [
     { label: "Gesamt", value: 0 },
     { label: "Joint", value: 1 },
@@ -272,7 +274,7 @@ const StatsDashboard = ({ localData }) => {
 
         
 
-        <View style={{ width: "95%" }}>
+        <View style={{ width: "95%"}}>
           <SwitchSelector
             options={options_type}
             initial={0}
@@ -292,105 +294,41 @@ const StatsDashboard = ({ localData }) => {
 
         <View style={{ alignItems: "center", flex: 1 }}>
 
-          <LinearGradient colors={["#369bff","#0080FF","#004e9c"]} style={{borderRadius: 25, padding: 20, width: 250}}>
-          {selectedType === "main" ? (
-            <Animated.View
-              style={{width: "50%", alignSelf: "center"}}
-              source={require("../../../../data/img/joint.png")}>
-              <Image style={{height: 40, width: 15, position: "absolute"}} source={require("../../../../data/img/joint.png")}/>
-              <Image style={{height: 40, width: 25, position: "absolute", left: "12%"}} source={require("../../../../data/img/bong.png")}/>
-              <Image style={{height: 40, width: 25, position: "absolute", left: "30%"}} source={require("../../../../data/img/vape.png")}/>
-              <Image style={{height: 50, width: 25, position: "absolute", left: "53%", marginTop: -5}} source={require("../../../../data/img/pipe.png")}/>
-              <Image style={{height: 40, width: 38, position: "absolute", left: "74%"}} source={require("../../../../data/img/cookie.png")}/>
-             </Animated.View>
-          ) : null}
-          {selectedType === "joint" ? (
-            <Animated.Image
-              style={[styles.joint_img]}
-              source={require("../../../../data/img/joint.png")}
-            />
-          ) : null}
-          {selectedType === "bong" ? (
-            <Animated.Image style={[styles.bong_img]} source={require("../../../../data/img/bong.png")} />
-          ) : null}
-          {selectedType === "vape" ? (
-            <Animated.Image style={[styles.vape_img]} source={require("../../../../data/img/vape.png")} />
-          ) : null}
-          {selectedType === "pipe" ? (
-            <Animated.Image style={[styles.pipe_img]} source={require("../../../../data/img/pipe.png")} />
-          ) : null}
-          {selectedType === "cookie" ? (
-            <Animated.Image
-              style={[styles.cookie_img]}
-              source={require("../../../../data/img/cookie.png")}
-            />
-          ) : null}
-          <View style={{height: 40}}></View>
-          <View style={{alignSelf: "center"}}>
-          <Animated.Text
-            style={{
-              fontSize: 60,
-              color: "white",
-              fontFamily: "PoppinsBlack",
-              marginBottom: -25
-            }}
-          >
-            {Math.round(
-              calcDailyAverage(filterByType(localData, selectedType), localData) * 100
-            ) / 100}
-          </Animated.Text>
-          <Text
-            style={{
-              fontSize: 18,
-              color: "white",
-              fontFamily: "PoppinsLight",
-            }}
-          >
-            Ø Tag
-          </Text>
-          </View>
+          <DailyAveragePanel 
+            selectedType={selectedType} 
+            value={Math.round(calcDailyAverage(filterByType(localData, selectedType), localData) * 100) / 100}
+          />
 
-          </LinearGradient>
- 
           <View style={{ height: 30 }}></View>
+
+
 
           <View
             style={{
               flexDirection: "row",
               width: "100%",
-              justifyContent: "space-evenly",
+              justifyContent: "space-evenly"
             }}
           >
-            <View style={styles.card_container}>
-              <Text style={styles.card_label}>Ø Woche</Text>
-              <Animated.Text style={[styles.card_value]}>
-                {Math.round(
+
+            <StatsCard title="Ø Woche" value={Math.round(
                   calcDailyAverage(filterByType(localData, selectedType), localData) *
                     7 *
                     10
                 ) / 10}
-              </Animated.Text>
-            </View>
+            />
 
-            <View style={styles.card_container}>
-              <Text style={styles.card_label}>Ø Monat</Text>
-              <Animated.Text style={[styles.card_value]}>
-                {Math.round(
+            <StatsCard title="Ø Monat" value={Math.round(
                   calcDailyAverage(filterByType(localData, selectedType), localData) *
                     30.5 *
                     10
                 ) / 10}
-              </Animated.Text>
-            </View>
+            />
 
-            <View style={styles.card_container}>
-              <Text style={styles.card_label}>Ø Jahr</Text>
-              <Animated.Text style={[styles.card_value]}>
-                {Math.round(
+            <StatsCard title="Ø Jahr" value={Math.round(
                   calcDailyAverage(filterByType(localData, selectedType), localData) * 365
                 )}
-              </Animated.Text>
-            </View>
+            />
           </View>
 
           <View style={{height: 20}}></View>
@@ -413,7 +351,7 @@ const StatsDashboard = ({ localData }) => {
               flexDirection: "row",
               width: "98%",
               flex: 1,
-              justifyContent: "space-evenly",
+              justifyContent: "space-evenly"
             }}
           >
             <View>
@@ -501,81 +439,31 @@ const StatsDashboard = ({ localData }) => {
           </View>
 
           <View style={{height: 20}}></View>
-
-          <View style={{
-            flexDirection: "row"
-          }}>
-
+          
           
           {selectedType === "main" ? (
             <>
-              <View style={{ height: 10 }}></View>
-
-              
-
-              <Animated.View style={styles.card_container_wide}>
-                <Text style={styles.card_label}>Aktueller Streak</Text>
-                <Text
-                  style={[
-                    styles.card_value,
-                    { fontSize: 25 },
-                    streakData.today
-                      ? { color: "white" }
-                      : { color: "#8a8a8a" },
-                  ]}
-                >
-                  {streakData.currentStreak} Tage
-                </Text>
-                {streakData.within ? (
-                  <Text style={[styles.card_value2]}>
-                    (seit {streakData.startCurrent})
-                  </Text>
-                ) : null}
-                <Text style={styles.card_label}>Längster Streak</Text>
-                <Text style={[styles.card_value, { fontSize: 25 }]}>
-                  {streakData.longestStreak} Tage
-                </Text>
-                <Text style={[styles.card_value2]}>
-                  {<>{toGermanDate(streakData.rangeLongest.start)} -
-                  {toGermanDate(streakData.rangeLongest.end)}</>}
-                </Text>
-              </Animated.View>
+              <StreakPanel 
+                streakData={streakData}
+                currentStreak={streakData.currentStreak}
+                currentStreakStart={streakData.within ? streakData.startCurrent: null}
+                longestStreak={streakData.longestStreak}
+                longestStreakStart={toGermanDate(streakData.rangeLongest.start)}
+                longestStreakEnd={toGermanDate(streakData.rangeLongest.end)}
+              />
 
               <View style={{ height: 10 }}></View>
 
-              <Animated.View style={styles.card_container_wide}>
-                <Text style={styles.card_label}>Aktuelle Pause</Text>
-                <Text
-                  style={[
-                    styles.card_value,
-                    { fontSize: 25 },
-                    streakData.today
-                      ? { color: "white" }
-                      : { color: "#c4c4c4" },
-                  ]}
-                >
-                  {streakData.currentBreak} Tage
-                </Text>
-                {!streakData.today ? (
-                  <Text style={[styles.card_value, { fontSize: 20 }]}>
-                    (seit {streakData.startCurrentBreak})
-                  </Text>
-                ) : null}
-                <Text style={styles.card_label}>Längste Pause</Text>
-                <Text style={[styles.card_value, { fontSize: 25 }]}>
-                  {streakData.longestBreak} Tage
-                </Text>
-                <Text style={[styles.card_value2]}>
-                  {streakData.rangeLongestBreak != null ? <>{toGermanDate(streakData.rangeLongestBreak.start)} -
-                  {toGermanDate(streakData.rangeLongestBreak.end)}</> : null}
-                </Text>
-              </Animated.View>
+              <BreakPanel 
+                streakData={streakData}
+                currentBreak={streakData.currentBreak}
+                currentBreakStart={streakData.startCurrentBreak}
+                longestBreak={streakData.longestBreak}
+                longestBreakStart={toGermanDate(streakData.rangeLongestBreak.start)}
+                longestBreakEnd={toGermanDate(streakData.rangeLongestBreak.end)}
+              />
             </>
           ) : null}
-
-          <View style={{ height: 20 }}></View>
-
-          </View>
 
           <View style={{ height: 30 }}></View>
 
@@ -764,16 +652,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 10,
   },
-  card_container: {
-    backgroundColor: "#131520",
-    width: "30%",
-    margin: 5,
-    padding: 10,
-    paddingLeft: 20,
-    borderRadius: 25,
-    borderTopColor: "#0080FF",
-    borderTopWidth: 2,
-  },
   card_label: {
     color: "white",
     fontFamily: "PoppinsLight",
@@ -853,45 +731,5 @@ const styles = StyleSheet.create({
     fontFamily: "PoppinsBlack",
     marginLeft: 20,
     alignSelf: "flex-start",
-  },
-  bong_img: {
-    width: 35,
-    height: 60,
-    alignSelf: "center",
-    position: "absolute",
-    marginTop: 10,
-    opacity: 1,
-  },
-  joint_img: {
-    width: 20,
-    height: 60,
-    alignSelf: "center",
-    position: "absolute",
-    marginTop: 10,
-    opacity: 1
-  },
-  vape_img: {
-    width: 20,
-    height: 60,
-    alignSelf: "center",
-    position: "absolute",
-    marginTop: 10,
-    opacity: 1,
-  },
-  pipe_img: {
-    width: 45,
-    height: 65,
-    alignSelf: "center",
-    position: "absolute",
-    marginTop: 10,
-    opacity: 1,
-  },
-  cookie_img: {
-    width: 50,
-    height: 50,
-    alignSelf: "center",
-    position: "absolute",
-    marginTop: 10,
-    opacity: 1,
-  },
+  }
 });

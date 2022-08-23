@@ -1,6 +1,6 @@
 //React
 import React, { useRef } from "react";
-import { View, StyleSheet, Text, Animated, Easing, Dimensions, Image } from "react-native";
+import { View, StyleSheet, Text, Animated, Easing, Dimensions } from "react-native";
 
 //Custom Components
 import BackButton from "../../../../common/BackButton";

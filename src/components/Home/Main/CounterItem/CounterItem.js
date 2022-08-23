@@ -125,7 +125,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
           width: "80%",
           alignSelf: "center",
           alignItems: "center",
-          borderRadius: 15,
+          borderRadius: 10,
           marginTop: 20,
           marginBottom: 20,
           maxWidth: 700,

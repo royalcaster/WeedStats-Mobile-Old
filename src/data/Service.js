@@ -327,3 +327,14 @@ export const calcStreak = (array) => {
       : null,
   };
 };
+
+//nimmt in (1-7) und gibt Wochentag zurück
+export const getDayName = (x) => {
+const days = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
+if (x > 0 && x < 8) {
+  return days[x-1];
+}
+else {
+  return null;
+}
+}
