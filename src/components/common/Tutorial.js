@@ -1,19 +1,34 @@
 //React
 import React, { useState } from "react";
-import { Animated, StyleSheet, View, Text, Image } from "react-native";
+import { Animated, StyleSheet, View, Text, Image, Dimensions } from "react-native";
 
 //Third Party
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { LinearGradient } from "expo-linear-gradient";
+import PieChart from "react-native-chart-kit/dist/PieChart";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import { responsiveFontSize } from "react-native-responsive-dimensions";
 
 //Custom Components
 import CounterItem from "../Home/Main/CounterItem/CounterItem";
-import StatsCard from "../Home/Stats/StatsDashboard/StatsCard/StatsCard";
-import StreakPanel from "../Home/Stats/StatsDashboard/StreakPanel/StreakPanel";
+import ConfigItem from "../Home/Config/ConfigItem/ConfigItem";
+import FriendListItem from "../Home/Friends/FriendList/FriendListItem/FriendListItem";
+
+//Konstanten
+import Levels from '../../data/Levels.json'
+import { mapStyle } from "../../data/CustomMapStyle";
 
 const Tutorial = ({ onDone, extraHeight }) => {
 
     const [testCounter, setTestCounter] = useState(69);
+
+    const [config, setConfig ] = useState({
+      joint: true,
+      bong: false,
+      vape: true,
+      cookie: true,
+      edible: false
+    });
 
     const renderItem = ({ item }) => {
         return (
@@ -56,91 +71,176 @@ const Tutorial = ({ onDone, extraHeight }) => {
     }
 
     const statsTest = () => {
-      return <View>
-        <StatsCard title={"Ø Tag"} value={3}/>
-        <StatsCard title={"Ø Woche"} value={17}/>
-        <StatsCard title={"Ø Monat"} value={48}/>
+      return <View style={{alignItems: "center"}}>
+        <PieChart
+              style={{
+                marginVertical: 10,
+                borderRadius: 25
+              }}
+              data={[
+                {
+                  name: "Joint",
+                  count: 5,
+                  color: Levels[0].colors[0],
+                  legendFontColor: "#7F7F7F",
+                  legendFontSize: 15,
+                },
+                {
+                  name: "Bong",
+                  count: 4,
+                  color: Levels[1].colors[0],
+                  legendFontColor: "#7F7F7F",
+                  legendFontSize: 15,
+                },
+                {
+                  name: "Vape",
+                  count: 3,
+                  color: Levels[2].colors[0],
+                  legendFontColor: "#7F7F7F",
+                  legendFontSize: 15,
+                },
+                {
+                  name: "Pfeife",
+                  count: 2,
+                  color: Levels[3].colors[0],
+                  legendFontColor: "#7F7F7F",
+                  legendFontSize: 15,
+                },
+                {
+                  name: "Edible",
+                  count: 1,
+                  color: Levels[4].colors[0],
+                  legendFontColor: "#7F7F7F",
+                  legendFontSize: 15,
+                },
+              ]}
+              width={Dimensions.get("window").width - 40}
+              height={250}
+              backgroundColor={"#131520"}
+              chartConfig={{
+                color: () =>  {return "rgba(255,255,255,0.35)"},
+                labelColor: () =>  {return "rgba(255,255,255,0.5)"},
+              }}
+              accessor={"count"}
+              paddingLeft={"15"}
+            />
+      </View>
+    }
 
-        <View
-            style={{
-              flexDirection: "row",
-              width: "98%",
-              flex: 1,
-              justifyContent: "space-evenly"
-            }}
+    const mapTest = () => {
+      return <View style={{height: "100%", width: "100%"}}>
+
+            <LinearGradient colors={["#131520", "rgba(0,0,0,0)"]} style={{position: "absolute", top: 0, width: "100%", height: 100, zIndex: 2}}>
+            </LinearGradient>
+
+          <MapView
+            provider={PROVIDER_GOOGLE}
+            style={[{ height: Dimensions.get("window").height }, styles.map]}
+            customMapStyle={mapStyle}
+            showsUserLocation={true}
+            mapType={"standard"}
+            followsUserLocation={true}
+            showsCompass={false}
+            showsTraffic={false}
+            showsIndoors={false}
+            pitchEnabled={true}
+            showsMyLocationButton={false}
+            loadingEnabled={true}
+            loadingBackgroundColor={"#131520"}
+            loadingIndicatorColor={"#484F78"}
           >
-            <View>
-              <Text
-                style={[
-                  styles.card_label,
-                  { marginTop: 0, textAlign: "center"},
-                ]}
-              >
-                24 Stunden
-              </Text>
-              <Animated.Text
-                style={[
-                  styles.card_value,
-                  {
-                    borderTopColor: "#0080FF",
-                    borderTopWidth: 2,
-                    marginTop: 0,
-                    textAlign: "center"
-                  },
-                ]}
-              >49
-              </Animated.Text>
-            </View>
-            <View>
-              <Text
-                style={[
-                  styles.card_label,
-                  { marginTop: 0, textAlign: "center" },
-                ]}
-              >
-                7 Tagen
-              </Text>
-              <Animated.Text
-                style={[
-                  styles.card_value,
-                  {
-                    borderTopColor: "#0080FF",
-                    borderTopWidth: 2,
-                    paddingRight: 10,
-                    paddingLeft: 10,
-                    marginTop: 0,
-                    textAlign: "center"
-                  },
-                ]}
-              >23
-              </Animated.Text>
-            </View>
-            <View>
-              <Text
-                style={[
-                  styles.card_label,
-                  { marginTop: 0, textAlign: "center" },
-                ]}
-              >
-                30 Tagen
-              </Text>
-              <Animated.Text
-                style={[
-                  styles.card_value,
-                  {
-                    borderTopColor: "#0080FF",
-                    borderTopWidth: 2,
-                    paddingRight: 10,
-                    paddingLeft: 10,
-                    marginTop: 0,
-                    textAlign: "center"
-                  },
-                ]}
-              >
-                30
-              </Animated.Text>
-            </View>
+          </MapView>
+      </View>
+    }
+
+    const configTest = () => {
+      return <View style={{flex: 1, backgroundColor: "#1E2132"}}>
+
+            <LinearGradient colors={["#131520", "rgba(0,0,0,0)"]} style={{position: "relative", top: 0, width: "100%", height: 50, zIndex: 2}}>
+            </LinearGradient>
+
+        <View style={{flexDirection: "row", width: "100%", height: 180}}>
+
+          <View style={{flex: 1}}>
+            <ConfigItem
+                type="joint"
+                config={config.joint}
+                onToggle={() => {
+                  setConfig({ ...config, joint: !config.joint });
+                }}
+            />
           </View>
+
+          <View style={{flex: 1}}>
+            <ConfigItem
+                type="bong"
+                config={config.bong}
+                onToggle={() => {
+                  setConfig({ ...config, bong: !config.bong });
+                }}
+            />
+          </View>
+
+          <View style={{flex: 1}}>
+            <ConfigItem
+                type="vape"
+                config={config.vape}
+                onToggle={() => {
+                  setConfig({ ...config, vape: !config.vape });
+                }}
+            />
+          </View>
+          
+
+        </View>
+
+        <View style={{flexDirection: "row", width: "80%", height: 180, alignSelf: "center"}}>
+
+          <View style={{flex: 1}}>
+            <ConfigItem
+                type="joint"
+                config={config.cookie}
+                onToggle={() => {
+                  setConfig({ ...config, cookie: !config.cookie });
+                }}
+            />
+          </View>
+
+          <View style={{flex: 1}}>
+            <ConfigItem
+                type="bong"
+                config={config.edible}
+                onToggle={() => {
+                  setConfig({ ...config, edible: !config.edible });
+                }}
+            />
+          </View>
+
+        </View>
+
+      </View>
+    }
+
+    const friendsTest = () => {
+      return <View>
+
+      <Text style={styles.heading}>Freunde</Text>
+
+      <FriendListItem userid={"116462348102905579382"} onPress={() => {return null}}/>
+      <FriendListItem userid={"115588503617039740769"} onPress={() => {return null}}/>
+      <FriendListItem userid={"114731570836078840175"} onPress={() => {return null}}/>
+
+      </View>
+    }
+
+    const tippTest = () => {
+      return <View style={{width: "100%", alignSelf: "center"}}>
+
+      <LinearGradient colors={["#FC2044", "#B31731"]} style={[styles.info_container, {position: "relative"}]}>
+          <Text style={styles.info_title}>Achtung</Text>
+          <Text style={styles.info_text}>Hier Hinweis auf Intention der App, keine Anregung zu Konsum, kein Konsum bei minderjährigen!
+          Auch Verlinkung zu medizinischen Risiken, Hilfs-Hotlines, die App soll spaß machen, aber Verantwortungsvoller Konsum steht an oberster Priorität!</Text>
+      </LinearGradient>
 
       </View>
     }
@@ -155,7 +255,7 @@ const Tutorial = ({ onDone, extraHeight }) => {
         {
           key: 'one',
           title: 'Counter',
-          text: 'Jedes mal, wenn du etwas rauchst, solltest du den jeweiligen Counter um eins erhöhen. Halte dazu den Button für kurze Zeit gedrückt.\n\n Je nach Einstellung wird der Zeitpunkt und die aktuellen GPS-Daten gespeichert.\n\nMit der Zeit arbeitest du dich durch alle WeedStats-Level. Probier es oben aus!',
+          text: 'Jedes mal, wenn du etwas rauchst, solltest du den jeweiligen Counter um eins erhöhen. Halte dazu den Button für kurze Zeit gedrückt.',
           image: require('../../data/img/screenshots/counter.png'),
           testComponent: counterTest()
         },
@@ -169,29 +269,29 @@ const Tutorial = ({ onDone, extraHeight }) => {
         {
           key: 'three',
           title: 'WeedMap',
-          text: 'Die Karte kann dir entweder eine Heatmap mit den Orten zeigen, an denen du am häufigsten geraucht hast, oder auch die letzten Einträge deiner Freunde.',
+          text: 'Die Karte kann dir entweder eine Heatmap mit den Orten zeigen, an denen du am häufigsten geraucht hast, oder auch die letzten Aktivitäten deiner Freunde.',
           image: require('../../data/img/screenshots/map.png'),
-          backgroundColor: '#0080FF',
+          testComponent: mapTest()
         },
         {
           key: 'four',
           title: 'Einstellungen',
           text: 'Hier kannst du Einstellungen für deine Privatsphäre und die Anzeige treffen.',
           image: require('../../data/img/screenshots/config.png'),
-          backgroundColor: '#0080FF',
+          testComponent: configTest()
         },
         {
           key: 'five',
           title: 'Freunde',
           text: 'Füge Freunde hinzu, um deine Statistiken mit ihnen zu teilen und das volle Potential von WeedStats auszuschöpfen!\n\nAußerdem kannst du hier auf deinen Account zugreifen.',
           image: require('../../data/img/screenshots/friends.png'),
-          backgroundColor: '#0080FF',
+          testComponent: friendsTest()
         },
         {
           key: 'six',
           title: 'Unser Tipp',
-          text: 'Hier eventuell Hinweis auf Intention der App, keine Anregung zu Konsum, kein Konsum bei minderjährigen! \n\nJe gewissenhafter du deinen Konsum in der App einträgst, desto genauer werden deine Statistiken mit der Zeit.\n\nWir wünschen dir viel Spaß mit WeedStats!',
-          backgroundColor: '#0080FF',
+          text: 'Je gewissenhafter du deinen Konsum in der App einträgst, desto genauer werden deine Statistiken mit der Zeit.\n\nWir wünschen dir viel Spaß mit WeedStats!',
+          testComponent: tippTest()
         }
       ];
 
@@ -224,13 +324,13 @@ const styles = StyleSheet.create({
     info_title: {
       color: "white", 
       fontFamily: "PoppinsBlack",
-      fontSize: 25,
+      fontSize: 20,
       textAlign: "left",
     },
     info_text: {
       color: "white",
       fontFamily: "PoppinsLight",
-      fontSize: 15,
+      fontSize: 13,
       textAlign: "left"
     },
     logo_heading: {
@@ -259,5 +359,18 @@ const styles = StyleSheet.create({
       fontSize: 30,
       marginTop: -10,
       textAlign: "left",
+    },
+    map: {
+      width: "100%",
+      position: "relative",
+      top: -20,
+      backgroundColor: "#171717",
+      height: "100%"
+    },
+    heading: {
+      fontFamily: "PoppinsBlack",
+      color: "white",
+      fontSize: responsiveFontSize(2.3),
+      marginLeft: 30,
     },
 });
