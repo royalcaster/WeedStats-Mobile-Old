@@ -7,7 +7,9 @@ import AppIntroSlider from 'react-native-app-intro-slider';
 import { LinearGradient } from "expo-linear-gradient";
 import PieChart from "react-native-chart-kit/dist/PieChart";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import { responsiveFontSize } from "react-native-responsive-dimensions";
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+import Entypo from 'react-native-vector-icons/Entypo'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 
 //Custom Components
 import CounterItem from "../Home/Main/CounterItem/CounterItem";
@@ -20,7 +22,8 @@ import { mapStyle } from "../../data/CustomMapStyle";
 
 const Tutorial = ({ onDone, extraHeight }) => {
 
-    const [testCounter, setTestCounter] = useState(69);
+    const [testCounter, setTestCounter] = useState(68);
+    const [testCounter2, setTestCounter2] = useState(206);
 
     const [config, setConfig ] = useState({
       joint: true,
@@ -40,9 +43,12 @@ const Tutorial = ({ onDone, extraHeight }) => {
             {item.testComponent ? item.testComponent : null}
             </View>
             
-            <LinearGradient colors={["rgba(0,0,0,0)", "#1E2132"]} style={styles.blur_container}>
+            <LinearGradient colors={["rgba(0,0,0,0)", "#131520"]} style={styles.blur_container}>
               <LinearGradient colors={["#369bff","#0080FF","#004e9c"]} style={styles.info_container}>
+                <View style={{flexDirection: "row"}}>
+                {item.icon ? item.icon : null}
                 <Text style={styles.info_title}>{item.title}</Text>
+                </View>                
                 <View style={{height: "5%"}}></View>
                 <Text style={styles.info_text}>{item.text}</Text>
               </LinearGradient>
@@ -53,7 +59,7 @@ const Tutorial = ({ onDone, extraHeight }) => {
       }
 
       const welcomeTest = () => {
-        return <View>
+        return <View style={{backgroundColor: "#131520", width: "90%", alignSelf: "center", paddingVertical: 25, borderRadius: 10}}>
           <Image style={{height: 100, width: 100, alignSelf: "center", borderRadius: 15}} source={require('../../../assets/icon.png')}/>
           <View style={{height: 20}}></View>
           <Text style={styles.logo_heading}>WeedStats</Text>
@@ -65,8 +71,7 @@ const Tutorial = ({ onDone, extraHeight }) => {
       const counterTest = () => {
         return <View>
         <CounterItem type={"joint"} counter={testCounter} toggleCounter={() => setTestCounter(testCounter+1)}/>
-        <CounterItem type={"joint"} counter={testCounter} toggleCounter={() => setTestCounter(testCounter+1)}/>
-        <CounterItem type={"joint"} counter={testCounter} toggleCounter={() => setTestCounter(testCounter+1)}/>
+        <CounterItem type={"bong"} counter={testCounter2} toggleCounter={() => setTestCounter2(testCounter2+1)}/>
       </View>
     }
 
@@ -130,7 +135,7 @@ const Tutorial = ({ onDone, extraHeight }) => {
     const mapTest = () => {
       return <View style={{height: "100%", width: "100%"}}>
 
-            <LinearGradient colors={["#131520", "rgba(0,0,0,0)"]} style={{position: "absolute", top: 0, width: "100%", height: 100, zIndex: 2}}>
+            <LinearGradient colors={["#1E2132", "rgba(0,0,0,0)"]} style={{position: "absolute", top: 0, width: "100%", height: 100, zIndex: 2}}>
             </LinearGradient>
 
           <MapView
@@ -155,9 +160,6 @@ const Tutorial = ({ onDone, extraHeight }) => {
 
     const configTest = () => {
       return <View style={{flex: 1, backgroundColor: "#1E2132"}}>
-
-            <LinearGradient colors={["#131520", "rgba(0,0,0,0)"]} style={{position: "relative", top: 0, width: "100%", height: 50, zIndex: 2}}>
-            </LinearGradient>
 
         <View style={{flexDirection: "row", width: "100%", height: 180}}>
 
@@ -215,9 +217,7 @@ const Tutorial = ({ onDone, extraHeight }) => {
                 }}
             />
           </View>
-
         </View>
-
       </View>
     }
 
@@ -239,7 +239,7 @@ const Tutorial = ({ onDone, extraHeight }) => {
       <LinearGradient colors={["#FC2044", "#B31731"]} style={[styles.info_container, {position: "relative"}]}>
           <Text style={styles.info_title}>Achtung</Text>
           <Text style={styles.info_text}>Hier Hinweis auf Intention der App, keine Anregung zu Konsum, kein Konsum bei minderjährigen!
-          Auch Verlinkung zu medizinischen Risiken, Hilfs-Hotlines, die App soll spaß machen, aber Verantwortungsvoller Konsum steht an oberster Priorität!</Text>
+          Auch Verlinkung zu medizinischen Risiken, Hilfs-Hotlines, die App soll spaß machen, aber Verantwortungsvoller Konsum steht an oberster Priorität! {"\n"}...{"\n"}...{"\n"}...{"\n"}...{"\n"}...{"\n"}...{"\n"}...{"\n"}...{"\n"}...{"\n"}...{"\n"}...</Text>
       </LinearGradient>
 
       </View>
@@ -250,47 +250,53 @@ const Tutorial = ({ onDone, extraHeight }) => {
           key: 'zero',
           title: 'Willkommen',
           text: 'WeedStats bietet verschiedenste Möglichkeiten zum Erfassen, Auswerten und Teilen deines Gras-Konsums. \n\nDiese kurze Tour wird dir die wesentlichen Funktionen der App beibringen.',
-          testComponent: welcomeTest()
+          testComponent: welcomeTest(),
         },
         {
           key: 'one',
           title: 'Counter',
           text: 'Jedes mal, wenn du etwas rauchst, solltest du den jeweiligen Counter um eins erhöhen. Halte dazu den Button für kurze Zeit gedrückt.',
           image: require('../../data/img/screenshots/counter.png'),
-          testComponent: counterTest()
+          testComponent: counterTest(),
+          icon: <Image source={require("../../data/img/logo_w.png")} style={styles.counter_image}/>
         },
         {
           key: 'two',
           title: 'Stats',
           text: 'Hier findest du statistische Auswertungen zu deinem Konsum und deinen Rauch-Verlauf.',
           image: require('../../data/img/screenshots/stats.png'),
-          testComponent: statsTest()
+          testComponent: statsTest(),
+          icon: <Entypo name="area-graph" style={styles.icon}/>
         },
         {
           key: 'three',
           title: 'WeedMap',
           text: 'Die Karte kann dir entweder eine Heatmap mit den Orten zeigen, an denen du am häufigsten geraucht hast, oder auch die letzten Aktivitäten deiner Freunde.',
           image: require('../../data/img/screenshots/map.png'),
-          testComponent: mapTest()
+          testComponent: mapTest(),
+          icon: <FontAwesome name="map-marker" style={styles.icon}/>
         },
         {
           key: 'four',
           title: 'Einstellungen',
           text: 'Hier kannst du Einstellungen für deine Privatsphäre und die Anzeige treffen.',
           image: require('../../data/img/screenshots/config.png'),
-          testComponent: configTest()
+          testComponent: configTest(),
+          icon: <FontAwesome name="sliders" style={styles.icon}
+        />
         },
         {
           key: 'five',
           title: 'Freunde',
           text: 'Füge Freunde hinzu, um deine Statistiken mit ihnen zu teilen und das volle Potential von WeedStats auszuschöpfen!\n\nAußerdem kannst du hier auf deinen Account zugreifen.',
           image: require('../../data/img/screenshots/friends.png'),
-          testComponent: friendsTest()
+          testComponent: friendsTest(),
+          icon: <FontAwesome name="user" style={styles.icon}/>
         },
         {
           key: 'six',
           title: 'Unser Tipp',
-          text: 'Je gewissenhafter du deinen Konsum in der App einträgst, desto genauer werden deine Statistiken mit der Zeit.\n\nWir wünschen dir viel Spaß mit WeedStats!',
+          text: 'Je gewissenhafter du deinen Konsum in der App einträgst, desto genauer werden deine Statistiken mit der Zeit. Wenn du schummelst, brauchst du die App nicht!\n\nWir wünschen dir viel Spaß mit WeedStats!',
           testComponent: tippTest()
         }
       ];
@@ -307,7 +313,7 @@ export default Tutorial
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#131520",
+        backgroundColor: "#1E2132",
         height: "100%",
         width: "100%"
     },
@@ -371,6 +377,18 @@ const styles = StyleSheet.create({
       fontFamily: "PoppinsBlack",
       color: "white",
       fontSize: responsiveFontSize(2.3),
-      marginLeft: 30,
+      marginLeft: 30
     },
+    icon: {
+      color: "white",
+      fontSize: 20,
+      textAlignVertical: "center",
+      marginRight: 5,
+      marginTop: -5
+    },
+    counter_image: {
+      height: responsiveHeight(3.5),
+      width: responsiveHeight(3.5),
+      marginTop: -2
+    }
 });

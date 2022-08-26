@@ -130,7 +130,9 @@ const Account = ({ handleLogOut, onexit, show }) => {
       {showLevels   ? <Levels onexit={() => setShowLevels(false)} show={showLevels}/>             : null}
       {showFeedback ? <Feedback userid={user.id} onexit={() => setShowFeedback(false)}/>          : null}
       {showDonation ? <Donation onexit={() => setShowDonation(false)}/>                           : null}
-      {showTutorial ? <TutorialPanel onexit={() => setShowTutorial(false)} show={showTutorial}/>  : null}
+      <Modal animationType="fade" transparent={true} visible={showTutorial}>
+        <TutorialPanel onexit={() => setShowTutorial(false)}/>
+      </Modal>
 
       <Modal animationType="fade" transparent={true} visible={showDelete}>
         <View
