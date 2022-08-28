@@ -191,7 +191,7 @@ const SearchPanel = ({onExit}) => {
 
             {!results || results.length == 0 ? 
             <View style={{width: "100%", marginTop: 100}}>
-                <Text style={{fontFamily: "PoppinsBlack", fontSize: 15, color: "rgba(255,255,255,0.5)", alignSelf: "center"}}>Keine Suchergebnisse</Text>
+                <Text style={{fontFamily: "PoppinsBlack", fontSize: 15, color: "#484F78", alignSelf: "center"}}>Keine Suchergebnisse</Text>
             </View> : <>
             {loading ? <ActivityIndicator color={"#0080FF"} size={"large"} style={{marginTop: 50}}/> : (
                 results.map((result) => {

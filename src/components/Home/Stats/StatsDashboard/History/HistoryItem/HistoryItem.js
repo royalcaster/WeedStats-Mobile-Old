@@ -69,7 +69,7 @@ const HistoryTable = ({ event, showOnMap }) => {
           <AntDesign
             name="enviromento"
             style={{
-              color: "#c4c4c4",
+              color: "#484F78",
               fontSize: 25,
               textAlignVertical: "center",
             }}
@@ -122,21 +122,21 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "PoppinsLight",
     fontSize: 15,
-    color: "#9c9c9c",
+    color: "white",
     alignSelf: "center",
   },
   time: {
     textAlign: "center",
     fontFamily: "PoppinsLight",
     fontSize: 15,
-    color: "#9c9c9c",
+    color: "white",
   },
   icon_date: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.5)",
+    color: "white",
   },
   icon_time: {
     fontSize: 16,
-    color: "rgba(255,255,255,0.5)",
+    color: "white",
   },
 });
