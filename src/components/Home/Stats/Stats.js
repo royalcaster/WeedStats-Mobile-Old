@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import {StyleSheet, Animated, Easing} from "react-native";
 import { UserContext } from "../../../data/UserContext";
+import { LanguageContext } from "../../../data/LanguageContext";
 
 //Custom Components
 import StatsDashboard from "./StatsDashboard/StatsDashboard";

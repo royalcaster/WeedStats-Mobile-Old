@@ -16,9 +16,6 @@ import { LogBox } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "./src/components/common/Button";
 
-//Service
-import { userExists, getUserObject } from "./src/data/Service";
-
 //Components
 import Home from "./src/components/Home/Home";
 import Login from "./src/components/Login/Login";
@@ -35,7 +32,11 @@ import { AppRegistry } from "react-native";
 import { useFonts } from "expo-font";
 import * as Google from "expo-google-app-auth";
 import * as Location from "expo-location";
+
+//Service
 import { UserContext } from "./src/data/UserContext";
+import { LanguageContext } from "./src/data/LanguageContext";
+import Languages from './src/data/languages.json'
 
 
 try {
@@ -48,6 +49,7 @@ AppRegistry.registerComponent("main", () => App);
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const [language, setLanguage] = useState(Languages.de);
   const [userLoaded, setUserLoaded] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [writeComplete, setWriteComplete] = useState(false);
@@ -71,6 +73,10 @@ export default function App() {
     PoppinsMedium: require("./src/fonts/Poppins-Medium.ttf"),
     PoppinsLight: require("./src/fonts/Poppins-Light.ttf"),
   });
+
+  const toggleLanguage = ( lang ) => {
+    lang == "de" ? setLanguage(Languages.de) : setLanguage(Languages.en);
+  }
 
   // Lädt das User-Objekt aus dem AsyncStorage
   const getCurrentUser = async () => {
@@ -576,10 +582,13 @@ export default function App() {
 
           {user ? (
             <UserContext.Provider value={user}>
-              <Home
-                handleLogOut={handleLogOut}
-                toggleCounter={toggleCounter}
-              />
+              <LanguageContext.Provider value={language}>
+                <Home
+                  handleLogOut={handleLogOut}
+                  toggleCounter={toggleCounter}
+                  toggleLanguage={toggleLanguage}
+                />
+              </LanguageContext.Provider>
             </UserContext.Provider>
           ) : (
             <Login handleLogin={handleLogin} />
