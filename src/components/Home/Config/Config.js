@@ -1,5 +1,5 @@
 //React
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   Dimensions,
   View,
@@ -23,8 +23,14 @@ import {
   responsiveHeight,
   responsiveFontSize
 } from "react-native-responsive-dimensions";
+import LanguageSelector from "./LanguageSelector/LanguageSelector";
 
-const Config = () => {
+//Service
+import { LanguageContext } from "../../../data/LanguageContext";
+
+const Config = ({ toggleLanguage }) => {
+
+  const language = useContext(LanguageContext);
 
   const [config, setConfig] = useState();
   const [loading, setLoading] = useState(true);
@@ -137,7 +143,8 @@ const Config = () => {
             <CustomLoader x={80}/>
           </View>
         ) : (
-          <ScrollView style={{ width: "100%", flex: 1 }}>
+          <View style={{height: "90%", top: 50, position: "absolute", width: "100%"}}>
+          <ScrollView style={{ width: "100%"}}>
             <Text style={styles.heading}>Counter konfigurieren</Text>
 
             <View style={{ flexDirection: "row", width: "100%" }}>
@@ -411,6 +418,13 @@ const Config = () => {
 
             <View style={{ height: 30 }}></View>
 
+            <Text style={styles.heading}>{language.config_language}</Text>
+            <View style={{ height: 10 }}></View>
+
+            <LanguageSelector toggleLanguage={toggleLanguage}/>
+
+            <View style={{ height: 30 }}></View>
+
             <Text style={styles.heading}>Sonstiges</Text>
             <View style={{ height: 10 }}></View>
 
@@ -452,6 +466,14 @@ const Config = () => {
             </View>
 
             <View style={{ height: 30 }}></View>
+            
+
+          <View style={{ height: 30 }}></View>
+          </ScrollView>
+          </View>
+        )}
+
+          <View style={styles.save_button_container}>
             {saved ? (
               <Button
                 fontColor={"rgba(255,255,255,0.5)"}
@@ -472,10 +494,7 @@ const Config = () => {
               />
               
             )}
-
-          <View style={{ height: 30 }}></View>
-          </ScrollView>
-        )}
+            </View>
       </Animated.View>
     </>
   );
@@ -510,4 +529,9 @@ const styles = StyleSheet.create({
     maxWidth: 250,
     textAlign: "center",
   },
+  save_button_container: {
+    width: "100%",
+    position: "absolute",
+    bottom: 0
+  }
 });

@@ -23,8 +23,11 @@ import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
 import { calcDailyAverage, filterByType, filterByMostRecent, getEntryDates, getBreakDates, createLineChartData, createBarChartData, calcStreak } from "../../../../data/Service";
 import StreakPanel from "./StreakPanel/StreakPanel";
 import BreakPanel from "./BreakPanel/BreakPanel";
+import { LanguageContext } from "../../../../data/LanguageContext";
 
 const StatsDashboard = ({ localData }) => {
+
+  const language = useContext(LanguageContext);
   
   const [selectedType, setSelectedType] = useState("main");
   const [selectedTime, setSelectedTime] = useState(0);
@@ -244,7 +247,7 @@ const StatsDashboard = ({ localData }) => {
       <Animated.View style={{ opacity: 1, alignItems: "center"}}>
         <View style={{ height: 50 }}></View>
         <View style={{flexDirection: "row", width: "100%"}}>
-        <Text style={styles.heading2}>Überblick</Text>
+        <Text style={styles.heading2}>{language.stats_overview}</Text>
         <View style={{flexDirection: "row",right: 10, top: -10,position: "absolute"}}>
         <TouchableNativeFeedback
               background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.1)", true)}

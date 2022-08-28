@@ -1,0 +1,13 @@
+{
+    "de": {
+        "stats_overview": "Überblick",
+        "stats_graphs": "Grafiken",
+        "config_language": "Sprache"
+    },
+    "en": {
+        "stats_overview": "Overview",
+        "stats_graphs": "Graphs",
+        "config_language": "Language"
+    }
+
+}
