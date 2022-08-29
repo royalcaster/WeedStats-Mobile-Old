@@ -13,7 +13,7 @@ const Button = ({ icon, title, color, hovercolor, borderradius, onPress,fontColo
   return (
     <View
       style={[
-        { backgroundColor: color, borderRadius: borderradius },
+        { backgroundColor: color, borderRadius: 10},
         styles.container,
       ]}
     >
@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
   touch: {
     width: "100%",
     height: 100,
-    borderRadius: 100,
     backgroundColor: "green",
     position: "absolute",
     zIndex: 5,
@@ -64,6 +63,6 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    flexDirection: "row",
+    flexDirection: "row"
   },
 });
