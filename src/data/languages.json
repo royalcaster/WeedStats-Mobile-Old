@@ -1,7 +1,27 @@
 {
     "de": {
+        "joint": "Joint",
+
         "stats_overview": "Überblick",
+        "stats_week": "Woche",
+        "stats_month": "Monat",
+        "stats_year": "Jahr",
+        "stats_activities_in_last": "Aktivitäten in den letzten",
+        "stats_24h": "24 Stunden",
+        "stats_7d": "7 Tagen",
+        "stats_30d": "30 Tagen",
+        "stats_current_streak": "Aktueller Streak",
+        "stats_since": "seit",
+        "stats_DAYS": "TAGE",
+        "stats_longest_streak": "Längster Streak",
+        "stats_current_break": "Aktuelle Pause",
+        "stats_longest_break": "Längste Pause",
         "stats_graphs": "Grafiken",
+        "stats_all": "Gesamt",
+        "stats_last_week": "letzte Woche",
+        "stats_last_month": "letzter Monat",
+        "stats_last_year": "letztes Jahr",
+
         "config_language": "Sprache"
     },
     "en": {

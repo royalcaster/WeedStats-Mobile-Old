@@ -32,6 +32,7 @@ import { AppRegistry } from "react-native";
 import { useFonts } from "expo-font";
 import * as Google from "expo-google-app-auth";
 import * as Location from "expo-location";
+import * as LocalAuthentication from 'expo-local-authentication'
 
 //Service
 import { UserContext } from "./src/data/UserContext";
@@ -57,15 +58,62 @@ export default function App() {
   const screen_height = Dimensions.get('screen').height;
   const [showSplash, setShowSplash] = useState(true);
 
+  //Local Authentication
+  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+  const [localAuthenticated, setLocalAuthenticated] = useState(false);
+
+  //checkt, ob Biometrie unterstützt wird
+  const checkLocalAuth = async () => {
+    if (!localAuthenticated) {
+      const compatible = await LocalAuthentication.hasHardwareAsync();
+      setIsBiometricSupported(compatible);
+
+      var promise = null;
+      if (isBiometricSupported) {
+      promise = await handleBiometricAuth();
+      if (promise.success) {
+        setLocalAuthenticated(true);
+        checkForUser(); 
+      }
+      else {setLocalAuthenticated(false)}
+      }
+    }
+  }
+  checkLocalAuth();
+
+  useEffect(() => {
+    checkForUser();
+    StatusBar.setBackgroundColor("rgba(255,255,255,0)");
+  }, []);
+
   //Sucht im AsyncStorage nach dem letzten User der sich eingeloggt hat und loggt sich bei Erfolg automatisch ein
-  useEffect(async () => {
+  const checkForUser = async () => {
     if (!userLoaded) {
       const current_user = await getCurrentUser();
       current_user != null ? refreshUser(current_user) : null;
       setUserLoaded(true);
     }
-    StatusBar.setBackgroundColor("rgba(255,255,255,0)");
-  }, []);
+  }
+
+  //Biometrische Authentifizierung
+  const handleBiometricAuth = async () => {
+    const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
+      if (!savedBiometrics)
+      return Alert.alert(
+        'Biometric record not found',
+        'Please verify your identity with your password',
+        'OK',
+        () => fallBackToDefaultAuth()
+      );
+
+    const biometricAuth = await LocalAuthentication.authenticateAsync({
+      promptMessage: 'Login with Biometrics',
+      disableDeviceFallback: false,
+      cancelLabel: "Cancel"
+    });
+
+    return biometricAuth;
+  }
 
   //Schriftarten Laden
   const [test] = useFonts({
@@ -579,20 +627,20 @@ export default function App() {
 
         <View style={{ flex: 1, backgroundColor: "#1E2132" }}>
           {showSplash ? <Splash onExit={() => setShowSplash(false)} /> : null}
-
-          {user ? (
-            <UserContext.Provider value={user}>
-              <LanguageContext.Provider value={language}>
-                <Home
-                  handleLogOut={handleLogOut}
-                  toggleCounter={toggleCounter}
-                  toggleLanguage={toggleLanguage}
-                />
-              </LanguageContext.Provider>
-            </UserContext.Provider>
-          ) : (
-            <Login handleLogin={handleLogin} />
-          )}
+            {localAuthenticated ? <>
+              {user ? (
+                <UserContext.Provider value={user}>
+                  <LanguageContext.Provider value={language}>
+                    <Home
+                      handleLogOut={handleLogOut}
+                      toggleCounter={toggleCounter}
+                      toggleLanguage={toggleLanguage}
+                    />
+                  </LanguageContext.Provider>
+                </UserContext.Provider>
+              ) : (
+                <Login handleLogin={handleLogin} />
+              )}</> : null}
         </View>
       </NavigationContainer>
     </>

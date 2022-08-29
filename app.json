@@ -20,7 +20,10 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "userInterfaceStyle": "automatic"
+      "userInterfaceStyle": "automatic",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "WeedStats needs to use Face ID / Touch ID to authenticate you"
+      }
     },
     "android": {
       "adaptiveIcon": {
