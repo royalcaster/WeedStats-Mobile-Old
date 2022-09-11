@@ -30,7 +30,7 @@ const Donation = ( { onexit } ) => {
     useBackHandler(() => {
         hide();
         return true
-      })
+    })
     
     const hide = () => {
         Animated.timing(fadeAnim, {

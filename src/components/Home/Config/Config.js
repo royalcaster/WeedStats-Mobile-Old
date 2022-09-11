@@ -127,6 +127,7 @@ const Config = ({ toggleLanguage }) => {
                   borderradius={25}
                   fontColor={"white"}
                   onPress={() => setLightMode(false)}
+                  hovercolor={"rgba(255,255,255,0.3)"}
                 />
               </View>
             </View>
@@ -418,6 +419,54 @@ const Config = ({ toggleLanguage }) => {
 
             <View style={{ height: 30 }}></View>
 
+            <Text style={styles.heading}>Sicherheit</Text>
+            <View style={{ height: 10 }}></View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                height: 50,
+                width: "95%",
+                alignContent: "center",
+              }}
+            >
+              <View style={{ flex: 4, justifyContent: "center" }}>
+                <Text style={styles.label}>WeedStats beim Start entsperren</Text>
+              </View>
+            <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Toggle
+                  value={config.localAuthenticationRequired}
+                  onPress={() => {
+                    setConfig({
+                      ...config,
+                      localAuthenticationRequired: !config.localAuthenticationRequired,
+                    });
+                    setSaved(false);
+                  }}
+                  trackBar={{
+                    activeBackgroundColor: "#0080FF",
+                    inActiveBackgroundColor: "#131520",
+                    width: 50,
+                    height: 25,
+                  }}
+                  thumbButton={{
+                    inActiveBackgroundColor: "white",
+                    activeBackgroundColor: "white",
+                    height: 25,
+                    width: 25,
+                  }}
+                />
+              </View>
+            </View>
+
+            <View style={{ height: 30 }}></View>
+
             <Text style={styles.heading}>{language.config_language}</Text>
             <View style={{ height: 10 }}></View>
 
@@ -481,6 +530,7 @@ const Config = ({ toggleLanguage }) => {
                 borderradius={100}
                 color={"#131520"}
                 title={"Gespeichert"}
+                hovercolor={"rgba(255,255,255,0.3)"}
               />
             ) : (
               <Button
@@ -491,6 +541,7 @@ const Config = ({ toggleLanguage }) => {
                 borderradius={100}
                 color={"#0080FF"}
                 title={"Speichern"}
+                hovercolor={"rgba(255,255,255,0.3)"}
               />
               
             )}
