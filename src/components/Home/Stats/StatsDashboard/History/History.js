@@ -1,5 +1,5 @@
 //React
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import { Animated, Easing, View, StyleSheet, Dimensions, Modal, FlatList, Text } from "react-native";
 import { useBackHandler } from "@react-native-community/hooks";
 
@@ -19,8 +19,13 @@ import uuid from 'react-native-uuid'
 //Konstanten
 import { mapStyle } from "../../../../../data/CustomMapStyle";
 
+//Service
+import { LanguageContext } from "../../../../../data/LanguageContext";
+
 const History = ({ show, onExit, history}) => {
     
+  const language = useContext(LanguageContext);
+
   const screen_width = Dimensions.get("screen").width;
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -141,7 +146,7 @@ const History = ({ show, onExit, history}) => {
           <View style={{position: "absolute", zIndex: 2000, left: 15, top: responsiveHeight(0.2)}}>
               <BackButton onPress={() => {hide()}} />
           </View>
-          <Text style={[styles.heading]}>Verlauf</Text>
+          <Text style={[styles.heading]}>{language.stats_history}</Text>
       </View>
 
       <FlatList

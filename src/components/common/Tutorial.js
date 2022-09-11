@@ -1,5 +1,5 @@
 //React
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Animated, StyleSheet, View, Text, Image, Dimensions } from "react-native";
 
 //Third Party
@@ -20,7 +20,12 @@ import FriendListItem from "../Home/Friends/FriendList/FriendListItem/FriendList
 import Levels from '../../data/Levels.json'
 import { mapStyle } from "../../data/CustomMapStyle";
 
+//Service
+import { LanguageContext } from "../../data/LanguageContext";
+
 const Tutorial = ({ onDone, extraHeight }) => {
+
+    const language = useContext(LanguageContext);
 
     const [testCounter, setTestCounter] = useState(68);
     const [testCounter2, setTestCounter2] = useState(206);
@@ -237,9 +242,8 @@ const Tutorial = ({ onDone, extraHeight }) => {
       return <View style={{width: "100%", alignSelf: "center"}}>
 
       <LinearGradient colors={["#FC2044", "#B31731"]} style={[styles.info_container, {position: "relative"}]}>
-          <Text style={styles.info_title}>Achtung</Text>
-          <Text style={styles.info_text}>Hier Hinweis auf Intention der App, keine Anregung zu Konsum, kein Konsum bei minderjährigen!
-          Auch Verlinkung zu medizinischen Risiken, Hilfs-Hotlines, die App soll spaß machen, aber Verantwortungsvoller Konsum steht an oberster Priorität! {"\n"}...{"\n"}...{"\n"}...{"\n"}...{"\n"}...{"\n"}...{"\n"}...{"\n"}...{"\n"}...{"\n"}...{"\n"}...</Text>
+          <Text style={styles.info_title}>{language.tutorial_pls_read_title}</Text>
+          <Text style={styles.info_text}>{language.tutorial_pls_read_text}</Text>
       </LinearGradient>
 
       </View>
@@ -248,38 +252,38 @@ const Tutorial = ({ onDone, extraHeight }) => {
       const slides = [
         {
           key: 'zero',
-          title: 'Willkommen',
-          text: 'WeedStats bietet verschiedenste Möglichkeiten zum Erfassen, Auswerten und Teilen deines Gras-Konsums. \n\nDiese kurze Tour wird dir die wesentlichen Funktionen der App beibringen.',
+          title: language.tutorial_welcome_title,
+          text: language.tutorial_welcome_text,
           testComponent: welcomeTest(),
         },
         {
           key: 'one',
-          title: 'Counter',
-          text: 'Jedes mal, wenn du etwas rauchst, solltest du den jeweiligen Counter um eins erhöhen. Halte dazu den Button für kurze Zeit gedrückt.',
+          title: language.tutorial_counter_title,
+          text: language.tutorial_counter_text,
           image: require('../../data/img/screenshots/counter.png'),
           testComponent: counterTest(),
           icon: <Image source={require("../../data/img/logo_w.png")} style={styles.counter_image}/>
         },
         {
           key: 'two',
-          title: 'Stats',
-          text: 'Hier findest du statistische Auswertungen zu deinem Konsum und deinen Rauch-Verlauf.',
+          title: language.tutorial_stats_title,
+          text: language.tutorial_stats_text,
           image: require('../../data/img/screenshots/stats.png'),
           testComponent: statsTest(),
           icon: <Entypo name="area-graph" style={styles.icon}/>
         },
         {
           key: 'three',
-          title: 'WeedMap',
-          text: 'Die Karte kann dir entweder eine Heatmap mit den Orten zeigen, an denen du am häufigsten geraucht hast, oder auch die letzten Aktivitäten deiner Freunde.',
+          title: language.tutorial_map_title,
+          text: language.tutorial_map_text,
           image: require('../../data/img/screenshots/map.png'),
           testComponent: mapTest(),
           icon: <FontAwesome name="map-marker" style={styles.icon}/>
         },
         {
           key: 'four',
-          title: 'Einstellungen',
-          text: 'Hier kannst du Einstellungen für deine Privatsphäre und die Anzeige treffen.',
+          title: language.tutorial_config_title,
+          text: language.tutorial_config_text,
           image: require('../../data/img/screenshots/config.png'),
           testComponent: configTest(),
           icon: <FontAwesome name="sliders" style={styles.icon}
@@ -287,16 +291,16 @@ const Tutorial = ({ onDone, extraHeight }) => {
         },
         {
           key: 'five',
-          title: 'Freunde',
-          text: 'Füge Freunde hinzu, um deine Statistiken mit ihnen zu teilen und das volle Potential von WeedStats auszuschöpfen!\n\nAußerdem kannst du hier auf deinen Account zugreifen.',
+          title: language.tutorial_friends_title,
+          text: language.tutorial_friends_text,
           image: require('../../data/img/screenshots/friends.png'),
           testComponent: friendsTest(),
           icon: <FontAwesome name="user" style={styles.icon}/>
         },
         {
           key: 'six',
-          title: 'Unser Tipp',
-          text: 'Je gewissenhafter du deinen Konsum in der App einträgst, desto genauer werden deine Statistiken mit der Zeit. Wenn du schummelst, brauchst du die App nicht!\n\nWir wünschen dir viel Spaß mit WeedStats!',
+          title: language.tutorial_tipp_title,
+          text: language.tutorial_tipp_text,
           testComponent: tippTest()
         }
       ];

@@ -58,148 +58,22 @@ const StatsDashboard = ({ localData }) => {
     ).start();
   },[selectedType]);
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  /* useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-      easing: Easing.bezier(0.07, 1, 0.33, 0.89),
-    }).start();
-  }, []); */
-
-  /*   const isNextDay = (daysDiff, absDiff, monat, jahr) => {
-    const monat31 = [1, 3, 5, 7, 8, 10, 12];
-    const monat30 = [4, 6, 9, 11];
-
-    if (daysDiff == 1 && absDiff <= 2 * 1000 * 60 * 60 * 24) {
-      // Tage folgen aufeinander, gleicher Monat
-      return 1;
-    } else if (
-      daysDiff == 30 &&
-      absDiff <= 2 * 1000 * 60 * 60 * 24 &&
-      monat31.includes(monat)
-    ) {
-      // Tage folgen aufeinander, monatsübergreifend (31 Tage)
-      return 1;
-    } else if (
-      daysDiff == 29 &&
-      absDiff <= 2 * 1000 * 60 * 60 * 24 &&
-      monat30.includes(monat)
-    ) {
-      // Tage folgen aufeinander, monatsübergreifend (30 Tage)
-      return 1;
-    } else if (
-      daysDiff == 28 &&
-      absDiff <= 2 * 1000 * 60 * 60 * 24 &&
-      monat == 2 &&
-      jahr % 4 == 0
-    ) {
-      // Tage folgen aufeinander, monatsübergreifend (Februar, Schaltjahr)
-      return 1;
-    } else if (
-      daysDiff == 27 &&
-      absDiff <= 2 * 1000 * 60 * 60 * 24 &&
-      monat == 2 &&
-      jahr % 4 != 0
-    ) {
-      // Tage folgen aufeinander, monatsübergreifend (Februar, kein Schaltjahr)
-      return 1;
-    } else if (daysDiff > 1) {
-      // Tage folgen nicht aufeinander
-      return 2;
-    }
-    // Ansonsten: Tage sind identisch (irrelevant)
-    return 3;
-  }; */
-
-  /*   const calcStreak = (array) => {
-    let current = 1;
-    let longest = 1;
-    let smokedToday = false;
-
-    let endDate = new Date(array[0].timestamp);
-
-    array.forEach((entry, i) => {
-      if (i >= 1) {
-        let daysDiff =
-          new Date(entry.timestamp).getDate() -
-          new Date(array[i - 1].timestamp).getDate();
-        let absDiff = entry.timestamp - array[i - 1].timestamp;
-        let monat = new Date(array[i - 1].timestamp).getMonth();
-        let jahr = new Date(entry.timestamp).getFullYear();
-
-        if (isNextDay(daysDiff, absDiff, monat, jahr) == 1) {
-          current++;
-        } else if (isNextDay(daysDiff, absDiff, monat, jahr) == 2) {
-          if (current > longest) {
-            longest = current;
-            endDate = new Date(array[i - 1].timestamp);
-          }
-          current = 1;
-        }
-      }
-    });
-
-    if (current > longest) {
-      longest = current;
-      endDate = new Date(array[array.length - 1].timestamp);
-    }
-
-    const startDateLongest = new Date(
-      endDate - (longest - 1) * 1000 * 60 * 60 * 24
-    );
-    let startDateCurrent = new Date(
-      new Date(array[array.length - 1].timestamp) -
-        (current - 1) * 1000 * 60 * 60 * 24
-    );
-
-    const daysDiffLast =
-      new Date(Date.now()).getDate() -
-      new Date(array[array.length - 1].timestamp).getDate();
-    const absDiffLast = Date.now() - array[array.length - 1].timestamp;
-    const monatLast = new Date(array[array.length - 1].timestamp).getMonth();
-    const jahrLast = new Date(Date.now()).getFullYear();
-
-    // Checkt, ob der letzte Eintrag weder heute noch gestern passiert ist
-    if (isNextDay(daysDiffLast, absDiffLast, monatLast, jahrLast) == 2) {
-      current = 0;
-      startDateCurrent = null;
-    } else if (isNextDay(daysDiffLast, absDiffLast, monatLast, jahrLast) == 3) {
-      smokedToday = true;
-    }
-
-    return [
-      longest,
-      toGermanDate(startDateLongest),
-      toGermanDate(endDate),
-      current,
-      toGermanDate(startDateCurrent),
-      smokedToday,
-    ];
-  }; */
-
-  
-
-
-  
-
   const [streakData, setStreakData] = useState(calcStreak(localData));
   
   const options_type = [
-    { label: "Gesamt", value: 0 },
-    { label: "Joint", value: 1 },
-    { label: "Bong", value: 2 },
-    { label: "Vape", value: 3 },
-    { label: "Pfeife", value: 4 },
-    { label: "Edible", value: 5 },
+    { label: language.stats_all, value: 0 },
+    { label: language.joint, value: 1 },
+    { label: language.bong, value: 2 },
+    { label: language.vape, value: 3 },
+    { label: language.pipe, value: 4 },
+    { label: language.cookie, value: 5 },
   ];
 
   const options_time = [
-    { label: "Gesamt", value: 6 },
-    { label: "letzte Woche", value: 7 },
-    { label: "letzter Monat", value: 8 },
-    { label: "letztes Jahr", value: 9 },
+    { label: language.stats_all, value: 6 },
+    { label: language.stats_week, value: 7 },
+    { label: language.stats_month, value: 8 },
+    { label: language.stats_year, value: 9 },
   ];
 
   const toggleSelection = (index) => {
@@ -314,21 +188,21 @@ const StatsDashboard = ({ localData }) => {
             }}
           >
 
-            <StatsCard title="Ø Woche" value={Math.round(
+            <StatsCard title={"Ø " + language.stats_week} value={Math.round(
                   calcDailyAverage(filterByType(localData, selectedType), localData) *
                     7 *
                     10
                 ) / 10}
             />
 
-            <StatsCard title="Ø Monat" value={Math.round(
+            <StatsCard title={"Ø " + language.stats_month} value={Math.round(
                   calcDailyAverage(filterByType(localData, selectedType), localData) *
                     30.5 *
                     10
                 ) / 10}
             />
 
-            <StatsCard title="Ø Jahr" value={Math.round(
+            <StatsCard title={"Ø " + language.stats_year} value={Math.round(
                   calcDailyAverage(filterByType(localData, selectedType), localData) * 365
                 )}
             />
@@ -342,12 +216,12 @@ const StatsDashboard = ({ localData }) => {
               { marginTop: 15, fontSize: 18, color: "#c4c4c4" },
             ]}
           >
-            {selectedType === "main" ? "Einträge" : null}
-            {selectedType === "joint" ? "Joints" : null}
-            {selectedType === "bong" ? "Bongs" : null}
-            {selectedType === "vape" ? "Vapes" : null}
-            {selectedType === "pipe" ? "Pfeifen" : null}
-            {selectedType === "cookie" ? "Edibles" : null} in den letzten
+            {selectedType === "main" ? language.activities : null}
+            {selectedType === "joint" ? language.joint : null}
+            {selectedType === "bong" ? language.bong : null}
+            {selectedType === "vape" ? language.vape : null}
+            {selectedType === "pipe" ? language.pipe : null}
+            {selectedType === "cookie" ? language.cookie : null} {language.in_the_last}
           </Text>
           <View
             style={{
@@ -364,7 +238,7 @@ const StatsDashboard = ({ localData }) => {
                   { marginTop: 0, textAlign: "center" },
                 ]}
               >
-                24 Stunden
+                {language.stats_24h}
               </Text>
               <Animated.Text
                 style={[
@@ -390,7 +264,7 @@ const StatsDashboard = ({ localData }) => {
                   { marginTop: 0, textAlign: "center" },
                 ]}
               >
-                7 Tagen
+                {language.stats_7d}
               </Text>
               <Animated.Text
                 style={[
@@ -418,7 +292,7 @@ const StatsDashboard = ({ localData }) => {
                   { marginTop: 0, textAlign: "center" },
                 ]}
               >
-                30 Tagen
+                {language.stats_30d}
               </Text>
               <Animated.Text
                 style={[
@@ -470,7 +344,7 @@ const StatsDashboard = ({ localData }) => {
 
           <View style={{ height: 30 }}></View>
 
-          <Text style={styles.heading2}>Grafiken</Text>
+          <Text style={styles.heading2}>{language.stats_graphs}</Text>
           <View style={{ height: 10 }}></View>
 
           <SwitchSelector
@@ -574,7 +448,7 @@ const StatsDashboard = ({ localData }) => {
               }}
               data={[
                 {
-                  name: "Joint",
+                  name: language.joint,
                   count: filterByMostRecent(
                     filterByType(localData, "joint"),
                     selectedTime
@@ -584,7 +458,7 @@ const StatsDashboard = ({ localData }) => {
                   legendFontSize: 15,
                 },
                 {
-                  name: "Bong",
+                  name: language.bong,
                   count: filterByMostRecent(
                     filterByType(localData, "bong"),
                     selectedTime
@@ -594,7 +468,7 @@ const StatsDashboard = ({ localData }) => {
                   legendFontSize: 15,
                 },
                 {
-                  name: "Vape",
+                  name: language.vape,
                   count: filterByMostRecent(
                     filterByType(localData, "vape"),
                     selectedTime
@@ -604,7 +478,7 @@ const StatsDashboard = ({ localData }) => {
                   legendFontSize: 15,
                 },
                 {
-                  name: "Pfeife",
+                  name: language.pipe,
                   count: filterByMostRecent(
                     filterByType(localData, "pipe"),
                     selectedTime
@@ -614,7 +488,7 @@ const StatsDashboard = ({ localData }) => {
                   legendFontSize: 15,
                 },
                 {
-                  name: "Edible",
+                  name: language.cookie,
                   count: filterByMostRecent(
                     filterByType(localData, "cookie"),
                     selectedTime

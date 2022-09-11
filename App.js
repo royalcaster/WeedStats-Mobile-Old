@@ -1,6 +1,6 @@
 //React
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Platform,
@@ -58,6 +58,8 @@ export default function App() {
   const screen_height = Dimensions.get('screen').height;
   const [showSplash, setShowSplash] = useState(true);
 
+  const [config, setConfig] = useState(null);
+
   //Local Authentication
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const [localAuthenticated, setLocalAuthenticated] = useState(false);
@@ -82,6 +84,7 @@ export default function App() {
   checkLocalAuth();
 
   useEffect(() => {
+    loadSettings();
     checkForUser();
     StatusBar.setBackgroundColor("rgba(255,255,255,0)");
   }, []);
@@ -122,8 +125,23 @@ export default function App() {
     PoppinsLight: require("./src/fonts/Poppins-Light.ttf"),
   });
 
+  const loadSettings = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("settings");
+      jsonValue != null ? setConfig(JSON.parse(jsonValue)) : null;
+      toggleLanguage(config.language);
+    } catch (e) {
+      console.log("Error in Config beim Laden: ", e);
+    }
+  };
+
   const toggleLanguage = ( lang ) => {
-    lang == "de" ? setLanguage(Languages.de) : setLanguage(Languages.en);
+    if (lang == "de" && config.language == "en") {
+      setLanguage(Languages.de);
+    }
+    if (lang == "en" && config.language == "de") {
+      setLanguage(Languages.en);
+    } 
   }
 
   // Lädt das User-Objekt aus dem AsyncStorage
@@ -238,9 +256,9 @@ export default function App() {
       try {
         const value = JSON.stringify({
           showJoint: true,
-          showBong: false,
+          showBong: true,
           showVape: true,
-          showPipe: false,
+          showPipe: true,
           showCookie: true,
           shareMainCounter: true,
           shareTypeCounters: true,
@@ -248,6 +266,7 @@ export default function App() {
           saveGPS: true,
           shareGPS: false,
           showTutorial: true,
+          language: "en"
         });
         await AsyncStorage.setItem("settings", value);
       } catch (e) {
@@ -291,6 +310,8 @@ export default function App() {
       const result = await Google.logInAsync({
         androidClientId:
           "31827165734-rdbihglcac1juesc6fkjd4bgp1c1oj2s.apps.googleusercontent.com",
+        iosClientId:
+          "31827165734-cjrhm51isdg9bjjfji9h2ike188n9d6j.apps.googleusercontent.com",  
         scopes: ["profile", "email"],
       });
 
@@ -330,7 +351,6 @@ export default function App() {
     }
 
     // Updated betroffene Counters im AsyncStorage
-
     let current_counters = {};
 
     try {
@@ -350,58 +370,6 @@ export default function App() {
       console.log("Error:", e);
     }
   };
-
-  // Zum Löschen einzelner Daten aus der History. Erstmal entfernt, da die Konsistenz der Daten nach aktuellem Stand darunter leidet
-  /* const deleteEntryGlobally = async (type_del, lastEntry = null) => {
-    const docRef = doc(firestore, "users", user.id);
-    const docSnap = await getDoc(docRef);
-
-    await updateDoc(docRef, {
-      main_counter: docSnap.data().main_counter - 1,
-    });
-
-    if (lastEntry) {
-      await updateDoc(docRef, {
-        last_entry_timestamp: lastEntry.timestamp,
-        last_entry_type: lastEntry.type,
-        last_entry_latitude: lastEntry.latitude,
-        last_entry_longitude: lastEntry.longitude,
-      });
-    }
-
-    switch (type_del) {
-      case "joint":
-        await updateDoc(docRef, {
-          joint_counter: docSnap.data().joint_counter - 1,
-        });
-        break;
-      case "bong":
-        await updateDoc(docRef, {
-          bong_counter: docSnap.data().bong_counter - 1,
-        });
-        break;
-      case "vape":
-        await updateDoc(docRef, {
-          vape_counter: docSnap.data().vape_counter - 1,
-        });
-        break;
-    }
-
-    const new_docSnap = await getDoc(docRef);
-
-    setUser({
-      ...user,
-      joint_counter: new_docSnap.data().joint_counter,
-      bong_counter: new_docSnap.data().bong_counter,
-      vape_counter: new_docSnap.data().vape_counter,
-      last_entry_timestamp: new_docSnap.data().last_entry_timestamp,
-      last_entry_latitude: new_docSnap.data().last_entry_latitude,
-      last_entry_longitude: new_docSnap.data().last_entry_longitude,
-      last_entry_type: new_docSnap.data().last_entry_type,
-      main_counter: new_docSnap.data().main_counter,
-    });
-  };
- */
 
   const toggleCounter = async (index) => {
     let settings = {};
@@ -588,12 +556,12 @@ export default function App() {
                       },
                     ]}
                   >
-                    Erfolg
+                    {language.success}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.text, { fontSize: 15 }]}>
-                    {sayings[sayingNr].saying}
+                    {language.sayings[sayingNr].saying}
                   </Text>
                   <Text
                     style={[
@@ -601,7 +569,7 @@ export default function App() {
                       { fontSize: 15, fontStyle: "italic", marginTop: 10 },
                     ]}
                   >
-                    {sayings[sayingNr].from}
+                    {language.sayings[sayingNr].from}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>

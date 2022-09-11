@@ -23,10 +23,12 @@ import { responsiveHeight, responsiveFontSize } from "react-native-responsive-di
 
 //Serice
 import { UserContext } from "../../../data/UserContext";
+import { LanguageContext } from "../../../data/LanguageContext";
 
 const Groups = ({ handleLogOut, toggleNavbar }) => {
 
   const user = useContext(UserContext);
+  const language = useContext(LanguageContext);
   
   const [rippleColor, setRippleColor] = useState("rgba(255,255,255,0.1)");
   const [rippleOverflow, setRippleOverflow] = useState(false);
@@ -60,8 +62,8 @@ const Groups = ({ handleLogOut, toggleNavbar }) => {
       {showRequests ? <FriendRequests onExit={() => setShowRequests(false)} refresh={() => {getFriendList()}}/> : null}
 
       <FriendPage 
-        show={showFriend} 
-        userid={activeFriend} 
+        show={showFriend}
+        userid={activeFriend}
         onExit={() => {setShowFriend(false); setActiveFriend(null);}}
         refresh={() => {getFriendList(); setActiveFriend(null); setShowFriend(false);}}
         toggleNavbar={toggleNavbar}
@@ -76,7 +78,7 @@ const Groups = ({ handleLogOut, toggleNavbar }) => {
       <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
         <View style={{ height: responsiveHeight(7) }}></View>
         <View style={{ alignItems: "center", flexDirection: "row", marginBottom: 20}}>
-          <Text style={styles.heading}>Freunde</Text>
+          <Text style={styles.heading}>{language.friends_friends}</Text>
           <View
             style={{ flexDirection: "row", right: 0, position: "absolute" }}
           >

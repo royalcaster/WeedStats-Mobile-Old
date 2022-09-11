@@ -1,18 +1,24 @@
 //React
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, View, Animated, Dimensions } from "react-native";
 import StateBar from "../StateBar/StateBar";
 
+//Service
+import { LanguageContext } from "../../../../../data/LanguageContext";
+
 const StreakPanel = ({ streakData, currentStreak, currentStreakStart, longestStreak, longestStreakStart, longestStreakEnd }) => {
-    return (
+    
+  const language = useContext(LanguageContext);
+  
+  return (
         <Animated.View style={[styles.card_container_wide,{width: Dimensions.get("window").width - 100}]}>
 
             <View style={styles.cosmetic}></View>
 
             <View style={styles.card_container_half}>
               <View style={{flexDirection: "row", width: "100%"}}>
-                <Text style={styles.card_label}>Aktueller Streak</Text>
-                <Text style={[styles.card_value2]}>seit {currentStreakStart}</Text>
+                <Text style={styles.card_label}>{language.stats_current_streak}</Text>
+                <Text style={[styles.card_value2]}>{language.stats_since} {currentStreakStart}</Text>
               </View>
                 
                 <Text
@@ -23,18 +29,18 @@ const StreakPanel = ({ streakData, currentStreak, currentStreakStart, longestStr
                       : { color: "#8a8a8a" },
                   ]}
                 >
-                  {currentStreak} {currentStreak == 1 ? <Text style={{fontSize: 15}}>TAG</Text> : <Text style={{fontSize: 15}}>TAGE</Text>}
+                  {currentStreak} {currentStreak == 1 ? <Text style={{fontSize: 15}}>{language.stats_DAY}</Text> : <Text style={{fontSize: 15}}>{language.stats_DAYS}</Text>}
                 </Text>
                 <StateBar type={"streak"} value={currentStreak}/>
 
             </View>
             <View style={styles.card_container_half}>
                 <View style={{width: "100%", flexDirection: "row"}}>
-                  <Text style={styles.card_label}>Längster Streak</Text>
+                  <Text style={styles.card_label}>{language.stats_longest_streak}</Text>
                   <Text style={[styles.card_value2]}>{longestStreakStart} - {longestStreakEnd}</Text>
                 </View>
                 <Text style={styles.card_value}>
-                {longestStreak} {longestStreak == 1 ? <Text style={{fontSize: 15}}>TAG</Text> : <Text style={{fontSize: 15}}>TAGE</Text>}
+                {longestStreak} {longestStreak == 1 ? <Text style={{fontSize: 15}}>{language.stats_DAY}</Text> : <Text style={{fontSize: 15}}>{language.stats_DAYS}</Text>}
                 </Text>
             </View>
         </Animated.View>

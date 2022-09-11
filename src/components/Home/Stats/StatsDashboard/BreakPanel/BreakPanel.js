@@ -1,9 +1,15 @@
 //React
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, View, Animated, Dimensions } from "react-native";
 import StateBar from "../StateBar/StateBar";
 
+//Service
+import { LanguageContext } from "../../../../../data/LanguageContext";
+
 const BreakPanel = ({ streakData, currentBreak, currentBreakStart, longestBreak, longestBreakStart, longestBreakEnd }) => {
+
+    const language = useContext(LanguageContext);
+
     return (
         <Animated.View style={[styles.card_container_wide,{width: Dimensions.get("window").width - 100}]}>
 
@@ -11,7 +17,7 @@ const BreakPanel = ({ streakData, currentBreak, currentBreakStart, longestBreak,
 
             <View style={styles.card_container_half}>
               <View style={{width: "100%", flexDirection: "row"}}>
-                  <Text style={styles.card_label}>Aktuelle Pause</Text>
+                  <Text style={styles.card_label}>{language.stats_current_break}</Text>
                   {!streakData.today ? (
                   <Text style={[styles.card_value2]}>
                     seit {currentBreakStart}
@@ -26,18 +32,18 @@ const BreakPanel = ({ streakData, currentBreak, currentBreakStart, longestBreak,
                       : { color: "#c4c4c4" },
                   ]}
                 >
-                  {currentBreak} {currentBreak == 1 ? <Text style={{fontSize: 15}}>TAG</Text> : <Text style={{fontSize: 15}}>TAGE</Text>}
+                  {currentBreak} {currentBreak == 1 ? <Text style={{fontSize: 15}}>{language.stats_DAY}</Text> : <Text style={{fontSize: 15}}>{language.stats_DAYS}</Text>}
                 </Text>
                 <StateBar type="break" value={currentBreak}/>
                 <View style={{height: 10}}></View>
             </View>
             <View style={styles.card_container_half}>
               <View style={{width: "100%", flexDirection: "row"}}>
-                <Text style={styles.card_label}>Längste Pause</Text>
+                <Text style={styles.card_label}>{language.stats_longest_break}</Text>
                 {streakData.rangeLongestBreak != null ? <Text style={[styles.card_value2]}>{longestBreakStart} - {longestBreakEnd}</Text> : null}
               </View>
                 <Text style={[styles.card_value, { fontSize: 25 }]}>
-                  {longestBreak} {longestBreak == 1 ? <Text style={{fontSize: 15}}>TAG</Text> : <Text style={{fontSize: 15}}>TAGE</Text>}
+                  {longestBreak} {longestBreak == 1 ? <Text style={{fontSize: 15}}>{language.stats_DAY}</Text> : <Text style={{fontSize: 15}}>{language.stats_DAYS}</Text>}
                 </Text>
             </View>
           </Animated.View>

@@ -1,5 +1,5 @@
 //React
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View, Image, Pressable, Animated, Easing } from "react-native";
 
 //Custom Components
@@ -10,10 +10,12 @@ import LevelImage from "../../../common/LevelImage";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
 
-//Data
-import levels from "../../../../data/Levels.json";
+//Service
+import { LanguageContext } from "../../../../data/LanguageContext";
 
 const CounterItem = ({ type, counter, toggleCounter }) => {
+
+  const language = useContext(LanguageContext);
 
   const [buttonPressed, setButtonPressed] = useState(false);
 
@@ -50,15 +52,6 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
     }).start();
   }, [fadeAnim]);
 
- /*  const [loaded] = useFonts({
-    PoppinsBlack: require("./fonts/Poppins-Black.ttf"),
-    PoppinsLight: require("./fonts/Poppins-Light.ttf"),
-  }); */
-
- /*  if (!loaded) {
-    return null;
-  } */
-
   const calcLevelStatus = (counter) => {
     if (counter >= 420) {
       return "100%";
@@ -73,24 +66,24 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
   const calcLevelName = (counter) => {
     if (counter) {
     let indicator = Math.floor(counter / 70);
-    return indicator > levels.length - 1
-      ? levels[levels.length - 1].name
-      : levels[indicator].name;
+    return indicator > language.levels.length - 1
+      ? language.levels[levels.length - 1].name
+      : language.levels[indicator].name;
     }
     else {
-      return levels[0].name;
+      return language.levels[0].name;
     }
   };
 
   const getGradientColors = (counter) => {
     if (counter) {
     let indicator = Math.floor(counter / 70);
-    return indicator > levels.length - 1
-      ? levels[levels.length - 1].colors
-      : levels[indicator].colors;
+    return indicator > language.levels.length - 1
+      ? language.levels[language.levels.length - 1].colors
+      : language.levels[indicator].colors;
     }
     else {
-      return levels[0].colors;
+      return language.levels[0].colors;
     }
   };
 
@@ -138,7 +131,7 @@ const CounterItem = ({ type, counter, toggleCounter }) => {
             borderColor: counter > 419 ? "#E6C743" : "rgba(255,255,255,0)",
             width: "100%",
             alignItems: "center",
-            borderRadius: 15,
+            borderRadius: 10,
           }}
         >
           {type === "joint" ? (

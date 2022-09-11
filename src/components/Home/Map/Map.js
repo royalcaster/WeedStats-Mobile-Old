@@ -24,11 +24,13 @@ import { firestore } from "../../../data/FirebaseConfig";
 
 //Service
 import { UserContext } from "../../../data/UserContext";
+import { LanguageContext } from "../../../data/LanguageContext";
 
 const Map = () => {
   LogBox.ignoreAllLogs();
 
   const user = useContext(UserContext);
+  const language = useContext(LanguageContext);
 
   const windowHeight = Dimensions.get("window").height;
   const [view, setView] = useState("friends");
@@ -278,7 +280,7 @@ const Map = () => {
                       { color: view == "heatmap" ? "#0080FF" : "white" },
                     ]}
                   >
-                    H E A T M A P
+                    {language.map_heatmap}
                   </Text>
                 </View>
               </TouchableNativeFeedback>
@@ -299,7 +301,7 @@ const Map = () => {
                       { color: view == "friends" ? "#0080FF" : "white" },
                     ]}
                   >
-                    F R E U N D E
+                    {language.map_friends}
                   </Text>
                 </View>
               </TouchableNativeFeedback>

@@ -17,10 +17,12 @@ import uuid from 'react-native-uuid'
 
 //Service
 import { UserContext } from "../../../../data/UserContext";
+import { LanguageContext } from "../../../../data/LanguageContext";
 
 const SearchPanel = ({onExit}) => {
 
     const user = useContext(UserContext)
+    const language = useContext(LanguageContext);
 
     const screen_height = Dimensions.get("screen").height;
     const [modalVisible, setModalVisible] = useState(false);
@@ -145,7 +147,14 @@ const SearchPanel = ({onExit}) => {
             <View style={{flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.5)"}}>
                 <View style={styles.modal_container}>
                     {!alreadySent ? <><View style={{flex: 1, justifyContent: "center"}}>
-                        <Text style={styles.heading}>Freundschaftsanfrage an <Text style={[{color: "#0080FF"}]}>{activeRequested ? activeRequested.username : null}</Text> senden?</Text>
+
+                        {language.language_short == "de" ? 
+                        <Text style={styles.heading}><Text style={[{color: "#0080FF"}]}>{activeRequested ? activeRequested.username : null}</Text> {language.searchpanel_question}</Text>
+                        :
+                        <Text style={styles.heading}>{language.searchpanel_question}<Text style={[{color: "#0080FF"}]}> {activeRequested ? activeRequested.username : null}</Text> ? </Text>
+                        }
+
+                        
                     </View>
                     <View style={{flex: 1, flexDirection: "row"}}>
                         <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
@@ -176,7 +185,7 @@ const SearchPanel = ({onExit}) => {
         </Modal>
 
                 
-            <Text style={styles.heading}>Suchen</Text>
+            <Text style={styles.heading}>{language.searchpanel_title}</Text>
             <View style={{height: 10}}></View>
             <View style={{width: "100%", flexDirection: "row", maxHeight: 60, flex: 1, alignItems: "center"}} >
                 <View style={{flex: 1, alignItems: "center"}}>
@@ -191,7 +200,7 @@ const SearchPanel = ({onExit}) => {
 
             {!results || results.length == 0 ? 
             <View style={{width: "100%", marginTop: 100}}>
-                <Text style={{fontFamily: "PoppinsBlack", fontSize: 15, color: "#484F78", alignSelf: "center"}}>Keine Suchergebnisse</Text>
+                <Text style={{fontFamily: "PoppinsBlack", fontSize: 15, color: "#484F78", alignSelf: "center"}}>{language.searchpanel_empty}</Text>
             </View> : <>
             {loading ? <ActivityIndicator color={"#0080FF"} size={"large"} style={{marginTop: 50}}/> : (
                 results.map((result) => {
