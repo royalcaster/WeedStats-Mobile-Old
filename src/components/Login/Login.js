@@ -58,12 +58,13 @@ const Login = ({ handleLogin }) => {
         style={{ zIndex: 2, position: "absolute", bottom: 0, width: "100%" }}
       >
         <Button
-          fontColor={"black"}
+          fontColor={"white"}
           title={" Mit Google anmelden"}
           borderradius={100}
-          color={"white"}
+          color={"#0080FF"}
           onPress={handleLogin}
-          hovercolor={"rgba(0,0,0,0.15)"}
+          hovercolor={"rgba(255,255,255,0.3)"}
+          color2={"#004080"}
         />
         <View style={{ height: 40 }}></View>
       </View>

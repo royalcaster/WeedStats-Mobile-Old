@@ -13,42 +13,18 @@ const TutorialPanel = ({ onexit }) => {
   const screen_width = Dimensions.get("window").width;
   const fadeAnim = useRef(new Animated.Value(screen_width)).current;
 
-  /* const slide = () => {
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 300,
-      easing: Easing.bezier(0,.79,0,.99),
-      useNativeDriver: true,
-    }).start();
-  }
-
-  const hide = () => {
-    Animated.timing(fadeAnim, {
-      toValue: screen_width,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(({ finished }) => {
-      if (finished) {
-        onexit();
-      }
-    });
-  }; 
-
-  show ? slide() : hide();*/
-
   return (
-    <Animated.View style={[{ opacity: 1}, styles.container]}>
+    <Animated.View style={styles.container}>
 
-        <View style={{position: "absolute" ,flexDirection: "row", alignContent: "center", alignItems: "center", width: "100%", top: 0, zIndex: 1000}}>
+        {/* <View style={{position: "absolute" ,flexDirection: "row", alignContent: "center", alignItems: "center", width: "100%", top: 0, zIndex: 1000}}>
             <View style={{marginLeft: 10}}>
                 <BackButton onPress={() => onexit()}/>
             </View>
             <Text style={styles.heading}>Tutorial</Text>
-        </View>
+        </View> */}
 
-    <View style={{position: "absolute", height: responsiveHeight(90), width: "100%", bottom: 0}}>
-      <Tutorial onDone={() => onexit()}/>
-    </View>
+        
+          <Tutorial onDone={() => onexit()}/>
 
       </Animated.View>
   );
@@ -59,11 +35,11 @@ export default TutorialPanel;
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: Dimensions.get("window").height,
-    backgroundColor: "#1E2132",
-    zIndex: 1,
+    height: "100%",
+    backgroundColor: "purple",
+    zIndex: 3,
     position: "absolute",
-    bottom: 0,
+    top: 0
   },
   heading: {
     color: "white",

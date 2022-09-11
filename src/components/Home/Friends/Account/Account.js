@@ -29,8 +29,9 @@ import { firestore } from "../../../../data/FirebaseConfig";
 import { UserContext } from "../../../../data/UserContext";
 import { LanguageContext } from "../../../../data/LanguageContext";
 import TutorialPanel from "./TutorialPanel/TutorialPanel";
+import Tutorial from "../../../common/Tutorial";
 
-const Account = ({ handleLogOut, onexit, show }) => {
+const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
 
   const user = useContext(UserContext);
   const language = useContext(LanguageContext);
@@ -101,19 +102,25 @@ const Account = ({ handleLogOut, onexit, show }) => {
 
   //PanResponder test -> so funktionierts endlich, so ein dreck ehrlich
   const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
+    onStartShouldSetPanResponder: () => {
+      if (!showTutorial) {
+        return true;
+      } 
+    },
     onMoveShouldSetPanResponder: (event, gesture) => {
-      return true;
+      if (!showTutorial) {
+        return true;
+      } 
     },
     onPanResponderMove: (event, gesture) => {
-      if (gesture.dy > 0 ) {pan.setValue(gesture.dy); opacityAnim.setValue(1 - (gesture.dy / 700))}
+      if (gesture.dy > 0 && !showTutorial) {pan.setValue(gesture.dy);}
       /* setShowLevels(false);
       setShowFeedback(false);
       setShowTutorial(false);
       setShowDonation(false); */
     },
     onPanResponderRelease: (event, gesture) =>  {
-      if (gesture.dy > screen_height/ 10 || gesture.vy > 1) {hide()} else{slide();}
+      if ((gesture.dy > screen_height/ 10 || gesture.vy > 1) && !showTutorial) {hide()} else{slide();}
     }
  });
 
@@ -132,9 +139,7 @@ const Account = ({ handleLogOut, onexit, show }) => {
       {showLevels   ? <Levels onexit={() => setShowLevels(false)} show={showLevels}/>             : null}
       {showFeedback ? <Feedback userid={user.id} onexit={() => setShowFeedback(false)}/>          : null}
       {showDonation ? <Donation onexit={() => setShowDonation(false)}/>                           : null}
-      <Modal animationType="fade" transparent={true} visible={showTutorial}>
-        <TutorialPanel onexit={() => setShowTutorial(false)}/>
-      </Modal>
+      {showTutorial ? <Tutorial onDone={() => setShowTutorial(false)} toggleNavbar={toggleNavbar} type={"regular"}/> : null}
 
       <Modal animationType="fade" transparent={true} visible={showDelete}>
         <View
@@ -261,7 +266,7 @@ const Account = ({ handleLogOut, onexit, show }) => {
         <View
           style={{
             alignItems: "center",
-            flex: 2,
+            flex: 1,
             flexDirection: "row",
             width: "100%",
             alignSelf: "center",
@@ -304,9 +309,10 @@ const Account = ({ handleLogOut, onexit, show }) => {
           fontColor={"white"}
           onPress={() =>{ setShowLevels(true)}}
           borderradius={100}
-          color={"#1E2132"}
-          title={language.account_levels}
+          color={"#484F78"}
+          title={" Levelübersicht"}
           icon={<FontAwesome name="trophy" style={styles.money_icon} />}
+          hovercolor={"rgba(255,255,255,0.15)"}
         />
 
         <View style={{ height: 15 }}></View>
@@ -316,8 +322,9 @@ const Account = ({ handleLogOut, onexit, show }) => {
           title={language.account_tutorial}
           icon={<Feather name="help-circle" style={styles.money_icon} />}
           borderradius={100}
-          color={"#1E2132"}
+          color={"#484F78"}
           fontColor={"white"}
+          hovercolor={"rgba(255,255,255,0.15)"}
         />
 
         <View style={{ height: 15 }}></View>
@@ -327,8 +334,9 @@ const Account = ({ handleLogOut, onexit, show }) => {
           title={language.account_support}
           icon={<MaterialIcons name="euro" style={styles.money_icon} />}
           borderradius={100}
-          color={"#1E2132"}
+          color={"#484F78"}
           fontColor={"white"}
+          hovercolor={"rgba(255,255,255,0.15)"}
         />
 
         <View style={{ height: 15 }}></View>
@@ -340,6 +348,8 @@ const Account = ({ handleLogOut, onexit, show }) => {
           borderradius={100}
           color={"#eb4034"}
           fontColor={"white"}
+          hovercolor={"rgba(255,255,255,0.25)"}
+          color2={"white"}
         />
 
         <View style={{ height: 10 }}></View>

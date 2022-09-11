@@ -72,6 +72,7 @@ const Groups = ({ handleLogOut, toggleNavbar }) => {
       <Account
         handleLogOut={handleLogOut}
         onexit={() => setShowAccount(false)}
+        toggleNavbar={toggleNavbar}
         show={showAccount}
       />
 

@@ -16,12 +16,13 @@ import { LogBox } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "./src/components/common/Button";
 
-//Components
+//Custom Components
 import Home from "./src/components/Home/Home";
 import Login from "./src/components/Login/Login";
 import sayings from "./src/data/Sayings.json";
 import Splash from "./src/components/Splash/Splash";
 import CustomLoader from "./src/components/common/CustomLoader";
+import Authenticator from "./src/components/common/Authenticator";
 
 //Firebase
 import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
@@ -49,7 +50,9 @@ try {
 AppRegistry.registerComponent("main", () => App);
 
 export default function App() {
+
   const [user, setUser] = useState(null);
+  const [config, setConfig] = useState(null);
   const [language, setLanguage] = useState(Languages.de);
   const [userLoaded, setUserLoaded] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -57,36 +60,39 @@ export default function App() {
   const [sayingNr, setSayingNr] = useState(0);
   const screen_height = Dimensions.get('screen').height;
   const [showSplash, setShowSplash] = useState(true);
-
-  const [config, setConfig] = useState(null);
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
+  const [localAuthenticationRequired, setLocalAuthenticationRequired] = useState(false);
 
   //Local Authentication
-  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const [localAuthenticated, setLocalAuthenticated] = useState(false);
 
-  //checkt, ob Biometrie unterstützt wird
-  const checkLocalAuth = async () => {
-    if (!localAuthenticated) {
-      const compatible = await LocalAuthentication.hasHardwareAsync();
-      setIsBiometricSupported(compatible);
-
-      var promise = null;
-      if (isBiometricSupported) {
-      promise = await handleBiometricAuth();
-      if (promise.success) {
-        setLocalAuthenticated(true);
-        checkForUser(); 
-      }
-      else {setLocalAuthenticated(false)}
-      }
+  //Schreibt Einstellungen in den Async Storage
+  const storeSettings = async () => {
+    try {
+      const jsonValue = JSON.stringify(config);
+      await AsyncStorage.setItem("settings", jsonValue);
+    } catch (e) {
+      console.log("Error in Config beim Speichern: ", e);
     }
-  }
-  checkLocalAuth();
+  };
+
+  //Holt Einstellungen aus dem AsyncStorage
+  const loadSettings = async () => {
+    setSettingsLoaded(false);
+    try {
+      const jsonValue = await AsyncStorage.getItem("settings");
+      jsonValue != null ? setConfig(JSON.parse(jsonValue)) : null;
+      setLocalAuthenticationRequired(JSON.parse(jsonValue).localAuthenticationRequired);
+    } catch (e) {
+      console.log("Error in Config beim Laden: ", e);
+    }
+    setSettingsLoaded(true);
+  };
 
   useEffect(() => {
     loadSettings();
     checkForUser();
-    StatusBar.setBackgroundColor("rgba(255,255,255,0)");
+    loadSettings();
   }, []);
 
   //Sucht im AsyncStorage nach dem letzten User der sich eingeloggt hat und loggt sich bei Erfolg automatisch ein
@@ -98,42 +104,12 @@ export default function App() {
     }
   }
 
-  //Biometrische Authentifizierung
-  const handleBiometricAuth = async () => {
-    const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
-      if (!savedBiometrics)
-      return Alert.alert(
-        'Biometric record not found',
-        'Please verify your identity with your password',
-        'OK',
-        () => fallBackToDefaultAuth()
-      );
-
-    const biometricAuth = await LocalAuthentication.authenticateAsync({
-      promptMessage: 'Login with Biometrics',
-      disableDeviceFallback: false,
-      cancelLabel: "Cancel"
-    });
-
-    return biometricAuth;
-  }
-
   //Schriftarten Laden
   const [test] = useFonts({
     PoppinsBlack: require("./src/fonts/Poppins-Black.ttf"),
     PoppinsMedium: require("./src/fonts/Poppins-Medium.ttf"),
     PoppinsLight: require("./src/fonts/Poppins-Light.ttf"),
   });
-
-  const loadSettings = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem("settings");
-      jsonValue != null ? setConfig(JSON.parse(jsonValue)) : null;
-      toggleLanguage(config.language);
-    } catch (e) {
-      console.log("Error in Config beim Laden: ", e);
-    }
-  };
 
   const toggleLanguage = ( lang ) => {
     if (lang == "de" && config.language == "en") {
@@ -260,13 +236,13 @@ export default function App() {
           showVape: true,
           showPipe: true,
           showCookie: true,
-          shareMainCounter: true,
-          shareTypeCounters: true,
-          shareLastEntry: true,
-          saveGPS: true,
+          shareMainCounter: false,
+          shareTypeCounters: false,
+          shareLastEntry: false,
+          saveGPS: false,
           shareGPS: false,
-          showTutorial: true,
-          language: "en"
+          localAuthenticationRequired: true,
+          first: true
         });
         await AsyncStorage.setItem("settings", value);
       } catch (e) {
@@ -511,6 +487,14 @@ export default function App() {
     return null;
   }
 
+  const handleCancel = () => {
+    disableLocalAuthentication();
+    storeSettings();
+    loadSettings();
+    setLocalAuthenticated(false);
+    console.debug(config.localAuthenticationRequired);
+  }
+
   return (
     <>
       <NavigationContainer>
@@ -582,6 +566,7 @@ export default function App() {
                       setModalVisible(!modalVisible);
                       setWriteComplete(false);
                     }}
+                    hovercolor={"rgba(255,255,255,0.3)"}
                   />
                 </View></>
               
@@ -594,21 +579,29 @@ export default function App() {
         </Modal>
 
         <View style={{ flex: 1, backgroundColor: "#1E2132" }}>
-          {showSplash ? <Splash onExit={() => setShowSplash(false)} /> : null}
-            {localAuthenticated ? <>
-              {user ? (
-                <UserContext.Provider value={user}>
-                  <LanguageContext.Provider value={language}>
-                    <Home
-                      handleLogOut={handleLogOut}
-                      toggleCounter={toggleCounter}
-                      toggleLanguage={toggleLanguage}
-                    />
-                  </LanguageContext.Provider>
-                </UserContext.Provider>
-              ) : (
-                <Login handleLogin={handleLogin} />
-              )}</> : null}
+          {showSplash ? <Splash onExit={() => {setShowSplash(false);}}/> 
+          : <>
+              {localAuthenticated || !config.localAuthenticationRequired ? <>
+                {user ? (
+                  <UserContext.Provider value={user}>
+                    <LanguageContext.Provider value={language}>
+                      <Home
+                        handleLogOut={handleLogOut}
+                        toggleCounter={toggleCounter}
+                        toggleLanguage={toggleLanguage}
+                      />
+                    </LanguageContext.Provider>
+                  </UserContext.Provider>
+                ) : (
+                  <Login handleLogin={handleLogin} />
+                )}</> : 
+                  <Authenticator 
+                    first={config.first} 
+                    onSubmit={() => setLocalAuthenticated(true)} 
+                    onCancel={() => {handleCancel()}}/>
+                }
+              </>
+            }
         </View>
       </NavigationContainer>
     </>
