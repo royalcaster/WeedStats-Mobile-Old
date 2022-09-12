@@ -410,7 +410,7 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
                 )}
                 <Text style={[styles.small_label]}>GESAMT</Text>
                 </> : <View style={{height: responsiveHeight(7), justifyContent: "center"}}>
-                        <CustomLoader x={40}/>
+                        <CustomLoader x={30} color={"#0080FF"}/>
                       </View>}
               
                 <View style={{ height: responsiveHeight(1.5) }}></View>
@@ -456,7 +456,7 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
                 </Animated.View>
                   : 
                 <View style={{height: 60, justifyContent: "center"}}>
-                  <CustomLoader x={40}/>
+                  <CustomLoader x={30} color={"#0080FF"}/>
                 </View>}
 
                 <View style={{ height: 40 }}></View>
@@ -473,7 +473,7 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
 
                 : 
                 <View style={{height: 80, justifyContent: "center"}}>
-                  <CustomLoader x={40}/>
+                  <CustomLoader x={30} color={"#0080FF"}/>
                 </View>}
               </View>
 

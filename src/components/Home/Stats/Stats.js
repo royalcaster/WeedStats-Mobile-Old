@@ -58,7 +58,7 @@ const Stats = () => {
     <Animated.View style={[{ opacity: 1 }, styles.container]}>
       {localDataLoaded && localData.length != 0 ? (
         <StatsDashboard localData={localData} />
-      ) : <CustomLoader x={80}/>}
+      ) : <CustomLoader x={50}/>}
     </Animated.View>
   );
 };
