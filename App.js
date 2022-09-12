@@ -1,6 +1,6 @@
 //React
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Platform,
@@ -90,6 +90,7 @@ export default function App() {
   };
 
   useEffect(() => {
+    loadSettings();
     checkForUser();
     loadSettings();
   }, []);
@@ -111,7 +112,12 @@ export default function App() {
   });
 
   const toggleLanguage = ( lang ) => {
-    lang == "de" ? setLanguage(Languages.de) : setLanguage(Languages.en);
+    if (lang == "de" && config.language == "en") {
+      setLanguage(Languages.de);
+    }
+    if (lang == "en" && config.language == "de") {
+      setLanguage(Languages.en);
+    } 
   }
 
   // Lädt das User-Objekt aus dem AsyncStorage
@@ -280,6 +286,8 @@ export default function App() {
       const result = await Google.logInAsync({
         androidClientId:
           "31827165734-rdbihglcac1juesc6fkjd4bgp1c1oj2s.apps.googleusercontent.com",
+        iosClientId:
+          "31827165734-cjrhm51isdg9bjjfji9h2ike188n9d6j.apps.googleusercontent.com",  
         scopes: ["profile", "email"],
       });
 
@@ -319,7 +327,6 @@ export default function App() {
     }
 
     // Updated betroffene Counters im AsyncStorage
-
     let current_counters = {};
 
     try {
@@ -533,12 +540,12 @@ export default function App() {
                       },
                     ]}
                   >
-                    Erfolg
+                    {language.success}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.text, { fontSize: 15 }]}>
-                    {sayings[sayingNr].saying}
+                    {language.sayings[sayingNr].saying}
                   </Text>
                   <Text
                     style={[
@@ -546,7 +553,7 @@ export default function App() {
                       { fontSize: 15, fontStyle: "italic", marginTop: 10 },
                     ]}
                   >
-                    {sayings[sayingNr].from}
+                    {language.sayings[sayingNr].from}
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>

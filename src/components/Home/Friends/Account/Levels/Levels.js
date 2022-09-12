@@ -1,5 +1,5 @@
 //React
-import React, { useRef } from "react";
+import React, { useRef, useContext } from "react";
 import { View, StyleSheet, Text, Animated, Easing, Dimensions } from "react-native";
 
 //Custom Components
@@ -9,7 +9,13 @@ import LevelImage from "../../../../common/LevelImage";
 //Konstanten
 import levels from "../../../../../data/Levels.json";
 
+//Service
+import { LanguageContext } from "../../../../../data/LanguageContext";
+import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
+
 const Levels = ({ onexit, show }) => {
+
+  const language = useContext(LanguageContext);
 
   const screen_width = Dimensions.get("window").width;
   const fadeAnim = useRef(new Animated.Value(screen_width)).current;
@@ -44,12 +50,12 @@ const Levels = ({ onexit, show }) => {
         <View style={{marginLeft: 20}}>
             <BackButton onPress={() => hide()}/>
         </View>
-        <Text style={styles.heading}>Levelübersicht</Text>
+        <Text style={styles.heading}>{language.account_levels}</Text>
       </View>
 
       <View style={{ height: 10 }}></View>
 
-      {levels.map((level, index) => {
+      {language.levels.map((level, index) => {
         return (
           <View
             key={index}
@@ -62,15 +68,15 @@ const Levels = ({ onexit, show }) => {
               flexDirection: "row",
               alignItems: "center",
               marginBottom: 20,
-              borderColor: index == levels.length - 1 ? "#E6C743" : null,
-              borderWidth: index == levels.length - 1 ? 3 : null,
+              borderColor: index == language.levels.length - 1 ? "#E6C743" : null,
+              borderWidth: index == language.levels.length - 1 ? 3 : null,
               maxWidth: 700,
             }}
           >
             <LevelImage index={index} style={styles.lvl_img} />
             <View style={{ marginLeft: 15 }}>
               <Text style={styles.lvl_name}>{level.name}</Text>
-              {index != levels.length - 1 ? (
+              {index != language.levels.length - 1 ? (
                 <Text style={styles.lvl_bounds}>
                   {index * 70}-{(index + 1) * 70 - 1}
                 </Text>
@@ -81,7 +87,6 @@ const Levels = ({ onexit, show }) => {
           </View>
         );
       })}
-      
     </Animated.View>
   );
 };
@@ -110,38 +115,20 @@ const styles = StyleSheet.create({
     marginTop: 3
   },
   lvl_img: {
-    height: 80,
-    width: 80,
+    height: responsiveHeight(8),
+    width: responsiveHeight(8),
     marginLeft: 15,
     marginTop: -10
   },
   lvl_name: {
-    fontSize: 24,
+    fontSize: responsiveFontSize(2.5),
     fontFamily: "PoppinsBlack",
     color: "white",
   },
   lvl_bounds: {
     fontFamily: "PoppinsLight",
-    fontSize: 18,
+    fontSize: responsiveFontSize(1.75),
     marginTop: -5,
     color: "white",
-  },
-
-  cancelButton: {
-    width: "80%",
-    alignSelf: "center",
-    height: 50,
-    borderRadius: 100,
-    justifyContent: "center",
-    marginTop: 20,
-    bottom: 20,
-    flexDirection: "row",
-  },
-  cancel_icon: {
-    fontSize: 25,
-    color: "white",
-    textAlignVertical: "center",
-    position: "relative",
-    marginTop: 20,
-  },
+  }
 });

@@ -5,7 +5,7 @@ import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimen
 import { LanguageContext } from "../../../../data/LanguageContext";
 import Languages from '../../../../data/languages.json'
 
-const LanguageSelector = ({ toggleLanguage }) => {
+const LanguageSelector = ({ toggleLanguage, value }) => {
 
     const language = useContext(LanguageContext);
 
@@ -23,7 +23,7 @@ const LanguageSelector = ({ toggleLanguage }) => {
         <TouchableNativeFeedback 
             onPress={() => handleToggle("de")}
             background={TouchableNativeFeedback.Ripple("#484F78", false)}>
-            <View style={[styles.touchable, {backgroundColor: JSON.stringify(language) === JSON.stringify(Languages.de) ? "#0080FF" : "#131520"}]}>
+            <View style={[styles.touchable, {backgroundColor: value == "de" ? "#0080FF" : "#131520"}]}>
                 <Image style={styles.language_image} source={require("../../../../data/img/de.png")}/>
             </View>
         </TouchableNativeFeedback>
@@ -31,7 +31,7 @@ const LanguageSelector = ({ toggleLanguage }) => {
         <TouchableNativeFeedback 
             onPress={() => handleToggle("en")}
             background={TouchableNativeFeedback.Ripple("#484F78", false)}>
-            <View style={[styles.touchable, {flexDirection: "row", backgroundColor: JSON.stringify(language) === JSON.stringify(Languages.en) ? "#0080FF" : "#131520"}]}>
+            <View style={[styles.touchable, {flexDirection: "row", backgroundColor: value == "en" ? "#0080FF" : "#131520"}]}>
                 <View><Image style={styles.language_image} source={require("../../../../data/img/gb.png")}/></View>
                 <View><Image style={styles.language_image} source={require("../../../../data/img/us.png")}/></View>
             </View>

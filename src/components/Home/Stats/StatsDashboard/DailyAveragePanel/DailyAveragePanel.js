@@ -1,11 +1,16 @@
 //React
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, View, Image, Animated } from "react-native";
 
 //Third-Party
 import { LinearGradient } from "expo-linear-gradient";
 
+//Service
+import { LanguageContext } from "../../../../../data/LanguageContext";
+
 const DailyAveragePanel = ({selectedType, value}) => {
+
+    const language = useContext(LanguageContext);
 
     return (<LinearGradient colors={["#369bff","#0080FF","#004e9c"]} style={{borderRadius: 10, padding: 20, width: 250}}>
     {selectedType === "main" ? (
@@ -49,7 +54,7 @@ const DailyAveragePanel = ({selectedType, value}) => {
     <Text
       style={styles.time_tag}
     >
-      Ø Tag
+      Ø {language.stats_day}
     </Text>
     </View>
 

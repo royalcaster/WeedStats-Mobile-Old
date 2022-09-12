@@ -21,8 +21,11 @@ import { firestore } from "../../../../data/FirebaseConfig";
 
 //Service
 import {UserContext} from '../../../../data/UserContext'
+import { LanguageContext } from "../../../../data/LanguageContext";
 
 const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
+
+  const language = useContext(LanguageContext);
 
   const realuser = useContext(UserContext);
     
@@ -106,13 +109,6 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
             { type: "Edible", counter: docSnap.data().cookie_counter },
           ])
         });
-        /* setCounters([
-            { type: "Joint", counter: docSnap.data().joint_counter },
-            { type: "Bong", counter: docSnap.data().bong_counter },
-            { type: "Vape", counter: docSnap.data().vape_counter },
-            { type: "Pfeife", counter: docSnap.data().pipe_counter },
-            { type: "Edible", counter: docSnap.data().cookie_counter },
-          ]); */
           setLoading(false);
           slideCounters();
       }
@@ -224,13 +220,6 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
   }
 
   const getTitle = () => {
-    /* if (
-      counters.forEach((entry) => {
-        entry.counter == null;
-      })
-    ) {
-      return "WeedStats-User";
-    } */
     return user.best.type + "-" + calcLevelName(user.best.counter);
   };
 
@@ -287,9 +276,11 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
               <View style={styles.modal_container}>
                 <>
                   <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={styles.heading}>
-                      {user.username} als Freund entfernen?
-                    </Text>
+                    {LanguageContext.language_short == "de" ? <Text style={styles.heading}>
+                      {user.username} {language.remove_friend}
+                    </Text> : <Text style={styles.heading}>
+                    {language.remove_friend} {user.username} ?         
+                    </Text>}
                   </View>
                   <View style={{ flex: 1, flexDirection: "row" }}>
                     <View

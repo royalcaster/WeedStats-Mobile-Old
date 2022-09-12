@@ -12,10 +12,13 @@ import Empty from "../../common/Empty";
 
 //Tools
 import moment from "moment";
+import { LanguageContext } from "../../../data/LanguageContext";
 
 const Main = ({ toggleCounter }) => {
 
   const user = useContext(UserContext);
+  const language = useContext(LanguageContext);
+
   const headingAnim = useRef(new Animated.Value(-100)).current;
   const leftAnim = useRef(new Animated.Value(-70)).current;
   const rightAnim = useRef(new Animated.Value(70)).current;
@@ -229,7 +232,7 @@ const Main = ({ toggleCounter }) => {
                   fontSize: 12,
                 }}
               >
-                Gesamt
+                {language.main_all}
               </Text>
               <Text
                 style={{
@@ -268,7 +271,7 @@ const Main = ({ toggleCounter }) => {
                   fontSize: 12,
                 }}
               >
-                Tage bis 420
+                {language.main_days_till_420}
               </Text>
               <Text
                 style={{

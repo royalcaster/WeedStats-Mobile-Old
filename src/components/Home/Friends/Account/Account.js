@@ -27,12 +27,14 @@ import { firestore } from "../../../../data/FirebaseConfig";
 
 //Service
 import { UserContext } from "../../../../data/UserContext";
+import { LanguageContext } from "../../../../data/LanguageContext";
 import TutorialPanel from "./TutorialPanel/TutorialPanel";
 import Tutorial from "../../../common/Tutorial";
 
 const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
 
   const user = useContext(UserContext);
+  const language = useContext(LanguageContext);
   
   const screen_height = Dimensions.get("screen").height;
   const [showLevels, setShowLevels] = useState(false);
@@ -170,13 +172,12 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
                   },
                 ]}
               >
-                Achtung
+                {language.delete_account_title}
               </Text>
             </View>
             <View style={{ flex: 1}}>
               <Text style={[styles.text, { fontSize: 15, maxWidth: "80%"}]}>
-                Das kann nicht rückgängig gemacht werden. Willst du dieses WeedStats-Konto wirklich
-                löschen?
+                {language.delete_account_text}
               </Text>
             </View>
             <View style={{ flex: 1, flexDirection: "row" }}>
@@ -258,7 +259,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
               letterSpacing: 2,
             }}
           >
-            DEIN ACCOUNT
+            {language.account_your_account}
           </Text>
         </View>
 
@@ -296,7 +297,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
               letterSpacing: 2,
             }}
           >
-            MITGLED SEIT: <Text style={{color: "#0781E1"}}>{convertMemberSince(user.member_since)}</Text>
+            {language.account_member_since} <Text style={{color: "#0781E1"}}>{convertMemberSince(user.member_since)}</Text>
           </Text>
         </View>
 
@@ -318,7 +319,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
 
         <Button
           onPress={() => setShowTutorial(true)}
-          title={"Tutorial anzeigen"}
+          title={language.account_tutorial}
           icon={<Feather name="help-circle" style={styles.money_icon} />}
           borderradius={100}
           color={"#484F78"}
@@ -330,7 +331,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
 
         <Button
           onPress={() => setShowDonation(true)}
-          title={"WeedStats unterstützen"}
+          title={language.account_support}
           icon={<MaterialIcons name="euro" style={styles.money_icon} />}
           borderradius={100}
           color={"#484F78"}
@@ -342,7 +343,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
 
         <Button
           onPress={handleLogOut}
-          title={"Abmelden"}
+          title={language.account_sign_out}
           icon={<MaterialIcons name="logout" style={styles.money_icon} />}
           borderradius={100}
           color={"#eb4034"}
@@ -362,7 +363,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
             onPress={() => setShowDelete(true)}
           >
             <View style={styles.touchable_delete}>
-              <Text style={styles.delete_text}>Dieses Konto löschen</Text>
+              <Text style={styles.delete_text}>{language.account_delete_account}</Text>
             </View>
           </TouchableNativeFeedback>
         </View>

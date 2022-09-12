@@ -51,6 +51,7 @@ const Config = ({ toggleLanguage }) => {
       console.log("Error in Config beim Laden: ", e);
     }
     setLoading(false);
+    console.debug(config);
   };
 
   const storeSettings = async () => {
@@ -110,14 +111,12 @@ const Config = ({ toggleLanguage }) => {
                     },
                   ]}
                 >
-                  Ist alles gut?
+                  {language.config_modal_title}
                 </Text>
               </View>
               <View style={{ flex: 2 }}>
                 <Text style={[styles.text, { fontSize: responsiveFontSize(1.8) }]}>
-                  Uns ist aufgefallen, dass du den Lightmode aktivieren
-                  wolltest. Um dich und deine Mitmenschen zu schützen, lassen
-                  wir ihn ausgeschaltet.
+                  {language.config_modal_text}
                 </Text>
               </View>
               <View style={{ flex: 1 }}>
@@ -146,7 +145,7 @@ const Config = ({ toggleLanguage }) => {
         ) : (
           <View style={{height: "90%", top: 50, position: "absolute", width: "100%"}}>
           <ScrollView style={{ width: "100%"}}>
-            <Text style={styles.heading}>Counter konfigurieren</Text>
+            <Text style={styles.heading}>{language.config_counter}</Text>
 
             <View style={{ flexDirection: "row", width: "100%" }}>
               <ConfigItem
@@ -200,7 +199,7 @@ const Config = ({ toggleLanguage }) => {
               ></ConfigItem>
             </View>
 
-            <Text style={styles.heading}>Persönliche Daten</Text>
+            <Text style={styles.heading}>{language.config_personal_data}</Text>
             <View style={{ height: 10 }}></View>
 
             <View
@@ -212,7 +211,7 @@ const Config = ({ toggleLanguage }) => {
               }}
             >
               <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>Gesamt-Counter teilen</Text>
+                <Text style={styles.label}>{language.config_share_main_counter}</Text>
               </View>
               <View
                 style={{
@@ -255,7 +254,7 @@ const Config = ({ toggleLanguage }) => {
               }}
             >
               <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>Detail-Counter teilen</Text>
+                <Text style={styles.label}>{language.config_share_detail_counter}</Text>
               </View>
               <View
                 style={{
@@ -299,7 +298,7 @@ const Config = ({ toggleLanguage }) => {
               }}
             >
               <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>Letzten Eintrag teilen</Text>
+                <Text style={styles.label}>{language.config_share_last_activity}</Text>
               </View>
               <View
                 style={{
@@ -342,7 +341,7 @@ const Config = ({ toggleLanguage }) => {
               }}
             >
               <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>GPS-Daten erfassen</Text>
+                <Text style={styles.label}>{language.config_get_location}</Text>
               </View>
               <View
                 style={{
@@ -382,7 +381,7 @@ const Config = ({ toggleLanguage }) => {
               }}
             >
               <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>GPS-Daten teilen</Text>
+                <Text style={styles.label}>{language.config_share_location}</Text>
               </View>
               <View
                 style={{
@@ -470,11 +469,11 @@ const Config = ({ toggleLanguage }) => {
             <Text style={styles.heading}>{language.config_language}</Text>
             <View style={{ height: 10 }}></View>
 
-            <LanguageSelector toggleLanguage={toggleLanguage}/>
+            <LanguageSelector toggleLanguage={toggleLanguage} value={config.language}/>
 
             <View style={{ height: 30 }}></View>
 
-            <Text style={styles.heading}>Sonstiges</Text>
+            <Text style={styles.heading}>{language.config_other}</Text>
             <View style={{ height: 10 }}></View>
 
             <View
@@ -486,7 +485,7 @@ const Config = ({ toggleLanguage }) => {
               }}
             >
               <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>Helles Design</Text>
+                <Text style={styles.label}>{language.config_lightmode}</Text>
               </View>
               <View
                 style={{

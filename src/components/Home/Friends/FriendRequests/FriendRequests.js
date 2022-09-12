@@ -33,10 +33,12 @@ import { firestore } from "../../../../data/FirebaseConfig";
 
 //Service
 import { UserContext } from "../../../../data/UserContext";
+import { LanguageContext } from "../../../../data/LanguageContext";
 
 const FriendResquests = ({ onExit, refresh }) => {
 
   const user = useContext(UserContext);
+  const language = useContext(LanguageContext);
 
   const screen_height = Dimensions.get("screen").height;
   const [modalVisible, setModalVisible] = useState(false);
@@ -201,14 +203,17 @@ const FriendResquests = ({ onExit, refresh }) => {
             {!alreadySent ? (
               <>
                 <View style={{ flex: 1, justifyContent: "center" }}>
-                  <Text style={styles.heading}>
-                    Freundschaftsanfrage an{" "}
-                    <Text>
-                      {activeRequested ? activeRequested.username : null}
-                    </Text>{" "}
-                    senden?
-                  </Text>
-                </View>
+
+                    {language.language_short == "de" ? 
+                    <Text style={styles.heading}>
+                      <Text>{activeRequested ? activeRequested.username : null}</Text>{language.send_request}
+                    </Text> 
+                    : 
+                    <Text style={styles.heading}>
+                      {language.send_request}
+                    <Text>{activeRequested ? activeRequested.username : null}</Text> ?</Text>}
+
+                  </View>
                 <View style={{ flex: 1, flexDirection: "row" }}>
                   <View
                     style={{
@@ -260,13 +265,14 @@ const FriendResquests = ({ onExit, refresh }) => {
               <View style={{ flex: 1, justifyContent: "center" }}>
                 <Antdesign style={styles.info_icon} name="exclamationcircleo" />
                 <View style={{ height: 30 }}></View>
-                <Text style={styles.heading}>
-                  Du hast bereits eine Freundschaftsanfrage an{" "}
-                  <Text>
-                    {activeRequested ? activeRequested.username : null}
-                  </Text>{" "}
-                  gesendet.
-                </Text>
+                  {language.language_short == "de" ? 
+                  <Text style={styles.heading}>
+                    <Text>{activeRequested ? activeRequested.username : null}</Text>{language.already_sent}
+                  </Text>
+                  :
+                  <Text style={styles.heading}>
+                    {language.already_sent}<Text>{activeRequested ? activeRequested.username : null}</Text>
+                  </Text>}
                 <View
                   style={{
                     flex: 1,
@@ -302,7 +308,7 @@ const FriendResquests = ({ onExit, refresh }) => {
           <BackButton onPress={() => hide()} />
         </View>
         <View style={{ flex: 4, justifyContent: "center"}}>
-          <Text style={styles.heading}>Anfragen</Text>
+          <Text style={styles.heading}>{language.friendrequests_title}</Text>
         </View>
       </View>
 
