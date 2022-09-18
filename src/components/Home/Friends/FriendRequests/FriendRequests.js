@@ -314,7 +314,7 @@ const FriendResquests = ({ onExit, refresh }) => {
 
         {loading ? (
           <View style={{height: "100%", justifyContent: "center"}}>
-            <CustomLoader x={80}/>
+            <CustomLoader x={50} color={"#0080FF"}/>
           </View>
         ) : (
           <>

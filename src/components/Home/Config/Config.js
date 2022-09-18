@@ -140,7 +140,7 @@ const Config = ({ toggleLanguage }) => {
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
-            <CustomLoader x={80}/>
+            <CustomLoader x={50} color={"#0080FF"}/>
           </View>
         ) : (
           <View style={{height: "90%", top: 50, position: "absolute", width: "100%"}}>
