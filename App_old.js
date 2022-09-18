@@ -23,10 +23,6 @@ import sayings from "./src/data/Sayings.json";
 import Splash from "./src/components/Splash/Splash";
 import CustomLoader from "./src/components/common/CustomLoader";
 import Authenticator from "./src/components/common/Authenticator";
-import DialogContainer from './src/components/common/DialogContainer'
-import TutorialDialog from "./src/components/common/TutorialDialog";
-import Tutorial from "./src/components/common/Tutorial";
-import LanguageDialog from "./src/components/common/LanguageDialog";
 
 //Firebase
 import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
@@ -66,9 +62,6 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [settingsLoaded, setSettingsLoaded] = useState(false);
   const [localAuthenticationRequired, setLocalAuthenticationRequired] = useState(false);
-  const [first, setFirst] = useState(true);
-  const [showTutorial, setShowTutorial] = useState(false);
-
 
   //Local Authentication
   const [localAuthenticated, setLocalAuthenticated] = useState(false);
@@ -89,33 +82,17 @@ export default function App() {
     try {
       const jsonValue = await AsyncStorage.getItem("settings");
       jsonValue != null ? setConfig(JSON.parse(jsonValue)) : null;
-      /* setLocalAuthenticationRequired(JSON.parse(jsonValue).localAuthenticationRequired); */
+      setLocalAuthenticationRequired(JSON.parse(jsonValue).localAuthenticationRequired);
     } catch (e) {
       console.log("Error in Config beim Laden: ", e);
     }
     setSettingsLoaded(true);
   };
 
-  useEffect( async () => {
+  useEffect(() => {
     loadSettings();
     checkForUser();
-
-    const test = JSON.stringify({
-      showJoint: true,
-      showBong: true,
-      showVape: true,
-      showPipe: true,
-      showCookie: true,
-      shareMainCounter: false,
-      shareTypeCounters: false,
-      shareLastEntry: false,
-      saveGPS: false,
-      shareGPS: false,
-      localAuthenticationRequired: true,
-      first: true,
-      language: "en"
-    });
-    await AsyncStorage.setItem("settings", test);
+    loadSettings();
   }, []);
 
   //Sucht im AsyncStorage nach dem letzten User der sich eingeloggt hat und loggt sich bei Erfolg automatisch ein
@@ -137,11 +114,9 @@ export default function App() {
   const toggleLanguage = ( lang ) => {
     if (lang == "de" && config.language == "en") {
       setLanguage(Languages.de);
-      console.log("sprache zu deutsch gewechselt")
     }
     if (lang == "en" && config.language == "de") {
       setLanguage(Languages.en);
-      console.log("sprache zu englisch gewechselt")
     } 
   }
 
@@ -207,7 +182,6 @@ export default function App() {
     } else {
       //Nutzer-Dokument existiert nicht -> loggt sich erstmalig ein -> Dokument erstellen
       try {
-        setFirst(true);
         await setDoc(doc(firestore, "users", user.id), {
           username: user.name,
           id: user.id,
@@ -268,8 +242,7 @@ export default function App() {
           saveGPS: false,
           shareGPS: false,
           localAuthenticationRequired: true,
-          first: true,
-          language: "en"
+          first: true
         });
         await AsyncStorage.setItem("settings", value);
       } catch (e) {
@@ -524,26 +497,113 @@ export default function App() {
 
   return (
     <>
-      <View style={{flex: 1, backgroundColor: "#1E2132"}}>
-        { showSplash ? 
-        <Splash onExit={() => {setShowSplash(false);}}/>
-        : null}
+      <NavigationContainer>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+            setWriteComplete(false);
+          }}
+        >
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "rgba(0,0,0,0.5)",
+              flex: 1,
+              height: screen_height
+            }}
+          >
+            <View
+                style={{
+                  width: "90%",
+                  height: 300,
+                  backgroundColor: "#1E2132",
+                  alignSelf: "center",
+                  borderRadius: 25,
+                }}
+              >
+            {writeComplete ? (
+              <>
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={[
+                      styles.heading,
+                      {
+                        marginLeft: 0,
+                        textAlign: "center",
+                        height: "100%",
+                        textAlignVertical: "center",
+                        fontSize: 22,
+                      },
+                    ]}
+                  >
+                    {language.success}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.text, { fontSize: 15 }]}>
+                    {language.sayings[sayingNr].saying}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.text,
+                      { fontSize: 15, fontStyle: "italic", marginTop: 10 },
+                    ]}
+                  >
+                    {language.sayings[sayingNr].from}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Button
+                    title={"Ok"}
+                    color={"#0080FF"}
+                    borderradius={25}
+                    fontColor={"white"}
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                      setWriteComplete(false);
+                    }}
+                    hovercolor={"rgba(255,255,255,0.3)"}
+                  />
+                </View></>
+              
+            ) : (
+              <View style={{height: "100%", width: "100%", justifyContent: "center"}}>
+              <CustomLoader x={80}/></View>
+            )}
+            </View>
+          </View>
+        </Modal>
 
-        {first && !showSplash ?
-          <DialogContainer title={"Sprache wählen"} backgroundColor={"#1E2132"} backButtonEnabled={false} contentView={<LanguageDialog onSelect={(lang) =>  toggleLanguage(lang)}/>}/>
-          : null
-        }
-
-        {/* {first && !showSplash ?
-          <DialogContainer title={"Willkommen"} backgroundColor={"#1E2132"} backButtonEnabled={false} contentView={<TutorialDialog onSubmit={() => setShowTutorial(true)}/>} onCancel={() => console.log("test")}/>
-          : null
-        }
-
-        {showTutorial ? 
-          <Tutorial type={"first"} onDone={() => setShowTutorial(false)} toggleNavbar={() => null}/>
-        : null} */}
-
-      </View>
+        <View style={{ flex: 1, backgroundColor: "#1E2132" }}>
+          {showSplash ? <Splash onExit={() => {setShowSplash(false);}}/> 
+          : <>
+              {localAuthenticated || !config.localAuthenticationRequired ? <>
+                {user ? (
+                  <UserContext.Provider value={user}>
+                    <LanguageContext.Provider value={language}>
+                      <Home
+                        handleLogOut={handleLogOut}
+                        toggleCounter={toggleCounter}
+                        toggleLanguage={toggleLanguage}
+                      />
+                    </LanguageContext.Provider>
+                  </UserContext.Provider>
+                ) : (
+                  <Login handleLogin={handleLogin} />
+                )}</> : 
+                  <Authenticator 
+                    first={config.first} 
+                    onSubmit={() => setLocalAuthenticated(true)} 
+                    onCancel={() => {handleCancel()}}/>
+                }
+              </>
+            }
+        </View>
+      </NavigationContainer>
     </>
   );
 }

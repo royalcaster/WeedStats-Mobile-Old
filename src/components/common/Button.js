@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: responsiveFontSize(1.8),
-    fontFamily: "PoppinsBlack",
+    fontFamily: "PoppinsMedium",
     zIndex: 6,
     marginTop: 3,
   },
