@@ -1,6 +1,6 @@
 //React
-import React, { useEffect } from "react";
-import { View, Animated, Text, StyleSheet, Alert } from 'react-native'
+import React, { useEffect, useRef } from "react";
+import { View, Animated, Text, StyleSheet, Alert, Dimensions, Easing } from 'react-native'
 
 //Expo
 import * as LocalAuthentication from 'expo-local-authentication'
@@ -18,7 +18,32 @@ const Authenticator = ({ first, onSubmit, onCancel, onExit }) => {
 
     useEffect(() => {
         first ? null : checkLocalAuth();
-    });
+        show();
+    },[]);
+
+    const screen_height = Dimensions.get("screen").height;
+    const screen_width = Dimensions.get("screen").width;
+
+    const slide = useRef(new Animated.Value(screen_height)).current;
+
+    const show = () => {
+        Animated.timing(slide,{
+            toValue: 0,
+            duration: 600,
+            useNativeDriver: true,
+            easing: Easing.bezier(0.2, 1, 0.21, 0.97),
+        }).start()
+    }
+
+    const hide = () => {
+        Animated.timing(slide,{
+            toValue: screen_height,
+            duration: 600,
+            useNativeDriver: true
+        }).start(({finished}) => {
+            finished ? onExit() : null;
+        })
+    }
 
     //checkt, ob Biometrie unterstützt wird
     const checkLocalAuth = async () => {
@@ -31,10 +56,12 @@ const Authenticator = ({ first, onSubmit, onCancel, onExit }) => {
         promise = await handleBiometricAuth();
         if (promise.success) {
             onSubmit();
+            hide();
         }
         else {
             Alert.alert("Fehler beim Entsperren");
             onCancel();
+            hide();
         }
         }
     }
@@ -59,19 +86,18 @@ const Authenticator = ({ first, onSubmit, onCancel, onExit }) => {
     return biometricAuth;
   }
 
-    return <Animated.View style={[styles.container]}>
+    return <Animated.View style={[styles.container,{transform: [{translateY: slide}]}]}>
 
         {first ? 
         <>
         {//Wenn Authenticator das erste mal aufgerufen wird, fragt er danach, ob die App in Zukunft mit Fingerabdruck etc entsperrt werden soll
         }
         <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-            <Text style={styles.title}>Soll WeedStats zukünftig von dir entsperrt werden?</Text>
             <View style={{height: responsiveHeight(15)}}></View>
             <IonIcons name="finger-print" style={styles.fingerprint}/>
             <View style={{height: responsiveHeight(15)}}></View>
-            <Button title={"Ja, Entsperren aktivieren"} color={"#484F78"} color2={"white"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.25)"} onPress={() => checkLocalAuth()}/>
-            <Button onPress={() => onCancel()} title={"Später"} color={"#131520"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.25)"} />
+            <Button title={"Ja, Entsperren aktivieren"} color={"#0080FF"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.25)"} onPress={() => checkLocalAuth()}/>
+            <Button onPress={() => {onCancel(); hide()}} title={"Später"} color={"#484F78"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.25)"} />
             <View style={{height: responsiveHeight(5)}}></View>
             <Text style={{fontFamily: "PoppinsLight", color: "#484F78", width: "80%", textAlign: "center"}}>Du kannst deine Entscheidung in den Einstellungen ändern.</Text>
         </View>

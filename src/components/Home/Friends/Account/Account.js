@@ -82,10 +82,8 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
     await deleteDoc(docRef);
 
     // AsyncStorage-Daten löschen
-    let allKeys = [];
     try {
-      allKeys = await AsyncStorage.getAllKeys();
-      await AsyncStorage.multiRemove(allKeys);
+      await AsyncStorage.multiRemove([]);
     } catch (e) {
       console.log("Fehler beim Löschen des AsyncStorage.", e);
     }
@@ -303,7 +301,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
 
         <View style={{ height: 15 }}></View>
 
-        <View style={{flex: 6}}>
+        <View style={{flex: 6, justifyContent: "center"}}>
 
         <Button
           fontColor={"white"}
@@ -315,7 +313,6 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
           hovercolor={"rgba(255,255,255,0.15)"}
         />
 
-        <View style={{ height: 15 }}></View>
 
         <Button
           onPress={() => setShowTutorial(true)}
@@ -327,7 +324,6 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
           hovercolor={"rgba(255,255,255,0.15)"}
         />
 
-        <View style={{ height: 15 }}></View>
 
         <Button
           onPress={() => setShowDonation(true)}
@@ -339,7 +335,6 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
           hovercolor={"rgba(255,255,255,0.15)"}
         />
 
-        <View style={{ height: 15 }}></View>
 
         <Button
           onPress={handleLogOut}
@@ -349,10 +344,9 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
           color={"#eb4034"}
           fontColor={"white"}
           hovercolor={"rgba(255,255,255,0.25)"}
-          color2={"white"}
+          color2={"#80231C"}
         />
 
-        <View style={{ height: 10 }}></View>
 
         <View style={{ width: "100%" }}>
           <TouchableNativeFeedback

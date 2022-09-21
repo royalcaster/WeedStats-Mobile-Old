@@ -1,6 +1,6 @@
 //React
-import React from "react";
-import { View, Text, StyleSheet, Image } from 'react-native'
+import React, { useEffect, useRef } from "react";
+import { View, Text, StyleSheet, Image, Animated, Dimensions, Easing } from 'react-native'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 import { TouchableNativeFeedback } from "react-native";
 
@@ -8,11 +8,41 @@ import { TouchableNativeFeedback } from "react-native";
 import Button from "./Button";
 
 
-const LanguageDialog = ({ onSelect}) => {
-    return <>
-    <View style={styles.container}>
+const LanguageDialog = ({ onSelect, onExit }) => {
 
-        <TouchableNativeFeedback onPress={() => onSelect("de")} background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)}>
+    const screen_height = Dimensions.get("screen").height;
+    const screen_width = Dimensions.get("screen").width;
+
+    const slide = useRef(new Animated.Value(screen_height)).current;
+
+    useEffect(() => {
+        show();
+    },[]);
+
+
+    const show = () => {
+        Animated.timing(slide,{
+            toValue: 0,
+            duration: 600,
+            useNativeDriver: true,
+            easing: Easing.bezier(0.2, 1, 0.21, 0.97),
+        }).start()
+    }
+
+    const hide = () => {
+        Animated.timing(slide,{
+            toValue: screen_height,
+            duration: 600,
+            useNativeDriver: true
+        }).start(({finished}) => {
+            finished ? onExit() : null;
+        })
+    }
+
+    return <>
+    <Animated.View style={[styles.container,{transform: [{translateY: slide}]}]}>
+
+        <TouchableNativeFeedback onPress={() => {onSelect("de"); hide()}} background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)}>
             <View style={styles.touchable}>
                 <Image resizeMode="center" style={styles.flagg} source={require('../../data/img/de.png')}/>
                 <View style={{height: responsiveHeight(1)}}></View>
@@ -22,7 +52,7 @@ const LanguageDialog = ({ onSelect}) => {
 
         <View style={{height: responsiveHeight(5)}}></View>
 
-        <TouchableNativeFeedback onPress={() => onSelect("en")} background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)}>
+        <TouchableNativeFeedback onPress={() => {onSelect("en"); hide()}} background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)}>
             <View style={styles.touchable}>
                 <Image resizeMode="center" style={styles.flagg} source={require('../../data/img/gb.png')}/>
                 <View style={{height: responsiveHeight(1)}}></View>
@@ -30,7 +60,7 @@ const LanguageDialog = ({ onSelect}) => {
             </View>
         </TouchableNativeFeedback>
 
-    </View>
+    </Animated.View>
     </>
 }
 

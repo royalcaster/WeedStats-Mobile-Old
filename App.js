@@ -9,7 +9,8 @@ import {
   Modal,
   Vibration,
   Dimensions,
-  StatusBar
+  StatusBar,
+  ActivityIndicator
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { LogBox } from "react-native";
@@ -27,6 +28,7 @@ import DialogContainer from './src/components/common/DialogContainer'
 import TutorialDialog from "./src/components/common/TutorialDialog";
 import Tutorial from "./src/components/common/Tutorial";
 import LanguageDialog from "./src/components/common/LanguageDialog";
+import CounterModal from "./src/components/common/CounterModal";
 
 //Firebase
 import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
@@ -43,6 +45,7 @@ import * as LocalAuthentication from 'expo-local-authentication'
 import { UserContext } from "./src/data/UserContext";
 import { LanguageContext } from "./src/data/LanguageContext";
 import Languages from './src/data/languages.json'
+import Intro from "./src/components/common/Intro";
 
 
 try {
@@ -55,94 +58,77 @@ AppRegistry.registerComponent("main", () => App);
 
 export default function App() {
 
-  const [user, setUser] = useState(null);
-  const [config, setConfig] = useState(null);
-  const [language, setLanguage] = useState(Languages.de);
-  const [userLoaded, setUserLoaded] = useState(false);
+  //States für Frontend
+  const [showSplash, setShowSplash] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [unlocked, setUnlocked] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [writeComplete, setWriteComplete] = useState(false);
+
+  //States für Daten
+  const [config, setConfig] = useState(null);
+  const [user, setUser] = useState(null);
+  const [language, setLanguage] = useState(Languages.de);
   const [sayingNr, setSayingNr] = useState(0);
-  const screen_height = Dimensions.get('screen').height;
-  const [showSplash, setShowSplash] = useState(true);
-  const [settingsLoaded, setSettingsLoaded] = useState(false);
-  const [localAuthenticationRequired, setLocalAuthenticationRequired] = useState(false);
-  const [first, setFirst] = useState(true);
-  const [showTutorial, setShowTutorial] = useState(false);
 
-
-  //Local Authentication
-  const [localAuthenticated, setLocalAuthenticated] = useState(false);
-
-  //Schreibt Einstellungen in den Async Storage
-  const storeSettings = async () => {
-    try {
-      const jsonValue = JSON.stringify(config);
-      await AsyncStorage.setItem("settings", jsonValue);
-    } catch (e) {
-      console.log("Error in Config beim Speichern: ", e);
-    }
-  };
+  useEffect(async () => {
+    loadSettings();
+    checkForUser();
+  },[]);
 
   //Holt Einstellungen aus dem AsyncStorage
   const loadSettings = async () => {
-    setSettingsLoaded(false);
+    setLoading(true);
     try {
       const jsonValue = await AsyncStorage.getItem("settings");
-      jsonValue != null ? setConfig(JSON.parse(jsonValue)) : null;
-      /* setLocalAuthenticationRequired(JSON.parse(jsonValue).localAuthenticationRequired); */
+
+      if (jsonValue == null) {
+        //Settings-Objekt erstmalig einrichten
+        await AsyncStorage.setItem("settings",JSON.stringify({
+          "first": true,
+          "language": "de",
+          "localAuthenticationRequired": false,
+          "saveGPS": false,
+          "shareGPS": false,
+          "shareLastEntry": false,
+          "shareMainCounter": false,
+          "shareTypeCounters": false,
+          "showBong": true,
+          "showCookie": false,
+          "showJoint": true,
+          "showPipe": true,
+          "showVape": true,
+        }))
+        setConfig({
+          "first": true,
+          "language": "de",
+          "localAuthenticationRequired": false,
+          "saveGPS": false,
+          "shareGPS": false,
+          "shareLastEntry": false,
+          "shareMainCounter": false,
+          "shareTypeCounters": false,
+          "showBong": true,
+          "showCookie": false,
+          "showJoint": true,
+          "showPipe": true,
+          "showVape": true,
+        });
+      }
+      setConfig(JSON.parse(jsonValue));
     } catch (e) {
       console.log("Error in Config beim Laden: ", e);
     }
-    setSettingsLoaded(true);
+    setLoading(false);
+    console.debug(config);
   };
-
-  useEffect( async () => {
-    loadSettings();
-    checkForUser();
-
-    const test = JSON.stringify({
-      showJoint: true,
-      showBong: true,
-      showVape: true,
-      showPipe: true,
-      showCookie: true,
-      shareMainCounter: false,
-      shareTypeCounters: false,
-      shareLastEntry: false,
-      saveGPS: false,
-      shareGPS: false,
-      localAuthenticationRequired: true,
-      first: true,
-      language: "en"
-    });
-    await AsyncStorage.setItem("settings", test);
-  }, []);
 
   //Sucht im AsyncStorage nach dem letzten User der sich eingeloggt hat und loggt sich bei Erfolg automatisch ein
   const checkForUser = async () => {
-    if (!userLoaded) {
-      const current_user = await getCurrentUser();
-      current_user != null ? refreshUser(current_user) : null;
-      setUserLoaded(true);
-    }
-  }
-
-  //Schriftarten Laden
-  const [test] = useFonts({
-    PoppinsBlack: require("./src/fonts/Poppins-Black.ttf"),
-    PoppinsMedium: require("./src/fonts/Poppins-Medium.ttf"),
-    PoppinsLight: require("./src/fonts/Poppins-Light.ttf"),
-  });
-
-  const toggleLanguage = ( lang ) => {
-    if (lang == "de" && config.language == "en") {
-      setLanguage(Languages.de);
-      console.log("sprache zu deutsch gewechselt")
-    }
-    if (lang == "en" && config.language == "de") {
-      setLanguage(Languages.en);
-      console.log("sprache zu englisch gewechselt")
-    } 
+    setLoading(true);
+    const current_user = await getCurrentUser();
+    current_user != null ? refreshUser(current_user) : null;
+    setLoading(false);
   }
 
   // Lädt das User-Objekt aus dem AsyncStorage
@@ -153,14 +139,6 @@ export default function App() {
     } catch (e) {
       console.log("Error:", e);
     }
-  };
-
-  const createUsernameArray = (name) => {
-    let name_array = [];
-    for (let i = 1; i <= name.length; i++) {
-      name_array.push(name.slice(0, i));
-    }
-    return name_array;
   };
 
   const refreshUser = async (user) => {
@@ -207,7 +185,6 @@ export default function App() {
     } else {
       //Nutzer-Dokument existiert nicht -> loggt sich erstmalig ein -> Dokument erstellen
       try {
-        setFirst(true);
         await setDoc(doc(firestore, "users", user.id), {
           username: user.name,
           id: user.id,
@@ -267,9 +244,8 @@ export default function App() {
           shareLastEntry: false,
           saveGPS: false,
           shareGPS: false,
-          localAuthenticationRequired: true,
-          first: true,
-          language: "en"
+          localAuthenticationRequired: false,
+          first: true
         });
         await AsyncStorage.setItem("settings", value);
       } catch (e) {
@@ -291,21 +267,6 @@ export default function App() {
         console.log("Error in App.js: ", e);
       }
     }
-  };
-
-  const handleLogOut = async () => {
-    try {
-      await Google.logOutAsync({
-        androidClientId:
-          "31827165734-rdbihglcac1juesc6fkjd4bgp1c1oj2s.apps.googleusercontent.com",
-        iosClientId:
-        "31827165734-cjrhm51isdg9bjjfji9h2ike188n9d6j.apps.googleusercontent.com",
-        scopes: ["profile", "email"], 
-      });
-    } catch (e) {
-      console.log("Error:", e);
-    }
-    setUser(null);
   };
 
   const handleLogin = async () => {
@@ -341,37 +302,51 @@ export default function App() {
     }
   };
 
-  const writeLocalStorage = async (new_entry) => {
-    // Erstellt neuen Eintrag im AsyncStorage
+  const handleIntroFinish = async () => {
+    //Hier FALSE setzen, wenn Intro fertig gebaut ist.
+    await AsyncStorage.setItem("settings", JSON.stringify({...config, first: false}));
+    loadSettings();
+  }
+
+  const [loaded] = useFonts({
+    PoppinsBlack: require("./assets/fonts/Poppins-Black.ttf"),
+    PoppinsMedium: require("./assets/fonts/Poppins-Medium.ttf"),
+    PoppinsLight: require("./assets/fonts/Poppins-Light.ttf"),
+  });
+
+  if (!loaded) {
+    return null;
+  }
+
+  const toggleLanguage = async ( lang ) => {
+    if (lang == "de" && config.language == "en") {
+      setLanguage(Languages.de);
+      await AsyncStorage.setItem("settings",JSON.stringify({...config, language: "de"}));
+    }
+    if (lang == "en" && config.language == "de") {
+      setLanguage(Languages.en);
+      await AsyncStorage.setItem("settings",JSON.stringify({...config, language: "en"}));
+    } 
+  }
+
+  const handleAuthenticatorSelect = async ( bool ) => {
+      await AsyncStorage.setItem("settings", JSON.stringify({...config, localAuthenticationRequired: bool}));
+
+  }
+
+  const handleLogOut = async () => {
     try {
-      const jsonValue = JSON.stringify(new_entry);
-      await AsyncStorage.setItem(
-        user.id + "_entry_" + (user.main_counter + 1),
-        jsonValue
-      );
+      await Google.logOutAsync({
+        androidClientId:
+          "31827165734-rdbihglcac1juesc6fkjd4bgp1c1oj2s.apps.googleusercontent.com",
+        iosClientId:
+          "31827165734-cjrhm51isdg9bjjfji9h2ike188n9d6j.apps.googleusercontent.com",
+        scopes: ["profile", "email"], 
+      });
     } catch (e) {
       console.log("Error:", e);
     }
-
-    // Updated betroffene Counters im AsyncStorage
-    let current_counters = {};
-
-    try {
-      const jsonValue = await AsyncStorage.getItem(user.id + "_counters");
-      jsonValue != null ? (current_counters = JSON.parse(jsonValue)) : null;
-    } catch (e) {
-      console.log("Error in App.js: ", e);
-    }
-
-    current_counters[new_entry.type] += 1;
-    current_counters.main += 1;
-
-    try {
-      const jsonValue = JSON.stringify(current_counters);
-      await AsyncStorage.setItem(user.id + "_counters", jsonValue);
-    } catch (e) {
-      console.log("Error:", e);
-    }
+    setUser(null);
   };
 
   const toggleCounter = async (index) => {
@@ -485,64 +460,98 @@ export default function App() {
     } catch (e) {
       console.log("Error in App.js: ", e);
     }
+  }
 
-    // Das sollte in Zukunft noch ersetzt werden
-    const docSnap_new = await getDoc(docRef);
-    setUser({
-      ...user,
-      main_counter: local_counters.main,
-      joint_counter: local_counters.joint,
-      bong_counter: local_counters.bong,
-      vape_counter: local_counters.vape,
-      pipe_counter: local_counters.pipe,
-      cookie_counter: local_counters.cookie,
-      last_entry_timestamp: docSnap_new.data().last_entry_timestamp,
-      last_entry_type: docSnap_new.data().last_entry_type,
-      last_entry_latitude: docSnap_new.data().last_entry_latitude,
-      last_entry_longitude: docSnap_new.data().last_entry_longitude,
-    });
-
-    setWriteComplete(true);
+  const createUsernameArray = (name) => {
+    let name_array = [];
+    for (let i = 1; i <= name.length; i++) {
+      name_array.push(name.slice(0, i));
+    }
+    return name_array;
   };
 
-  const [loaded] = useFonts({
-    PoppinsBlack: require("./assets/fonts/Poppins-Black.ttf"),
-    PoppinsLight: require("./assets/fonts/Poppins-Light.ttf"),
-  });
+  const writeLocalStorage = async (new_entry) => {
+    // Erstellt neuen Eintrag im AsyncStorage
+    try {
+      const jsonValue = JSON.stringify(new_entry);
+      await AsyncStorage.setItem(
+        user.id + "_entry_" + (user.main_counter + 1),
+        jsonValue
+      );
+    } catch (e) {
+      console.log("Error:", e);
+    }
 
-  if (!loaded) {
-    return null;
-  }
+    // Updated betroffene Counters im AsyncStorage
+    let current_counters = {};
 
-  const handleCancel = () => {
-    disableLocalAuthentication();
-    storeSettings();
-    loadSettings();
-    setLocalAuthenticated(false);
-    console.debug(config.localAuthenticationRequired);
-  }
+    try {
+      const jsonValue = await AsyncStorage.getItem(user.id + "_counters");
+      jsonValue != null ? (current_counters = JSON.parse(jsonValue)) : null;
+    } catch (e) {
+      console.log("Error in App.js: ", e);
+    }
+
+    current_counters[new_entry.type] += 1;
+    current_counters.main += 1;
+
+    try {
+      const jsonValue = JSON.stringify(current_counters);
+      await AsyncStorage.setItem(user.id + "_counters", jsonValue);
+    } catch (e) {
+      console.log("Error:", e);
+    }
+  };
 
   return (
     <>
       <View style={{flex: 1, backgroundColor: "#1E2132"}}>
+
+
+      <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+            setWriteComplete(false);
+          }}
+      >
+        <CounterModal onExit={() => setModalVisible(false)} writeComplete={writeComplete}/>    
+      </Modal>
+
+
         { showSplash ? 
         <Splash onExit={() => {setShowSplash(false);}}/>
-        : null}
-
-        {first && !showSplash ?
-          <DialogContainer title={"Sprache wählen"} backgroundColor={"#1E2132"} backButtonEnabled={false} contentView={<LanguageDialog onSelect={(lang) =>  toggleLanguage(lang)}/>}/>
-          : null
-        }
-
-        {/* {first && !showSplash ?
-          <DialogContainer title={"Willkommen"} backgroundColor={"#1E2132"} backButtonEnabled={false} contentView={<TutorialDialog onSubmit={() => setShowTutorial(true)}/>} onCancel={() => console.log("test")}/>
-          : null
-        }
-
-        {showTutorial ? 
-          <Tutorial type={"first"} onDone={() => setShowTutorial(false)} toggleNavbar={() => null}/>
-        : null} */}
-
+        : 
+        <>
+          {loading ? <View style={{justifyContent: "center", height: "100%"}}><CustomLoader color={"white"} x={80}/></View>
+          :
+          <>
+            <LanguageContext.Provider value={language}>
+            {config.localAuthenticationRequired && !unlocked ? <Authenticator first={false} onSubmit={() => setUnlocked(true)} onCancel={() => setUnlocked(false)} onExit={() => null}/>
+            :
+            <>
+              {config.first ? <Intro 
+                                onExit={() => handleIntroFinish()}
+                                onLanguageSelect={(lang) => toggleLanguage(lang)}
+                                onAuthenticatorSelect={(bool) => handleAuthenticatorSelect(bool)}/>
+              :
+              <>
+                {user ? <UserContext.Provider value={user}>
+                          <Home
+                            handleLogOut={handleLogOut}
+                            toggleCounter={toggleCounter}
+                            toggleLanguage={toggleLanguage}
+                            />
+                        </UserContext.Provider>
+                :
+                <Login handleLogin={handleLogin} />
+                }
+              </>}
+            </>}
+            </LanguageContext.Provider></>}
+        </>}
       </View>
     </>
   );

@@ -44,13 +44,41 @@ const Tutorial = ({ onDone, extraHeight, toggleNavbar, type }) => {
     useEffect(() => {
       toggleNavbar(0);
       toggleTouchAnimation();
-    });
+      show();
+    },[]);
 
     useBackHandler(() => {
-      toggleNavbar(1);
-      onDone();
+      if (type != "first") {
+        toggleNavbar(1);
+        onDone();
+      }
       return true
   })
+
+  
+
+const screen_height = Dimensions.get("screen").height;
+const screen_width = Dimensions.get("screen").width;
+
+const slide = useRef(new Animated.Value(0)).current;
+
+const show = () => {
+    Animated.timing(slide,{
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+    }).start()
+}
+
+const hide = () => {
+    Animated.timing(slide,{
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true
+    }).start(({finished}) => {
+        finished ? onDone() : null;
+    })
+}
 
   const toggleTouchAnimation = () => {
     touchRef.setValue(0);
@@ -338,7 +366,7 @@ const Tutorial = ({ onDone, extraHeight, toggleNavbar, type }) => {
           <View style={{height: responsiveHeight(10)}}></View>
 
           {consented ?
-          <Button title={"Loslegen"} fontColor={"#1E2132"} color={"white"} color2={"#1E2132"} hovercolor={"rgba(0,0,0,0.25)"} onPress={() => {toggleNavbar(1); onDone()}}/>
+          <Button title={"Loslegen"} fontColor={"#1E2132"} color={"white"} color2={"#1E2132"} hovercolor={"rgba(0,0,0,0.25)"} onPress={() => {toggleNavbar(1); hide()}}/>
           :
           <Button title={"Loslegen"} fontColor={"#1E2132"} color={"rgba(160,160,160,1)"} color2={"#1E2132"} hovercolor={"rgba(160,160,160,1)"} onPress={() => Alert.alert("Bitte lies unsere Datenschutzbestimmungen.")}/>
           }
@@ -349,7 +377,7 @@ const Tutorial = ({ onDone, extraHeight, toggleNavbar, type }) => {
     const readyScreen = () => {
       return <View style={{width: "100%", alignSelf: "center"}}>
 
-          <Button title={"Weitermachen"} fontColor={"#1E2132"} color={"white"} color2={"#1E2132"} hovercolor={"rgba(0,0,0,0.25)"} onPress={() => {toggleNavbar(1); onDone()}}/>
+          <Button title={"Weitermachen"} fontColor={"#1E2132"} color={"white"} color2={"#1E2132"} hovercolor={"rgba(0,0,0,0.25)"} onPress={() => {toggleNavbar(1); hide()}}/>
           
         </View>
     }
@@ -433,7 +461,7 @@ const Tutorial = ({ onDone, extraHeight, toggleNavbar, type }) => {
 
     //Neue Version: Langes Schrollpanel mit Statusbar (04. September 2022)
     return (
-      <Animated.View style={styles.container}>
+      <Animated.View style={[styles.container,{opacity: slide}]}>
        <ScrollView>
 
           {slides.map((slide) => {
@@ -454,7 +482,6 @@ const styles = StyleSheet.create({
         height: Dimensions.get("screen").height,
         width: "100%",
         position: "absolute",
-        top: -50,
         zIndex:1000
     },
     info_container: {

@@ -1,25 +1,54 @@
 //React
-import React from "react";
-import { View, Text, StyleSheet, Image } from 'react-native'
+import React, { useRef, useEffect } from "react";
+import { View, Text, StyleSheet, Image, Animated, Easing, Dimensions } from 'react-native'
 import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
 
 //Custom Components
 import Button from "./Button";
 
 
-const TutorialDialog = ({onSubmit, onCancel }) => {
+const TutorialDialog = ({ onSubmit, onCancel }) => {
+
+
+    useEffect(() => {
+        show();
+    },[]);
+
+    const screen_height = Dimensions.get("screen").height;
+    const screen_width = Dimensions.get("screen").width;
+
+    const slide = useRef(new Animated.Value(screen_height)).current;
+
+    const show = () => {
+        Animated.timing(slide,{
+            toValue: 0,
+            duration: 600,
+            useNativeDriver: true,
+            easing: Easing.bezier(0.2, 1, 0.21, 0.97),
+        }).start()
+    }
+
+    const hide = () => {
+        Animated.timing(slide,{
+            toValue: screen_height,
+            duration: 600,
+            useNativeDriver: true
+        }).start(({finished}) => {
+            finished ? onCancel() : null;
+        })
+    }
+    
     return <>
-    <View style={styles.container}>
+    <Animated.View style={[styles.container,{transform: [{translateY: slide}]}]}>
 
         <Image source={require('../../data/img/tutorial.png')} style={styles.tutorial_image}/>
-
-        <Text style={styles.question}>Möchtest du ein Tutorial ansehen?</Text>
+        
         <View style={{height: responsiveHeight(10)}}></View>
 
         <Button title={"Ja, jetzt ansehen"} color={"#0080FF"} color2={"white"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.3)"} onPress={() => onSubmit()}/>
-        <Button title={"Später"} color={"#484F78"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.15)"} onPress={() => onCancel()}/>
+        <Button title={"Später"} color={"#484F78"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.15)"} onPress={() => hide()}/>
         <View style={{height: responsiveHeight(10)}}></View>
-    </View>
+    </Animated.View>
     </>
 }
 

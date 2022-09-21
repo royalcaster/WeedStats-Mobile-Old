@@ -51,7 +51,6 @@ const Config = ({ toggleLanguage }) => {
       console.log("Error in Config beim Laden: ", e);
     }
     setLoading(false);
-    console.debug(config);
   };
 
   const storeSettings = async () => {
