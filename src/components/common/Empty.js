@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { StyleSheet, View, Text, Animated, Easing } from "react-native";
 
 //Third Party
-import { responsiveFontSize } from 'react-native-responsive-dimensions'
+import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 
 const Empty = ({ title, tip }) => {
 
@@ -27,11 +27,8 @@ const Empty = ({ title, tip }) => {
   return (
     <View style={styles.container}>
       <Animated.View style={{ alignItems: "center", width: "90%", alignSelf: "center", transform: [{translateY: fadeAnim}], opacity: opacityAnim}}>
-        <View style={{flexDirection: "row"}}>
-          <Text style={styles.heading}>{title}</Text>
-          <Text style={styles.smile}>:{"("}</Text>
-        </View>
-        <View style={{ height: 30 }}></View>
+        <Text style={{color: "#484F78", fontFamily: "PoppinsBlack", fontSize: responsiveFontSize(7.5)}}>...</Text>
+        <Text style={styles.heading}>{title}</Text>
         <Text style={styles.heading2}>
           {tip}
         </Text>
@@ -49,11 +46,11 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   heading: {
-    fontFamily: "PoppinsBlack",
-    textAlign: "left",
+    fontFamily: "PoppinsMedium",
+    textAlign: "center",
     color: "#484F78",
-    fontSize: 30,
-    width: "50%"
+    fontSize: responsiveFontSize(2.5),
+    width: "70%"
   },
   heading2: {
     fontFamily: "PoppinsLight",

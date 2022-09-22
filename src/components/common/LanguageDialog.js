@@ -1,11 +1,12 @@
 //React
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Image, Animated, Dimensions, Easing } from 'react-native'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 import { TouchableNativeFeedback } from "react-native";
 
 //Custom Components
 import Button from "./Button";
+import { LanguageContext } from "../../data/LanguageContext";
 
 
 const LanguageDialog = ({ onSelect, onExit }) => {

@@ -25,7 +25,7 @@ import { responsiveHeight, responsiveFontSize } from "react-native-responsive-di
 import { UserContext } from "../../../data/UserContext";
 import { LanguageContext } from "../../../data/LanguageContext";
 
-const Groups = ({ handleLogOut, toggleNavbar }) => {
+const Groups = ({ handleLogOut, toggleNavbar, deleteAccount }) => {
 
   const user = useContext(UserContext);
   const language = useContext(LanguageContext);
@@ -74,6 +74,7 @@ const Groups = ({ handleLogOut, toggleNavbar }) => {
         onexit={() => setShowAccount(false)}
         toggleNavbar={toggleNavbar}
         show={showAccount}
+        deleteAccount={deleteAccount}
       />
 
       <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
@@ -154,23 +155,12 @@ const Groups = ({ handleLogOut, toggleNavbar }) => {
                 <Text
                   style={{
                     left: 15,
-                    fontFamily: "PoppinsBlack",
+                    fontFamily: "PoppinsMedium",
                     color: "white",
                     fontSize: responsiveFontSize(2.0),
                   }}
                 >
                   {user.username}
-                </Text>
-                <Text
-                  style={{
-                    left: 15,
-                    fontFamily: "PoppinsLight",
-                    color: "#c4c4c4",
-                    fontSize: responsiveFontSize(1.6),
-                    marginTop: -3,
-                  }}
-                >
-                  Bong-Main
                 </Text>
               </View>
             </View>
@@ -192,7 +182,7 @@ const styles = StyleSheet.create({
     zIndex: 0
   },
   heading: {
-    fontFamily: "PoppinsBlack",
+    fontFamily: "PoppinsMedium",
     color: "white",
     fontSize: responsiveFontSize(2.3),
     marginLeft: 30,

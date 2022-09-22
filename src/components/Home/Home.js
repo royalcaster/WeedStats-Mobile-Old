@@ -18,7 +18,7 @@ import MenuButton from "./MenuButton";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Entypo from "react-native-vector-icons/Entypo";
 
-export default function Home({ handleLogOut, toggleCounter, toggleLanguage }) {
+export default function Home({ handleLogOut, toggleCounter, toggleLanguage, deleteAccount }) {
 
   const [view, setView] = useState("main");
   const navSlide = useRef(new Animated.Value(0)).current;
@@ -51,7 +51,7 @@ export default function Home({ handleLogOut, toggleCounter, toggleLanguage }) {
         {view == "map" ? <Map/> : null}
         {view == "config" ? <Config toggleLanguage={toggleLanguage}/> : null}
         {view == "groups" ? (
-          <Groups handleLogOut={handleLogOut} toggleNavbar={toggleNavbar}/>
+          <Groups handleLogOut={handleLogOut} toggleNavbar={toggleNavbar} deleteAccount={deleteAccount}/>
         ) : null}
       </View>
 

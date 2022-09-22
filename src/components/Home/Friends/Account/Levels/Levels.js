@@ -46,6 +46,8 @@ const Levels = ({ onexit, show }) => {
   return (
     <Animated.View style={[{ opacity: 1 , transform: [{translateX: fadeAnim}]}, styles.container]}>
 
+      <View style={{ height: responsiveHeight(1) }}></View>
+
       <View style={{flexDirection: "row", alignContent: "center", alignItems: "center"}}>
         <View style={{marginLeft: 20}}>
             <BackButton onPress={() => hide()}/>
@@ -53,7 +55,8 @@ const Levels = ({ onexit, show }) => {
         <Text style={styles.heading}>{language.account_levels}</Text>
       </View>
 
-      <View style={{ height: 10 }}></View>
+      <View style={{ height: responsiveHeight(1) }}></View>
+      <View style={{ height: responsiveHeight(2) }}></View>
 
       {language.levels.map((level, index) => {
         return (
@@ -87,6 +90,7 @@ const Levels = ({ onexit, show }) => {
           </View>
         );
       })}
+      <View style={{ height: responsiveHeight(2) }}></View>
     </Animated.View>
   );
 };
@@ -109,7 +113,7 @@ const styles = StyleSheet.create({
   heading: {
     color: "white",
     fontSize: 20,
-    fontFamily: "PoppinsBlack",
+    fontFamily: "PoppinsMedium",
     marginLeft: 20,
     textAlign: "left",
     marginTop: 3

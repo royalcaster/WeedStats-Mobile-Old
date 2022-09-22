@@ -31,7 +31,7 @@ import LanguageDialog from "./src/components/common/LanguageDialog";
 import CounterModal from "./src/components/common/CounterModal";
 
 //Firebase
-import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { setDoc, doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { firestore } from "./src/data/FirebaseConfig";
 import { AppRegistry } from "react-native";
 
@@ -68,7 +68,7 @@ export default function App() {
   //States für Daten
   const [config, setConfig] = useState(null);
   const [user, setUser] = useState(null);
-  const [language, setLanguage] = useState(Languages.de);
+  const [language, setLanguage] = useState(Languages.en);
   const [sayingNr, setSayingNr] = useState(0);
 
   useEffect(async () => {
@@ -86,7 +86,7 @@ export default function App() {
         //Settings-Objekt erstmalig einrichten
         await AsyncStorage.setItem("settings",JSON.stringify({
           "first": true,
-          "language": "de",
+          "language": "en",
           "localAuthenticationRequired": false,
           "saveGPS": false,
           "shareGPS": false,
@@ -101,7 +101,7 @@ export default function App() {
         }))
         setConfig({
           "first": true,
-          "language": "de",
+          "language": "en",
           "localAuthenticationRequired": false,
           "saveGPS": false,
           "shareGPS": false,
@@ -120,7 +120,6 @@ export default function App() {
       console.log("Error in Config beim Laden: ", e);
     }
     setLoading(false);
-    console.debug(config);
   };
 
   //Sucht im AsyncStorage nach dem letzten User der sich eingeloggt hat und loggt sich bei Erfolg automatisch ein
@@ -232,7 +231,7 @@ export default function App() {
       }
 
       //Einstellungs-Objekt im Local Storage erstmalig einrichten:
-      try {
+      /* try {
         const value = JSON.stringify({
           showJoint: true,
           showBong: true,
@@ -245,12 +244,13 @@ export default function App() {
           saveGPS: false,
           shareGPS: false,
           localAuthenticationRequired: false,
+          language: "en",
           first: true
         });
         await AsyncStorage.setItem("settings", value);
       } catch (e) {
         console.log("Error in App.js: ", e);
-      }
+      } */
 
       //Counter-Object im Local Storage erstmalig einrichten:
       try {
@@ -282,7 +282,7 @@ export default function App() {
       if (result.type === "success") {
         try {
           await refreshUser(result.user);
-
+          console.log("login");
           try {
             const jsonValue = JSON.stringify(result.user);
             await AsyncStorage.setItem("current_user", jsonValue);
@@ -322,10 +322,13 @@ export default function App() {
     if (lang == "de" && config.language == "en") {
       setLanguage(Languages.de);
       await AsyncStorage.setItem("settings",JSON.stringify({...config, language: "de"}));
+      setConfig({...config, language: "de"});
+      console.debug(lang);
     }
     if (lang == "en" && config.language == "de") {
       setLanguage(Languages.en);
       await AsyncStorage.setItem("settings",JSON.stringify({...config, language: "en"}));
+      setConfig({...config, language: "en"});
     } 
   }
 
@@ -460,7 +463,25 @@ export default function App() {
     } catch (e) {
       console.log("Error in App.js: ", e);
     }
-  }
+
+    // Das sollte in Zukunft noch ersetzt werden
+    const docSnap_new = await getDoc(docRef);
+    setUser({
+      ...user,
+      main_counter: local_counters.main,
+      joint_counter: local_counters.joint,
+      bong_counter: local_counters.bong,
+      vape_counter: local_counters.vape,
+      pipe_counter: local_counters.pipe,
+      cookie_counter: local_counters.cookie,
+      last_entry_timestamp: docSnap_new.data().last_entry_timestamp,
+      last_entry_type: docSnap_new.data().last_entry_type,
+      last_entry_latitude: docSnap_new.data().last_entry_latitude,
+      last_entry_longitude: docSnap_new.data().last_entry_longitude,
+    });
+
+    setWriteComplete(true);
+  };
 
   const createUsernameArray = (name) => {
     let name_array = [];
@@ -503,10 +524,43 @@ export default function App() {
     }
   };
 
+  const deleteAccount = async () => {
+    setLoading(true);
+    console.log(config);
+     handleLogOut();
+
+    // Firestore-Doc löschen
+    const docRef = doc(firestore, "users", user.id);
+    await deleteDoc(docRef);
+    
+    // AsyncStorage-Daten löschen
+    try {
+      await AsyncStorage.clear();
+      setConfig({
+        showJoint: true,
+        showBong: true,
+        showVape: true,
+        showPipe: true,
+        showCookie: true,
+        shareMainCounter: false,
+        shareTypeCounters: false,
+        shareLastEntry: false,
+        saveGPS: false,
+        shareGPS: false,
+        localAuthenticationRequired: false,
+        language: "en",
+        first: true
+      });
+    } catch (e) {
+      console.log("Fehler beim Löschen des AsyncStorage.", e);
+    }
+    setLoading(false);
+  };
+
   return (
     <>
       <View style={{flex: 1, backgroundColor: "#1E2132"}}>
-
+      <LanguageContext.Provider value={language}>
 
       <Modal
           animationType="fade"
@@ -517,7 +571,7 @@ export default function App() {
             setWriteComplete(false);
           }}
       >
-        <CounterModal onExit={() => setModalVisible(false)} writeComplete={writeComplete}/>    
+        <CounterModal onExit={() => {setModalVisible(!modalVisible); setWriteComplete(false)}} writeComplete={writeComplete} sayingNr={sayingNr}/>    
       </Modal>
 
 
@@ -528,7 +582,7 @@ export default function App() {
           {loading ? <View style={{justifyContent: "center", height: "100%"}}><CustomLoader color={"white"} x={80}/></View>
           :
           <>
-            <LanguageContext.Provider value={language}>
+            
             {config.localAuthenticationRequired && !unlocked ? <Authenticator first={false} onSubmit={() => setUnlocked(true)} onCancel={() => setUnlocked(false)} onExit={() => null}/>
             :
             <>
@@ -543,6 +597,7 @@ export default function App() {
                             handleLogOut={handleLogOut}
                             toggleCounter={toggleCounter}
                             toggleLanguage={toggleLanguage}
+                            deleteAccount={() => deleteAccount()}
                             />
                         </UserContext.Provider>
                 :
@@ -550,8 +605,9 @@ export default function App() {
                 }
               </>}
             </>}
-            </LanguageContext.Provider></>}
+            </>}
         </>}
+        </LanguageContext.Provider>
       </View>
     </>
   );

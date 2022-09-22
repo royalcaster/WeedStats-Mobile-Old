@@ -257,8 +257,8 @@ const styles = StyleSheet.create({
   heading: {
     color: "white",
     textAlign: "center",
-    fontFamily: "PoppinsBlack",
-    fontSize: 22,
+    fontFamily: "PoppinsMedium",
+    fontSize: responsiveFontSize(2.3),
     alignSelf: "center",
     marginLeft: 70
   },

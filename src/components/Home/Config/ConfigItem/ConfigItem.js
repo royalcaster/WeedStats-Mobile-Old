@@ -1,13 +1,16 @@
 //React
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { StyleSheet, View, Image, Text, TouchableNativeFeedback } from "react-native";
 
 //Third Party
 import { responsiveFontSize } from "react-native-responsive-dimensions";
+import { LanguageContext } from "../../../../data/LanguageContext";
 
 const ConfigItem = ({ type, config, onToggle }) => {
 
   const [active, setActive] = useState(config);
+
+  const language = useContext(LanguageContext)
 
   return (
       <TouchableNativeFeedback 
@@ -29,7 +32,7 @@ const ConfigItem = ({ type, config, onToggle }) => {
               source={require("../../../../data/img/joint.png")}
             ></Image>
             <Text style={active ? styles.label_active : styles.label}>
-              Joint
+              {language.joint}
             </Text>
           </>
         ) : null}
@@ -40,7 +43,7 @@ const ConfigItem = ({ type, config, onToggle }) => {
               source={require("../../../../data/img/bong.png")}
             ></Image>
             <Text style={active ? styles.label_active : styles.label}>
-              Bong
+            {language.bong}
             </Text>
           </>
         ) : null}
@@ -51,7 +54,7 @@ const ConfigItem = ({ type, config, onToggle }) => {
               source={require("../../../../data/img/vape.png")}
             ></Image>
             <Text style={active ? styles.label_active : styles.label}>
-              Vape
+            {language.vape}
             </Text>
           </>
         ) : null}
@@ -62,7 +65,7 @@ const ConfigItem = ({ type, config, onToggle }) => {
               source={require("../../../../data/img/pipe.png")}
             ></Image>
             <Text style={active ? styles.label_active : styles.label}>
-              Pfeife
+            {language.pipe}
             </Text>
           </>
         ) : null}
@@ -73,7 +76,7 @@ const ConfigItem = ({ type, config, onToggle }) => {
               source={require("../../../../data/img/cookie.png")}
             ></Image>
             <Text style={active ? styles.label_active : styles.label}>
-              Edible
+            {language.cookie}
             </Text>
           </>
         ) : null}

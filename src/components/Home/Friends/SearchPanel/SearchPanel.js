@@ -185,22 +185,24 @@ const SearchPanel = ({onExit}) => {
         </Modal>
 
                 
-            <Text style={styles.heading}>{language.searchpanel_title}</Text>
-            <View style={{height: 10}}></View>
-            <View style={{width: "100%", flexDirection: "row", maxHeight: 60, flex: 1, alignItems: "center"}} >
-                <View style={{flex: 1, alignItems: "center"}}>
-                    <BackButton onPress={() => hide()}/>
+            <View
+            style={{ width: "100%", flexDirection: "row"}}
+            >
+                <View style={{ flex: 1, alignItems: "center" }}>
+                    <BackButton onPress={() => hide()} />
                 </View>
-                <View style={{flex: 4, justifyContent: "center"}}>
-                    <TextInput ref={textInputRef} blurOnSubmit={true} autoFocus={true} style={styles.input} onChangeText={(text) => {searchUsers(text)}}></TextInput>
+                <View style={{ flex: 5, justifyContent: "center"}}>
+                    <Text style={styles.heading}>{language.searchpanel_title}</Text>
                 </View>
             </View>
+
+            <TextInput ref={textInputRef} blurOnSubmit={true} autoFocus={true} style={styles.input} onChangeText={(text) => {searchUsers(text)}}></TextInput>
             
             <ScrollView style={{width: "100%", flex: 1, alignSelf: "center", marginTop: 20}}>
 
             {!results || results.length == 0 ? 
             <View style={{width: "100%", marginTop: 100}}>
-                <Text style={{fontFamily: "PoppinsBlack", fontSize: 15, color: "#484F78", alignSelf: "center"}}>{language.searchpanel_empty}</Text>
+                <Text style={{fontFamily: "PoppinsMedium", fontSize: 15, color: "#484F78", alignSelf: "center"}}>{language.searchpanel_empty}</Text>
             </View> : <>
             {loading ? <ActivityIndicator color={"#0080FF"} size={"large"} style={{marginTop: 50}}/> : (
                 results.map((result) => {
@@ -228,9 +230,9 @@ const styles = StyleSheet.create({
     },
     input: {
         backgroundColor: "#1E2132",
-        marginRight: 15,
-        marginLeft: 0,
-        height: "100%",
+        width: "90%",
+        alignSelf: "center",
+        height: 60,
         borderRadius: 10,
         paddingLeft: 20,
         color: "white",
@@ -248,7 +250,7 @@ const styles = StyleSheet.create({
     heading: {
         color: "white",
         textAlign: "center",
-        fontFamily: "PoppinsBlack",
+        fontFamily: "PoppinsMedium",
         fontSize: 20,
         textAlign: "left",
         marginLeft: 25

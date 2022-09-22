@@ -29,7 +29,7 @@ const Intro = ({ onExit, onLanguageSelect, onAuthenticatorSelect }) => {
         show();
     },[]);
 
-    const titles = ["Welche Sprache sprichst du?", "Soll WeedStats zukünftig von dir entsperrt werden?", "Willst du ein Tutorial sehen?"]
+    const titles = ["What language do you speak?", language.unlock_question, language.tutorial_question]
 
     const show = () => {
         Animated.timing(slide,{
@@ -68,7 +68,7 @@ const Intro = ({ onExit, onLanguageSelect, onAuthenticatorSelect }) => {
 
             <View style={{height: responsiveHeight(5)}}></View>
             <Image style={styles.logo} source={require("../../data/img/logo.png")}/>
-            <Text style={styles.step_label}>Schritt {step} von 3</Text>
+            <Text style={styles.step_label}>{language.step} {step} {language.of_3}</Text>
             <IntroStatusbar progress={step}/>
             <View style={{height: responsiveHeight(2.5)}}></View>
             <Text style={styles.title}>{titles[step - 1]}</Text>

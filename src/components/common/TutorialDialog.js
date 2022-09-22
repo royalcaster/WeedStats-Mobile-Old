@@ -1,13 +1,16 @@
 //React
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useContext } from "react";
 import { View, Text, StyleSheet, Image, Animated, Easing, Dimensions } from 'react-native'
 import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
+import { LanguageContext } from "../../data/LanguageContext";
 
 //Custom Components
 import Button from "./Button";
 
 
 const TutorialDialog = ({ onSubmit, onCancel }) => {
+
+    const language = useContext(LanguageContext);
 
 
     useEffect(() => {
@@ -45,8 +48,8 @@ const TutorialDialog = ({ onSubmit, onCancel }) => {
         
         <View style={{height: responsiveHeight(10)}}></View>
 
-        <Button title={"Ja, jetzt ansehen"} color={"#0080FF"} color2={"white"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.3)"} onPress={() => onSubmit()}/>
-        <Button title={"Später"} color={"#484F78"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.15)"} onPress={() => hide()}/>
+        <Button title={language.see_now} color={"#0080FF"} color2={"white"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.3)"} onPress={() => onSubmit()}/>
+        <Button title={language.later} color={"#484F78"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.15)"} onPress={() => hide()}/>
         <View style={{height: responsiveHeight(10)}}></View>
     </Animated.View>
     </>

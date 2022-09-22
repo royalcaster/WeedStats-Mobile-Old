@@ -307,7 +307,7 @@ const FriendResquests = ({ onExit, refresh }) => {
         <View style={{ flex: 1, alignItems: "center" }}>
           <BackButton onPress={() => hide()} />
         </View>
-        <View style={{ flex: 4, justifyContent: "center"}}>
+        <View style={{ flex: 5, justifyContent: "center"}}>
           <Text style={styles.heading}>{language.friendrequests_title}</Text>
         </View>
       </View>
@@ -333,7 +333,7 @@ const FriendResquests = ({ onExit, refresh }) => {
                 ) : null}
               </ScrollView>
             ) : 
-            <View style={{height: "90%"}}><Empty title={"Du hast noch keine Anfragen."} tip={"Das wird schon noch!"}/></View>}
+            <View style={{flex: 1}}><Empty title={"Du hast noch keine Anfragen."} tip={"Das wird schon noch!"}/></View>}
           </>
         )}
 
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
   heading: {
     color: "white",
     textAlign: "center",
-    fontFamily: "PoppinsBlack",
+    fontFamily: "PoppinsMedium",
     fontSize: 20,
     textAlign: "left",
     marginLeft: 10,

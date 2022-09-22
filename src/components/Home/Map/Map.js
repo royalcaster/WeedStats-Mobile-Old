@@ -1,6 +1,6 @@
 //React
 import React, { useEffect, useState, useRef, useContext } from "react";
-import { StyleSheet, LogBox, Image, View, Text, ScrollView, Dimensions, TouchableOpacity, TouchableNativeFeedback } from "react-native";
+import { StyleSheet, LogBox, Image, View, Text, ScrollView, Dimensions, TouchableOpacity, TouchableNativeFeedback, Vibration } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //Custom Components

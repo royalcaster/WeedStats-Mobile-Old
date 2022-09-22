@@ -68,8 +68,7 @@
     "react-native-vector-icons": "^9.0.0",
     "react-native-web": "0.17.1",
     "react-native-x2-carousel": "^1.0.1",
-    "recyclerlistview": "^3.0.5",
-    "rn-expo-paypal-integration": "^1.2.0"
+    "recyclerlistview": "^3.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

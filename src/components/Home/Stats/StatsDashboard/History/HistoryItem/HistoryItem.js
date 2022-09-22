@@ -9,6 +9,7 @@ import toGermanDate from "../../../../../../data/DateConversion";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { responsiveFontSize } from "react-native-responsive-dimensions";
 
 const HistoryTable = ({ event, showOnMap }) => {
 
@@ -18,10 +19,13 @@ const HistoryTable = ({ event, showOnMap }) => {
         flexDirection: "row",
         width: "90%",
         marginBottom: 15,
-        paddingTop: 15,
         borderTopColor: "#121212",
         borderTopWidth: 0,
-        alignSelf: "center"
+        alignSelf: "center",
+        backgroundColor: "#484F78",
+        justifyContent: "center",
+        padding: 10,
+        borderRadius: 10
       }}
     >
       <View style={{ flex: 1 }}>
@@ -69,7 +73,7 @@ const HistoryTable = ({ event, showOnMap }) => {
           <AntDesign
             name="enviromento"
             style={{
-              color: "#484F78",
+              color: "white",
               fontSize: 25,
               textAlignVertical: "center",
             }}
@@ -121,14 +125,14 @@ const styles = StyleSheet.create({
   date: {
     textAlign: "center",
     fontFamily: "PoppinsLight",
-    fontSize: 15,
+    fontSize: responsiveFontSize(1.75),
     color: "white",
     alignSelf: "center",
   },
   time: {
     textAlign: "center",
     fontFamily: "PoppinsLight",
-    fontSize: 15,
+    fontSize: responsiveFontSize(1.75),
     color: "white",
   },
   icon_date: {

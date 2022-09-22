@@ -9,6 +9,7 @@ import {
   Animated,
   ScrollView,
   Modal,
+  Vibration
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -40,8 +41,13 @@ const Config = ({ toggleLanguage }) => {
 
   useEffect(() => {
     loadSettings();
+    console.log(config);
     LogBox.ignoreAllLogs();
   }, []);
+
+  const vibrate = (ms) => {
+    Vibration.vibrate(ms);
+  }
 
   const loadSettings = async () => {
     try {
@@ -57,6 +63,7 @@ const Config = ({ toggleLanguage }) => {
     try {
       const jsonValue = JSON.stringify(config);
       await AsyncStorage.setItem("settings", jsonValue);
+      toggleLanguage(config.language);
     } catch (e) {
       console.log("Error in Config beim Speichern: ", e);
     }
@@ -71,6 +78,10 @@ const Config = ({ toggleLanguage }) => {
       useNativeDriver: true,
     }).start();
   }, [fadeAnim]);
+
+  const handleLanguageSwitch = (lang) => {
+    setConfig({...config, language: lang});
+  }
 
   return (
     <>
@@ -152,6 +163,7 @@ const Config = ({ toggleLanguage }) => {
                 config={config.showJoint}
                 onToggle={() => {
                   setConfig({ ...config, showJoint: !config.showJoint });
+                  vibrate(25);
                   setSaved(false);
                 }}
               ></ConfigItem>
@@ -160,6 +172,7 @@ const Config = ({ toggleLanguage }) => {
                 config={config.showBong}
                 onToggle={() => {
                   setConfig({ ...config, showBong: !config.showBong });
+                  vibrate(25);
                   setSaved(false);
                 }}
               ></ConfigItem>
@@ -168,6 +181,7 @@ const Config = ({ toggleLanguage }) => {
                 config={config.showVape}
                 onToggle={() => {
                   setConfig({ ...config, showVape: !config.showVape });
+                  vibrate(25);
                   setSaved(false);
                 }}
               ></ConfigItem>
@@ -185,6 +199,7 @@ const Config = ({ toggleLanguage }) => {
                 config={config.showPipe}
                 onToggle={() => {
                   setConfig({ ...config, showPipe: !config.showPipe });
+                  vibrate(25);
                   setSaved(false);
                 }}
               ></ConfigItem>
@@ -193,21 +208,17 @@ const Config = ({ toggleLanguage }) => {
                 config={config.showCookie}
                 onToggle={() => {
                   setConfig({ ...config, showCookie: !config.showCookie });
+                  vibrate(25);
                   setSaved(false);
                 }}
               ></ConfigItem>
             </View>
 
             <Text style={styles.heading}>{language.config_personal_data}</Text>
-            <View style={{ height: 10 }}></View>
+            <View style={{ height: 5 }}></View>
 
             <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "95%",
-                alignContent: "center",
-              }}
+              style={styles.toggle_container}
             >
               <View style={{ flex: 4, justifyContent: "center" }}>
                 <Text style={styles.label}>{language.config_share_main_counter}</Text>
@@ -226,6 +237,7 @@ const Config = ({ toggleLanguage }) => {
                       ...config,
                       shareMainCounter: !config.shareMainCounter,
                     });
+                    vibrate(25);
                     setSaved(false);
                   }}
                   trackBar={{
@@ -245,12 +257,7 @@ const Config = ({ toggleLanguage }) => {
             </View>
 
             <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "95%",
-                alignContent: "center",
-              }}
+              style={styles.toggle_container}
             >
               <View style={{ flex: 4, justifyContent: "center" }}>
                 <Text style={styles.label}>{language.config_share_detail_counter}</Text>
@@ -270,6 +277,7 @@ const Config = ({ toggleLanguage }) => {
                       ...config,
                       shareTypeCounters: !config.shareTypeCounters,
                     });
+                    vibrate(25);
                     setSaved(false);
                   }}
                   trackBar={{
@@ -289,12 +297,7 @@ const Config = ({ toggleLanguage }) => {
             </View>
 
             <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "95%",
-                alignContent: "center",
-              }}
+              style={styles.toggle_container}
             >
               <View style={{ flex: 4, justifyContent: "center" }}>
                 <Text style={styles.label}>{language.config_share_last_activity}</Text>
@@ -313,6 +316,7 @@ const Config = ({ toggleLanguage }) => {
                       ...config,
                       shareLastEntry: !config.shareLastEntry,
                     });
+                    vibrate(25);
                     setSaved(false);
                   }}
                   trackBar={{
@@ -332,12 +336,7 @@ const Config = ({ toggleLanguage }) => {
             </View>
 
             <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "95%",
-                alignContent: "center",
-              }}
+              style={styles.toggle_container}
             >
               <View style={{ flex: 4, justifyContent: "center" }}>
                 <Text style={styles.label}>{language.config_get_location}</Text>
@@ -353,6 +352,7 @@ const Config = ({ toggleLanguage }) => {
                   value={config.saveGPS}
                   onPress={() => {
                     setConfig({ ...config, saveGPS: !config.saveGPS });
+                    vibrate(25);
                     setSaved(false);
                   }}
                   trackBar={{
@@ -372,12 +372,7 @@ const Config = ({ toggleLanguage }) => {
             </View>
 
             <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "95%",
-                alignContent: "center",
-              }}
+              style={styles.toggle_container}
             >
               <View style={{ flex: 4, justifyContent: "center" }}>
                 <Text style={styles.label}>{language.config_share_location}</Text>
@@ -397,6 +392,7 @@ const Config = ({ toggleLanguage }) => {
                       ...config,
                       shareGPS: !config.shareGPS,
                     });
+                    vibrate(25);
                     setSaved(false);
                   }}
                   trackBar={{
@@ -417,19 +413,14 @@ const Config = ({ toggleLanguage }) => {
 
             <View style={{ height: 30 }}></View>
 
-            <Text style={styles.heading}>Sicherheit</Text>
-            <View style={{ height: 10 }}></View>
+            <Text style={styles.heading}>{language.config_security}</Text>
+            <View style={{ height: 5 }}></View>
 
             <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "95%",
-                alignContent: "center",
-              }}
+              style={styles.toggle_container}
             >
               <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>WeedStats beim Start entsperren</Text>
+                <Text style={styles.label}>{language.config_unlock_on_launch}</Text>
               </View>
             <View
                 style={{
@@ -445,6 +436,7 @@ const Config = ({ toggleLanguage }) => {
                       ...config,
                       localAuthenticationRequired: !config.localAuthenticationRequired,
                     });
+                    vibrate(25);
                     setSaved(false);
                   }}
                   trackBar={{
@@ -466,22 +458,17 @@ const Config = ({ toggleLanguage }) => {
             <View style={{ height: 30 }}></View>
 
             <Text style={styles.heading}>{language.config_language}</Text>
-            <View style={{ height: 10 }}></View>
+            <View style={{ height: 5 }}></View>
 
-            <LanguageSelector toggleLanguage={toggleLanguage} value={config.language}/>
+            <LanguageSelector toggleLanguage={(lang) => {handleLanguageSwitch(lang); setSaved(false)}} value={config.language} onVibrate={() => vibrate(25)}/>
 
             <View style={{ height: 30 }}></View>
 
             <Text style={styles.heading}>{language.config_other}</Text>
-            <View style={{ height: 10 }}></View>
+            <View style={{ height: 5 }}></View>
 
             <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "95%",
-                alignContent: "center",
-              }}
+              style={styles.toggle_container}
             >
               <View style={{ flex: 4, justifyContent: "center" }}>
                 <Text style={styles.label}>{language.config_lightmode}</Text>
@@ -495,7 +482,7 @@ const Config = ({ toggleLanguage }) => {
               >
                 <Toggle
                   value={lightmode}
-                  onPress={(val) => setLightMode(val)}
+                  onPress={(val) => {setLightMode(val); vibrate(25);}}
                   trackBar={{
                     activeBackgroundColor: "#0080FF",
                     inActiveBackgroundColor: "#131520",
@@ -513,6 +500,26 @@ const Config = ({ toggleLanguage }) => {
             </View>
 
             <View style={{ height: 30 }}></View>
+
+            <Text style={styles.heading}>{language.config_other}</Text>
+            <View style={{ height: 5 }}></View>
+
+            <View
+              style={styles.toggle_container}
+            >
+              <View style={{ flex: 2, justifyContent: "center" }}>
+                <Text style={styles.label}>{language.config_authors}</Text>
+              </View>
+              <View
+                style={{
+                  flex: 2,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={[styles.label,{color: "#0080FF"}]}>royalcaster, Ined, yung lillo</Text>
+              </View>
+            </View>
             
 
           <View style={{ height: 30 }}></View>
@@ -527,18 +534,19 @@ const Config = ({ toggleLanguage }) => {
                 onPress={() => {}}
                 borderradius={100}
                 color={"#131520"}
-                title={"Gespeichert"}
+                title={language.config_saved}
                 hovercolor={"rgba(255,255,255,0.3)"}
               />
             ) : (
               <Button
                 fontColor={"white"}
                 onPress={() => {
+                  vibrate(100);
                   storeSettings();
                 }}
                 borderradius={100}
                 color={"#0080FF"}
-                title={"Speichern"}
+                title={language.config_save}
                 hovercolor={"rgba(255,255,255,0.3)"}
               />
               
@@ -561,7 +569,7 @@ const styles = StyleSheet.create({
   heading: {
     color: "white",
     fontSize: responsiveFontSize(2.3),
-    fontFamily: "PoppinsBlack",
+    fontFamily: "PoppinsMedium",
     marginLeft: 20,
   },
   label: {
@@ -582,5 +590,11 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "absolute",
     bottom: 0
+  },
+  toggle_container: {
+    flexDirection: "row",
+    height: 40,
+    width: "95%",
+    alignContent: "center",
   }
 });

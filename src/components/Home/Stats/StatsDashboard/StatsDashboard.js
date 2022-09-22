@@ -24,6 +24,7 @@ import { calcDailyAverage, filterByType, filterByMostRecent, getEntryDates, getB
 import StreakPanel from "./StreakPanel/StreakPanel";
 import BreakPanel from "./BreakPanel/BreakPanel";
 import { LanguageContext } from "../../../../data/LanguageContext";
+import { responsiveFontSize } from "react-native-responsive-dimensions";
 
 const StatsDashboard = ({ localData }) => {
 
@@ -336,8 +337,8 @@ const StatsDashboard = ({ localData }) => {
                 currentBreak={streakData.currentBreak}
                 currentBreakStart={streakData.startCurrentBreak}
                 longestBreak={streakData.longestBreak}
-                longestBreakStart={toGermanDate(streakData.rangeLongestBreak.start)}
-                longestBreakEnd={toGermanDate(streakData.rangeLongestBreak.end)}
+                /* longestBreakStart={streakData.rangeLongestBreak.start ? toGermanDate(streakData.rangeLongestBreak.start) : null} */
+                /* longestBreakEnd={toGermanDate(streakData.rangeLongestBreak.end)} */
               />
             </>
           ) : null}
@@ -604,8 +605,8 @@ const styles = StyleSheet.create({
   },
   heading2: {
     color: "white",
-    fontSize: 20,
-    fontFamily: "PoppinsBlack",
+    fontSize: responsiveFontSize(2.3),
+    fontFamily: "PoppinsMedium",
     marginLeft: 20,
     alignSelf: "flex-start",
   }

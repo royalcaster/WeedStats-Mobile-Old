@@ -1,6 +1,6 @@
 //React
 import React, { useEffect, useRef, useContext } from "react";
-import { Animated, Dimensions, StyleSheet, View } from "react-native";
+import { Animated, Dimensions, StyleSheet, View, Text } from "react-native";
 
 //Custom Components
 import Button from "./Button";
@@ -9,7 +9,7 @@ import CustomLoader from "./CustomLoader";
 //Service
 import { LanguageContext } from "../../data/LanguageContext";
 
-const CounterModal = ({ onExit, writeComplete }) => {
+const CounterModal = ({ onExit, writeComplete, sayingNr }) => {
 
     const language = useContext(LanguageContext);
 
@@ -75,8 +75,7 @@ const CounterModal = ({ onExit, writeComplete }) => {
                     borderradius={25}
                     fontColor={"white"}
                     onPress={() => {
-                      setModalVisible(!modalVisible);
-                      setWriteComplete(false);
+                      onExit();
                     }}
                     hovercolor={"rgba(255,255,255,0.3)"}
                   />
@@ -84,7 +83,7 @@ const CounterModal = ({ onExit, writeComplete }) => {
               
             ) : (
               <View style={{height: "100%", width: "100%", justifyContent: "center"}}>
-              <CustomLoader x={80}/></View>
+              <CustomLoader x={50} color={"#0080ff"}/></View>
             )}
             </View>
           </View>
@@ -94,8 +93,67 @@ const CounterModal = ({ onExit, writeComplete }) => {
 export default CounterModal
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "green"
-    }
+  container: {
+    flex: 1,
+    backgroundColor: "#1E2132",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "#1E2132",
+    borderRadius: 20,
+    padding: 15,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 30,
+    elevation: 20,
+  },
+  modalBigText: {
+    textAlign: "center",
+    color: "white",
+    fontFamily: "PoppinsBlack",
+    fontSize: 45,
+    paddingBottom: 20,
+  },
+  modalSmallText: {
+    textAlign: "center",
+    color: "white",
+    fontFamily: "PoppinsLight",
+    fontSize: 18,
+    marginBottom: 30,
+  },
+  buttonText: {
+    textAlign: "center",
+    color: "white",
+    fontFamily: "PoppinsBlack",
+    fontSize: 30,
+  },
+  button: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
+  },
+  heading: {
+    color: "white",
+    fontSize: 20,
+    fontFamily: "PoppinsBlack",
+    marginLeft: 20,
+  },
+  text: {
+    alignSelf: "center",
+    fontFamily: "PoppinsLight",
+    fontSize: 18,
+    color: "white",
+    maxWidth: 250,
+    textAlign: "center",
+  },
 });

@@ -1,5 +1,5 @@
 //React
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Animated, StyleSheet, View, Text, Image, Dimensions, StatusBar, ScrollView, Easing, TouchableNativeFeedback, Alert } from "react-native";
 
 //Third Party
@@ -23,8 +23,11 @@ import Button from "./Button";
 import Levels from '../../data/Levels.json'
 import { mapStyle } from "../../data/CustomMapStyle";
 import TutorialStatusbar from "./TutorialStatusbar";
+import { LanguageContext } from "../../data/LanguageContext";
 
 const Tutorial = ({ onDone, extraHeight, toggleNavbar, type }) => {
+
+    const language = useContext(LanguageContext);
 
     const [testCounter, setTestCounter] = useState(206);
     const [testCounter2, setTestCounter2] = useState(275);
@@ -103,7 +106,8 @@ const hide = () => {
       }
 
       const titleScreen = () => {
-        return <View style={styles.testComponentContainer}>
+        return <>
+        <View style={styles.testComponentContainer}>
           <View style={{flex: 1, justifyContent: "center"}}>
             <Image style={{height: 100, width: 100, alignSelf: "center", borderRadius: 15}} source={require('../../../assets/icon.png')}/>
             <View style={{height: 20}}></View>
@@ -119,9 +123,10 @@ const hide = () => {
               <IonIcons name="finger-print" style={styles.fingerprint}/>
             </Animated.View>
             <View style={{height: responsiveHeight(2)}}></View>
-            <Text style={styles.swipe_up_text}>HOCHWISCHEN</Text>
+            <Text style={styles.swipe_up_text}>{language.tutorial_swipe_text}</Text>
           </View>
         </View>
+        </>
 
         
       }
@@ -132,7 +137,7 @@ const hide = () => {
         <View style={{height: responsiveHeight(10)}}></View>
         <Text style={styles.text}><Image style={styles.small_logo} source={require("../../../assets/icon.png")}/> WeedStats bietet verschiedenste Möglichkeiten zum <Text style={{color: Levels[0].colors[0]}}>Erfassen</Text>, <Text style={{color: Levels[2].colors[0]}}>Auswerten</Text> und <Text style={{color: Levels[6].colors[0]}}>Teilen</Text> deines Gras-Konsums. {"\n"}Diese kurze Tour wird dir die wesentlichen Funktionen der App beibringen.</Text>
         <View style={{height: responsiveHeight(10)}}></View>
-        <Text style={styles.swipe_up_text}>KANN'S LOS GEHEN?</Text>
+        <Text style={styles.swipe_up_text}>{language.tutorial_are_you_ready}</Text>
         
       </View>
     }
@@ -142,8 +147,8 @@ const hide = () => {
 
         <View style={styles.knob}></View>
         <View style={{height: responsiveHeight(20)}}></View>
-        <Text style={styles.title2}>Counter</Text>
-        <Text style={styles.text2}>Jedes mal, wenn du etwas rauchst, solltest du den jeweiligen Counter um eins erhöhen. Halte dazu den Button für kurze Zeit gedrückt.</Text>
+        <Text style={styles.title2}>{language.tutorial_counter_title}</Text>
+        <Text style={styles.text2}>{language.tutorial_counter_text}</Text>
         <View style={{height: responsiveHeight(10)}}></View>
         <CounterItem type={"joint"} counter={testCounter} toggleCounter={() => setTestCounter(testCounter+1)}/>
         <View style={{height: responsiveHeight(20)}}></View>
@@ -152,8 +157,8 @@ const hide = () => {
 
     const statsScreen = () => {
       return <View>
-        <Text style={styles.title2}>Statistiken</Text>
-        <Text style={styles.text2}>Hier findest du statistische Auswertungen zu deinem Konsum und deinen Rauch-Verlauf.</Text>
+        <Text style={styles.title2}>{language.tutorial_stats_title}</Text>
+        <Text style={styles.text2}>{language.tutorial_stats_text}</Text>
         <View style={{height: responsiveHeight(10)}}></View>
 
         <PieChart
@@ -219,8 +224,8 @@ const hide = () => {
         <View style={{height: responsiveHeight(5)}}></View>
         <View style={styles.knob}></View>
         <View style={{height: responsiveHeight(10)}}></View>
-        <Text style={styles.title2}>WeedMap</Text>
-        <Text style={styles.text2}>Die Karte kann dir entweder eine Heatmap mit den Orten zeigen, an denen du am häufigsten geraucht hast, oder auch die letzten Aktivitäten deiner Freunde.</Text>
+        <Text style={styles.title2}>{language.tutorial_map_title}</Text>
+        <Text style={styles.text2}>{language.tutorial_map_text}</Text>
 
         <View style={{position: "absolute", bottom: 0, width: "100%", borderRadius: 25, overflow: "hidden", height: responsiveHeight(50)}}>
           <MapView
@@ -253,8 +258,8 @@ const hide = () => {
     const configScreen = () => {
       return <View>
         
-        <Text style={styles.title2}>Einstellungen</Text>
-        <Text style={styles.text2}>Hier kannst du Einstellungen für deine Privatsphäre und die Anzeige treffen.</Text>
+        <Text style={styles.title2}>{language.tutorial_config_title}</Text>
+        <Text style={styles.text2}>{language.tutorial_config_text}</Text>
 
         <View style={{height: responsiveHeight(10)}}></View>
 
@@ -321,8 +326,8 @@ const hide = () => {
     const friendsScreen = () => {
       return <View>
 
-      <Text style={styles.title2}>Freunde</Text>
-      <Text style={styles.text2}>Füge Freunde hinzu, um deine Statistiken mit ihnen zu teilen und das volle Potential von WeedStats auszuschöpfen!\n\nAußerdem kannst du hier auf deinen Account zugreifen.</Text>
+      <Text style={styles.title2}>{language.tutorial_friends_title}</Text>
+      <Text style={styles.text2}>{language.tutorial_friends_text}</Text>
       {//grad nicht verfügbar, da Platzhalter-Nutzer fehlen. Ordentliche erstellen, wenn es an die Screenshots geht!
       }
 
@@ -336,7 +341,7 @@ const hide = () => {
     const tippScreen = () => {
       return <View style={{width: "100%", alignSelf: "center"}}>
 
-      <Text style={styles.text}><Text style={{color: "#0781E1"}}>Unser Tipp</Text>{"\n"}{"\n"}Je gewissenhafter du deinen Konsum in der App einträgst, desto genauer werden deine Statistiken mit der Zeit. Wenn du schummelst, brauchst du die App nicht!</Text>
+      <Text style={styles.text}><Text style={{color: "#0781E1"}}>{language.tutorial_tipp_title}</Text>{"\n"}{"\n"}{language.tutorial_tipp_text}</Text>
 
       </View>
     }
@@ -344,12 +349,11 @@ const hide = () => {
     const warningScreen = () => {
       return <View style={{width: "100%", alignSelf: "center"}}>
 
-          <Text style={styles.title2}>Bitte nimm dir einen Moment, um das zu lesen:</Text>
-          <Text style={styles.text2}>Hier Hinweis auf Intention der App, keine Anregung zu Konsum, kein Konsum bei minderjährigen!
-          Auch Verlinkung zu medizinischen Risiken, Hilfs-Hotlines, die App soll spaß machen, aber Verantwortungsvoller Konsum steht an oberster Priorität!</Text>
+          <Text style={styles.title2}>{language.tutorial_pls_read_title}</Text>
+          <Text style={styles.text2}>{language.tutorial_pls_read_text}</Text>
 
           <View style={{height: responsiveHeight(5)}}></View>
-          <Button title={"Datenschutzbestimmung anzeigen"} color={"#1E2132"} hovercolor={"rgba(255,255,255,0.25)"} fontColor={"white"} onPress={() => console.log("test")}/>
+          <Button title={language.tutorial_show_policy} color={"#1E2132"} hovercolor={"rgba(255,255,255,0.25)"} fontColor={"white"} onPress={() => console.log("test")}/>
 
           <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.25)", false)} onPress={() => {setConsented(!consented)}}>
             <View style={styles.touchable}>
@@ -359,16 +363,16 @@ const hide = () => {
               <MaterialIcons name={"check-box-outline-blank"} style={styles.check_icon}/>
               }
               <View style={{width: responsiveWidth(5)}}></View>
-              <Text style={styles.policy_text}>Ich bin einverstanden</Text>
+              <Text style={styles.policy_text}>{language.tutorial_consent}</Text>
             </View>
           </TouchableNativeFeedback>
 
           <View style={{height: responsiveHeight(10)}}></View>
 
           {consented ?
-          <Button title={"Loslegen"} fontColor={"#1E2132"} color={"white"} color2={"#1E2132"} hovercolor={"rgba(0,0,0,0.25)"} onPress={() => {toggleNavbar(1); hide()}}/>
+          <Button title={language.tutorial_get_started} fontColor={"#1E2132"} color={"white"} color2={"#1E2132"} hovercolor={"rgba(0,0,0,0.25)"} onPress={() => {toggleNavbar(1); hide()}}/>
           :
-          <Button title={"Loslegen"} fontColor={"#1E2132"} color={"rgba(160,160,160,1)"} color2={"#1E2132"} hovercolor={"rgba(160,160,160,1)"} onPress={() => Alert.alert("Bitte lies unsere Datenschutzbestimmungen.")}/>
+          <Button title={language.tutorial_get_started} fontColor={"#1E2132"} color={"rgba(160,160,160,1)"} color2={"#1E2132"} hovercolor={"rgba(160,160,160,1)"} onPress={() => Alert.alert(language.tutorial_consent_alert)}/>
           }
         </View>
     }
@@ -462,6 +466,20 @@ const hide = () => {
     //Neue Version: Langes Schrollpanel mit Statusbar (04. September 2022)
     return (
       <Animated.View style={[styles.container,{opacity: slide}]}>
+
+        {type != "first" [<View style={{position: "absolute", zIndex: 10000}}>
+            <View style={{ height: responsiveHeight(1) }}></View>
+
+            <View style={{flexDirection: "row", alignContent: "center", alignItems: "center"}}>
+              <View style={{marginLeft: 20}}>
+                  <BackButton onPress={() => hide()}/>
+              </View>
+              <Text style={styles.heading}>Tutorial</Text>
+            </View>
+
+            <View style={{ height: responsiveHeight(1) }}></View>
+          </View>]}
+
        <ScrollView>
 
           {slides.map((slide) => {

@@ -1,5 +1,5 @@
 //React
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useContext } from "react";
 import { View, Animated, Text, StyleSheet, Alert, Dimensions, Easing } from 'react-native'
 
 //Expo
@@ -10,6 +10,7 @@ import Button from "./Button";
 import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
 
 //Service
+import { LanguageContext } from "../../data/LanguageContext";
 
 //Third Party
 import IonIcons from 'react-native-vector-icons/Ionicons'
@@ -25,6 +26,8 @@ const Authenticator = ({ first, onSubmit, onCancel, onExit }) => {
     const screen_width = Dimensions.get("screen").width;
 
     const slide = useRef(new Animated.Value(screen_height)).current;
+
+    const language = useContext(LanguageContext);
 
     const show = () => {
         Animated.timing(slide,{
@@ -96,8 +99,8 @@ const Authenticator = ({ first, onSubmit, onCancel, onExit }) => {
             <View style={{height: responsiveHeight(15)}}></View>
             <IonIcons name="finger-print" style={styles.fingerprint}/>
             <View style={{height: responsiveHeight(15)}}></View>
-            <Button title={"Ja, Entsperren aktivieren"} color={"#0080FF"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.25)"} onPress={() => checkLocalAuth()}/>
-            <Button onPress={() => {onCancel(); hide()}} title={"Später"} color={"#484F78"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.25)"} />
+            <Button title={language.activate_unlock} color={"#0080FF"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.25)"} onPress={() => checkLocalAuth()}/>
+            <Button onPress={() => {onCancel(); hide()}} title={language.later} color={"#484F78"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.25)"} />
             <View style={{height: responsiveHeight(5)}}></View>
             <Text style={{fontFamily: "PoppinsLight", color: "#484F78", width: "80%", textAlign: "center"}}>Du kannst deine Entscheidung in den Einstellungen ändern.</Text>
         </View>
@@ -106,7 +109,7 @@ const Authenticator = ({ first, onSubmit, onCancel, onExit }) => {
         <>
         {//sonst wird einfach nur Abegfragt
         }
-        <View>
+        <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
             <IonIcons name="finger-print" style={styles.fingerprint}/>
         </View>
         </>}
@@ -129,6 +132,6 @@ const styles = StyleSheet.create({
     },
     fingerprint: {
         color: "#0781E1",
-        fontSize: responsiveFontSize(10)
+        fontSize: responsiveFontSize(15)
       },
 });

@@ -1,16 +1,22 @@
 //React
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useContext } from 'react';
 import { StyleSheet, Image, View, Text, Pressable, Animated, Easing, Dimensions } from 'react-native';
 import { useBackHandler } from '@react-native-community/hooks'
 
 //Custom Components
 import BackButton from '../../../../common/BackButton';
 
+//Third Party
+import { responsiveHeight } from 'react-native-responsive-dimensions';
+import { LanguageContext } from '../../../../../data/LanguageContext';
+
 const Donation = ( { onexit } ) => {
 
     const screen_width = Dimensions.get("screen").width;
     const fadeAnim = useRef(new Animated.Value(screen_width)).current;
     const opacityAnim = useRef(new Animated.Value(0)).current;
+
+    const language = useContext(LanguageContext)
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
@@ -47,14 +53,18 @@ const Donation = ( { onexit } ) => {
     return (
         <Animated.View style={[{transform: [{translateX: fadeAnim}], opacity: opacityAnim, height: "100%"},styles.container]}>
 
+            <View style={{ height: responsiveHeight(1) }}></View>
+
             <View style={{flexDirection: "row", maxHeight: 60, alignItems: "center"}}>
                 <View style={{marginLeft: 20, justifyContent: "center"}}>
                     <BackButton onPress={() => hide()}/>
                 </View>
                 <View >
-                    <Text style={styles.heading}>WeedStats unterstützen</Text>
+                    <Text style={styles.heading}>{language.account_support_weedstats}</Text>
                 </View>
             </View>
+
+            <View style={{ height: responsiveHeight(1) }}></View>
 
                 <View style={{height: 80}} />
                 <Image source={require('../../../../../data/img/Dön.png')} style={styles.image}></Image>
@@ -136,7 +146,7 @@ const styles = StyleSheet.create({
     heading: {
         color: "white",
         fontSize: 20,
-        fontFamily: "PoppinsBlack",
+        fontFamily: "PoppinsMedium",
         marginLeft: 20,
         marginTop:5
       },

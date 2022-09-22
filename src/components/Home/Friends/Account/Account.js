@@ -31,7 +31,7 @@ import { LanguageContext } from "../../../../data/LanguageContext";
 import TutorialPanel from "./TutorialPanel/TutorialPanel";
 import Tutorial from "../../../common/Tutorial";
 
-const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
+const Account = ({ handleLogOut, onexit, show, toggleNavbar, deleteAccount }) => {
 
   const user = useContext(UserContext);
   const language = useContext(LanguageContext);
@@ -74,7 +74,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
 
   show ? slide() : hide();
 
-  const deleteAccount = async () => {
+  /* const deleteAccount = async () => {
     handleLogOut();
 
     // Firestore-Doc löschen
@@ -83,11 +83,11 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
 
     // AsyncStorage-Daten löschen
     try {
-      await AsyncStorage.multiRemove([]);
+      await AsyncStorage.clear();
     } catch (e) {
       console.log("Fehler beim Löschen des AsyncStorage.", e);
     }
-  };
+  }; */
 
   
   // Diese Funktion darf nach Bedarf mit neuer Funktionalität gefüllt werden und dient z.B. dazu, veraltete Einträge im AsyncStorage zu entfernen.
@@ -97,6 +97,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
   }; */
 
   const [showDelete, setShowDelete] = useState(false);
+  const [showLogOut, setShowLogOut] = useState(false);
 
   //PanResponder test -> so funktionierts endlich, so ein dreck ehrlich
   const panResponder = PanResponder.create({
@@ -166,7 +167,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
                     textAlign: "center",
                     height: "100%",
                     textAlignVertical: "center",
-                    fontSize: 22,
+                    fontSize: responsiveFontSize(3.5),
                   },
                 ]}
               >
@@ -174,7 +175,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
               </Text>
             </View>
             <View style={{ flex: 1}}>
-              <Text style={[styles.text, { fontSize: 15, maxWidth: "80%"}]}>
+              <Text style={[styles.text, { fontSize: responsiveFontSize(2), maxWidth: "80%"}]}>
                 {language.delete_account_text}
               </Text>
             </View>
@@ -228,6 +229,95 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
         </View>
       </Modal>
 
+      <Modal animationType="fade" transparent={true} visible={showLogOut}>
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            flex: 1
+          }}
+        >
+          <View
+            style={{
+              width: "90%",
+              height: 300,
+              backgroundColor: "#1E2132",
+              alignSelf: "center",
+              borderRadius: 25,
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text
+                style={[
+                  styles.heading,
+                  {
+                    marginLeft: 0,
+                    textAlign: "center",
+                    height: "100%",
+                    textAlignVertical: "center",
+                    fontSize: responsiveFontSize(3.5),
+                  },
+                ]}
+              >
+                {language.delete_account_title}
+              </Text>
+            </View>
+            <View style={{ flex: 1}}>
+              <Text style={[styles.text, { fontSize: responsiveFontSize(2), maxWidth: "80%"}]}>
+                {language.delete_account_text}
+              </Text>
+            </View>
+            <View style={{ flex: 1, flexDirection: "row" }}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <TouchableNativeFeedback
+                  background={TouchableNativeFeedback.Ripple(
+                    "rgba(255,255,255,0.05)",
+                    true
+                  )}
+                  onPress={() => setShowLogOut(false)}
+                >
+                  <View style={styles.touchable}>
+                    <Antdesign
+                      name="close"
+                      style={[styles.icon, { color: "#eb4034" }]}
+                    />
+                  </View>
+                </TouchableNativeFeedback>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <TouchableNativeFeedback
+                  background={TouchableNativeFeedback.Ripple(
+                    "rgba(255,255,255,0.05)",
+                    true
+                  )}
+                  onPress={() => handleLogOut()}
+                >
+                  <View style={styles.touchable}>
+                    <Antdesign
+                      name="check"
+                      style={[styles.icon, { color: "#3BA426" }]}
+                    />
+                  </View>
+                </TouchableNativeFeedback>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
 
       <View
         style={{
@@ -237,7 +327,9 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
           backgroundColor: "#131520",
         }}
       >
-        <View style={{ width: "100%", justifyContent: "center", flex: 1}}>
+        <View style={{height: responsiveHeight(2.5)}}></View>
+        <View style={{width: "50%", height: 10, backgroundColor: "#1E2132", borderRadius: 50, alignSelf: "center"}}></View>
+        <View style={{ width: "100%", justifyContent: "center", flex: 0.75}}>
           <View style={{ marginLeft: 5, position: "absolute" }}>
             <View style={{ transform: [{ rotate: "-90deg" }] }}>
               <BackButton
@@ -270,7 +362,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
             alignSelf: "center",
             paddingRight: 20,
             paddingLeft: 20,
-            height: 100,
+            height: 100
           }}
         >
           <View
@@ -285,7 +377,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
           </View>
         </View>
 
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, justifyContent: "center"}}>
           <Text
             style={{
               alignSelf: "center",
@@ -299,17 +391,25 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
           </Text>
         </View>
 
-        <View style={{ height: 15 }}></View>
-
-        <View style={{flex: 6, justifyContent: "center"}}>
+        <View style={{flex: 4, justifyContent: "center"}}>
 
         <Button
           fontColor={"white"}
           onPress={() =>{ setShowLevels(true)}}
           borderradius={100}
           color={"#484F78"}
-          title={" Levelübersicht"}
+          title={language.account_levels}
           icon={<FontAwesome name="trophy" style={styles.money_icon} />}
+          hovercolor={"rgba(255,255,255,0.15)"}
+        />
+
+        <Button
+          onPress={() => setShowDonation(true)}
+          title={language.account_support}
+          icon={<MaterialIcons name="euro" style={styles.money_icon} />}
+          borderradius={100}
+          color={"#484F78"}
+          fontColor={"white"}
           hovercolor={"rgba(255,255,255,0.15)"}
         />
 
@@ -326,18 +426,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar }) => {
 
 
         <Button
-          onPress={() => setShowDonation(true)}
-          title={language.account_support}
-          icon={<MaterialIcons name="euro" style={styles.money_icon} />}
-          borderradius={100}
-          color={"#484F78"}
-          fontColor={"white"}
-          hovercolor={"rgba(255,255,255,0.15)"}
-        />
-
-
-        <Button
-          onPress={handleLogOut}
+          onPress={() => setShowLogOut(true)}
           title={language.account_sign_out}
           icon={<MaterialIcons name="logout" style={styles.money_icon} />}
           borderradius={100}
@@ -381,7 +470,7 @@ const styles = StyleSheet.create({
   username: {
     color: "white",
     fontSize: responsiveFontSize(2.2),
-    fontFamily: "PoppinsBlack",
+    fontFamily: "PoppinsMedium",
   },
   email: {
     color: "rgba(255,255,255,0.75)",
@@ -409,7 +498,7 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     fontFamily: "PoppinsBlack",
-    fontSize: 22,
+    fontSize: responsiveFontSize(3),
     alignSelf: "center",
   },
   touchable: {
@@ -423,7 +512,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "white",
-    fontFamily: "PoppinsLight",
+    fontFamily: "PoppinsMedium",
     textAlign: "center",
     alignSelf: "center"
   },

@@ -1,9 +1,12 @@
 //React
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { View, StyleSheet, Animated, Dimensions, Image, Text } from "react-native";
 
 //Third Party
 import Svg, { Circle } from "react-native-svg";
+
+//Service
+import { LanguageContext } from "../../data/LanguageContext";
 
 //Custom Components
 import LoginNumber from "./LoginNumber/LoginNumber";
@@ -14,6 +17,8 @@ const Login = ({ handleLogin }) => {
 
   const screen_width = Dimensions.get("screen").width;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const language = useContext(LanguageContext);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -59,7 +64,7 @@ const Login = ({ handleLogin }) => {
       >
         <Button
           fontColor={"white"}
-          title={" Mit Google anmelden"}
+          title={language.login}
           borderradius={100}
           color={"#0080FF"}
           onPress={handleLogin}
