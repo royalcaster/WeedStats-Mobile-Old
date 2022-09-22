@@ -9,6 +9,16 @@
         "pipe": "Pfeife",
         "cookie": "Edible",
 
+        "unlock_question": "Soll WeedStats zukünftig von dir entsperrt werden?",
+        "tutorial_question": "Willst du ein kurzes Tutorial sehen?",
+        "step": "Schritt",
+        "of_3": "von 3",
+        "activate_unlock": "Ja, Entsperren aktivieren",
+        "see_now": "Ja, jetzt ansehen",
+        "later": "Später",
+
+        "login": "Mit Google fortfahren",
+
         "levels": [
           {
             "name":"Nappo",
@@ -76,9 +86,16 @@
         "config_share_last_activity": "Letzte Aktivität teilen",
         "config_get_location": "Standort erfassen",
         "config_share_location": "Standort teilen",
+        "config_security": "Sicherheit",
+        "config_unlock_on_launch": "WeedStats beim Start entsperren",
         "config_language": "Sprache",
         "config_other": "Sonstiges",
         "config_lightmode": "Helles Design",
+        "config_info": "Info",
+        "config_authors": "Entwickler",
+        "config_save": "Speichern",
+        "config_saved": "Gespeichert",
+
         "config_save": "Speichern",
         "config_saved": "Gespeichert",
 
@@ -94,9 +111,13 @@
         "account_member_since": "MITGLIED SEIT",
         "account_levels": "Level",
         "account_tutorial": "Tutorial",
-        "account_support": "WeedStats unterstützen",
+        "account_support": "Unterstützen",
+        "account_support_weedstats": "WeedStats unterstützen",
         "account_sign_out": "Abmelden",
         "account_delete_account": "Dieses Konto löschen",
+
+        "tutorial_swipe_text": "HOCHWISCHEN",
+        "tutorial_are_you_ready": "BIST DU BEREIT?",
 
         "tutorial_welcome_title": "Willkommen",
         "tutorial_welcome_text": "WeedStats bietet verschiedenste Möglichkeiten zum Erfassen, Auswerten und Teilen deines Gras-Konsums. \n\nDiese kurze Tour wird dir die wesentlichen Funktionen der App beibringen.",
@@ -121,6 +142,11 @@
         
         "tutorial_tipp_title": "Unser Tipp",
         "tutorial_tipp_text": "Je gewissenhafter du deinen Konsum in der App einträgst, desto genauer werden deine Statistiken mit der Zeit. Wenn du schummelst, brauchst du die App nicht!\n\nWir wünschen dir viel Spaß mit WeedStats!",
+
+        "tutorial_consent": "Ich bin einverstanden",
+        "tutorial_consent_alert": "Bitte lies unsere Datenschutzbestimmungen.",
+        "tutorial_get_started": "Loslegen",
+        "tutorial_show_policy": "Datenschutzbestimmung anzeigen",
 
         "friendpage_best": "BESTLEISTUNG",
         "friendpage_last_activity": "Letzte Aktivität",
@@ -298,6 +324,16 @@
         "pipe": "Pipe",
         "cookie": "Edible",
 
+        "unlock_question": "Should WeedStats be unlocked by you from now on?",
+        "tutorial_question": "Do you want so see a quick tutorial?",
+        "step": "Step",
+        "of_3": "of 3",
+        "activate_unlock": "Yes, activate unlock",
+        "see_now": "Yes, see Tutorial now",
+        "later": "Later",
+
+        "login": "Continue with Google",
+
         "levels": [
           {
             "name":"Nappo",
@@ -365,6 +401,8 @@
         "config_share_last_activity": "Share last activity",
         "config_get_location": "Get location",
         "config_share_location": "Share location",
+        "config_security": "Security",
+        "config_unlock_on_launch": "Unlock WeedStats on launch",
         "config_language": "Language",
         "config_other": "Other",
         "config_lightmode": "Lightmode",
@@ -373,6 +411,8 @@
 
         "config_modal_title": "Are you okay?",
         "config_modal_text": "We noticed that you wanted to activate the light mode. To protect you and those around you, we leave it off.",
+        "config_save": "Save",
+        "config_saved": "Saved",
 
         "delete_account_title": "Attention",
         "delete_account_text": "This cannot be undone. Are you sure you want to delete this WeedStats account?",
@@ -383,9 +423,13 @@
         "account_member_since": "MEMBER SINCE",
         "account_levels": "Levels",
         "account_tutorial": "Tutorial",
-        "account_support": "Support WeedStats",
+        "account_support": "Support",
+        "account_support_weedstats": "Support WeedStats",
         "account_sign_out": "Sign Out",
         "account_delete_account": "Delete this account",
+
+        "tutorial_swipe_text": "SWIPE UP",
+        "tutorial_are_you_ready": "ARE YOU READY?",
 
         "tutorial_welcome_title": "Welcome",
         "tutorial_welcome_text": "WeedStats offers various ways to record, evaluate and share your weed consumption. \n\nThis short tour will teach you the essential functions of the app.",
@@ -410,6 +454,11 @@
         
         "tutorial_tipp_title": "Our tipp",
         "tutorial_tipp_text": "The more honest you enter your consumption in the app, the more accurate your statistics will become over time. If you cheat, you don't need the app!\n\nHave fun with WeedStats!",
+
+        "tutorial_consent": "I agree",
+        "tutorial_consent_alert": "Please read our privacy policy.",
+        "tutorial_get_started": "Get started",
+        "tutorial_show_policy": "Show privacy policy",
 
         "friendpage_best": "BEST",
         "friendpage_last_activity": "Last activity",
