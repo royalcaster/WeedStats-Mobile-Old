@@ -161,8 +161,8 @@ const FriendResquests = ({ onExit, refresh }) => {
     });
 
     const docSnap2 = await getDoc(docRef2);
-    if (docSnap.exists()) {
-      friends_buffer = docSnap.data().friends;
+    if (docSnap2.exists()) {
+      friends_buffer = docSnap2.data().friends;
     }
 
     friends_buffer.push(user.id);

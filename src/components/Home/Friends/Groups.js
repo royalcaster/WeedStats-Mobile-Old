@@ -25,10 +25,16 @@ import { responsiveHeight, responsiveFontSize } from "react-native-responsive-di
 import { UserContext } from "../../../data/UserContext";
 import { LanguageContext } from "../../../data/LanguageContext";
 
-const Groups = ({ handleLogOut, toggleNavbar, deleteAccount }) => {
+//Firebase
+import { doc, getDoc } from "firebase/firestore";
+import { firestore } from "../../../data/FirebaseConfig";
+
+const Groups = ({ handleLogOut, toggleNavbar, deleteAccount, getFriendList }) => {
 
   const user = useContext(UserContext);
   const language = useContext(LanguageContext);
+
+  const [friendList, setFriendList] = useState();
   
   const [rippleColor, setRippleColor] = useState("rgba(255,255,255,0.1)");
   const [rippleOverflow, setRippleOverflow] = useState(false);
@@ -40,7 +46,7 @@ const Groups = ({ handleLogOut, toggleNavbar, deleteAccount }) => {
   const [showRequests, setShowRequests] = useState();
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const accountAnim = useRef(new Animated.Value(100)).current;;
+  const accountAnim = useRef(new Animated.Value(100)).current;
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -56,12 +62,21 @@ const Groups = ({ handleLogOut, toggleNavbar, deleteAccount }) => {
     }).start();
   }, [showGroup]);
 
+  /* const getFriendList = async () => {
+    const docRef = doc(firestore, "users", user.id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        setFriendList(docSnap.data().friends);
+    }
+  } */
+
   return (
     <>
       {showAddFriend ? <SearchPanel onExit={() => setShowAddFriend(false)}/> : null}
-      {showRequests ? <FriendRequests onExit={() => setShowRequests(false)} refresh={() => {getFriendList()}}/> : null}
+      {showRequests ? <FriendRequests onExit={() => setShowRequests(false)} refresh={() => getFriendList()}/> : null}
 
-      <FriendPage 
+      <FriendPage
         show={showFriend}
         userid={activeFriend}
         onExit={() => {setShowFriend(false); setActiveFriend(null);}}
@@ -120,7 +135,7 @@ const Groups = ({ handleLogOut, toggleNavbar, deleteAccount }) => {
           </View>
         </View>
 
-      <FriendList setActiveFriend={setActiveFriend} setShowFriend={setShowFriend}/>
+      <FriendList setActiveFriend={setActiveFriend} setShowFriend={setShowFriend} getFriendList={getFriendList}/>
 
 
         <Animated.View

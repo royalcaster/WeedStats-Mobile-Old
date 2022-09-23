@@ -101,14 +101,17 @@
 
         "config_modal_title": "Ist alles gut?",
         "config_modal_text": "Uns ist aufgefallen, dass du den Lightmode aktivieren wolltest. Um dich und deine Mitmenschen zu schützen, lassen wir ihn ausgeschaltet.",
+        "config_modal_thanks": "Danke!",
 
         "delete_account_title": "Achtung",
         "delete_account_text": "Jegliche Einträge und Einstellungen werden gelöscht. Das kann nicht rückgängig gemacht werden. Willst du dieses WeedStats-Konto wirklich löschen?",
         
+        "signout_title": "Abmelden?",
+
         "friends_friends": "Freunde",
         
         "account_your_account": "DEIN KONTO",
-        "account_member_since": "MITGLIED SEIT",
+        "account_member_since": "Mitglied seit",
         "account_levels": "Level",
         "account_tutorial": "Tutorial",
         "account_support": "Unterstützen",
@@ -405,14 +408,20 @@
         "config_unlock_on_launch": "Unlock WeedStats on launch",
         "config_language": "Language",
         "config_other": "Other",
+        "config_info": "Info",
+        "config_authors": "Developper",
         "config_lightmode": "Lightmode",
         "config_save": "Save",
         "config_saved": "Saved",
 
         "config_modal_title": "Are you okay?",
         "config_modal_text": "We noticed that you wanted to activate the light mode. To protect you and those around you, we leave it off.",
+        "config_modal_thanks": "Thank you!",
+
         "config_save": "Save",
         "config_saved": "Saved",
+
+        "signout_title": "Sign out?",
 
         "delete_account_title": "Attention",
         "delete_account_text": "This cannot be undone. Are you sure you want to delete this WeedStats account?",
@@ -420,7 +429,7 @@
         "friends_friends": "Friends",
         
         "account_your_account": "YOUR ACCOUNT",
-        "account_member_since": "MEMBER SINCE",
+        "account_member_since": "Member since",
         "account_levels": "Levels",
         "account_tutorial": "Tutorial",
         "account_support": "Support",

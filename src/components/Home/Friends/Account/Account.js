@@ -260,12 +260,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar, deleteAccount }) =>
                   },
                 ]}
               >
-                {language.delete_account_title}
-              </Text>
-            </View>
-            <View style={{ flex: 1}}>
-              <Text style={[styles.text, { fontSize: responsiveFontSize(2), maxWidth: "80%"}]}>
-                {language.delete_account_text}
+                {language.signout_title}
               </Text>
             </View>
             <View style={{ flex: 1, flexDirection: "row" }}>
@@ -328,7 +323,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar, deleteAccount }) =>
         }}
       >
         <View style={{height: responsiveHeight(2.5)}}></View>
-        <View style={{width: "50%", height: 10, backgroundColor: "#1E2132", borderRadius: 50, alignSelf: "center"}}></View>
+        <View style={{width: "20%", height: 10, backgroundColor: "#1E2132", borderRadius: 50, alignSelf: "center"}}></View>
         <View style={{ width: "100%", justifyContent: "center", flex: 0.75}}>
           <View style={{ marginLeft: 5, position: "absolute" }}>
             <View style={{ transform: [{ rotate: "-90deg" }] }}>
@@ -384,7 +379,6 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar, deleteAccount }) =>
               color: "rgba(255,255,255,0.75)",
               fontSize: responsiveFontSize(1.7),
               fontFamily: "PoppinsLight",
-              letterSpacing: 2,
             }}
           >
             {language.account_member_since} <Text style={{color: "#0781E1"}}>{convertMemberSince(user.member_since)}</Text>

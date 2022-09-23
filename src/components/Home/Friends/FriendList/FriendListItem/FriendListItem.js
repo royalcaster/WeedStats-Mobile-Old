@@ -22,8 +22,8 @@ const FriendListItem = ({ userid, onPress }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const opacityAnim = useRef(new Animated.Value(0)).current;
-  const slide1Anim = useRef(new Animated.Value(-200)).current;
-  const slide2Anim = useRef(new Animated.Value(-200)).current;
+  const slide1Anim = useRef(new Animated.Value(100)).current;
+  const slide2Anim = useRef(new Animated.Value(100)).current;
   const scale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -129,7 +129,7 @@ const FriendListItem = ({ userid, onPress }) => {
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <View style={{ width: 20 }}></View>
                 <Animated.View
-                  style={{ transform: [{ translateX: slide1Anim }], zIndex: 2 }}
+                  style={{ transform: [{ translateY: slide1Anim}], zIndex: 2 }}
                 >
                   <ProfileImage x={45} type={1} url={user.photoUrl} />
                 </Animated.View>
@@ -137,7 +137,7 @@ const FriendListItem = ({ userid, onPress }) => {
                 <Animated.View
                   style={{
                     flexDirection: "column",
-                    transform: [{ translateX: slide2Anim }],
+                    transform: [{ translateY: slide2Anim}],
                     zIndex: 1,
                   }}
                 >

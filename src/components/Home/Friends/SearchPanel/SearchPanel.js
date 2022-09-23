@@ -107,7 +107,7 @@ const SearchPanel = ({onExit}) => {
             }
         }
 
-        if (requested.requests.includes(user.id)) {
+        if (requested.requests != null && requested.requests.includes(user.id)) {
             console.log("Anfrage bereits gesendet!");
             setAlreadySent(true);
         }
@@ -146,7 +146,7 @@ const SearchPanel = ({onExit}) => {
         }}>
             <View style={{flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.5)"}}>
                 <View style={styles.modal_container}>
-                    {!alreadySent ? <><View style={{flex: 1, justifyContent: "center"}}>
+                    {!alreadySent ? <><View style={{flex: 1, justifyContent: "center", paddingHorizontal: 50}}>
 
                         {language.language_short == "de" ? 
                         <Text style={styles.heading}><Text style={[{color: "#0080FF"}]}>{activeRequested ? activeRequested.username : null}</Text> {language.searchpanel_question}</Text>
@@ -192,7 +192,7 @@ const SearchPanel = ({onExit}) => {
                     <BackButton onPress={() => hide()} />
                 </View>
                 <View style={{ flex: 5, justifyContent: "center"}}>
-                    <Text style={styles.heading}>{language.searchpanel_title}</Text>
+                    <Text style={[styles.heading,{textAlign: "left"}]}>{language.searchpanel_title}</Text>
                 </View>
             </View>
 
@@ -249,11 +249,9 @@ const styles = StyleSheet.create({
     },
     heading: {
         color: "white",
-        textAlign: "center",
         fontFamily: "PoppinsMedium",
         fontSize: 20,
-        textAlign: "left",
-        marginLeft: 25
+        textAlign: "center"
     },
     touchable: {
         height: "100%",

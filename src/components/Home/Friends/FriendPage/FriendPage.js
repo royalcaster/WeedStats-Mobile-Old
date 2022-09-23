@@ -193,6 +193,7 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
   };
 
   const removeFriend = async (id) => {
+
     try {
       const docRef = doc(firestore, "users", realuser.id);
       const docSnap = await getDoc(docRef);
@@ -204,6 +205,22 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
 
       updateDoc(docRef, {
         friends: buffer.filter((item) => item != id),
+      });
+    } catch (e) {
+      console.log("Error", e);
+    }
+
+    try {
+      const docRef = doc(firestore, "users", id);
+      const docSnap = await getDoc(docRef);
+
+      var buffer;
+      if (docSnap.exists()) {
+        buffer = docSnap.data().friends;
+      }
+
+      updateDoc(docRef, {
+        friends: buffer.filter((item) => item != realuser.id),
       });
     } catch (e) {
       console.log("Error", e);

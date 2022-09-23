@@ -46,6 +46,7 @@ import { UserContext } from "./src/data/UserContext";
 import { LanguageContext } from "./src/data/LanguageContext";
 import Languages from './src/data/languages.json'
 import Intro from "./src/components/common/Intro";
+import { FriendListContext } from "./src/data/FriendListContext";
 
 
 try {
@@ -69,11 +70,13 @@ export default function App() {
   const [config, setConfig] = useState(null);
   const [user, setUser] = useState(null);
   const [language, setLanguage] = useState(Languages.en);
+  const [friendList, setFriendList] = useState(null);
   const [sayingNr, setSayingNr] = useState(0);
 
   useEffect(async () => {
     loadSettings();
-    checkForUser();
+    await checkForUser();
+    /* await getFriendList(); */
   },[]);
 
   //Holt Einstellungen aus dem AsyncStorage
@@ -168,6 +171,7 @@ export default function App() {
         email: docSnap.data().email,
         photoUrl: docSnap.data().photoUrl,
         friends: docSnap.data().friends,
+        requests: docSnap.data().requests,
         joint_counter: local_counters.joint,
         bong_counter: local_counters.bong,
         vape_counter: local_counters.vape,
@@ -190,6 +194,7 @@ export default function App() {
           email: user.email,
           photoUrl: user.photoUrl,
           friends: [],
+          requests: [],
           username_array: createUsernameArray(user.name),
           joint_counter: 0,
           bong_counter: 0,
@@ -212,6 +217,7 @@ export default function App() {
             email: docSnap.data().email,
             photoUrl: docSnap.data().photoUrl,
             friends: docSnap.data().friends,
+            requests: docSnap.data().requests,
             joint_counter: local_counters.joint,
             bong_counter: local_counters.bong,
             vape_counter: local_counters.vape,
@@ -313,10 +319,6 @@ export default function App() {
     PoppinsMedium: require("./assets/fonts/Poppins-Medium.ttf"),
     PoppinsLight: require("./assets/fonts/Poppins-Light.ttf"),
   });
-
-  if (!loaded) {
-    return null;
-  }
 
   const toggleLanguage = async ( lang ) => {
     if (lang == "de" && config.language == "en") {
@@ -554,8 +556,19 @@ export default function App() {
     } catch (e) {
       console.log("Fehler beim Löschen des AsyncStorage.", e);
     }
+    getFriendList();
     setLoading(false);
   };
+
+  const getFriendList = async () => {
+    const docRef = doc(firestore, "users", user.id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        setFriendList(docSnap.data().friends);
+    }
+    setLoading(false);
+  }
 
   return (
     <>
@@ -593,12 +606,15 @@ export default function App() {
               :
               <>
                 {user ? <UserContext.Provider value={user}>
-                          <Home
-                            handleLogOut={handleLogOut}
-                            toggleCounter={toggleCounter}
-                            toggleLanguage={toggleLanguage}
-                            deleteAccount={() => deleteAccount()}
-                            />
+                          <FriendListContext.Provider value={friendList}>
+                            <Home
+                              handleLogOut={handleLogOut}
+                              toggleCounter={toggleCounter}
+                              toggleLanguage={toggleLanguage}
+                              deleteAccount={deleteAccount}
+                              getFriendList={getFriendList}
+                              />
+                          </FriendListContext.Provider>
                         </UserContext.Provider>
                 :
                 <Login handleLogin={handleLogin} />

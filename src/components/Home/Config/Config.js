@@ -28,6 +28,7 @@ import LanguageSelector from "./LanguageSelector/LanguageSelector";
 
 //Service
 import { LanguageContext } from "../../../data/LanguageContext";
+import AppInfo from "./AppInfo/AppInfo";
 
 const Config = ({ toggleLanguage }) => {
 
@@ -39,9 +40,10 @@ const Config = ({ toggleLanguage }) => {
   const [lightmode, setLightMode] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
+  const [showAppInfo, setShowAppInfo] = useState(false);
+
   useEffect(() => {
     loadSettings();
-    console.log(config);
     LogBox.ignoreAllLogs();
   }, []);
 
@@ -131,7 +133,7 @@ const Config = ({ toggleLanguage }) => {
               </View>
               <View style={{ flex: 1 }}>
                 <Button
-                  title={"Danke!"}
+                  title={language.config_modal_thanks}
                   color={"#0080FF"}
                   borderradius={25}
                   fontColor={"white"}
@@ -142,6 +144,10 @@ const Config = ({ toggleLanguage }) => {
             </View>
             <View style={{flex:1, justifyContent: "flex-end"}}></View>
           </View>
+        </Modal>
+
+        <Modal animationType="fade" transparent={true} visible={showAppInfo}>
+            <AppInfo onExit={() => setShowAppInfo(false)}/>
         </Modal>
 
         <View style={{ height: responsiveHeight(7) }}></View>
@@ -501,26 +507,9 @@ const Config = ({ toggleLanguage }) => {
 
             <View style={{ height: 30 }}></View>
 
-            <Text style={styles.heading}>{language.config_other}</Text>
-            <View style={{ height: 5 }}></View>
-
-            <View
-              style={styles.toggle_container}
-            >
-              <View style={{ flex: 2, justifyContent: "center" }}>
-                <Text style={styles.label}>{language.config_authors}</Text>
-              </View>
-              <View
-                style={{
-                  flex: 2,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Text style={[styles.label,{color: "#0080FF"}]}>royalcaster, Ined, yung lillo</Text>
-              </View>
-            </View>
+            <Button title={"App-" + language.config_info} color={"#484f78"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.15)"} onPress={() => setShowAppInfo(true)}/>
             
+            <View style={{height: responsiveHeight(2.5)}}></View>
 
           <View style={{ height: 30 }}></View>
           </ScrollView>
