@@ -1,6 +1,7 @@
 //React
 import React from "react";
 import { Image, StyleSheet } from "react-native";
+import { responsiveWidth, responsiveHeight } from "react-native-responsive-dimensions";
 
 const LevelImage = ({ index, style }) => {
   switch (index) {
@@ -58,9 +59,8 @@ const LevelImage = ({ index, style }) => {
 
 const styles = StyleSheet.create({
   default: {
-    width: 130,
-    height: 130,
-    marginTop: -45,
+    width: responsiveWidth(20),
+    height: responsiveHeight(10)
   },
 });
 

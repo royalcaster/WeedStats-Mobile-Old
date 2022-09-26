@@ -17,6 +17,8 @@ import uuid from "react-native-uuid";
 import MapView, { PROVIDER_GOOGLE, Marker, Heatmap } from "react-native-maps";
 import { Pages } from "react-native-pages";
 import { LinearGradient } from "expo-linear-gradient";
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 //Firebase
 import { doc, getDoc } from "firebase/firestore";
@@ -25,12 +27,15 @@ import { firestore } from "../../../data/FirebaseConfig";
 //Service
 import { UserContext } from "../../../data/UserContext";
 import { LanguageContext } from "../../../data/LanguageContext";
+import { FriendListContext } from "../../../data/FriendListContext";
+import { getLocalData } from "../../../data/Service";
 
 const Map = () => {
   LogBox.ignoreAllLogs();
 
   const user = useContext(UserContext);
   const language = useContext(LanguageContext);
+  const friendList = useContext(FriendListContext);
 
   const windowHeight = Dimensions.get("window").height;
   const [view, setView] = useState("friends");
@@ -42,6 +47,10 @@ const Map = () => {
   const [loading, setLoading] = useState(true);
   const [markers, setMarkers] = useState([]);
   const camref = useRef(null);
+
+  const switch_icon = <AntDesign name={"picture"} style={{fontSize: 20, color: "white"}}/>
+  const friends_icon = <MaterialIcons name="groups" style={{fontSize: 20, color: "white"}}/>
+  const map_icon = <MaterialCommunityIcons name="map-marker-radius-outline" style={{fontSize: 20, color: "white"}}/>
 
   useEffect(() => {
     loadData(); //Freunde + deren letzte Einträge
@@ -57,17 +66,19 @@ const Map = () => {
       if (docSnap.exists()) {
         friends = docSnap.data().friends;
       }
-
+      
       var buffer = [];
-      friends.forEach(async (friend) => {
+      friendList.forEach(async (friend) => {
         const docRef = doc(firestore, "users", friend);
         const friendSnap = await getDoc(docRef);
 
         if (
+         
           docSnap.exists() &&
           friendSnap.data().last_entry_latitude != null &&
           friendSnap.data().last_entry_longitude != null
         ) {
+          console.log("test");
           buffer.push({
             latitude: friendSnap.data().last_entry_latitude,
             longitude: friendSnap.data().last_entry_longitude,
@@ -82,8 +93,10 @@ const Map = () => {
             latitudeDelta: 0.05,
             longitudeDelta: 0.05,
           }) : null;
+          
         }
       });
+      
       setMarkers(buffer);
       setLoading(false);
     } catch (e) {
@@ -93,37 +106,12 @@ const Map = () => {
 
   const toggleMapType = () => {
     mapType == "standard" ? setMapType("hybrid") : setMapType("standard");
+    Vibration.vibrate(50);
   }
 
   const chopTimeStamp = (timestamp) => {
     var a = new Date(timestamp);
     return [a.toDateString(), a.toTimeString().substring(0, 5) + " Uhr"];
-  };
-
-  const getRelevantKeys = async () => {
-    let keys = [];
-    try {
-      keys = await AsyncStorage.getAllKeys();
-    } catch (e) {
-      console.log("Error:", e);
-    }
-
-    return keys.filter((key) => key.includes(user.id + "_entry_"));
-  };
-
-  const switch_icon = <AntDesign name={"picture"} style={{fontSize: 20, color: "white"}}/>
-
-  const getLocalData = async () => {
-    try {
-      const jsonData = await AsyncStorage.multiGet(await getRelevantKeys());
-      jsonData.forEach((entry) => localData.push(JSON.parse(entry[1])));
-      /* localData.sort((a, b) => {
-          return a.number - b.number;
-        }); */
-      setLocalDataLoaded(true);
-    } catch (e) {
-      console.log("Error:", e);
-    }
   };
 
   const filterNull = (array) => {
@@ -160,7 +148,7 @@ const Map = () => {
               <Text
                 style={{
                   color: "white",
-                  fontFamily: "PoppinsBlack",
+                  fontFamily: "PoppinsMedium",
                   height: "100%",
                   textAlignVertical: "center",
                   fontSize: 17,
@@ -234,6 +222,30 @@ const Map = () => {
                 source={require("../../../data/img/vape.png")}
               />
             ) : null}
+            {item.type == "cookie" ? (
+              <Image
+                style={{
+                  position: "relative",
+                  left: 0,
+                  height: 55,
+                  width: 50,
+                  alignSelf: "center",
+                }}
+                source={require("../../../data/img/cookie.png")}
+              />
+            ) : null}
+            {item.type == "pipe" ? (
+              <Image
+                style={{
+                  position: "relative",
+                  left: 0,
+                  height: 65,
+                  width: 40,
+                  alignSelf: "center",
+                }}
+                source={require("../../../data/img/pipe.png")}
+              />
+            ) : null}
           </View>
         </View>
       </TouchableOpacity>
@@ -257,58 +269,7 @@ const Map = () => {
             marginTop: -20,
           }}
         >
-          <View
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              marginTop: 40,
-              height: 50,
-            }}
-          >
-            <View style={{ flex: 1 }}>
-              <TouchableNativeFeedback
-                background={TouchableNativeFeedback.Ripple(
-                  "rgba(255,255,255,0.15)",
-                  false
-                )}
-                onPress={() => setView("heatmap")}
-              >
-                <View style={styles.touchable}>
-                  <Text
-                    style={[
-                      styles.button,
-                      { color: view == "heatmap" ? "#0080FF" : "white" },
-                    ]}
-                  >
-                    {language.map_heatmap}
-                  </Text>
-                </View>
-              </TouchableNativeFeedback>
-            </View>
-
-            <View style={{ flex: 1 }}>
-              <TouchableNativeFeedback
-                background={TouchableNativeFeedback.Ripple(
-                  "rgba(255,255,255,0.15)",
-                  false
-                )}
-                onPress={() => setView("friends")}
-              >
-                <View style={styles.touchable}>
-                  <Text
-                    style={[
-                      styles.button,
-                      { color: view == "friends" ? "#0080FF" : "white" },
-                    ]}
-                  >
-                    {language.map_friends}
-                  </Text>
-                </View>
-              </TouchableNativeFeedback>
-            </View>
-
-            {/* style={[styles.button,{color: view == "friends" ? "white" : "#0080FF"}]} */}
-          </View>
+        
         </LinearGradient>
 
         {!loading && localDataLoaded ? (
@@ -368,6 +329,8 @@ const Map = () => {
             ) : null}
           </MapView>
           <View style={{alignSelf: "center", bottom: 200, right: 20, position: "absolute"}}>
+            <IconButton icon={view == "heatmap" ? friends_icon : map_icon} onPress={() => {view == "heatmap" ? setView("friends") : setView("heatmap"); Vibration.vibrate(50)}}/>
+            <View style={{height: 10}}></View>
             <IconButton icon={switch_icon} onPress={toggleMapType}/>
           </View>
                   

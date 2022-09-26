@@ -70,13 +70,14 @@ export default function App() {
   const [config, setConfig] = useState(null);
   const [user, setUser] = useState(null);
   const [language, setLanguage] = useState(Languages.en);
+
   const [friendList, setFriendList] = useState(null);
   const [sayingNr, setSayingNr] = useState(0);
 
   useEffect(async () => {
     loadSettings();
     await checkForUser();
-    /* await getFriendList(); */
+    await getFriendList();
   },[]);
 
   //Holt Einstellungen aus dem AsyncStorage
