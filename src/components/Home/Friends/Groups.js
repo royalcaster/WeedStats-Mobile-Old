@@ -25,51 +25,36 @@ import { responsiveHeight, responsiveFontSize } from "react-native-responsive-di
 import { UserContext } from "../../../data/UserContext";
 import { LanguageContext } from "../../../data/LanguageContext";
 
-//Firebase
-import { doc, getDoc } from "firebase/firestore";
-import { firestore } from "../../../data/FirebaseConfig";
-
 const Groups = ({ handleLogOut, toggleNavbar, deleteAccount, getFriendList }) => {
 
   const user = useContext(UserContext);
   const language = useContext(LanguageContext);
-
-  const [friendList, setFriendList] = useState();
   
-  const [rippleColor, setRippleColor] = useState("rgba(255,255,255,0.1)");
-  const [rippleOverflow, setRippleOverflow] = useState(false);
   const [showFriend, setShowFriend] = useState(false);
   const [activeFriend, setActiveFriend] = useState();
   const [showAddFriend, setShowAddFriend] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
-  const [showGroup, setShowGroup] = useState(false);
   const [showRequests, setShowRequests] = useState();
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
   const accountAnim = useRef(new Animated.Value(100)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  React.useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
-    Animated.timing(accountAnim, {
-      toValue: 0,
-      duration: 300,
-      easing: Easing.bezier(0, 1.02, 0.21, 0.97),
-      useNativeDriver: true,
-    }).start();
-  }, [showGroup]);
+  useEffect(() => {
+    Animated.timing(accountAnim,
+      {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+        easing: Easing.bezier(0, 1.02, 0.21, 0.97),
+      }).start();
+    Animated.timing(fadeAnim,
+      {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true
+      }).start()
+  },[]);
 
-  /* const getFriendList = async () => {
-    const docRef = doc(firestore, "users", user.id);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-        setFriendList(docSnap.data().friends);
-    }
-  } */
 
   return (
     <>
@@ -100,7 +85,7 @@ const Groups = ({ handleLogOut, toggleNavbar, deleteAccount, getFriendList }) =>
             style={{ flexDirection: "row", right: 0, position: "absolute" }}
           >
             <TouchableNativeFeedback
-              background={TouchableNativeFeedback.Ripple(rippleColor, true)}
+              background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.1)", true)}
               onPress={() => setShowAddFriend(true)}
             >
               <View
@@ -117,7 +102,7 @@ const Groups = ({ handleLogOut, toggleNavbar, deleteAccount, getFriendList }) =>
 
             <TouchableNativeFeedback
               background={TouchableNativeFeedback.Ripple(
-                rippleColor,
+                "rgba(255,255,255,0.1)",
                 true
               )} onPress={() => setShowRequests(true)}
             >
@@ -154,7 +139,7 @@ const Groups = ({ handleLogOut, toggleNavbar, deleteAccount, getFriendList }) =>
           <TouchableNativeFeedback
             background={TouchableNativeFeedback.Ripple(
               "rgba(255,255,255,0.1)",
-              rippleOverflow
+              true
             )}
             onPress={() => {setShowAccount(true)}}
             style={{ width: "100%", height: "100%" }}

@@ -1,6 +1,6 @@
 //React
 import React from "react";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import {
   StyleSheet,
   Platform,
@@ -8,14 +8,9 @@ import {
   View,
   Modal,
   Vibration,
-  Dimensions,
-  StatusBar,
-  ActivityIndicator
 } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
 import { LogBox } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Button from "./src/components/common/Button";
 
 //Custom Components
 import Home from "./src/components/Home/Home";
@@ -24,10 +19,6 @@ import sayings from "./src/data/Sayings.json";
 import Splash from "./src/components/Splash/Splash";
 import CustomLoader from "./src/components/common/CustomLoader";
 import Authenticator from "./src/components/common/Authenticator";
-import DialogContainer from './src/components/common/DialogContainer'
-import TutorialDialog from "./src/components/common/TutorialDialog";
-import Tutorial from "./src/components/common/Tutorial";
-import LanguageDialog from "./src/components/common/LanguageDialog";
 import CounterModal from "./src/components/common/CounterModal";
 
 //Firebase
@@ -39,7 +30,6 @@ import { AppRegistry } from "react-native";
 import { useFonts } from "expo-font";
 import * as Google from "expo-google-app-auth";
 import * as Location from "expo-location";
-import * as LocalAuthentication from 'expo-local-authentication'
 
 //Service
 import { UserContext } from "./src/data/UserContext";
@@ -47,6 +37,7 @@ import { LanguageContext } from "./src/data/LanguageContext";
 import Languages from './src/data/languages.json'
 import Intro from "./src/components/common/Intro";
 import { FriendListContext } from "./src/data/FriendListContext";
+import { ConfigContext } from "./src/data/ConfigContext";
 
 
 try {
@@ -71,7 +62,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [language, setLanguage] = useState(Languages.en);
 
-  const [friendList, setFriendList] = useState(null);
+  const [friendList, setFriendList] = useState([]);
   const [sayingNr, setSayingNr] = useState(0);
 
   useEffect(async () => {
@@ -322,6 +313,7 @@ export default function App() {
   });
 
   const toggleLanguage = async ( lang ) => {
+    console.log(lang);
     if (lang == "de" && config.language == "en") {
       setLanguage(Languages.de);
       await AsyncStorage.setItem("settings",JSON.stringify({...config, language: "de"}));
@@ -557,7 +549,6 @@ export default function App() {
     } catch (e) {
       console.log("Fehler beim Löschen des AsyncStorage.", e);
     }
-    getFriendList();
     setLoading(false);
   };
 
@@ -574,6 +565,7 @@ export default function App() {
   return (
     <>
       <View style={{flex: 1, backgroundColor: "#1E2132"}}>
+      <ConfigContext.Provider value={config}>
       <LanguageContext.Provider value={language}>
 
       <Modal
@@ -625,6 +617,7 @@ export default function App() {
             </>}
         </>}
         </LanguageContext.Provider>
+        </ConfigContext.Provider>
       </View>
     </>
   );

@@ -31,12 +31,17 @@
         "backgroundColor": "#FFFFFF"
       },
       "softwareKeyboardLayoutMode": "pan",
-      "userInterfaceStyle": "automatic"
+      "userInterfaceStyle": "automatic",
+      "googleServicesFile": "./google-services.json"
+    },
+    "ios": {
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "description": "v0.1",
-    "githubUrl": "https://github.com/royalcaster/WeedStats-Mobile"
+    "githubUrl": "https://github.com/royalcaster/WeedStats-Mobile",
+    "plugins": ["@react-native-google-signin/google-signin"]
   }
 }

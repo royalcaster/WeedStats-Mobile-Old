@@ -1,13 +1,12 @@
 //React
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View, Image, Pressable, Animated, Easing, TouchableNativeFeedback, Vibration } from "react-native";
+import { StyleSheet, Text, View, Image, Animated, Easing, TouchableNativeFeedback, Vibration } from "react-native";
 
 //Custom Components
 import Statusbar from "./StatusBar/Statusbar";
 import LevelImage from "../../../common/LevelImage";
 
 //Third Party
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
 
 //Service
@@ -17,8 +16,6 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-nat
 const CounterItem = ({ type, counter, toggleCounter }) => {
 
   const language = useContext(LanguageContext);
-
-  const [buttonPressed, setButtonPressed] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const buttonFill = useRef(new Animated.Value(1)).current;
@@ -277,7 +274,7 @@ const styles = StyleSheet.create({
     alignSelf: "center"
   },
   touchable: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: 10
   },
   add: {
