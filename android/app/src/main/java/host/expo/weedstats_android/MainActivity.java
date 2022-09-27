@@ -1,4 +1,4 @@
-package host.exp.android;
+package host.expo.weedstats_android;
 
 import android.os.Build;
 import android.os.Bundle;

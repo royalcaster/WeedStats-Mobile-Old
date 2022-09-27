@@ -1,4 +1,4 @@
-package host.exp.android;
+package host.expo.weedstats_android;
 
 import android.app.Application;
 import android.content.Context;
@@ -79,7 +79,7 @@ public class MainApplication extends Application implements ReactApplication {
          We use reflection here to pick up the class that initializes Flipper,
         since Flipper library is not available in release mode
         */
-        Class<?> aClass = Class.forName("host.exp.android.ReactNativeFlipper");
+        Class<?> aClass = Class.forName("host.expo.weedstats_android.ReactNativeFlipper");
         aClass
             .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
             .invoke(null, context, reactInstanceManager);
