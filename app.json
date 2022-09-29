@@ -24,16 +24,12 @@
         "backgroundColor": "#FFFFFF"
       },
       "softwareKeyboardLayoutMode": "pan",
-      "userInterfaceStyle": "automatic",
-      "package": "host.expo.weedstats_android"
+      "userInterfaceStyle": "automatic"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "description": "v0.1",
-    "githubUrl": "https://github.com/royalcaster/WeedStats-Mobile",
-    "plugins": [
-      "@react-native-google-signin/google-signin"
-    ]
+    "githubUrl": "https://github.com/royalcaster/WeedStats-Mobile"
   }
 }

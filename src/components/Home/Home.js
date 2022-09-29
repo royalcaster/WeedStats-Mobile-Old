@@ -3,6 +3,7 @@ import React, { useState, useRef, useContext } from "react";
 import {
   Animated,
   StyleSheet,
+  Vibration,
   View,
 } from "react-native";
 
@@ -23,6 +24,8 @@ export default function Home({ handleLogOut, toggleCounter, toggleLanguage, dele
   const [view, setView] = useState("main");
   const navSlide = useRef(new Animated.Value(0)).current;
 
+  const [borderColor, setBorderColor] = useState("#1E2132");
+
   const toggleNavbar = (x) => {
     x == 1 ? 
     Animated.timing(
@@ -41,11 +44,16 @@ export default function Home({ handleLogOut, toggleCounter, toggleLanguage, dele
     ).start();
   }
 
+  const toggleBorderColor = ( color ) => {
+    setBorderColor(color);
+    setTimeout(() => {setBorderColor("#1E2132")}, 200);
+  }
+
   return (
-    <Animated.View style={[{ opacity: 1 }, styles.container]}>
+    <Animated.View style={[{ opacity: 1, borderColor: borderColor }, styles.container]}>
       <View style={styles.content_container}>
         {view == "main" ? (
-          <Main toggleCounter={toggleCounter} />
+          <Main toggleCounter={toggleCounter} toggleBorderColor={toggleBorderColor}/>
         ) : null}
         {view == "stats" ? <Stats/> : null}
         {view == "map" ? <Map/> : null}
@@ -60,6 +68,7 @@ export default function Home({ handleLogOut, toggleCounter, toggleLanguage, dele
           <View style={{ flexDirection: "row", width: "100%" }}>
             <MenuButton
               onPress={() => {
+                Vibration.vibrate(25);
                 setView("stats");
               }}
               selected={view == "stats"}
@@ -76,6 +85,7 @@ export default function Home({ handleLogOut, toggleCounter, toggleLanguage, dele
             />
             <MenuButton
               onPress={() => {
+                Vibration.vibrate(25);
                 setView("map");
               }}
               selected={view == "map"}
@@ -98,11 +108,13 @@ export default function Home({ handleLogOut, toggleCounter, toggleLanguage, dele
                   : require("../../data/img/logo_bw.png")
               }
               onPress={() => {
+                Vibration.vibrate(25);
                 setView("main");
               }}
             />
             <MenuButton
               onPress={() => {
+                Vibration.vibrate(25);
                 setView("config");
               }}
               selected={view == "config"}
@@ -119,6 +131,7 @@ export default function Home({ handleLogOut, toggleCounter, toggleLanguage, dele
             />
             <MenuButton
               onPress={() => {
+                Vibration.vibrate(25);
                 setView("groups");
               }}
               selected={view == "groups"}
@@ -145,6 +158,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#1E2132",
     alignItems: "center",
+    borderRadius: 40,
+    borderWidth: 2,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0
   },
   content_container: {
     width: "100%",

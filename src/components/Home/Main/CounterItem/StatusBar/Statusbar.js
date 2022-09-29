@@ -23,18 +23,18 @@ const Statusbar = ({ status }) => {
 
     return (
         <View style={{
-            width: "55%",
-            height: 15,
+            width: "100%",
+            height: "100%",
             backgroundColor: "rgba(255,255,255,0.3)",
             alignSelf: "center",
             bottom: 0,
-            borderRadius: 100,
+            borderRadius: 10,
             overflow: "hidden",
             alignItems: "center"
         }}>
             <Text style={styles.status}>{chopStatus(status)}</Text>
             
-            <View style={{width: chopStatus(status), alignSelf: "flex-start",  height: 15, backgroundColor: "rgba(255,255,255,1)"}}>
+            <View style={{width: chopStatus(status), alignSelf: "flex-start",  height: "100%", backgroundColor: "rgba(255,255,255,1)"}}>
             </View>
         </View>
     )
@@ -44,13 +44,14 @@ export default Statusbar
 
 const styles = StyleSheet.create({
     status: {
-        color: "#1E2132", 
-        fontFamily: "PoppinsBlack",
+        color: "white", 
+        fontFamily: "PoppinsMedium",
         fontSize: 12,
         position: "absolute",
         zIndex: 1,
         textAlignVertical: "center",
         top: -1,
-        opacity: 0.75
+        opacity: 0.75,
+        top: "30%"
     }
 })

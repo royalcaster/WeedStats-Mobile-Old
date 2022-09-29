@@ -14,7 +14,7 @@ import Empty from "../../common/Empty";
 import moment from "moment";
 import { LanguageContext } from "../../../data/LanguageContext";
 
-const Main = ({ toggleCounter }) => {
+const Main = ({ toggleCounter, toggleBorderColor }) => {
 
   const user = useContext(UserContext);
   const language = useContext(LanguageContext);
@@ -312,6 +312,7 @@ const Main = ({ toggleCounter }) => {
                       type={item.type}
                       counter={user[item.type + "_counter"]}
                       toggleCounter={toggleCounter}
+                      toggleBorderColor={toggleBorderColor}
                     />
                   );
                 })}
@@ -330,7 +331,7 @@ const styles = StyleSheet.create({
     flex: 5,
     backgroundColor: "#1E2132",
     width: "100%",
-    height: "100%",
+    height: "100%"
   },
   tut_img: {
     height: 200,

@@ -267,7 +267,7 @@ export default function App() {
     }
   };
 
-  const handleLogin = async () => {
+ const handleLogin = async () => {
     try {
       const result = await Google.logInAsync({
         androidClientId:
@@ -298,7 +298,7 @@ export default function App() {
     } catch (e) {
       return { error: true };
     }
-  };
+  }; 
 
   const handleIntroFinish = async () => {
     //Hier FALSE setzen, wenn Intro fertig gebaut ist.
