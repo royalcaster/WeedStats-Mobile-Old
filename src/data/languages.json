@@ -21,32 +21,39 @@
 
         "levels": [
           {
+            "key": 0,
             "name":"Nappo",
-            "colors":["#00DB4D", "#008F32"]
+            "colors":["#00DB4D", "#008F32", "#0B6B33"]
           },
           {
+            "key": 1,
             "name":"Beginner",
-            "colors":["#FF792B", "#B3551E"]
+            "colors":["#FF792B", "#B3551E", "#99491A"]
           },
           {
+            "key": 2,
             "name":"Amateur",
-            "colors":["#FFBB24", "#B38219"]
+            "colors":["#FFBB24", "#B38219", "#996F15"]
           },
           {
+            "key": 3,
             "name":"Fortgeschrittener",
-            "colors":["#409FFF", "#2D70B3"]
+            "colors":["#409FFF", "#2D70B3", "#266099"]
           },
           {
+            "key": 4,
             "name":"Smurf",
-            "colors":["#9114FF", "#660EB3"]
+            "colors":["#9114FF", "#660EB3", "#570C99"]
           },
           {
+            "key": 5,
             "name":"Experte",
-            "colors":["#F2338C", "#B32567"]
+            "colors":["#F2338C", "#B32567", "#8C1D51"]
           },
           {
+            "key": 6,
             "name":"Legende",
-            "colors":["#FC2044", "#B31731"]
+            "colors":["#FC2044", "#B31731", "#961429"]
           }
         ],
 
@@ -167,37 +174,6 @@
 
         "success": "Erfolg",
 
-        "levels": [
-            {
-              "name":"Nappo",
-              "colors":["#00DB4D", "#008F32"]
-            },
-            {
-              "name":"Beginner",
-              "colors":["#FF792B", "#B3551E"]
-            },
-            {
-              "name":"Amateur",
-              "colors":["#FFBB24", "#B38219"]
-            },
-            {
-              "name":"Fortgeschrittener",
-              "colors":["#409FFF", "#2D70B3"]
-            },
-            {
-              "name":"Smurf",
-              "colors":["#9114FF", "#660EB3"]
-            },
-            {
-              "name":"Experte",
-              "colors":["#F2338C", "#B32567"]
-            },
-            {
-              "name":"Legende",
-              "colors":["#FC2044", "#B31731"]
-            }
-        ],
-
         "sayings": [  
             {  
                "saying":"Ich glaube, die Leute müssen über die Tatsache unterrichtet werden, dass Marihuana keine Droge ist. Marihuana ist eine Blume Gottes Gnade.",
@@ -317,6 +293,11 @@
             }
           ]
     },
+
+
+
+
+
     "en": {
         "language_short": "en",
         "activities": "Activities",
@@ -339,32 +320,39 @@
 
         "levels": [
           {
+            "key": 0,
             "name":"Nappo",
-            "colors":["#00DB4D", "#008F32"]
+            "colors":["#00DB4D", "#008F32", "#0B6B33"]
           },
           {
+            "key": 1,
             "name":"Beginner",
-            "colors":["#FF792B", "#B3551E"]
+            "colors":["#FF792B", "#B3551E", "#99491A"]
           },
           {
+            "key": 2,
             "name":"Amateur",
-            "colors":["#FFBB24", "#B38219"]
+            "colors":["#FFBB24", "#B38219", "#996F15"]
           },
           {
-            "name":"Advanced",
-            "colors":["#409FFF", "#2D70B3"]
+            "key": 3,
+            "name":"Fortgeschrittener",
+            "colors":["#409FFF", "#2D70B3", "#266099"]
           },
           {
+            "key": 4,
             "name":"Smurf",
-            "colors":["#9114FF", "#660EB3"]
+            "colors":["#9114FF", "#660EB3", "#570C99"]
           },
           {
-            "name":"Expert",
-            "colors":["#F2338C", "#B32567"]
+            "key": 5,
+            "name":"Experte",
+            "colors":["#F2338C", "#B32567", "#8C1D51"]
           },
           {
-            "name":"Legend",
-            "colors":["#FC2044", "#B31731"]
+            "key": 6,
+            "name":"Legende",
+            "colors":["#FC2044", "#B31731", "#961429"]
           }
         ],
 
@@ -483,39 +471,8 @@
         "send_request": "Send friend reqest to",
         "already_sent": "Already sent request to",
 
-        "success": "Success",
-
-        "levels": [
-            {
-              "name":"Nappo",
-              "colors":["#00DB4D", "#008F32"]
-            },
-            {
-              "name":"Beginner",
-              "colors":["#FF792B", "#B3551E"]
-            },
-            {
-              "name":"Amateur",
-              "colors":["#FFBB24", "#B38219"]
-            },
-            {
-              "name":"Advanced",
-              "colors":["#409FFF", "#2D70B3"]
-            },
-            {
-              "name":"Smurf",
-              "colors":["#9114FF", "#660EB3"]
-            },
-            {
-              "name":"Expert",
-              "colors":["#F2338C", "#B32567"]
-            },
-            {
-              "name":"Legend",
-              "colors":["#FC2044", "#B31731"]
-            }
-        ],
-
+        "success": "Success", 
+        
         "sayings": [  
             {  
                "saying":"I think people need to be educated on the fact that marijuana is not a drug. Marijuana is a flower of God's grace.",

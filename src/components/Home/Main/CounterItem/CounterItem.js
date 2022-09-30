@@ -5,6 +5,7 @@ import { StyleSheet, Text, View, Image, Animated, Easing, TouchableNativeFeedbac
 //Custom Components
 import Statusbar from "./StatusBar/Statusbar";
 import LevelImage from "../../../common/LevelImage";
+import Slider from './Slider/Slider'
 
 //Third Party
 import { LinearGradient } from "expo-linear-gradient";
@@ -12,6 +13,7 @@ import { LinearGradient } from "expo-linear-gradient";
 //Service
 import { LanguageContext } from "../../../../data/LanguageContext";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+import LevelBar from "./LevelBar/LevelBar";
 
 const CounterItem = ({ type, counter, toggleCounter, toggleBorderColor }) => {
 
@@ -92,9 +94,10 @@ const CounterItem = ({ type, counter, toggleCounter, toggleBorderColor }) => {
     let indicator = Math.floor(counter / 70);
     return indicator > language.levels.length - 1
       ? language.levels[language.levels.length - 1].colors
-      : language.levels[6].colors;
+      : language.levels[indicator].colors;
     }
     else {
+      
       return language.levels[0].colors;
     }
   };
@@ -137,11 +140,10 @@ const CounterItem = ({ type, counter, toggleCounter, toggleBorderColor }) => {
   }
 
   return (
-    <Animated.View style={[styles.container, { transform: [{ translateY: scaleAnim }], opacity: fadeAnim,   borderRadius: 10, borderColor: getGradientColors(counter)[0], borderWidth: 1}]}>
+    <Animated.View style={[styles.container, { transform: [{ translateY: scaleAnim }], opacity: fadeAnim }]}>
 
-      <View style={{flexDirection: "row"}}>
-        <View style={[styles.panel, {flex: 1, backgroundColor: convertToRGB(getGradientColors(counter)[0].substring(1,7), 0.2), flexDirection: "column"}]}>
-          <>{type === "joint" ? (
+      <Animated.View style={[styles.card_opener, {backgroundColor: convertToRGB(getGradientColors(counter)[0].substring(1,7), 0.4), borderColor: getGradientColors(counter)[0], borderWidth: 0.5, transform: [{translateX: scaleAnim}]}]}>
+      {type === "joint" ? (
             <Image
               style={styles.joint_img}
               source={require("../../../../data/img/joint.png")}
@@ -161,68 +163,28 @@ const CounterItem = ({ type, counter, toggleCounter, toggleBorderColor }) => {
               style={styles.cookie_img}
               source={require("../../../../data/img/cookie.png")}
             />
-          ) : null}  
-          </>
-          <Text style={styles.type_label}>{type.toUpperCase()}</Text>
+          ) : null}
+      </Animated.View>
+      <View style={[styles.card_content]}>
+        <View style={{flex: 6}}>
+        <View style={styles.grab}></View>
+          <View style={{flex: 1, flexDirection: "row", padding: 5, paddingBottom: 0}}>
+            <View style={{flex: 2, alignItems: "center", flexGrow: 3}}>
+              <Text style={styles.counter_number}>{counter}</Text>
+            </View>
+            <View style={{flex: 5, padding: 5, maxHeight: responsiveHeight(7)}}>
+              <Statusbar status={calcLevelStatus(counter)}></Statusbar>
+            </View>
+          </View>
+          <View style={{flex: 1, padding: 10, paddingTop: 5}}>
+            <Slider firstColor={getGradientColors(counter)[0]} secondColor={getGradientColors(counter)[2]}/>
+          </View>
         </View>
-        <View style={{flexDirection: "column", flex: 4}}>
-          <View style={[styles.panel]}>
-            <Text style={styles.level_label}>{calcLevelName(counter)}</Text>
-            <Text style={[styles.level_label, {fontFamily: "PoppinsLight", fontSize: responsiveFontSize(1.5), position: "absolute", right: 0}]}>Level 1</Text>
-          </View>
-          <View style={[styles.panel, {flex: 4, padding: 0}]}>
-            <Statusbar status={calcLevelStatus(counter)}></Statusbar>
-          </View>
-        </View>
-        <View style={[styles.panel, {flex: 1, backgroundColor: convertToRGB(getGradientColors(counter)[0].substring(1,7), 0.2), justifyContent: "center"}]}>
-          <View style={{position: "absolute", justifyContent: "center", alignSelf: "center"}}>
-            <LevelImage index={Math.floor(counter / 70)} style={{height: responsiveHeight(8), width: responsiveWidth(15)}}/>
-          </View>
+        <View style={{flex: 1, flexDirection: "column"}}>
+          <LevelBar index={Math.floor(counter / 70)}/>
         </View>
       </View>
-      <View style={{flexDirection: "row"}}>
-        <View style={[styles.panel, {flex: 2, backgroundColor: convertToRGB(getGradientColors(counter)[0].substring(1,7), 0.2), justifyContent: "center"}]}><Text style={styles.counter_number}>{counter}</Text></View>
-        <View style={[styles.panel, {flex: 4, backgroundColor: convertToRGB(getGradientColors(counter)[0].substring(1,7), 0.2)}]}><Text>slider</Text></View>
-      </View>
-      {/* <TouchableNativeFeedback onPressIn={() => fill()} onPressOut={() => empty()} onLongPress={() => {Vibration.vibrate(100); toggleBorderColor(getGradientColors(counter)[0]); toggleCounter(type.toLowerCase())}} background={TouchableNativeFeedback.Ripple(convertToRGB(getGradientColors(counter)[0].substring(1,7), 0.1)
-        , false)}>
-        <View style={[styles.touchable,{borderColor: getGradientColors(counter)[0]}]}>
-          
-          
-           {type === "joint" ? (
-            <Image
-              style={styles.joint_img}
-              source={require("../../../../data/img/joint.png")}
-            />
-          ) : null}
-          {type === "bong" ? (
-            <Image style={styles.bong_img} source={require("../../../../data/img/bong.png")} />
-          ) : null}
-          {type === "vape" ? (
-            <Image style={styles.vape_img} source={require("../../../../data/img/vape.png")} />
-          ) : null}
-          {type === "pipe" ? (
-            <Image style={styles.pipe_img} source={require("../../../../data/img/pipe.png")} />
-          ) : null}
-          {type === "cookie" ? (
-            <Image
-              style={styles.cookie_img}
-              source={require("../../../../data/img/cookie.png")}
-            />
-          ) : null}  
-          
-          <View style={{alignSelf: "center", marginTop: -20}}><LevelImage index={Math.floor(counter / 70)} /></View>
-          
-          <Text style={styles.counter_number}>{counter}</Text>
-          <Statusbar status={calcLevelStatus(counter)}></Statusbar>
-          <Text style={styles.level_label}>{calcLevelName(counter)}</Text>
-        </View>
 
-      </TouchableNativeFeedback> */}
-
-      {/* <Animated.View style={{justifyContent: "center", alignItems: "center", borderRadius: 10, backgroundColor: convertToRGB("131520",1), width: "100%", height: "100%", position: "absolute", zIndex: 1000, bottom: 0, height: "100%", transform: [{translateY: heightInterpolate}] }}>
-            <Text style={styles.add}>+1</Text>
-      </Animated.View> */}
     </Animated.View>
   );
 };
@@ -231,20 +193,16 @@ export default CounterItem;
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 10,
     overflow: "hidden",
-    margin: 20,
+    margin: 5,
     marginVertical: 10,
-    backgroundColor: "#131520",
-    flexDirection: "column",
-    padding: 10
+    flexDirection: "row"
   },
   counter_number: {
     color: "white",
-    fontSize: 50,
-    fontFamily: "PoppinsLight",
-    alignSelf: "center",
-    textAlign: "center",
+    fontSize: responsiveFontSize(6),
+    fontFamily: "PoppinsMedium",
+    marginBottom: responsiveHeight(1) * -1
   },
   level_label: {
     color: "white",
@@ -328,5 +286,30 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "PoppinsLight",
     fontSize: responsiveFontSize(1.5)
+  },
+  card_opener: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+    paddingRight: 20
+  },
+  card_content: {
+    flex: 5,
+    backgroundColor: "#131520",
+    borderRadius: 10,
+    marginLeft: -20,
+    flexDirection: "row"
+  },
+  grab: {
+    alignSelf: "center",
+    height: 5,
+    width: "25%",
+    borderRadius: 10,
+    backgroundColor: "#1E2132",
+    zIndex: 1000,
+    marginVertical: 15,
+    marginBottom: 5
   }
 });

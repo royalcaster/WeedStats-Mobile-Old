@@ -1,7 +1,23 @@
-import React from "react";
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from "react";
+import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
 
 const Statusbar = ({ status }) => {
+
+    
+    const [containerWidth, setContainerWidth] = useState(300);
+    const animateTarget = (containerWidth * status / 100) - containerWidth;
+
+    const slideAnim = useRef(new Animated.Value(-400)).current;
+
+      Animated.timing(
+        slideAnim, {
+            toValue: animateTarget,
+            duration: 600,
+            useNativeDriver: true,
+            easing: Easing.bezier(0, 1.02, 0.21, 0.97),
+            delay: 0
+        }
+    ).start();
 
     const chopStatus = () => {
         if (Number.isNaN(status)) {
@@ -25,17 +41,20 @@ const Statusbar = ({ status }) => {
         <View style={{
             width: "100%",
             height: "100%",
-            backgroundColor: "rgba(255,255,255,0.3)",
+            backgroundColor: "#1E2132",
             alignSelf: "center",
             bottom: 0,
-            borderRadius: 10,
+            borderRadius: 5,
             overflow: "hidden",
             alignItems: "center"
-        }}>
+        }}
+        onLayout={(event) => {
+            setContainerWidth(event.nativeEvent.layout.width);
+          }}>
             <Text style={styles.status}>{chopStatus(status)}</Text>
             
-            <View style={{width: chopStatus(status), alignSelf: "flex-start",  height: "100%", backgroundColor: "rgba(255,255,255,1)"}}>
-            </View>
+            <Animated.View style={{transform: [{translateX: slideAnim}], width: "100%", alignSelf: "flex-start",  height: "100%", backgroundColor: "#484F78"}}>
+            </Animated.View>
         </View>
     )
 }

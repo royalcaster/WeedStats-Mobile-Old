@@ -1,7 +1,6 @@
 //React
 import React, { useEffect, useRef } from "react";
-import { Animated, Dimensions, StyleSheet } from "react-native";
-import Button from "./Button";
+import { Animated, Dimensions, StyleSheet, Easing } from "react-native";
 
 const Template = ({ onExit }) => {
 

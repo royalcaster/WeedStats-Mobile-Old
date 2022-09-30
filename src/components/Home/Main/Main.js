@@ -303,14 +303,14 @@ const Main = ({ toggleCounter, toggleBorderColor }) => {
                 <View style={{height: "90%", justifyContent: "center"}}>
                   <Empty title={"Keine Stats aktiviert"} tip={"Konfiguriere deine Ansicht in den Einstellungen."}/>
                 </View>
-              ) : <ScrollView style={styles.counters_container}>
+              ) : <ScrollView style={styles.counters_container}> 
                 {
                 counterOrder.map((item) => {
                   return (
                     <CounterItem
                       key={item.type}
                       type={item.type}
-                      counter={user[item.type + "_counter"]}
+                      counter={user[item.type + "_counter"] * 30}
                       toggleCounter={toggleCounter}
                       toggleBorderColor={toggleBorderColor}
                     />
