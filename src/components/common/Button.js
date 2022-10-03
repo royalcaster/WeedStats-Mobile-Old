@@ -5,7 +5,7 @@ import { View, Text, StyleSheet, TouchableNativeFeedback } from "react-native";
 //Third Party
 import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
 
-const Button = ({ icon, title, color, hovercolor, borderradius, onPress,fontColor, color2 }) => {
+const Button = ({ icon, title, color, hovercolor, borderradius, onPress,fontColor, color2, small }) => {
 
   const [rippleOverflow, setRippleOverflow] = useState(true);
 
@@ -13,7 +13,7 @@ const Button = ({ icon, title, color, hovercolor, borderradius, onPress,fontColo
     <>
     <View
       style={[
-        { backgroundColor: color, borderRadius: 10},
+        { backgroundColor: color, borderRadius: 10, width: small ? "100%" : "80%"},
         styles.container,
       ]}
     >
@@ -41,7 +41,6 @@ export default Button;
 const styles = StyleSheet.create({
   container: {
     height: 50,
-    width: "80%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

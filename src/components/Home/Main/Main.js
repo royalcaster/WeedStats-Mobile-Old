@@ -215,13 +215,12 @@ const Main = ({ toggleCounter, toggleBorderColor }) => {
         </View> : <> 
 
           <View style={{ height: 50 }}></View>
-          <View style={{ width: "100%", flexDirection: "row" }}>
+          <View style={{ width: "100%", flexDirection: "row"}}>
             <Animated.View
               style={{
                 paddingLeft: 15,
                 flex: 1,
-                top: 10,
-                transform: [{ translateX: leftAnim }],
+                transform: [{ translateX: leftAnim }]
               }}
             >
               <Text
@@ -258,7 +257,6 @@ const Main = ({ toggleCounter, toggleBorderColor }) => {
               style={{
                 paddingRight: 15,
                 flex: 1,
-                top: 10,
                 transform: [{ translateX: rightAnim }],
               }}
             >
@@ -285,7 +283,6 @@ const Main = ({ toggleCounter, toggleBorderColor }) => {
               </Text>
             </Animated.View>
           </View>
-          <View style={{ height: 10 }}></View>
 
           {loading ? (
             <View
@@ -310,7 +307,7 @@ const Main = ({ toggleCounter, toggleBorderColor }) => {
                     <CounterItem
                       key={item.type}
                       type={item.type}
-                      counter={user[item.type + "_counter"] * 30}
+                      counter={user[item.type + "_counter"]}
                       toggleCounter={toggleCounter}
                       toggleBorderColor={toggleBorderColor}
                     />

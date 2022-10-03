@@ -8,6 +8,7 @@ import {
   View,
   Modal,
   Vibration,
+  StatusBar
 } from "react-native";
 import { LogBox } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -56,6 +57,7 @@ export default function App() {
   const [unlocked, setUnlocked] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [writeComplete, setWriteComplete] = useState(false);
+  const [loadingColor, setLoadingColor] = useState("#0080FF");
 
   //States für Daten
   const [config, setConfig] = useState(null);
@@ -577,7 +579,7 @@ export default function App() {
             setWriteComplete(false);
           }}
       >
-        <CounterModal onExit={() => {setModalVisible(!modalVisible); setWriteComplete(false)}} writeComplete={writeComplete} sayingNr={sayingNr}/>    
+        <CounterModal loadingColor={loadingColor} onExit={() => {setModalVisible(!modalVisible); setWriteComplete(false); StatusBar.setBackgroundColor("#1E2132");}} writeComplete={writeComplete} sayingNr={sayingNr}/>    
       </Modal>
 
 

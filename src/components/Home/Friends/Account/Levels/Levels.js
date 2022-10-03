@@ -55,8 +55,7 @@ const Levels = ({ onexit, show }) => {
         <Text style={styles.heading}>{language.account_levels}</Text>
       </View>
 
-      <View style={{ height: responsiveHeight(1) }}></View>
-      <View style={{ height: responsiveHeight(2) }}></View>
+      <View style={{ height: responsiveHeight(3) }}></View>
 
       {language.levels.map((level, index) => {
         return (

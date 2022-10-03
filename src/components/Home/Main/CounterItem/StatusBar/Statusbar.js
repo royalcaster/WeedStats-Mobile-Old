@@ -3,7 +3,11 @@ import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
 
 const Statusbar = ({ status }) => {
 
-    
+    useEffect(() => {
+        console.log(status);
+    },[]);
+
+    const [levelStatus, setLevelStatus] = useState(status);
     const [containerWidth, setContainerWidth] = useState(300);
     const animateTarget = (containerWidth * status / 100) - containerWidth;
 
@@ -38,7 +42,7 @@ const Statusbar = ({ status }) => {
     }
 
     return (
-        <View style={{
+            <View style={{
             width: "100%",
             height: "100%",
             backgroundColor: "#1E2132",

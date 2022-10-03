@@ -28,7 +28,6 @@ import LanguageSelector from "./LanguageSelector/LanguageSelector";
 
 //Service
 import { LanguageContext } from "../../../data/LanguageContext";
-import AppInfo from "./AppInfo/AppInfo";
 
 const Config = ({ toggleLanguage }) => {
 
@@ -40,7 +39,6 @@ const Config = ({ toggleLanguage }) => {
   const [lightmode, setLightMode] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const [showAppInfo, setShowAppInfo] = useState(false);
 
   useEffect(() => {
     loadSettings();
@@ -146,10 +144,6 @@ const Config = ({ toggleLanguage }) => {
           </View>
         </Modal>
 
-        <Modal animationType="fade" transparent={true} visible={showAppInfo}>
-            <AppInfo onExit={() => setShowAppInfo(false)}/>
-        </Modal>
-
         <View style={{ height: responsiveHeight(7) }}></View>
 
         {loading ? (
@@ -191,15 +185,6 @@ const Config = ({ toggleLanguage }) => {
                   setSaved(false);
                 }}
               ></ConfigItem>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                width: "80%",
-                alignSelf: "center",
-                marginTop: -20,
-              }}
-            >
               <ConfigItem
                 type="pipe"
                 config={config.showPipe}
@@ -247,7 +232,7 @@ const Config = ({ toggleLanguage }) => {
                     setSaved(false);
                   }}
                   trackBar={{
-                    activeBackgroundColor: "#0080FF",
+                    activeBackgroundColor: "#484F78",
                     inActiveBackgroundColor: "#131520",
                     width: 50,
                     height: 25,
@@ -287,7 +272,7 @@ const Config = ({ toggleLanguage }) => {
                     setSaved(false);
                   }}
                   trackBar={{
-                    activeBackgroundColor: "#0080FF",
+                    activeBackgroundColor: "#484F78",
                     inActiveBackgroundColor: "#131520",
                     width: 50,
                     height: 25,
@@ -326,7 +311,7 @@ const Config = ({ toggleLanguage }) => {
                     setSaved(false);
                   }}
                   trackBar={{
-                    activeBackgroundColor: "#0080FF",
+                    activeBackgroundColor: "#484F78",
                     inActiveBackgroundColor: "#131520",
                     width: 50,
                     height: 25,
@@ -362,7 +347,7 @@ const Config = ({ toggleLanguage }) => {
                     setSaved(false);
                   }}
                   trackBar={{
-                    activeBackgroundColor: "#0080FF",
+                    activeBackgroundColor: "#484F78",
                     inActiveBackgroundColor: "#131520",
                     width: 50,
                     height: 25,
@@ -402,7 +387,7 @@ const Config = ({ toggleLanguage }) => {
                     setSaved(false);
                   }}
                   trackBar={{
-                    activeBackgroundColor: "#0080FF",
+                    activeBackgroundColor: "#484F78",
                     inActiveBackgroundColor: "#131520",
                     width: 50,
                     height: 25,
@@ -446,7 +431,7 @@ const Config = ({ toggleLanguage }) => {
                     setSaved(false);
                   }}
                   trackBar={{
-                    activeBackgroundColor: "#0080FF",
+                    activeBackgroundColor: "#484F78",
                     inActiveBackgroundColor: "#131520",
                     width: 50,
                     height: 25,
@@ -490,7 +475,7 @@ const Config = ({ toggleLanguage }) => {
                   value={lightmode}
                   onPress={(val) => {setLightMode(val); vibrate(25);}}
                   trackBar={{
-                    activeBackgroundColor: "#0080FF",
+                    activeBackgroundColor: "#484F78",
                     inActiveBackgroundColor: "#131520",
                     width: 50,
                     height: 25,
@@ -505,13 +490,7 @@ const Config = ({ toggleLanguage }) => {
               </View>
             </View>
 
-            <View style={{ height: 30 }}></View>
-
-            <Button title={"App-" + language.config_info} color={"#484f78"} fontColor={"white"} hovercolor={"rgba(255,255,255,0.15)"} onPress={() => setShowAppInfo(true)}/>
-            
-            <View style={{height: responsiveHeight(2.5)}}></View>
-
-          <View style={{ height: 30 }}></View>
+          <View style={{ height: responsiveHeight(10) }}></View>
           </ScrollView>
           </View>
         )}

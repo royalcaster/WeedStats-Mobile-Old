@@ -82,10 +82,10 @@ const styles = StyleSheet.create({
         flex: 1
       },
       cosmetic: {
-        width: "90%",
+        width: "20%",
         height: 10,
         backgroundColor: "#1E2132",
-        opacity: 0.5,
+        opacity: 1,
         alignSelf: "center",
         marginTop: 10,
         borderTopRightRadius: 5,

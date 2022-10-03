@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Animated, Dimensions, StyleSheet, Text, PanResponder, Easing, View, Vibration} from "react-native";
 import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 
-const Template = ({ firstColor, secondColor }) => {
+const Template = ({ firstColor, secondColor, onToggleCounter }) => {
 
     const pan = useRef(new Animated.Value(0)).current;
 
@@ -36,6 +36,8 @@ const Template = ({ firstColor, secondColor }) => {
 
                 if (gesture.dx > (containerWidth - SLIDER_WIDTH)) {
                     pan.setValue(containerWidth - SLIDER_WIDTH);
+                    onToggleCounter();
+                    shrink();
                 }
 
             }

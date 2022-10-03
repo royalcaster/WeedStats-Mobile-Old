@@ -68,9 +68,9 @@ const CounterItem = ({ type, counter, toggleCounter, toggleBorderColor }) => {
 
   const calcLevelStatus = (counter) => {
     if (counter >= 420) {
-      return "100%";
+      return 100;
     } else if (counter == 0) {
-      return "0%";
+      return 0;
     } else {
       var indicator = Math.ceil(counter / 70);
       return (100 * (counter - 70 * (indicator - 1))) / 70;
@@ -141,7 +141,7 @@ const CounterItem = ({ type, counter, toggleCounter, toggleBorderColor }) => {
 
   return (
     <Animated.View style={[styles.container, { transform: [{ translateY: scaleAnim }], opacity: fadeAnim }]}>
-
+       
       <Animated.View style={[styles.card_opener, {backgroundColor: convertToRGB(getGradientColors(counter)[0].substring(1,7), 0.4), borderColor: getGradientColors(counter)[0], borderWidth: 0.5, transform: [{translateX: scaleAnim}]}]}>
       {type === "joint" ? (
             <Image
@@ -165,6 +165,7 @@ const CounterItem = ({ type, counter, toggleCounter, toggleBorderColor }) => {
             />
           ) : null}
       </Animated.View>
+      
       <View style={[styles.card_content]}>
         <View style={{flex: 6}}>
         <View style={styles.grab}></View>
@@ -177,12 +178,12 @@ const CounterItem = ({ type, counter, toggleCounter, toggleBorderColor }) => {
             </View>
           </View>
           <View style={{flex: 1, padding: 10, paddingTop: 5}}>
-            <Slider firstColor={getGradientColors(counter)[0]} secondColor={getGradientColors(counter)[2]}/>
+            <Slider firstColor={getGradientColors(counter)[0]} secondColor={getGradientColors(counter)[2]} onToggleCounter={() => {toggleCounter(type.toLowerCase()); toggleBorderColor(getGradientColors(counter)[0])}}/>
           </View>
         </View>
         <View style={{flex: 1, flexDirection: "column"}}>
           <LevelBar index={Math.floor(counter / 70)}/>
-        </View>
+        </View> 
       </View>
 
     </Animated.View>

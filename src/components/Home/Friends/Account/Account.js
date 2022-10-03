@@ -10,6 +10,7 @@ import Levels from "./Levels/Levels";
 import ProfileImage from "../../../common/ProfileImage";
 import Button from "../../../common/Button";
 import BackButton from "../../../common/BackButton";
+import AppInfo from "./AppInfo/AppInfo";
 
 //Tools
 import { convertMemberSince } from "../../../../data/DateConversion";
@@ -19,7 +20,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Antdesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
-import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 
 //Firebase
 import { doc, deleteDoc } from "firebase/firestore";
@@ -41,6 +42,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar, deleteAccount }) =>
   const [showDonation, setShowDonation] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showAppInfo, setShowAppInfo] = useState(false);
 
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const pan = useRef(new Animated.Value(0)).current;
@@ -66,6 +68,10 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar, deleteAccount }) =>
       useNativeDriver: true,
     }).start(({ finished }) => {
       if (finished) {
+       /*setShowAppInfo(false);
+        setShowDonation(false);
+        setShowLevels(false);
+        setShowTutorial(false);*/
         onexit();
         opacityAnim.setValue(0);
       }
@@ -73,28 +79,6 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar, deleteAccount }) =>
   };
 
   show ? slide() : hide();
-
-  /* const deleteAccount = async () => {
-    handleLogOut();
-
-    // Firestore-Doc löschen
-    const docRef = doc(firestore, "users", user.id);
-    await deleteDoc(docRef);
-
-    // AsyncStorage-Daten löschen
-    try {
-      await AsyncStorage.clear();
-    } catch (e) {
-      console.log("Fehler beim Löschen des AsyncStorage.", e);
-    }
-  }; */
-
-  
-  // Diese Funktion darf nach Bedarf mit neuer Funktionalität gefüllt werden und dient z.B. dazu, veraltete Einträge im AsyncStorage zu entfernen.
-  // In der finalen Version der App fliegt diese Funktion natürlich raus.
-  /* const doWhatever = async () => {
-    console.log("Aktuell passiert hier garnix.");
-  }; */
 
   const [showDelete, setShowDelete] = useState(false);
   const [showLogOut, setShowLogOut] = useState(false);
@@ -113,10 +97,6 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar, deleteAccount }) =>
     },
     onPanResponderMove: (event, gesture) => {
       if (gesture.dy > 0 && !showTutorial) {pan.setValue(gesture.dy);}
-      /* setShowLevels(false);
-      setShowFeedback(false);
-      setShowTutorial(false);
-      setShowDonation(false); */
     },
     onPanResponderRelease: (event, gesture) =>  {
       if ((gesture.dy > screen_height/ 10 || gesture.vy > 1) && !showTutorial) {hide()} else{slide();}
@@ -139,6 +119,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar, deleteAccount }) =>
       {showFeedback ? <Feedback userid={user.id} onexit={() => setShowFeedback(false)}/>          : null}
       {showDonation ? <Donation onexit={() => setShowDonation(false)}/>                           : null}
       {showTutorial ? <Tutorial onDone={() => setShowTutorial(false)} toggleNavbar={toggleNavbar} type={"regular"}/> : null}
+      {showAppInfo ? <AppInfo show={showAppInfo} onExit={() => setShowAppInfo(false)}/> : null}
 
       <Modal animationType="fade" transparent={true} visible={showDelete}>
         <View
@@ -387,37 +368,61 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar, deleteAccount }) =>
 
         <View style={{flex: 4, justifyContent: "center"}}>
 
-        <Button
-          fontColor={"white"}
-          onPress={() =>{ setShowLevels(true)}}
-          borderradius={100}
-          color={"#484F78"}
-          title={language.account_levels}
-          icon={<FontAwesome name="trophy" style={styles.money_icon} />}
-          hovercolor={"rgba(255,255,255,0.15)"}
-        />
+        <View style={{flexDirection: "row", width: "80%", alignSelf: "center"}}>
+            <View style={{flex: 1}}>
+              <Button
+                fontColor={"white"}
+                onPress={() =>{ setShowLevels(true)}}
+                borderradius={100}
+                color={"#484F78"}
+                title={language.account_levels}
+                icon={<FontAwesome name="trophy" style={styles.money_icon} />}
+                hovercolor={"rgba(255,255,255,0.15)"}
+                small={true}
+              />
+            </View>
+            <View style={{width: responsiveWidth(2)}}></View>
+            <View style={{flex: 1}}>
+              <Button
+                onPress={() => setShowDonation(true)}
+                title={language.account_support}
+                icon={<MaterialIcons name="euro" style={styles.money_icon} />}
+                borderradius={100}
+                color={"#484F78"}
+                fontColor={"white"}
+                hovercolor={"rgba(255,255,255,0.15)"}
+                small={true}
+              />
+            </View>
+        </View>
 
-        <Button
-          onPress={() => setShowDonation(true)}
-          title={language.account_support}
-          icon={<MaterialIcons name="euro" style={styles.money_icon} />}
-          borderradius={100}
-          color={"#484F78"}
-          fontColor={"white"}
-          hovercolor={"rgba(255,255,255,0.15)"}
-        />
-
-
-        <Button
-          onPress={() => setShowTutorial(true)}
-          title={language.account_tutorial}
-          icon={<Feather name="help-circle" style={styles.money_icon} />}
-          borderradius={100}
-          color={"#484F78"}
-          fontColor={"white"}
-          hovercolor={"rgba(255,255,255,0.15)"}
-        />
-
+        <View style={{flexDirection: "row", width: "80%", alignSelf: "center"}}>
+            <View style={{flex: 1}}>
+              <Button
+                onPress={() => setShowTutorial(true)}
+                title={language.account_tutorial}
+                icon={<Feather name="help-circle" style={styles.money_icon} />}
+                borderradius={100}
+                color={"#484F78"}
+                fontColor={"white"}
+                hovercolor={"rgba(255,255,255,0.15)"}
+                small={true}
+              />
+            </View>
+            <View style={{width: responsiveWidth(2)}}></View>
+            <View style={{flex: 1}}>
+              <Button
+                onPress={() => setShowAppInfo(true)}
+                title={"App-Info"}
+                icon={<Feather name="info" style={styles.money_icon} />}
+                borderradius={100}
+                color={"#484F78"}
+                fontColor={"white"}
+                hovercolor={"rgba(255,255,255,0.15)"}
+                small={true}
+              />
+            </View>
+        </View>
 
         <Button
           onPress={() => setShowLogOut(true)}

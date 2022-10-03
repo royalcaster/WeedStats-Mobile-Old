@@ -8,6 +8,7 @@ import CustomLoader from "./CustomLoader";
 
 //Service
 import { LanguageContext } from "../../data/LanguageContext";
+import { responsiveFontSize } from "react-native-responsive-dimensions";
 
 const CounterModal = ({ onExit, writeComplete, sayingNr }) => {
 
@@ -23,7 +24,7 @@ const CounterModal = ({ onExit, writeComplete, sayingNr }) => {
             style={[styles.container, {
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: "rgba(0,0,0,0.5)",
+              backgroundColor: "rgba(0,0,0,0.85)",
               flex: 1,
               height: screen_height
             }]}
@@ -31,32 +32,16 @@ const CounterModal = ({ onExit, writeComplete, sayingNr }) => {
             <View
                 style={{
                   width: "90%",
-                  height: 300,
-                  backgroundColor: "#1E2132",
+                  height: "80%",
+                  backgroundColor: "rgba(0,0,0,0)",
                   alignSelf: "center",
                   borderRadius: 25,
                 }}
               >
             {writeComplete ? (
               <>
-                <View style={{ flex: 1 }}>
-                  <Text
-                    style={[
-                      styles.heading,
-                      {
-                        marginLeft: 0,
-                        textAlign: "center",
-                        height: "100%",
-                        textAlignVertical: "center",
-                        fontSize: 22,
-                      },
-                    ]}
-                  >
-                    {language.success}
-                  </Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.text, { fontSize: 15 }]}>
+                <View style={{ flex: 5, justifyContent: "center"}}>
+                  <Text style={[styles.text, { fontSize: responsiveFontSize(3) }]}>
                     {language.sayings[sayingNr].saying}
                   </Text>
                   <Text
@@ -68,7 +53,7 @@ const CounterModal = ({ onExit, writeComplete, sayingNr }) => {
                     {language.sayings[sayingNr].from}
                   </Text>
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, justifyContent: "center" }}>
                   <Button
                     title={"Ok"}
                     color={"#0080FF"}
@@ -83,7 +68,7 @@ const CounterModal = ({ onExit, writeComplete, sayingNr }) => {
               
             ) : (
               <View style={{height: "100%", width: "100%", justifyContent: "center"}}>
-              <CustomLoader x={50} color={"#0080ff"}/></View>
+              <CustomLoader x={50} color={"#484F78"}/></View>
             )}
             </View>
           </View>
@@ -150,7 +135,7 @@ const styles = StyleSheet.create({
   },
   text: {
     alignSelf: "center",
-    fontFamily: "PoppinsLight",
+    fontFamily: "PoppinsMedium",
     fontSize: 18,
     color: "white",
     maxWidth: 250,

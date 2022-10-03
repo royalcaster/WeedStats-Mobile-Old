@@ -2,6 +2,7 @@
 import React, { useState, useRef, useContext } from "react";
 import {
   Animated,
+  StatusBar,
   StyleSheet,
   Vibration,
   View,
@@ -46,7 +47,8 @@ export default function Home({ handleLogOut, toggleCounter, toggleLanguage, dele
 
   const toggleBorderColor = ( color ) => {
     setBorderColor(color);
-    setTimeout(() => {setBorderColor("#1E2132")}, 200);
+    StatusBar.setBackgroundColor(color);
+    setTimeout(() => {setBorderColor("#1E2132")}, 300);
   }
 
   return (
@@ -65,7 +67,7 @@ export default function Home({ handleLogOut, toggleCounter, toggleLanguage, dele
 
       <Animated.View style={[styles.footer_container,{transform:[{translateY: navSlide}]}]}>
         <View style={styles.options_container}>
-          <View style={{ flexDirection: "row", width: "100%" }}>
+          <View style={{ flexDirection: "row", width: "100%"}}>
             <MenuButton
               onPress={() => {
                 Vibration.vibrate(25);
@@ -177,8 +179,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     position: "absolute",
     flexDirection: "column",
-    height: "100%",
-    backgroundColor: "#1E2132",
+    height: "100%"
   },
   options_pressable: {
     flex: 1,
@@ -189,10 +190,10 @@ const styles = StyleSheet.create({
   footer_container: {
     width: "100%",
     height: "8%",
-    bottom: 0,
+    bottom: -2,
     position: "absolute",
     flexDirection: "row",
-    backgroundColor: "#171717",
+    backgroundColor: "#1E2132",
     justifyContent: "center",
     zIndex: 10,
   }

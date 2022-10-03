@@ -12,7 +12,7 @@ const LanguageSelector = ({ toggleLanguage, value, onVibrate }) => {
         <TouchableNativeFeedback 
             onPress={() => {onVibrate(25); toggleLanguage("de")}}
             background={TouchableNativeFeedback.Ripple("#484F78", false)}>
-            <View style={[styles.touchable, {backgroundColor: value == "de" ? "#0080FF" : "#131520"}]}>
+            <View style={[styles.touchable, {backgroundColor: value == "de" ? "#484F78" : "#131520"}]}>
                 <Image style={styles.language_image} source={require("../../../../data/img/de.png")}/>
             </View>
         </TouchableNativeFeedback>
@@ -20,7 +20,7 @@ const LanguageSelector = ({ toggleLanguage, value, onVibrate }) => {
         <TouchableNativeFeedback 
             onPress={() => {onVibrate(25); toggleLanguage("en")}}
             background={TouchableNativeFeedback.Ripple("#484F78", false)}>
-            <View style={[styles.touchable, {flexDirection: "row", backgroundColor: value == "en" ? "#0080FF" : "#131520"}]}>
+            <View style={[styles.touchable, {flexDirection: "row", backgroundColor: value == "en" ? "#484F78" : "#131520"}]}>
                 <View><Image style={styles.language_image} source={require("../../../../data/img/gb.png")}/></View>
                 <View><Image style={styles.language_image} source={require("../../../../data/img/us.png")}/></View>
             </View>

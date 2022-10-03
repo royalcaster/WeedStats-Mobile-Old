@@ -3,7 +3,7 @@ import React, { useContext, useState } from "react";
 import { StyleSheet, View, Image, Text, TouchableNativeFeedback } from "react-native";
 
 //Third Party
-import { responsiveFontSize } from "react-native-responsive-dimensions";
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 import { LanguageContext } from "../../../../data/LanguageContext";
 
 const ConfigItem = ({ type, config, onToggle }) => {
@@ -13,6 +13,7 @@ const ConfigItem = ({ type, config, onToggle }) => {
   const language = useContext(LanguageContext)
 
   return (
+    <View style={styles.outer_container}>
       <TouchableNativeFeedback 
       onPress={() => {
         onToggle(type);
@@ -30,10 +31,10 @@ const ConfigItem = ({ type, config, onToggle }) => {
             <Image
               style={active ? styles.joint_img_active : styles.joint_img}
               source={require("../../../../data/img/joint.png")}
-            ></Image>
+            ></Image>{/* 
             <Text style={active ? styles.label_active : styles.label}>
               {language.joint}
-            </Text>
+            </Text> */}
           </>
         ) : null}
         {type === "bong" ? (
@@ -41,10 +42,10 @@ const ConfigItem = ({ type, config, onToggle }) => {
             <Image
               style={active ? styles.bong_img_active : styles.bong_img}
               source={require("../../../../data/img/bong.png")}
-            ></Image>
+            ></Image>{/* 
             <Text style={active ? styles.label_active : styles.label}>
             {language.bong}
-            </Text>
+            </Text> */}
           </>
         ) : null}
         {type === "vape" ? (
@@ -52,10 +53,10 @@ const ConfigItem = ({ type, config, onToggle }) => {
             <Image
               style={active ? styles.vape_img_active : styles.vape_img}
               source={require("../../../../data/img/vape.png")}
-            ></Image>
+            ></Image>{/* 
             <Text style={active ? styles.label_active : styles.label}>
             {language.vape}
-            </Text>
+            </Text> */}
           </>
         ) : null}
         {type === "pipe" ? (
@@ -63,10 +64,10 @@ const ConfigItem = ({ type, config, onToggle }) => {
             <Image
               style={active ? styles.pipe_img_active : styles.pipe_img}
               source={require("../../../../data/img/pipe.png")}
-            ></Image>
+            ></Image>{/* 
             <Text style={active ? styles.label_active : styles.label}>
             {language.pipe}
-            </Text>
+            </Text> */}
           </>
         ) : null}
         {type === "cookie" ? (
@@ -75,14 +76,14 @@ const ConfigItem = ({ type, config, onToggle }) => {
               style={active ? styles.cookie_img_active : styles.cookie_img}
               source={require("../../../../data/img/cookie.png")}
             ></Image>
-            <Text style={active ? styles.label_active : styles.label}>
+            {/* <Text style={active ? styles.label_active : styles.label}>
             {language.cookie}
-            </Text>
+            </Text> */}
           </>
         ) : null}
         </View>
       </View>
-      </TouchableNativeFeedback>
+      </TouchableNativeFeedback></View>
   );
 };
 
@@ -90,81 +91,82 @@ export default ConfigItem;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 10,
-    margin: 10,
+    padding: 10,
+    margin: 5,
     marginBottom: 30,
-    borderRadius: 10,
+    borderRadius: 5,
     justifyContent: "center",
     textAlign: "center",
     backgroundColor: "#131520",
-    flex: 1
+    flex: 1,
   },
   container_active: {
-    paddingTop: 10,
-    margin: 10,
+    padding: 10,
+    margin: 5,
     marginBottom: 30,
-    borderRadius: 10,
+    borderRadius: 5,
     justifyContent: "center",
     textAlign: "center",
-    backgroundColor: "#0781E1",
+    backgroundColor: "#484F78",
     flex: 1
   },
   touchable: {
     flex: 1,
+    justifyContent: "center"
   },
   bong_img: {
-    height: 80,
-    width: 45,
+    height: responsiveHeight(6),
+    width: responsiveWidth(7),
     alignSelf: "center",
     opacity: 0.8,
   },
   bong_img_active: {
-    height: 80,
-    width: 45,
+    height: responsiveHeight(6),
+    width: responsiveWidth(7),
     alignSelf: "center",
   },
   joint_img: {
-    height: 80,
-    width: 30,
+    height: responsiveHeight(6),
+    width: responsiveWidth(3),
     alignSelf: "center",
     opacity: 0.8,
   },
   joint_img_active: {
-    height: 80,
-    width: 30,
+    height: responsiveHeight(6),
+    width: responsiveWidth(3),
     alignSelf: "center",
   },
   vape_img: {
-    height: 80,
-    width: 45,
+    height: responsiveHeight(6),
+    width: responsiveWidth(5),
     alignSelf: "center",
     opacity: 0.8,
   },
   vape_img_active: {
-    height: 80,
-    width: 45,
+    height: responsiveHeight(6),
+    width: responsiveWidth(5),
     alignSelf: "center",
   },
   pipe_img: {
-    height: 80,
-    width: 45,
+    height: responsiveHeight(6),
+    width: responsiveWidth(6),
     alignSelf: "center",
     opacity: 0.8,
   },
   pipe_img_active: {
-    height: 80,
-    width: 45,
+    height: responsiveHeight(6),
+    width: responsiveWidth(6),
     alignSelf: "center",
   },
   cookie_img: {
-    height: 80,
-    width: 75,
+    height: responsiveHeight(5),
+    width: responsiveWidth(10),
     alignSelf: "center",
     opacity: 0.8,
   },
   cookie_img_active: {
-    height: 80,
-    width: 75,
+    height: responsiveHeight(5),
+    width: responsiveWidth(10),
     alignSelf: "center",
   },
   label: {
@@ -198,4 +200,8 @@ const styles = StyleSheet.create({
     top: 10,
     left: 10
   },
+  outer_container: {
+    flex: 1,
+    overflow: "hidden"
+  }
 });
