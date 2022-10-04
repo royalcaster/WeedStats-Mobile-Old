@@ -13,19 +13,29 @@ import Empty from "../../common/Empty";
 //Tools
 import moment from "moment";
 import { LanguageContext } from "../../../data/LanguageContext";
+import { ConfigContext } from '../../../data/ConfigContext'
 
 const Main = ({ toggleCounter, toggleBorderColor }) => {
 
   const user = useContext(UserContext);
   const language = useContext(LanguageContext);
+  const config = useContext(ConfigContext);
 
   const headingAnim = useRef(new Animated.Value(-100)).current;
   const leftAnim = useRef(new Animated.Value(-70)).current;
   const rightAnim = useRef(new Animated.Value(70)).current;
 
-  let config = {};
   const [loading, setLoading] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
+
+  const [countdown, setCountDown] = useState(0);
+  const [counterOrder, setCounterOrder] = useState([
+    { type: "joint", counter: user.joint_counter },
+    { type: "bong", counter: user.bong_counter },
+    { type: "vape", counter: user.vape_counter },
+    { type: "pipe", counter: user.pipe_counter },
+    { type: "cookie", counter: user.cookie_counter },
+  ]);
 
   useEffect(() => {
     Animated.timing(headingAnim, {
@@ -49,53 +59,27 @@ const Main = ({ toggleCounter, toggleBorderColor }) => {
       easing: Easing.bezier(0.07, 1, 0.33, 0.89),
     }).start();
 
-    loadSettings();
     calcDaysTill420();
     sortCounterOrder();
   }, []);
 
-  const loadSettings = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem("settings");
-      jsonValue != null ? (config = JSON.parse(jsonValue)) : null;
-
-      let settings = [];
-      !config.showJoint ? settings.push("joint") : null;
-      !config.showBong ? settings.push("bong") : null;
-      !config.showVape ? settings.push("vape") : null;
-      !config.showPipe ? settings.push("pipe") : null;
-      !config.showCookie ? settings.push("cookie") : null;
-
-      let buffer = counterOrder.filter((item) => !settings.includes(item.type));
-      setCounterOrder(buffer);
-      setShowTutorial(config.showTutorial);
-      setLoading(false);
-
-      config.showTutorial = false;
-    } catch (e) {
-      console.log("Error in Laden: ", e);
-    }
-    try {
-      const jsonValue = JSON.stringify(config);
-      await AsyncStorage.setItem("settings", jsonValue);
-    } catch (e) {
-      console.log("Error beim Speichern der Config: ", e);
-    }
-  };
-
-  const [countdown, setCountDown] = useState(0);
-  const [counterOrder, setCounterOrder] = useState([
-    { type: "joint", counter: user.joint_counter },
-    { type: "bong", counter: user.bong_counter },
-    { type: "vape", counter: user.vape_counter },
-    { type: "pipe", counter: user.pipe_counter },
-    { type: "cookie", counter: user.cookie_counter },
-  ]);
-
   const sortCounterOrder = () => {
+
+    let settings = [];
+    !config.showJoint ? settings.push("joint") : null;
+    !config.showBong ? settings.push("bong") : null;
+    !config.showVape ? settings.push("vape") : null;
+    !config.showPipe ? settings.push("pipe") : null;
+    !config.showCookie ? settings.push("cookie") : null;
+
+    let buffer = counterOrder.filter((item) => !settings.includes(item.type));
+    setCounterOrder(buffer);
+    setShowTutorial(config.showTutorial);
+      
     counterOrder.sort((a, b) => {
       return b.counter - a.counter;
     });
+    setLoading(false);
   };
 
   const calcDaysTill420 = () => {
@@ -214,8 +198,26 @@ const Main = ({ toggleCounter, toggleBorderColor }) => {
           <Tutorial renderItem={renderItem} slides={slides} onDone={onDone} extraHeight={50}/>
         </View> : <> 
 
-          <View style={{ height: 50 }}></View>
-          <View style={{ width: "100%", flexDirection: "row"}}>
+          {loading ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CustomLoader x={50} color={"#0080FF"}/>
+            </View>
+          ) : (
+            <>
+              {counterOrder.length == 0 ? (
+                <View style={{height: "90%", justifyContent: "center"}}>
+                  <Empty title={"Keine Stats aktiviert"} tip={"Konfiguriere deine Ansicht in den Einstellungen."}/>
+                </View>
+              ) : <ScrollView style={styles.counters_container}> 
+
+            <View style={{ height: 50 }}></View>
+            <View style={{ width: "100%", flexDirection: "row"}}>
             <Animated.View
               style={{
                 paddingLeft: 15,
@@ -284,23 +286,6 @@ const Main = ({ toggleCounter, toggleBorderColor }) => {
             </Animated.View>
           </View>
 
-          {loading ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <CustomLoader x={50} color={"#0080FF"}/>
-            </View>
-          ) : (
-            <>
-              {counterOrder.length == 0 ? (
-                <View style={{height: "90%", justifyContent: "center"}}>
-                  <Empty title={"Keine Stats aktiviert"} tip={"Konfiguriere deine Ansicht in den Einstellungen."}/>
-                </View>
-              ) : <ScrollView style={styles.counters_container}> 
                 {
                 counterOrder.map((item) => {
                   return (

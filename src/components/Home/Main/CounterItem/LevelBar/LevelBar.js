@@ -27,7 +27,7 @@ const LevelBar = ({ index }) => {
 
     const renderItem = ( level ) => {
         return <>
-        <View style={{backgroundColor: level.key > index ? "#1E2132" : level.colors[0], flex: 1, margin: 1.5, marginHorizontal: 10, borderRadius:2.5}}>
+        <View key={level} style={{backgroundColor: level.key > index ? "#1E2132" : level.colors[0], flex: 1, margin: 1.5, marginHorizontal: 10, borderRadius:2.5}}>
 
         </View>
         </>

@@ -30,23 +30,26 @@ const FriendList = memo(({ setActiveFriend, setShowFriend, getFriendList }) => {
 
     return (
         <Animated.View style={[styles.container]}>
-
-
-           {!loading ?  <>
-            
-            {friendList.length != 0 ? <ScrollView>
-                {friendList.map((friend) => {
-                    return <FriendListItem key={uuid.v4()} userid={friend} onPress={() => {
-                    setActiveFriend(friend);
-                    setShowFriend(true);
-                    }}/>
-            })}
-
-  </ScrollView> : <View style={{height: "90%", justifyContent: "center"}}><Empty title={"Du hast noch keine Freunde"} tip={"Tippe auf das + oben rechts."}/></View>}
-
-  
-</> : <View style={{height: "90%", justifyContent: "center"}}><CustomLoader x={50} color={"#0080FF"}/></View>}
-
+            {!loading ?  
+                <>
+                    {friendList.length != 0 ? 
+                        <ScrollView>
+                            {friendList.map((friend) => {
+                                return <FriendListItem key={uuid.v4()} userid={friend} onPress={() => {
+                                    setActiveFriend(friend);
+                                    setShowFriend(true);
+                                }}/>
+                            })}
+                        </ScrollView>
+                        : 
+                        <View style={{height: "90%", justifyContent: "center"}}>
+                            <Empty title={"Du hast noch keine Freunde"} tip={"Tippe auf das + oben rechts."}/>
+                        </View>}
+                </> 
+                : 
+                <View style={{height: "90%", justifyContent: "center"}}>
+                    <CustomLoader x={50} color={"#0080FF"}/>
+                </View>}
         </Animated.View>
     );
 })

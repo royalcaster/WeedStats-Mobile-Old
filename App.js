@@ -71,6 +71,7 @@ export default function App() {
     loadSettings();
     await checkForUser();
     await getFriendList();
+    console.log(config);
   },[]);
 
   //Holt Einstellungen aus dem AsyncStorage
@@ -579,7 +580,7 @@ export default function App() {
             setWriteComplete(false);
           }}
       >
-        <CounterModal loadingColor={loadingColor} onExit={() => {setModalVisible(!modalVisible); setWriteComplete(false); StatusBar.setBackgroundColor("#1E2132");}} writeComplete={writeComplete} sayingNr={sayingNr}/>    
+        <CounterModal loadingColor={loadingColor} onExit={() => {setModalVisible(!modalVisible); setWriteComplete(false); StatusBar.setBackgroundColor("rgba(0,0,0,0)");}} writeComplete={writeComplete} sayingNr={sayingNr}/>    
       </Modal>
 
 

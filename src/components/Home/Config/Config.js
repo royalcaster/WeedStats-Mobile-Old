@@ -28,12 +28,15 @@ import LanguageSelector from "./LanguageSelector/LanguageSelector";
 
 //Service
 import { LanguageContext } from "../../../data/LanguageContext";
+import { useBackHandler } from "@react-native-community/hooks";
+import { ConfigContext } from "../../../data/ConfigContext";
 
 const Config = ({ toggleLanguage }) => {
 
   const language = useContext(LanguageContext);
+  const config = useContext(ConfigContext);
 
-  const [config, setConfig] = useState();
+  const [localConfig, setLocalConfig] = useState(config);
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(true);
   const [lightmode, setLightMode] = useState(false);
@@ -41,7 +44,6 @@ const Config = ({ toggleLanguage }) => {
 
 
   useEffect(() => {
-    loadSettings();
     LogBox.ignoreAllLogs();
   }, []);
 
@@ -49,7 +51,11 @@ const Config = ({ toggleLanguage }) => {
     Vibration.vibrate(ms);
   }
 
-  const loadSettings = async () => {
+  useBackHandler(() => {
+    return true;
+  });
+
+  /* const loadSettings = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem("settings");
       jsonValue != null ? setConfig(JSON.parse(jsonValue)) : null;
@@ -57,13 +63,13 @@ const Config = ({ toggleLanguage }) => {
       console.log("Error in Config beim Laden: ", e);
     }
     setLoading(false);
-  };
+  }; */
 
   const storeSettings = async () => {
     try {
-      const jsonValue = JSON.stringify(config);
+      const jsonValue = JSON.stringify(localConfig);
       await AsyncStorage.setItem("settings", jsonValue);
-      toggleLanguage(config.language);
+      toggleLanguage(localConfig.language);
     } catch (e) {
       console.log("Error in Config beim Speichern: ", e);
     }
@@ -80,7 +86,7 @@ const Config = ({ toggleLanguage }) => {
   }, [fadeAnim]);
 
   const handleLanguageSwitch = (lang) => {
-    setConfig({...config, language: lang});
+    setLocalConfig({...config, language: lang});
   }
 
   return (
@@ -144,61 +150,60 @@ const Config = ({ toggleLanguage }) => {
           </View>
         </Modal>
 
-        <View style={{ height: responsiveHeight(7) }}></View>
-
         {loading ? (
           <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+            style={{ flex: 1, justifyContent: "center", alignItems: "center"}}
           >
             <CustomLoader x={50} color={"#0080FF"}/>
           </View>
         ) : (
-          <View style={{height: "90%", top: 50, position: "absolute", width: "100%"}}>
+          <View style={{height: "100%", position: "absolute", width: "100%"}}>
           <ScrollView style={{ width: "100%"}}>
+            <View style={{height: 50}}></View>
             <Text style={styles.heading}>{language.config_counter}</Text>
 
             <View style={{ flexDirection: "row", width: "100%" }}>
               <ConfigItem
                 type="joint"
-                config={config.showJoint}
+                config={localConfig.showJoint}
                 onToggle={() => {
-                  setConfig({ ...config, showJoint: !config.showJoint });
+                  setConfig({ ...config, showJoint: !localCconfig.showJoint });
                   vibrate(25);
                   setSaved(false);
                 }}
               ></ConfigItem>
               <ConfigItem
                 type="bong"
-                config={config.showBong}
+                config={localConfig.showBong}
                 onToggle={() => {
-                  setConfig({ ...config, showBong: !config.showBong });
+                  setConfig({ ...config, showBong: !localConfig.showBong });
                   vibrate(25);
                   setSaved(false);
                 }}
               ></ConfigItem>
               <ConfigItem
                 type="vape"
-                config={config.showVape}
+                config={localConfig.showVape}
                 onToggle={() => {
-                  setConfig({ ...config, showVape: !config.showVape });
+                  setConfig({ ...config, showVape: !localConfig.showVape });
                   vibrate(25);
                   setSaved(false);
                 }}
               ></ConfigItem>
               <ConfigItem
                 type="pipe"
-                config={config.showPipe}
+                config={localConfig.showPipe}
                 onToggle={() => {
-                  setConfig({ ...config, showPipe: !config.showPipe });
+                  setConfig({ ...config, showPipe: !localConfig.showPipe });
                   vibrate(25);
                   setSaved(false);
                 }}
               ></ConfigItem>
               <ConfigItem
                 type="cookie"
-                config={config.showCookie}
+                config={localConfig.showCookie}
                 onToggle={() => {
-                  setConfig({ ...config, showCookie: !config.showCookie });
+                  setConfig({ ...config, showCookie: !localConfig.showCookie });
                   vibrate(25);
                   setSaved(false);
                 }}
@@ -222,11 +227,11 @@ const Config = ({ toggleLanguage }) => {
                 }}
               >
                 <Toggle
-                  value={config.shareMainCounter}
+                  value={localConfig.shareMainCounter}
                   onPress={() => {
                     setConfig({
                       ...config,
-                      shareMainCounter: !config.shareMainCounter,
+                      shareMainCounter: !localConfig.shareMainCounter,
                     });
                     vibrate(25);
                     setSaved(false);
@@ -261,12 +266,12 @@ const Config = ({ toggleLanguage }) => {
                 }}
               >
                 <Toggle
-                  disabled={!config.shareMainCounter}
-                  value={config.shareTypeCounters}
+                  disabled={!localConfig.shareMainCounter}
+                  value={localConfig.shareTypeCounters}
                   onPress={() => {
                     setConfig({
                       ...config,
-                      shareTypeCounters: !config.shareTypeCounters,
+                      shareTypeCounters: !localConfig.shareTypeCounters,
                     });
                     vibrate(25);
                     setSaved(false);
@@ -513,7 +518,7 @@ const Config = ({ toggleLanguage }) => {
                   storeSettings();
                 }}
                 borderradius={100}
-                color={"#0080FF"}
+                color={"#484F78"}
                 title={language.config_save}
                 hovercolor={"rgba(255,255,255,0.3)"}
               />
