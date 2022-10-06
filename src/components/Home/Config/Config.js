@@ -17,12 +17,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../../common/Button";
 import ConfigItem from "./ConfigItem/ConfigItem";
 import CustomLoader from "../../common/CustomLoader";
+import ConfigToggle from "./ConfigToggle/ConfigToggle";
 
 //Thirt Party
 import Toggle from "react-native-toggle-element";
 import {
   responsiveHeight,
-  responsiveFontSize
+  responsiveFontSize,
+  responsiveWidth
 } from "react-native-responsive-dimensions";
 import LanguageSelector from "./LanguageSelector/LanguageSelector";
 
@@ -45,6 +47,7 @@ const Config = ({ toggleLanguage }) => {
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
+    config != null ? setLoading(false) : null;
   }, []);
 
   const vibrate = (ms) => {
@@ -160,9 +163,11 @@ const Config = ({ toggleLanguage }) => {
           <View style={{height: "100%", position: "absolute", width: "100%"}}>
           <ScrollView style={{ width: "100%"}}>
             <View style={{height: 50}}></View>
+
+            <Text style={styles.bold_heading}>Settings</Text>
             <Text style={styles.heading}>{language.config_counter}</Text>
 
-            <View style={{ flexDirection: "row", width: "100%" }}>
+            <View style={{ flexDirection: "row", width: "90%", alignSelf: "center"}}>
               <ConfigItem
                 type="joint"
                 config={localConfig.showJoint}
@@ -213,287 +218,106 @@ const Config = ({ toggleLanguage }) => {
             <Text style={styles.heading}>{language.config_personal_data}</Text>
             <View style={{ height: 5 }}></View>
 
-            <View
-              style={styles.toggle_container}
-            >
-              <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>{language.config_share_main_counter}</Text>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Toggle
-                  value={localConfig.shareMainCounter}
-                  onPress={() => {
-                    setConfig({
-                      ...config,
-                      shareMainCounter: !localConfig.shareMainCounter,
-                    });
-                    vibrate(25);
-                    setSaved(false);
-                  }}
-                  trackBar={{
-                    activeBackgroundColor: "#484F78",
-                    inActiveBackgroundColor: "#131520",
-                    width: 50,
-                    height: 25,
-                  }}
-                  thumbButton={{
-                    inActiveBackgroundColor: "white",
-                    activeBackgroundColor: "white",
-                    height: 25,
-                    width: 25,
-                  }}
-                />
-              </View>
-            </View>
+            <ConfigToggle
+              value={localConfig.shareMainCounter}
+              onPress={() => {
+                setLocalConfig({
+                  ...localConfig,
+                  shareMainCounter: !localConfig.shareMainCounter,
+                });
+                vibrate(25);
+                setSaved(false);
+              }}
+              disabled={false}
+              label={language.config_share_main_counter}
+            />
 
-            <View
-              style={styles.toggle_container}
-            >
-              <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>{language.config_share_detail_counter}</Text>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Toggle
-                  disabled={!localConfig.shareMainCounter}
-                  value={localConfig.shareTypeCounters}
-                  onPress={() => {
-                    setConfig({
-                      ...config,
-                      shareTypeCounters: !localConfig.shareTypeCounters,
-                    });
-                    vibrate(25);
-                    setSaved(false);
-                  }}
-                  trackBar={{
-                    activeBackgroundColor: "#484F78",
-                    inActiveBackgroundColor: "#131520",
-                    width: 50,
-                    height: 25,
-                  }}
-                  thumbButton={{
-                    inActiveBackgroundColor: "white",
-                    activeBackgroundColor: "white",
-                    height: 25,
-                    width: 25,
-                  }}
-                />
-              </View>
-            </View>
+            <ConfigToggle
+              label={language.config_share_detail_counter}
+              disabled={!localConfig.shareMainCounter}
+              value={localConfig.shareTypeCounters}
+              onPress={() => {
+                setLocalConfig({
+                  ...localConfig,
+                  shareTypeCounters: !localConfig.shareTypeCounters,
+                });
+                vibrate(25);
+                setSaved(false);
+              }}
+            />
 
-            <View
-              style={styles.toggle_container}
-            >
-              <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>{language.config_share_last_activity}</Text>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Toggle
-                  value={config.shareLastEntry}
-                  onPress={() => {
-                    setConfig({
-                      ...config,
-                      shareLastEntry: !config.shareLastEntry,
-                    });
-                    vibrate(25);
-                    setSaved(false);
-                  }}
-                  trackBar={{
-                    activeBackgroundColor: "#484F78",
-                    inActiveBackgroundColor: "#131520",
-                    width: 50,
-                    height: 25,
-                  }}
-                  thumbButton={{
-                    inActiveBackgroundColor: "white",
-                    activeBackgroundColor: "white",
-                    height: 25,
-                    width: 25,
-                  }}
-                />
-              </View>
-            </View>
+            <ConfigToggle
+              label={language.config_share_last_activity}
+              value={localConfig.shareLastEntry}
+              onPress={() => {
+                setLocalConfig({
+                  ...localConfig,
+                  shareLastEntry: !localConfig.shareLastEntry,
+                });
+                vibrate(25);
+                setSaved(false);
+              }}
+            />
 
-            <View
-              style={styles.toggle_container}
-            >
-              <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>{language.config_get_location}</Text>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Toggle
-                  value={config.saveGPS}
-                  onPress={() => {
-                    setConfig({ ...config, saveGPS: !config.saveGPS });
-                    vibrate(25);
-                    setSaved(false);
-                  }}
-                  trackBar={{
-                    activeBackgroundColor: "#484F78",
-                    inActiveBackgroundColor: "#131520",
-                    width: 50,
-                    height: 25,
-                  }}
-                  thumbButton={{
-                    inActiveBackgroundColor: "white",
-                    activeBackgroundColor: "white",
-                    height: 25,
-                    width: 25,
-                  }}
-                />
-              </View>
-            </View>
+            <ConfigToggle
+              label={language.config_get_location}
+              value={localConfig.saveGPS}
+              onPress={() => {
+                setLocalConfig({ ...localConfig, saveGPS: !localConfig.saveGPS });
+                vibrate(25);
+                setSaved(false);
+              }}
+            />
 
-            <View
-              style={styles.toggle_container}
-            >
-              <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>{language.config_share_location}</Text>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Toggle
-                  disabled={!config.saveGPS}
-                  value={config.shareGPS}
-                  onPress={() => {
-                    setConfig({
-                      ...config,
-                      shareGPS: !config.shareGPS,
-                    });
-                    vibrate(25);
-                    setSaved(false);
-                  }}
-                  trackBar={{
-                    activeBackgroundColor: "#484F78",
-                    inActiveBackgroundColor: "#131520",
-                    width: 50,
-                    height: 25,
-                  }}
-                  thumbButton={{
-                    inActiveBackgroundColor: "white",
-                    activeBackgroundColor: "white",
-                    height: 25,
-                    width: 25,
-                  }}
-                />
-              </View>
-            </View>
+            <ConfigToggle
+              label={language.config_share_location}
+              disabled={!localConfig.saveGPS}
+              value={localConfig.shareGPS}
+              onPress={() => {
+                setLocalConfig({
+                  ...localConfig,
+                  shareGPS: !localConfig.shareGPS,
+                });
+                vibrate(25);
+                setSaved(false);
+              }}
+            />
 
             <View style={{ height: 30 }}></View>
 
             <Text style={styles.heading}>{language.config_security}</Text>
             <View style={{ height: 5 }}></View>
 
-            <View
-              style={styles.toggle_container}
-            >
-              <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>{language.config_unlock_on_launch}</Text>
-              </View>
-            <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Toggle
-                  value={config.localAuthenticationRequired}
-                  onPress={() => {
-                    setConfig({
-                      ...config,
-                      localAuthenticationRequired: !config.localAuthenticationRequired,
-                    });
-                    vibrate(25);
-                    setSaved(false);
-                  }}
-                  trackBar={{
-                    activeBackgroundColor: "#484F78",
-                    inActiveBackgroundColor: "#131520",
-                    width: 50,
-                    height: 25,
-                  }}
-                  thumbButton={{
-                    inActiveBackgroundColor: "white",
-                    activeBackgroundColor: "white",
-                    height: 25,
-                    width: 25,
-                  }}
-                />
-              </View>
-            </View>
+            <ConfigToggle
+            label={language.config_unlock_on_launch}
+              value={localConfig.localAuthenticationRequired}
+              onPress={() => {
+                setLocalConfig({
+                  ...localConfig,
+                  localAuthenticationRequired: !localConfig.localAuthenticationRequired,
+                });
+                vibrate(25);
+                setSaved(false);
+              }}
+            />
 
             <View style={{ height: 30 }}></View>
 
             <Text style={styles.heading}>{language.config_language}</Text>
             <View style={{ height: 5 }}></View>
 
-            <LanguageSelector toggleLanguage={(lang) => {handleLanguageSwitch(lang); setSaved(false)}} value={config.language} onVibrate={() => vibrate(25)}/>
+            <LanguageSelector toggleLanguage={(lang) => {handleLanguageSwitch(lang); setSaved(false)}} value={localConfig.language} onVibrate={() => vibrate(25)}/>
 
             <View style={{ height: 30 }}></View>
 
             <Text style={styles.heading}>{language.config_other}</Text>
             <View style={{ height: 5 }}></View>
 
-            <View
-              style={styles.toggle_container}
-            >
-              <View style={{ flex: 4, justifyContent: "center" }}>
-                <Text style={styles.label}>{language.config_lightmode}</Text>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Toggle
-                  value={lightmode}
-                  onPress={(val) => {setLightMode(val); vibrate(25);}}
-                  trackBar={{
-                    activeBackgroundColor: "#484F78",
-                    inActiveBackgroundColor: "#131520",
-                    width: 50,
-                    height: 25,
-                  }}
-                  thumbButton={{
-                    inActiveBackgroundColor: "white",
-                    activeBackgroundColor: "white",
-                    height: 25,
-                    width: 25,
-                  }}
-                />
-              </View>
-            </View>
+            <ConfigToggle
+              label={language.config_lightmode}
+              value={lightmode}
+              onPress={(val) => {setLightMode(true); vibrate(25);}}
+            />
 
           <View style={{ height: responsiveHeight(10) }}></View>
           </ScrollView>
@@ -569,5 +393,11 @@ const styles = StyleSheet.create({
     height: 40,
     width: "95%",
     alignContent: "center",
+  },
+  bold_heading: {
+    color: "white",
+    fontFamily: "PoppinsBlack",
+    fontSize: responsiveFontSize(4),
+    marginLeft: responsiveWidth(5)
   }
 });

@@ -92,7 +92,7 @@ export default ConfigItem;
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    margin: 5,
+    margin: 2.5,
     marginBottom: 30,
     borderRadius: 5,
     justifyContent: "center",
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   container_active: {
     padding: 10,
-    margin: 5,
+    margin: 2.5,
     marginBottom: 30,
     borderRadius: 5,
     justifyContent: "center",
@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
   },
   outer_container: {
     flex: 1,
-    overflow: "hidden"
+    overflow: "hidden",
+    marginHorizontal: 0
   }
 });

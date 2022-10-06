@@ -24,6 +24,7 @@ import { responsiveHeight, responsiveFontSize } from "react-native-responsive-di
 //Serice
 import { UserContext } from "../../../data/UserContext";
 import { LanguageContext } from "../../../data/LanguageContext";
+import { responsiveWidth } from "react-native-responsive-dimensions";
 
 const Groups = ({ handleLogOut, toggleNavbar, deleteAccount, getFriendList }) => {
 
@@ -80,7 +81,7 @@ const Groups = ({ handleLogOut, toggleNavbar, deleteAccount, getFriendList }) =>
       <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
         <View style={{ height: responsiveHeight(7) }}></View>
         <View style={{ alignItems: "center", flexDirection: "row", marginBottom: 20}}>
-          <Text style={styles.heading}>{language.friends_friends}</Text>
+          <Text style={styles.bold_heading}>{language.friends_friends}</Text>
           <View
             style={{ flexDirection: "row", right: 0, position: "absolute" }}
           >
@@ -213,5 +214,11 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         fontFamily: "PoppinsLight",
         fontSize: 12
+    },
+    bold_heading: {
+      color: "white",
+      fontFamily: "PoppinsBlack",
+      fontSize: responsiveFontSize(4),
+      marginLeft: responsiveWidth(5)
     }
 });

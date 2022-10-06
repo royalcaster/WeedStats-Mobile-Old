@@ -117,6 +117,7 @@ export default function App() {
     } catch (e) {
       console.log("Error in Config beim Laden: ", e);
     }
+    console.log("Einstellungen geladen");
     setLoading(false);
   };
 
@@ -310,7 +311,7 @@ export default function App() {
   }
 
   const [loaded] = useFonts({
-    PoppinsBlack: require("./assets/fonts/Poppins-Black.ttf"),
+    PoppinsBlack: require("./assets/fonts/Poppins-Bold.ttf"),
     PoppinsMedium: require("./assets/fonts/Poppins-Medium.ttf"),
     PoppinsLight: require("./assets/fonts/Poppins-Light.ttf"),
   });
