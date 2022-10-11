@@ -11,7 +11,7 @@ const BreakPanel = ({ streakData, currentBreak, currentBreakStart, longestBreak,
     const language = useContext(LanguageContext);
 
     return (
-        <Animated.View style={[styles.card_container_wide,{width: Dimensions.get("window").width - 100}]}>
+        <Animated.View style={[styles.card_container_wide,{width: "100%"}]}>
 
             <View style={styles.cosmetic}></View>
 

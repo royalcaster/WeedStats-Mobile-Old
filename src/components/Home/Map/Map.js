@@ -64,9 +64,28 @@ const Map = ({ getFriendList }) => {
   useEffect(() => {
     if (localData != null) {
       setLocalDataLoaded(true);
-      console.log(filterNull(localData));
     }
   },[localData]);
+
+  useEffect(() => {
+    /* if (view == "heatmap" && localData.length != 0) {
+      setRegion({
+        latitude: localData[0].latitude,
+        longitude: localData[0].longitude,
+        latitudeDelta: 4,
+        longitudeDelta: 4
+      });
+    }
+
+    if (view == "friends" && markers.length != 0) {
+      setRegion({
+        latitude: markers[0].latitude,
+        longitude: markers[0].longitude,
+        latitudeDelta: 2,
+        longitudeDelta: 2
+      });
+    } */
+  },[view]);
 
   const loadData = async () => {
     try {
@@ -151,7 +170,7 @@ const Map = ({ getFriendList }) => {
               flex: 2,
               flexDirection: "column",
               paddingLeft: 15,
-              height: "80%",
+              height: "80%"
             }}
           >
             <View style={{ flex: 2 }}>
@@ -161,7 +180,7 @@ const Map = ({ getFriendList }) => {
                   fontFamily: "PoppinsMedium",
                   height: "100%",
                   textAlignVertical: "center",
-                  fontSize: 17,
+                  fontSize: responsiveFontSize(2.5)
                 }}
               >
                 {item.username}
@@ -171,10 +190,10 @@ const Map = ({ getFriendList }) => {
               <Text
                 style={{
                   color: "rgba(255,255,255,0.75)",
-                  fontFamily: "PoppinsLight",
+                  fontFamily: "PoppinsMedium",
                   height: "100%",
                   textAlignVertical: "center",
-                  fontSize: 13,
+                  fontSize: responsiveFontSize(1.4),
                 }}
               >
                 {chopTimeStamp(item.timestamp)[0]}
@@ -184,10 +203,10 @@ const Map = ({ getFriendList }) => {
               <Text
                 style={{
                   color: "rgba(255,255,255,0.75)",
-                  fontFamily: "PoppinsLight",
+                  fontFamily: "PoppinsMedium",
                   height: "100%",
                   textAlignVertical: "center",
-                  fontSize: 13,
+                  fontSize: responsiveFontSize(1.4),
                 }}
               >
                 {chopTimeStamp(item.timestamp)[1]}
@@ -300,6 +319,7 @@ const Map = ({ getFriendList }) => {
             loadingEnabled={true}
             loadingBackgroundColor={"#131520"}
             loadingIndicatorColor={"#484F78"}
+            
           >
             {view == "heatmap" ? 
             <>
@@ -319,7 +339,8 @@ const Map = ({ getFriendList }) => {
 
             {view == "friends" ? (
               <>
-                {markers.map((marker, index) => (
+                {<>{
+                markers.map((marker, index) => (
                   <Marker
                     tracksViewChanges={false}
                     key={uuid.v4()}
@@ -334,7 +355,7 @@ const Map = ({ getFriendList }) => {
                       type={marker.type}
                     />
                   </Marker>
-                ))}
+                ))}</>}
               </>
             ) : null}
           </MapView>
@@ -342,18 +363,20 @@ const Map = ({ getFriendList }) => {
           {view == "heatmap" && localData.length == 0 ?
           <View style={{position: "absolute", backgroundColor: mapType == "standard" ? "rgba(0,0,0,0.35)" : "rgba(0,0,0,0.9)", height: "100%", width: "100%"}}>
             <Empty title={"Noch keine Einträge"} tip={"Mache Eintrge, um die Heatmap zu sehen."}/>
-          </View>
-          :
-          null}
+          </View> : null}
+
+          {view == "friends" && markers.length == 0 ?
+          <View style={{position: "absolute", backgroundColor: mapType == "standard" ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0.9)", height: "100%", width: "100%"}}>
+            <Empty title={"Noch keine Freunde"} tip={"Oder deine Freunde teilen ihre letzte Aktivität nicht."}/>
+          </View> : null}
 
           <View style={styles.iconbutton_container}>
-              <IconButton icon={view == "heatmap" ? friends_icon : map_icon} onPress={() => {view == "heatmap" ? setView("friends") : setView("heatmap"); Vibration.vibrate(50)}}/>
+              <IconButton backgroundColor={"#484F78"} icon={view == "heatmap" ? friends_icon : map_icon} onPress={() => {view == "heatmap" ? setView("friends") : setView("heatmap"); Vibration.vibrate(50)}}/>
               <Text style={styles.iconbutton_label}>{view == "heatmap" ? "Freunde" : "Heatmap"}</Text>
               <View style={{height: 10}}></View>
-              <IconButton icon={switch_icon} onPress={toggleMapType}/>
+              <IconButton backgroundColor={"#484F78"}  icon={switch_icon} onPress={toggleMapType}/>
               <Text style={styles.iconbutton_label}>{mapType == "standard" ? "Satellite" : "Standard"}</Text>
           </View>
-                  
           </>
         ) : null}
 
@@ -439,7 +462,7 @@ const styles = StyleSheet.create({
     bottom: responsiveHeight(15),
     right: 0,
     position: "absolute",
-    backgroundColor: "#131520",
+    backgroundColor: "#1E2132",
     padding: 10,
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10

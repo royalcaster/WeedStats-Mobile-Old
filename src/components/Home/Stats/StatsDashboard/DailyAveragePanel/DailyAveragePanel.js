@@ -12,7 +12,7 @@ const DailyAveragePanel = ({selectedType, value}) => {
 
     const language = useContext(LanguageContext);
 
-    return (<LinearGradient colors={["#369bff","#0080FF","#004e9c"]} style={{borderRadius: 10, padding: 20, width: 250}}>
+    return (<LinearGradient colors={["#369bff","#0080FF","#004e9c"]} style={{borderRadius: 10, padding: 20, width: "100%"}}>
     {selectedType === "main" ? (
       <Animated.View
         style={{width: "50%", alignSelf: "center"}}>

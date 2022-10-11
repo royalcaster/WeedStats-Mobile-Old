@@ -1,9 +1,9 @@
 import React from "react";
 import { Animated, View, StyleSheet,TouchableNativeFeedback } from "react-native";
 
-const IconButton = ({icon, onPress}) => {
+const IconButton = ({icon, onPress, backgroundColor }) => {
     return (
-        <Animated.View style={styles.container}>
+        <Animated.View style={[styles.container, {backgroundColor: backgroundColor ? backgroundColor : "#1E2132"}]}>
             <TouchableNativeFeedback
         onPress={() => {
           onPress();
@@ -23,7 +23,6 @@ export default IconButton
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#1E2132",
         borderRadius: 100,
         height: 60,
         width: 60

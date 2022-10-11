@@ -18,7 +18,7 @@ import toGermanDate from "../../../../data/DateConversion";
 //Third Party
 import SwitchSelector from "react-native-switch-selector";
 import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
-import { responsiveWidth } from "react-native-responsive-dimensions";
+import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 
 //Service
 import { calcDailyAverage, filterByType, filterByMostRecent, getEntryDates, getBreakDates, createLineChartData, createBarChartData, calcStreak } from "../../../../data/Service";
@@ -153,7 +153,7 @@ const StatsDashboard = ({ localData }) => {
 
         
 
-        <View style={{ width: "95%"}}>
+        <View style={{ width: "90%"}}>
           <SwitchSelector
             options={options_type}
             initial={0}
@@ -171,14 +171,14 @@ const StatsDashboard = ({ localData }) => {
 
         <View style={{ height: 30 }}></View>
 
-        <View style={{ alignItems: "center", flex: 1 }}>
+        <View style={{ alignItems: "center", flex: 1, width: "90%" }}>
 
           <DailyAveragePanel 
             selectedType={selectedType} 
             value={Math.round(calcDailyAverage(filterByType(localData, selectedType), localData) * 100) / 100}
           />
 
-          <View style={{ height: 30 }}></View>
+          <View style={{ height: responsiveHeight(2.5) }}></View>
 
 
 
@@ -186,10 +186,9 @@ const StatsDashboard = ({ localData }) => {
             style={{
               flexDirection: "row",
               width: "100%",
-              justifyContent: "space-evenly"
+              justifyContent: "space-between"
             }}
           >
-
             <StatsCard title={"Ø " + language.stats_week} value={Math.round(
                   calcDailyAverage(filterByType(localData, selectedType), localData) *
                     7 *
@@ -210,12 +209,14 @@ const StatsDashboard = ({ localData }) => {
             />
           </View>
 
-          <View style={{height: 20}}></View>
+          <View style={{height: responsiveHeight(2.5)}}></View>
+
+          <View style={{width: "100%"}}>
 
           <Text
             style={[
               styles.card_label,
-              { marginTop: 15, fontSize: 18, color: "#c4c4c4" },
+              {alignSelf: "center", fontSize: responsiveFontSize(2), color: "white", fontFamily: "PoppinsMedium", marginBottom: 10},
             ]}
           >
             {selectedType === "main" ? language.activities : null}
@@ -228,7 +229,7 @@ const StatsDashboard = ({ localData }) => {
           <View
             style={{
               flexDirection: "row",
-              width: "98%",
+              width: "100%",
               flex: 1,
               justifyContent: "space-evenly"
             }}
@@ -263,7 +264,7 @@ const StatsDashboard = ({ localData }) => {
               <Text
                 style={[
                   styles.card_label,
-                  { marginTop: 0, textAlign: "center" },
+                  {marginTop: 0, textAlign: "center"},
                 ]}
               >
                 {language.stats_7d}
@@ -317,12 +318,14 @@ const StatsDashboard = ({ localData }) => {
             </View>
           </View>
 
-          <View style={{height: 20}}></View>
+          </View>
+
+          <View style={{height: responsiveHeight(2.5)}}></View>
           
           
           {selectedType === "main" ? (
             <>
-              <StreakPanel 
+              <StreakPanel
                 streakData={streakData}
                 currentStreak={streakData.currentStreak}
                 currentStreakStart={streakData.within ? streakData.startCurrent: null}
@@ -333,7 +336,7 @@ const StatsDashboard = ({ localData }) => {
 
               <View style={{ height: 10 }}></View>
 
-              <BreakPanel 
+              <BreakPanel
                 streakData={streakData}
                 currentBreak={streakData.currentBreak}
                 currentBreakStart={streakData.startCurrentBreak}
@@ -359,7 +362,7 @@ const StatsDashboard = ({ localData }) => {
             buttonColor={"#0080FF"}
             textStyle={{ fontFamily: "PoppinsLight", fontSize: 12, height: "100%", width: "100%"}}
             selectedTextStyle={{ fontFamily: "PoppinsBlack", fontSize: 12}}
-            style={{backgroundColor: "#131520", borderRadius: 10, width: "95%"}}
+            style={{backgroundColor: "#131520", borderRadius: 10, width: "100%"}}
             selectedTextContainerStyle={{borderRadius: 10, backgroundColor: "#0080FF", height: "100%", width: "100%"}}
           />
 
@@ -368,7 +371,7 @@ const StatsDashboard = ({ localData }) => {
            <LineChart
             style={{
               marginVertical: 10,
-              borderRadius: 25
+              borderRadius: 10
             }}
             data={{
               labels: createLineChartData(
@@ -416,7 +419,7 @@ const StatsDashboard = ({ localData }) => {
           <BarChart
             style={{
               marginVertical: 10,
-              borderRadius: 25
+              borderRadius: 10
             }}
             data={{
               labels: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
@@ -446,7 +449,7 @@ const StatsDashboard = ({ localData }) => {
             <PieChart
               style={{
                 marginVertical: 10,
-                borderRadius: 25
+                borderRadius: 10
               }}
               data={[
                 {

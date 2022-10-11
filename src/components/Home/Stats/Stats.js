@@ -56,10 +56,10 @@ const Stats = () => {
 
   return (
     <Animated.View style={[{ opacity: 1 }, styles.container]}>
-      {localDataLoaded && localData.length != 0 ? (
+      {/* {localDataLoaded && localData.length != 0 ? (
         <StatsDashboard localData={localData} />
-      ) : <CustomLoader x={50} color={"#484F78"}/>}
-
+      ) : <CustomLoader x={50} color={"#484F78"}/>} */}
+    <CustomLoader x={50} color={"#484F78"}/>
     </Animated.View>
   );
 };
