@@ -149,6 +149,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar, deleteAccount }) =>
                     height: "100%",
                     textAlignVertical: "center",
                     fontSize: responsiveFontSize(3.5),
+                    fontFamily: "PoppinsMedium"
                   },
                 ]}
               >
@@ -156,7 +157,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar, deleteAccount }) =>
               </Text>
             </View>
             <View style={{ flex: 1}}>
-              <Text style={[styles.text, { fontSize: responsiveFontSize(2), maxWidth: "80%"}]}>
+              <Text style={[styles.text, { fontSize: responsiveFontSize(2), maxWidth: "80%", fontFamily: "PoppinsMedium"}]}>
                 {language.delete_account_text}
               </Text>
             </View>
@@ -238,6 +239,7 @@ const Account = ({ handleLogOut, onexit, show, toggleNavbar, deleteAccount }) =>
                     height: "100%",
                     textAlignVertical: "center",
                     fontSize: responsiveFontSize(3.5),
+                    fontFamily: "PoppinsMedium"
                   },
                 ]}
               >

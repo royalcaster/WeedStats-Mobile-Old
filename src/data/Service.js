@@ -177,7 +177,7 @@ export const getRelevantKeys = async (user) => {
 };
 
 // Holt alle Einträge-Daten aus dem lokalen Speicher
-export const getLocalData = async (user) => {
+export const getLocalData = async (user, callback) => {
   let buffer = [];
   try {
     const jsonData = await AsyncStorage.multiGet(await getRelevantKeys(user));
@@ -185,6 +185,7 @@ export const getLocalData = async (user) => {
     buffer.sort((a, b) => {
       return a.number - b.number;
     });
+    callback();
     return buffer;
   } catch (e) {
     console.log("Fehler beim Laden der Einträge Daten aus dem Lokalen Speicher:", e);
@@ -337,4 +338,10 @@ if (x > 0 && x < 8) {
 else {
   return null;
 }
+}
+
+export const getLastMessage = (timestamp) => {
+  const last_entry = new Date(timestamp * 1000);
+
+  return last_entry.toISOString()
 }

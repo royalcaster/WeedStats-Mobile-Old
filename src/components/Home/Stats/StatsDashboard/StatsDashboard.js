@@ -18,6 +18,7 @@ import toGermanDate from "../../../../data/DateConversion";
 //Third Party
 import SwitchSelector from "react-native-switch-selector";
 import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
+import { responsiveWidth } from "react-native-responsive-dimensions";
 
 //Service
 import { calcDailyAverage, filterByType, filterByMostRecent, getEntryDates, getBreakDates, createLineChartData, createBarChartData, calcStreak } from "../../../../data/Service";
@@ -121,9 +122,9 @@ const StatsDashboard = ({ localData }) => {
     <ScrollView style={styles.container}>
       <Animated.View style={{ opacity: 1, alignItems: "center"}}>
         <View style={{ height: 50 }}></View>
-        <View style={{flexDirection: "row", width: "100%"}}>
-        <Text style={styles.heading2}>{language.stats_overview}</Text>
-        <View style={{flexDirection: "row",right: 10, top: -10,position: "absolute"}}>
+        <View style={{flexDirection: "row", width: "100%", alignItems: "center"}}>
+        <Text style={styles.bold_heading}>{language.stats_overview}</Text>
+        <View style={{flexDirection: "row",right: 10, top: -5, position: "absolute"}}>
         <TouchableNativeFeedback
               background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.1)", true)}
               onPress={() => setShowHistory(true)}
@@ -345,7 +346,7 @@ const StatsDashboard = ({ localData }) => {
 
           <View style={{ height: 30 }}></View>
 
-          <Text style={styles.heading2}>{language.stats_graphs}</Text>
+          <Text style={[styles.bold_heading,{alignSelf: "flex-start"}]}>{language.stats_graphs}</Text>
           <View style={{ height: 10 }}></View>
 
           <SwitchSelector
@@ -510,7 +511,7 @@ const StatsDashboard = ({ localData }) => {
               paddingLeft={"15"}
             />
           ) : null}
-        </View>
+        </View> 
       </Animated.View>
     </ScrollView>
     </>
@@ -609,5 +610,11 @@ const styles = StyleSheet.create({
     fontFamily: "PoppinsMedium",
     marginLeft: 20,
     alignSelf: "flex-start",
+  },
+  bold_heading: {
+    color: "white",
+    fontFamily: "PoppinsBlack",
+    fontSize: responsiveFontSize(4),
+    marginLeft: responsiveWidth(5)
   }
 });

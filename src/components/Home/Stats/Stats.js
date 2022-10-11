@@ -20,7 +20,7 @@ const Stats = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect( async () => {
-    localDataLoaded ? null : setLocalData(await getLocalData(user));
+    localDataLoaded ? null : setLocalData(await getLocalData(user, () => setLocalDataLoaded(true)));
     setLocalDataLoaded(true);
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -28,7 +28,6 @@ const Stats = () => {
       useNativeDriver: true,
       easing: Easing.bezier(0.07, 1, 0.33, 0.89),
     }).start();
-    console.debug(localData);
   }, []);
 
   // Zum Löschen einzelner Daten aus der History. Erstmal entfernt, da die Konsistenz der Daten nach aktuellem Stand darunter leidet
@@ -59,7 +58,8 @@ const Stats = () => {
     <Animated.View style={[{ opacity: 1 }, styles.container]}>
       {localDataLoaded && localData.length != 0 ? (
         <StatsDashboard localData={localData} />
-      ) : <CustomLoader x={50} color={"#0080ff"}/>}
+      ) : <CustomLoader x={50} color={"#484F78"}/>}
+
     </Animated.View>
   );
 };

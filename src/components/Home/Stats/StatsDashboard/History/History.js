@@ -59,7 +59,7 @@ const History = ({ show, onExit, history}) => {
   const hide = () => {
     Animated.timing(pan, {
       toValue: screen_width * -1,
-      duration: 200,
+      duration: 300,
       useNativeDriver: true
     }).start(({ finished }) => {
       if (finished) {

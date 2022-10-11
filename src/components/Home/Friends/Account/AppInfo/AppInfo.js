@@ -58,7 +58,7 @@ const AppInfo = ({ onExit, show }) => {
               <View style={{flex: 1, justifyContent: "center"}}>
                 <Image style={{height: responsiveHeight(12), width: responsiveHeight(12), alignSelf: "center"}} source={require('../../../../../data/img/logo.png')}/>
                 <Text style={[styles.text, { fontSize: responsiveFontSize(2) }]}>
-                  Version 0.2
+                  Version 0.25
                 </Text>
 
                 <View style={{ height: responsiveHeight(5)}}></View>

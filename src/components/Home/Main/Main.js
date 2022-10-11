@@ -14,6 +14,7 @@ import Empty from "../../common/Empty";
 import moment from "moment";
 import { LanguageContext } from "../../../data/LanguageContext";
 import { ConfigContext } from '../../../data/ConfigContext'
+import { responsiveFontSize } from "react-native-responsive-dimensions";
 
 const Main = ({ toggleCounter, toggleBorderColor }) => {
 
@@ -185,7 +186,6 @@ const Main = ({ toggleCounter, toggleBorderColor }) => {
   }
 
   const onDone = () => {
-    console.debug(config);
     setShowTutorial(false);
     tutorialSeen();
   }
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   },
   main_heading: {
     color: "white",
-    fontSize: 30,
+    fontSize: responsiveFontSize(4),
     fontFamily: "PoppinsBlack",
     position: "relative",
   },

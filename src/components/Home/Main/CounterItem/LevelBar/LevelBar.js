@@ -2,6 +2,7 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { Animated, Dimensions, StyleSheet, Easing, View } from "react-native";
 import { LanguageContext } from "../../../../../data/LanguageContext";
+import uuid from 'react-native-uuid'
 
 const LevelBar = ({ index }) => {
 
@@ -25,7 +26,7 @@ const LevelBar = ({ index }) => {
         }).start()
     }
 
-    const renderItem = ( level ) => {
+    const RenderItem = ({ level }) => {
         return <>
         <View key={level} style={{backgroundColor: level.key > index ? "#1E2132" : level.colors[0], flex: 1, margin: 1.5, marginHorizontal: 10, borderRadius:2.5}}>
 
@@ -37,7 +38,7 @@ const LevelBar = ({ index }) => {
         <Animated.View style={[styles.container,{transform:[{translateY: slide}]}]}>
             
             {language.levels.slice(0).reverse().map(level => {
-                return renderItem(level);
+                return <RenderItem level={level} key={uuid.v4()}/>;
             })}
 
         </Animated.View>

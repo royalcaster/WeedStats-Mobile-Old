@@ -2,11 +2,12 @@
 import React from "react";
 import { View, StyleSheet,TouchableNativeFeedback, Image } from "react-native";
 
-const MenuButton = ({type, url, icon, color, borderradius, onPress}) => {
+const MenuButton = ({type, url, icon, color, borderradius, onPress, disabled}) => {
         
     return (
       <View style={[{backgroundColor: color, borderRadius: borderradius},styles.container]}>
       <TouchableNativeFeedback
+      disabled={disabled}
         onPress={() => {
           onPress();
         }}

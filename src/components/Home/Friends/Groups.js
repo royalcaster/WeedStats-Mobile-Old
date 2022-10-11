@@ -80,7 +80,7 @@ const Groups = ({ handleLogOut, toggleNavbar, deleteAccount, getFriendList }) =>
 
       <Animated.View style={[{ opacity: fadeAnim }, styles.container]}>
         <View style={{ height: responsiveHeight(7) }}></View>
-        <View style={{ alignItems: "center", flexDirection: "row", marginBottom: 20}}>
+        <View style={{ alignItems: "center", flexDirection: "row", marginBottom: 0}}>
           <Text style={styles.bold_heading}>{language.friends_friends}</Text>
           <View
             style={{ flexDirection: "row", right: 0, position: "absolute" }}

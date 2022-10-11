@@ -4,7 +4,7 @@ import { Animated, Dimensions, StyleSheet, Easing, TouchableNativeFeedback, View
 import { responsiveFontSize } from "react-native-responsive-dimensions";
 import Toggle from "react-native-toggle-element";
 
-const ConfigToggle = ({ label, value, onPress, disabled }) => {
+const ConfigToggle = ({ label, value, onPress, disabled, scrolling }) => {
 
     const screen_height = Dimensions.get("screen").height;
     const screen_width = Dimensions.get("screen").width;
@@ -15,7 +15,7 @@ const ConfigToggle = ({ label, value, onPress, disabled }) => {
 
 
     return <View style={styles.container}>
-            <TouchableNativeFeedback disabled={disabled} background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.25)", false)} onPress={onPress}>
+            <TouchableNativeFeedback delayPressIn={50} disabled={disabled || scrolling} background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.25)", false)} onPress={onPress}>
                 <View style={styles.touchable}>
                     <View style={{flex: 5}}>
                         <Text style={[styles.label,{color: disabled ? "#484F78" : "white"}]}>{label}</Text>

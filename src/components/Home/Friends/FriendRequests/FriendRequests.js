@@ -35,7 +35,7 @@ import { firestore } from "../../../../data/FirebaseConfig";
 import { UserContext } from "../../../../data/UserContext";
 import { LanguageContext } from "../../../../data/LanguageContext";
 
-const FriendResquests = ({ onExit, refresh }) => {
+const FriendRequests = ({ onExit, refresh }) => {
 
   const user = useContext(UserContext);
   const language = useContext(LanguageContext);
@@ -314,7 +314,7 @@ const FriendResquests = ({ onExit, refresh }) => {
 
         {loading ? (
           <View style={{height: "100%", justifyContent: "center"}}>
-            <CustomLoader x={50} color={"#0080FF"}/>
+            <CustomLoader x={50} color={"#484F78"}/>
           </View>
         ) : (
           <>
@@ -330,7 +330,10 @@ const FriendResquests = ({ onExit, refresh }) => {
                       />
                     );
                   })
-                ) : null}
+                ) : 
+                <View style={{height: "100%", width: "100%", justifyContent: "center"}}>
+                <Empty title={"test"} tip={"test"}/>
+                </View>}
               </ScrollView>
             ) : 
             <View style={{flex: 1}}><Empty title={"Du hast noch keine Anfragen."} tip={"Das wird schon noch!"}/></View>}
@@ -341,7 +344,7 @@ const FriendResquests = ({ onExit, refresh }) => {
   );
 };
 
-export default FriendResquests;
+export default FriendRequests;
 
 const styles = StyleSheet.create({
   container: {

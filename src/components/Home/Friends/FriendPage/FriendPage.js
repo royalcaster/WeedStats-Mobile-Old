@@ -9,7 +9,7 @@ import BackButton from "../../../common/BackButton";
 import CustomLoader from "../../../common/CustomLoader";
 
 //Third Party
-import { responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
+import { responsiveHeight, responsiveFontSize, responsiveWidth } from "react-native-responsive-dimensions";
 import Antdesign from "react-native-vector-icons/AntDesign";
 
 //Konstanten
@@ -76,7 +76,7 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
 
     Animated.timing(opacityAnim2,{
       /* delay: 400, */
-      toValue: 0.2,
+      toValue: 0.3,
       duration: 300,
       useNativeDriver: true,
     }).start();
@@ -145,9 +145,8 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
   const hide = () => {
     Animated.timing(pan, {
       toValue: screen_width,
-      duration: 400,
-      useNativeDriver: true,
-      easing: Easing.bezier(0, 1.02, 0.21, 0.97),
+      duration: 200,
+      useNativeDriver: true
     }).start(({ finished }) => {
       if (finished) {
         onExit();
@@ -272,7 +271,7 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
         
         <Animated.View
         {...panResponder.panHandlers}
-          style={[styles.container, { transform: [{ translateX: pan }], height: Dimensions.get("window").height }]}
+          style={[styles.container, { transform: [{ translateX: pan }], height: Dimensions.get("screen").height }]}
         >
           <Modal
             animationType="fade"
@@ -367,7 +366,7 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
               position: "relative",
               width: "100%",
               justifyContent: "center",
-              flex: 3
+              flex: 2
             }}
           >
             <View style={{position: "absolute", zIndex: 20, left: 15, top: responsiveHeight(1)}}>
@@ -400,18 +399,17 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
                   width: "100%",
                   alignSelf: "center",
                   position: "relative",
-                  flex: 4
+                  flex: 2
                 }}
               >
-                <Text style={styles.label}>COUNTER</Text>
                 
                 {!loading ? <>
                 {user.main_counter ? (
                   <Animated.View style={{height: responsiveHeight(8), opacity: opacityAnim, transform: [{translateX: slideAnim2}]}}>
-                    <Text style={[styles.value, {justifyContent: "center"}]}>{user.main_counter}</Text>
+                    <Text style={styles.value}>{user.main_counter}</Text>
                   </Animated.View>
                 ) : (
-                  <Text style={{height: responsiveHeight(7), textAlign: "center", color: "#eb4034", fontFamily: "PoppinsLight", fontSize: 12}}>
+                  <Text style={styles.empty_text}>
                     {"\n"}
                     Dieser Nutzer teilt seinen Gesamt-Counter momentan nicht.
                   </Text>
@@ -426,40 +424,40 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
                 {!loading ? 
 
                 <Animated.View style={{width: "95%", flexDirection: "row", alignSelf: "center", height: responsiveHeight(7)}}>
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 1, justifyContent: "center"}}>
                       <Animated.View style={{opacity: opacityAnim, transform: [{translateX: slideAnim2}]}}>
-                        <Text style={styles.small_counter}>{user.joint_counter}</Text>
+                        <Text style={styles.small_counter}>{user.joint_counter ? user.joint_counter  : "-"}</Text>
                       </Animated.View>
                         <Text style={styles.small_label}>JOINT</Text>
                         <Animated.Image style={[styles.small_image,{opacity: opacityAnim2}]} source={require('../../../../data/img/joint.png')}/>
                     </View>
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 1, justifyContent: "center"}}>
                      <Animated.View style={{opacity: opacityAnim, transform: [{translateX: slideAnim2}]}}>
-                        <Text style={styles.small_counter}>{user.bong_counter}</Text>
+                        <Text style={styles.small_counter}>{user.bong_counter ? user.bong_counter  : "-"}</Text>
                       </Animated.View>
                         <Text style={styles.small_label}>BONG</Text>
-                        <Animated.Image style={[styles.small_image,{height: responsiveHeight(10), width: responsiveHeight(5.5), marginTop: responsiveHeight(-1), opacity: opacityAnim2}]} source={require('../../../../data/img/bong.png')}/>
+                        <Animated.Image style={[styles.small_image,{height: responsiveHeight(8), width: responsiveHeight(5), marginTop: responsiveHeight(-1), opacity: opacityAnim2}]} source={require('../../../../data/img/bong.png')}/>
                     </View>
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 1, justifyContent: "center"}}>
                       <Animated.View style={{opacity: opacityAnim, transform: [{translateX: slideAnim2}]}}>
-                        <Text style={styles.small_counter}>{user.vape_counter}</Text>
+                        <Text style={styles.small_counter}>{user.vape_counter ? user.vape_counter  : "-"}</Text>
                       </Animated.View>
                         <Text style={styles.small_label}>VAPE</Text>
-                        <Animated.Image style={[styles.small_image,{height: responsiveHeight(10), width: responsiveHeight(7), marginTop: responsiveHeight(-1), opacity: opacityAnim2}]} source={require('../../../../data/img/vape.png')}/>
+                        <Animated.Image style={[styles.small_image,{height: responsiveHeight(9), width: responsiveWidth(7), marginTop: responsiveHeight(-1), opacity: opacityAnim2}]} source={require('../../../../data/img/vape.png')}/>
                     </View>
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 1, justifyContent: "center"}}>
                      <Animated.View style={{opacity: opacityAnim, transform: [{translateX: slideAnim2}]}}>
-                        <Text style={styles.small_counter}>{user.pipe_counter}</Text>
+                        <Text style={styles.small_counter}>{user.pipe_counter ? user.pipe_counter  : "-"}</Text>
                       </Animated.View>
                         <Text style={styles.small_label}>PFEIFE</Text>
-                        <Animated.Image style={[styles.small_image,{height: responsiveHeight(12), width: responsiveHeight(7), marginTop: responsiveHeight(-1.5), opacity: opacityAnim2}]} source={require('../../../../data/img/pipe.png')}/>
+                        <Animated.Image style={[styles.small_image,{height: responsiveHeight(9), width: responsiveWidth(10), marginTop: responsiveHeight(0), opacity: opacityAnim2}]} source={require('../../../../data/img/pipe.png')}/>
                     </View>
-                    <View style={{flex: 1}}>
+                    <View style={{flex: 1, justifyContent: "center"}}>
                       <Animated.View style={{opacity: opacityAnim, transform: [{translateX: slideAnim2}]}}>
-                        <Text style={styles.small_counter}>{user.cookie_counter}</Text>
+                        <Text style={styles.small_counter}>{user.cookie_counter ? user.cookie_counter : "-"}</Text>
                       </Animated.View>
                         <Text style={styles.small_label}>EDIBLE</Text>
-                        <Animated.Image style={[styles.small_image,{height: responsiveHeight(8), width: responsiveHeight(7), marginTop: responsiveHeight(1), opacity: opacityAnim2}]} source={require('../../../../data/img/pipe.png')}/>
+                        <Animated.Image style={[styles.small_image,{height: responsiveHeight(7), width: responsiveWidth(13), marginTop: responsiveHeight(1), opacity: opacityAnim2}]} source={require('../../../../data/img/cookie.png')}/>
                     </View>
                 </Animated.View>
                   : 
@@ -471,7 +469,7 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
               </View>
 
                   
-              <View style={{position: "relative", width: "100%", alignSelf: "center", backgroundColor: "#131520", flex: 3}}>
+              {/* <View style={{position: "relative", width: "100%", alignSelf: "center", backgroundColor: "#131520", flex: 3}}>
                 <View style={{ height: 10 }}></View>
                 <Text style={styles.label}>BESTLEISTUNG</Text>
                 <View style={{ height: 10 }}></View>
@@ -483,11 +481,11 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
                 <View style={{height: 80, justifyContent: "center"}}>
                   <CustomLoader x={30} color={"#0080FF"}/>
                 </View>}
-              </View>
+              </View> */}
 
               
 
-              <View style={{position: "relative", width: "100%", alignSelf: "center", flex: 3}}>
+              <View style={{position: "relative", width: "100%", alignSelf: "center", flex: 4}}>
                 <View style={{ height: 10 }}></View>
                 <Text style={styles.label}>LETZTE AKTIVITÄT</Text>
                 <View style={{ height: 10 }}></View>
@@ -500,6 +498,7 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
                           flex: 2,
                           alignItems: "center",
                           alignContent: "center",
+                          justifyContent: "center"
                         }}
                       >
                         <Text style={styles.date}>
@@ -510,7 +509,7 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
                         style={{
                           flex: 1,
                           alignItems: "center",
-                          alignContent: "center",
+                          alignContent: "center"
                         }}
                       >
                         {user.last_act_type == "joint" ? (
@@ -531,10 +530,22 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
                             source={require("../../../../data/img/vape.png")}
                           />
                         ) : null}
+                        {user.last_act_type == "pipe" ? (
+                          <Image
+                            style={styles.type_image_pipe}
+                            source={require("../../../../data/img/pipe.png")}
+                          />
+                        ) : null}
+                        {user.last_act_type == "cookie" ? (
+                          <Image
+                            style={styles.type_image_cookie}
+                            source={require("../../../../data/img/cookie.png")}
+                          />
+                        ) : null}
                       </View>
                     </>
                   ) : (
-                    <Text style={styles.label}>
+                    <Text style={styles.empty_text}>
                       Dieser User teilt seine letzte Aktivität momentan nicht.
                     </Text>
                   )}
@@ -572,7 +583,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#1E2132",
     zIndex: 5,
     position: "absolute",
-    flexDirection: "column"
+    flexDirection: "column",
+    borderRadius: 30,
+    borderLeftWidth: 1,
+    borderLeftColor: "#131520"
   },
   image: {
     width: "100%",
@@ -600,7 +614,7 @@ const styles = StyleSheet.create({
   },
   value: {
     color: "white",
-    fontSize: responsiveFontSize(5),
+    fontSize: responsiveFontSize(6),
     fontFamily: "PoppinsBlack",
     textAlignVertical: "center",
     textAlign: "center",
@@ -615,21 +629,35 @@ const styles = StyleSheet.create({
   },
   type_image_joint: {
     width: responsiveFontSize(2),
-    height: responsiveHeight(8),
+    height: responsiveHeight(6),
     marginTop: 15,
     marginBottom: 15,
     alignSelf: "center",
   },
   type_image_bong: {
-    width: 40,
-    height: 70,
+    width: responsiveWidth(7),
+    height: responsiveHeight(6),
     marginTop: 5,
     marginBottom: 10,
     alignSelf: "center",
   },
   type_image_vape: {
-    width: 30,
-    height: 90,
+    width: responsiveWidth(7),
+    height: responsiveHeight(6),
+    marginTop: 5,
+    marginBottom: 10,
+    alignSelf: "center",
+  },
+  type_image_pipe: {
+    width: responsiveWidth(7),
+    height: responsiveHeight(7),
+    marginTop: 5,
+    marginBottom: 10,
+    alignSelf: "center",
+  },
+  type_image_cookie: {
+    width: responsiveWidth(12),
+    height: responsiveHeight(6),
     marginTop: 5,
     marginBottom: 10,
     alignSelf: "center",
@@ -682,22 +710,21 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flexDirection: "row",
     width: "70%",
-    alignItems: "center",
-    alignContent: "center",
     alignSelf: "center",
+    justifyContent: "center"
   },
   small_counter: {
     zIndex: 2,
     color: "white",
-    fontSize: responsiveFontSize(3),
-    fontFamily: "PoppinsBlack",
+    fontSize: responsiveFontSize(4),
+    fontFamily: "PoppinsMedium",
     textAlign: "center",
     marginTop: 5,
     opacity: 1
   },
   small_image: {
-      height: responsiveHeight(10),
-      width: responsiveHeight(3),
+      height: responsiveHeight(8),
+      width: responsiveHeight(2),
       position: "absolute",
       zIndex: -1,
       opacity: 0.2,
@@ -711,5 +738,12 @@ const styles = StyleSheet.create({
     fontFamily: "PoppinsLight",
     fontSize: responsiveFontSize(1.4),
     marginTop: responsiveHeight(-1.5)
+  },
+  empty_text: {
+    textAlign: "center",
+    color: "#eb4034",
+    fontFamily: "PoppinsLight",
+    fontSize: responsiveFontSize(1.5),
+    margin: 20
   }
 });

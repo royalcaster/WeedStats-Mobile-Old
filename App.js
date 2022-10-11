@@ -62,7 +62,7 @@ export default function App() {
   //States für Daten
   const [config, setConfig] = useState(null);
   const [user, setUser] = useState(null);
-  const [language, setLanguage] = useState(Languages.en);
+  const [language, setLanguage] = useState(Languages.de);
 
   const [friendList, setFriendList] = useState([]);
   const [sayingNr, setSayingNr] = useState(0);
@@ -71,8 +71,13 @@ export default function App() {
     loadSettings();
     await checkForUser();
     await getFriendList();
-    console.log(config);
   },[]);
+
+  useEffect(() => {
+    if (config != null) {
+      config.language == "de" ? setLanguage(Languages.de) : setLanguage(Languages.en);
+    }
+  },[config]);
 
   //Holt Einstellungen aus dem AsyncStorage
   const loadSettings = async () => {
@@ -114,6 +119,7 @@ export default function App() {
         });
       }
       setConfig(JSON.parse(jsonValue));
+      setLoading(false);
     } catch (e) {
       console.log("Error in Config beim Laden: ", e);
     }
@@ -302,7 +308,7 @@ export default function App() {
     } catch (e) {
       return { error: true };
     }
-  }; 
+  }
 
   const handleIntroFinish = async () => {
     //Hier FALSE setzen, wenn Intro fertig gebaut ist.
@@ -314,10 +320,10 @@ export default function App() {
     PoppinsBlack: require("./assets/fonts/Poppins-Bold.ttf"),
     PoppinsMedium: require("./assets/fonts/Poppins-Medium.ttf"),
     PoppinsLight: require("./assets/fonts/Poppins-Light.ttf"),
-  });
+  })
 
   const toggleLanguage = async ( lang ) => {
-    console.log(lang);
+    console.log(lang, config.language);
     if (lang == "de" && config.language == "en") {
       setLanguage(Languages.de);
       await AsyncStorage.setItem("settings",JSON.stringify({...config, language: "de"}));
@@ -328,6 +334,7 @@ export default function App() {
       setLanguage(Languages.en);
       await AsyncStorage.setItem("settings",JSON.stringify({...config, language: "en"}));
       setConfig({...config, language: "en"});
+      console.debug(lang);
     } 
   }
 
@@ -351,6 +358,7 @@ export default function App() {
     setUser(null);
   };
 
+  //Überarbeiten -> dauert noch zu lang (zu viele if statements)
   const toggleCounter = async (index) => {
     let settings = {};
     let new_entry = {};
@@ -525,7 +533,6 @@ export default function App() {
 
   const deleteAccount = async () => {
     setLoading(true);
-    console.log(config);
      handleLogOut();
 
     // Firestore-Doc löschen
@@ -557,13 +564,15 @@ export default function App() {
   };
 
   const getFriendList = async () => {
-    const docRef = doc(firestore, "users", user.id);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-        setFriendList(docSnap.data().friends);
+    if (user != null) {
+      const docRef = doc(firestore, "users", user.id);
+      const docSnap = await getDoc(docRef);
+  
+      if (docSnap.exists()) {
+          setFriendList(docSnap.data().friends);
+      }
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
@@ -610,6 +619,7 @@ export default function App() {
                               toggleLanguage={toggleLanguage}
                               deleteAccount={deleteAccount}
                               getFriendList={getFriendList}
+                              loadSettings={loadSettings}
                               />
                           </FriendListContext.Provider>
                         </UserContext.Provider>

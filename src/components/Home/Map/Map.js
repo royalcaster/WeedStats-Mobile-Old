@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import IconButton from "../../common/IconButton";
 import ProfileImage from "../../common/ProfileImage";
 import CustomMarker from "../../common/CustomMarker";
+import Empty from '../../common/Empty'
 
 //Konstanten
 import { mapStyle } from "../../../data/CustomMapStyle";
@@ -29,8 +30,9 @@ import { UserContext } from "../../../data/UserContext";
 import { LanguageContext } from "../../../data/LanguageContext";
 import { FriendListContext } from "../../../data/FriendListContext";
 import { getLocalData } from "../../../data/Service";
+import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
 
-const Map = () => {
+const Map = ({ getFriendList }) => {
   LogBox.ignoreAllLogs();
 
   const user = useContext(UserContext);
@@ -52,10 +54,19 @@ const Map = () => {
   const friends_icon = <MaterialIcons name="groups" style={{fontSize: 20, color: "white"}}/>
   const map_icon = <MaterialCommunityIcons name="map-marker-radius-outline" style={{fontSize: 20, color: "white"}}/>
 
-  useEffect(() => {
+  useEffect( async () => {
+    getFriendList();
     loadData(); //Freunde + deren letzte Einträge
-    getLocalData(); //Einträge des Users für Heatmap
+    setLocalData(filterNull(await getLocalData(user, () => null))); //Einträge des Users für Heatmap
+    
   }, []);
+
+  useEffect(() => {
+    if (localData != null) {
+      setLocalDataLoaded(true);
+      console.log(filterNull(localData));
+    }
+  },[localData]);
 
   const loadData = async () => {
     try {
@@ -78,7 +89,6 @@ const Map = () => {
           friendSnap.data().last_entry_latitude != null &&
           friendSnap.data().last_entry_longitude != null
         ) {
-          console.log("test");
           buffer.push({
             latitude: friendSnap.data().last_entry_latitude,
             longitude: friendSnap.data().last_entry_longitude,
@@ -253,9 +263,7 @@ const Map = () => {
   };
 
   return (
-    <ScrollView style={styles.container} scrollEnabled={false}>
-      <View style={{ height: 20 }}></View>
-
+    <View style={styles.container} scrollEnabled={false}>
       <View style={{ alignItems: "center" }}>
         <LinearGradient
           colors={mapType != "standard" ? ["#1E2132", "rgba(0,0,0,0)"] : ["rgba(0,0,0,0.85)", "rgba(0,0,0,0)"]}
@@ -295,9 +303,11 @@ const Map = () => {
           >
             {view == "heatmap" ? 
             <>
-            {localData.length == 0 ? null : 
+            {localData.length == 0 ? 
+              null
+            : 
             <Heatmap
-                points={filterNull(localData).map((entry) => {
+                points={localData.map((entry) => {
                   return {
                     latitude: entry.latitude,
                     longitude: entry.longitude,
@@ -305,7 +315,7 @@ const Map = () => {
                 })}
                 radius={40}
               /> } 
-              </>: null}
+              </> : null}
 
             {view == "friends" ? (
               <>
@@ -328,10 +338,20 @@ const Map = () => {
               </>
             ) : null}
           </MapView>
-          <View style={{alignSelf: "center", bottom: 200, right: 20, position: "absolute"}}>
-            <IconButton icon={view == "heatmap" ? friends_icon : map_icon} onPress={() => {view == "heatmap" ? setView("friends") : setView("heatmap"); Vibration.vibrate(50)}}/>
-            <View style={{height: 10}}></View>
-            <IconButton icon={switch_icon} onPress={toggleMapType}/>
+
+          {view == "heatmap" && localData.length == 0 ?
+          <View style={{position: "absolute", backgroundColor: mapType == "standard" ? "rgba(0,0,0,0.35)" : "rgba(0,0,0,0.9)", height: "100%", width: "100%"}}>
+            <Empty title={"Noch keine Einträge"} tip={"Mache Eintrge, um die Heatmap zu sehen."}/>
+          </View>
+          :
+          null}
+
+          <View style={styles.iconbutton_container}>
+              <IconButton icon={view == "heatmap" ? friends_icon : map_icon} onPress={() => {view == "heatmap" ? setView("friends") : setView("heatmap"); Vibration.vibrate(50)}}/>
+              <Text style={styles.iconbutton_label}>{view == "heatmap" ? "Freunde" : "Heatmap"}</Text>
+              <View style={{height: 10}}></View>
+              <IconButton icon={switch_icon} onPress={toggleMapType}/>
+              <Text style={styles.iconbutton_label}>{mapType == "standard" ? "Satellite" : "Standard"}</Text>
           </View>
                   
           </>
@@ -359,7 +379,7 @@ const Map = () => {
         ) : null}
 
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -368,13 +388,12 @@ export default Map;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#1E2132",
-    width: "100%",
-    height: "50%",
+    width: "100%"
   },
   map: {
     width: "100%",
+    height: "100%",
     position: "relative",
-    top: -20,
     backgroundColor: "#171717",
   },
   item: {
@@ -393,8 +412,7 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "absolute",
     zIndex: 2,
-    bottom: 55,
-    marginBottom: 20,
+    bottom: 0
   },
   touchable: {
     width: "100%",
@@ -407,4 +425,23 @@ const styles = StyleSheet.create({
     height: "100%",
     textAlignVertical: "center",
   },
+  iconbutton_label: {
+    color: "white",
+    fontFamily: "PoppinsMedium",
+    alignSelf: "center",
+    textAlign: "center",
+    fontSize: responsiveFontSize(1.5),
+    marginTop: 5
+  },
+  iconbutton_container: {
+    flexDirection: "column",
+    alignSelf: "center",
+    bottom: responsiveHeight(15),
+    right: 0,
+    position: "absolute",
+    backgroundColor: "#131520",
+    padding: 10,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10
+  }
 });

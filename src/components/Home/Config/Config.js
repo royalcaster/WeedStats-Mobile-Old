@@ -33,7 +33,7 @@ import { LanguageContext } from "../../../data/LanguageContext";
 import { useBackHandler } from "@react-native-community/hooks";
 import { ConfigContext } from "../../../data/ConfigContext";
 
-const Config = ({ toggleLanguage }) => {
+const Config = ({ toggleLanguage, loadSettings }) => {
 
   const language = useContext(LanguageContext);
   const config = useContext(ConfigContext);
@@ -58,16 +58,6 @@ const Config = ({ toggleLanguage }) => {
     return true;
   });
 
-  /* const loadSettings = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem("settings");
-      jsonValue != null ? setConfig(JSON.parse(jsonValue)) : null;
-    } catch (e) {
-      console.log("Error in Config beim Laden: ", e);
-    }
-    setLoading(false);
-  }; */
-
   const storeSettings = async () => {
     try {
       const jsonValue = JSON.stringify(localConfig);
@@ -76,6 +66,7 @@ const Config = ({ toggleLanguage }) => {
     } catch (e) {
       console.log("Error in Config beim Speichern: ", e);
     }
+    loadSettings();
     setLoading(false);
     setSaved(true);
   };
@@ -89,7 +80,7 @@ const Config = ({ toggleLanguage }) => {
   }, [fadeAnim]);
 
   const handleLanguageSwitch = (lang) => {
-    setLocalConfig({...config, language: lang});
+    setLocalConfig({...localConfig, language: lang});
   }
 
   return (
@@ -126,7 +117,7 @@ const Config = ({ toggleLanguage }) => {
                       textAlign: "center",
                       height: "100%",
                       textAlignVertical: "center",
-                      fontSize: responsiveFontSize(2.5),
+                      fontSize: responsiveFontSize(3.5),
                     },
                   ]}
                 >
@@ -141,7 +132,7 @@ const Config = ({ toggleLanguage }) => {
               <View style={{ flex: 1 }}>
                 <Button
                   title={language.config_modal_thanks}
-                  color={"#0080FF"}
+                  color={"#484F78"}
                   borderradius={25}
                   fontColor={"white"}
                   onPress={() => setLightMode(false)}
@@ -162,7 +153,7 @@ const Config = ({ toggleLanguage }) => {
         ) : (
           <View style={{height: "100%", position: "absolute", width: "100%"}}>
           <ScrollView style={{ width: "100%"}}>
-            <View style={{height: 50}}></View>
+            <View style={{height: responsiveHeight(7)}}></View>
 
             <Text style={styles.bold_heading}>Settings</Text>
             <Text style={styles.heading}>{language.config_counter}</Text>
@@ -172,7 +163,7 @@ const Config = ({ toggleLanguage }) => {
                 type="joint"
                 config={localConfig.showJoint}
                 onToggle={() => {
-                  setConfig({ ...config, showJoint: !localCconfig.showJoint });
+                  setLocalConfig({ ...localConfig, showJoint: !localConfig.showJoint });
                   vibrate(25);
                   setSaved(false);
                 }}
@@ -181,7 +172,7 @@ const Config = ({ toggleLanguage }) => {
                 type="bong"
                 config={localConfig.showBong}
                 onToggle={() => {
-                  setConfig({ ...config, showBong: !localConfig.showBong });
+                  setLocalConfig({ ...localConfig, showBong: !localConfig.showBong });
                   vibrate(25);
                   setSaved(false);
                 }}
@@ -190,7 +181,7 @@ const Config = ({ toggleLanguage }) => {
                 type="vape"
                 config={localConfig.showVape}
                 onToggle={() => {
-                  setConfig({ ...config, showVape: !localConfig.showVape });
+                  setLocalConfig({ ...localConfig, showVape: !localConfig.showVape });
                   vibrate(25);
                   setSaved(false);
                 }}
@@ -199,7 +190,7 @@ const Config = ({ toggleLanguage }) => {
                 type="pipe"
                 config={localConfig.showPipe}
                 onToggle={() => {
-                  setConfig({ ...config, showPipe: !localConfig.showPipe });
+                  setLocalConfig({ ...localConfig, showPipe: !localConfig.showPipe });
                   vibrate(25);
                   setSaved(false);
                 }}
@@ -208,7 +199,7 @@ const Config = ({ toggleLanguage }) => {
                 type="cookie"
                 config={localConfig.showCookie}
                 onToggle={() => {
-                  setConfig({ ...config, showCookie: !localConfig.showCookie });
+                  setLocalConfig({ ...localConfig, showCookie: !localConfig.showCookie });
                   vibrate(25);
                   setSaved(false);
                 }}

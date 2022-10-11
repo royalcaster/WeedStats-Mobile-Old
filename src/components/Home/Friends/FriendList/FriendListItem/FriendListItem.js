@@ -1,6 +1,6 @@
 //React
 import React, { useEffect, useRef, useState } from "react";
-import { View, Animated, StyleSheet, Text, Easing, Image } from "react-native";
+import { View, Animated, StyleSheet, Text, Easing, Image, TouchableNativeFeedback } from "react-native";
 
 //Custom Components
 import ProfileImage from "../../../../common/ProfileImage";
@@ -9,7 +9,7 @@ import ProfileImage from "../../../../common/ProfileImage";
 import levels from "../../../../../data/Levels.json";
 
 //Third Party
-import { responsiveFontSize } from "react-native-responsive-dimensions";
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 
 //Firebase
 import { doc, getDoc } from "firebase/firestore";
@@ -61,6 +61,7 @@ const FriendListItem = ({ userid, onPress }) => {
         setUser({
           username: docSnap.data().username,
           photoUrl: docSnap.data().photoUrl,
+          last_entry_timestamp: docSnap.data().last_entry_timestamp
         });
         setCounters([
           { type: "Joint", counter: docSnap.data().joint_counter },
@@ -124,48 +125,29 @@ const FriendListItem = ({ userid, onPress }) => {
   return (
     <>
       {!isLoading ? (
-        <Animated.View style={[{ opacity: opacityAnim, transform: [{scale: scale}]}, styles.container]} onTouchEnd={() => {hover(); onPress()}}>
+        <Animated.View style={[{ opacity: opacityAnim, transform: [{scale: scale}]}, styles.container]}>
+          <TouchableNativeFeedback delayPressIn={50} background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)} onPress={() => onPress()}>
             <View style={styles.touchable}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <View style={{ width: 20 }}></View>
                 <Animated.View
-                  style={{ transform: [{ translateY: slide1Anim}], zIndex: 2 }}
+                  style={{ transform: [{ translateY: slide1Anim}], zIndex: 2}}
                 >
-                  <ProfileImage x={45} type={1} url={user.photoUrl} />
+                  <ProfileImage x={35} type={1} url={user.photoUrl} />
                 </Animated.View>
-                <View style={{ width: 20 }}></View>
+                <View style={{ width: responsiveWidth(3) }}></View>
                 <Animated.View
                   style={{
-                    flexDirection: "column",
+                    flexDirection: "row",
                     transform: [{ translateY: slide2Anim}],
                     zIndex: 1,
                   }}
                 >
                   <Text style={styles.username}>{user.username}</Text>
-                  <View style={{flexDirection: "row", maxHeight: 30}}>
-                    {Math.floor(counters[0].counter / 70) == 0 ? <Image style={styles.lvl_image} source={require('../../../../../data/img/lvl7.png')}/> : null}
-                    {Math.floor(counters[0].counter / 70) == 1 ? <Image style={styles.lvl_image} source={require('../../../../../data/img/lvl2.png')}/> : null}
-                    {/* {Math.floor(counters[0].counter / 70) == 2 ? <Image style={styles.lvl_image} source={require('../../../../../data/img/lvl3.png')}/> : null} */}
-                    {/* {Math.floor(counters[0].counter / 70) == 3 ? <Image style={styles.lvl_image} source={require('../../../../../data/img/lvl4.png')}/> : null} */}
-                    {/* {Math.floor(counters[0].counter / 70) == 4 ? <Image style={styles.lvl_image} source={require('../../../../../data/img/lvl5.png')}/> : null} */}
-                    {/* {Math.floor(counters[0].counter / 70) == 5 ? <Image style={styles.lvl_image} source={require('../../../../../data/img/lvl6.png')}/> : null} */}
-                    {Math.floor(counters[0].counter / 70) == 6 ? <Image style={styles.lvl_image} source={require('../../../../../data/img/lvl7.png')}/> : null}
-                    <Text
-                      style={[
-                        styles.username,
-                        {
-                          fontFamily: "PoppinsLight",
-                          fontSize: responsiveFontSize(1.5),
-                          textAlignVertical: "center",
-                        },
-                      ]}
-                    >
-                      {getTitle()}{Math.floor(counters[0].counter / 70) == 1 ? "true" : "false"}
-                    </Text>
-                  </View>
                 </Animated.View>
               </View>
             </View>
+            </TouchableNativeFeedback>
         </Animated.View>
       ) : null}
     </>
@@ -176,17 +158,17 @@ export default FriendListItem;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    height: 80,
+    flexDirection: "row"
   },
   username: {
     color: "rgba(255,255,255,1)",
-    fontFamily: "PoppinsBlack",
+    fontFamily: "PoppinsMedium",
     fontSize: responsiveFontSize(1.8),
   },
   touchable: {
     width: "100%",
     justifyContent: "center",
+    paddingVertical: 15
   },
   lvl_image: {
     height: 25,
@@ -195,5 +177,8 @@ const styles = StyleSheet.create({
     marginRight: 2,
     marginLeft: -5,
     opacity: 0.85
+  },
+  lates_label: {
+    color: "white"
   }
 });

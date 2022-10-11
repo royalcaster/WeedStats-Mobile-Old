@@ -13,6 +13,7 @@ import uuid from 'react-native-uuid'
 //Service
 import { UserContext } from "../../../../data/UserContext";
 import { FriendListContext } from "../../../../data/FriendListContext";
+import { responsiveHeight } from "react-native-responsive-dimensions";
 
 
 const FriendList = memo(({ setActiveFriend, setShowFriend, getFriendList }) => {
@@ -40,6 +41,7 @@ const FriendList = memo(({ setActiveFriend, setShowFriend, getFriendList }) => {
                                     setShowFriend(true);
                                 }}/>
                             })}
+                            <View style={{height: responsiveHeight(5)}}></View>
                         </ScrollView>
                         : 
                         <View style={{height: "90%", justifyContent: "center"}}>
