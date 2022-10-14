@@ -32,9 +32,7 @@ const Stats = () => {
 
   // Zum Löschen einzelner Daten aus der History. Erstmal entfernt, da die Konsistenz der Daten nach aktuellem Stand darunter leidet
   const deleteEntry = async (delEntry) => {
-    console.log(
-      "Die Lösch-Funktion wurde temporär deaktiviert, bis ein sicheres Verfahren gefunden wurde."
-    );
+    console.log("Die Lösch-Funktion wurde temporär deaktiviert, bis ein sicheres Verfahren gefunden wurde.");
     /* try {
       console.log(delEntry.number);
       await AsyncStorage.removeItem(user.id + "_entry_" + delEntry.number);
@@ -56,10 +54,9 @@ const Stats = () => {
 
   return (
     <Animated.View style={[{ opacity: 1 }, styles.container]}>
-      {/* {localDataLoaded && localData.length != 0 ? (
+      {localDataLoaded && localData.length != 0 ? (
         <StatsDashboard localData={localData} />
-      ) : <CustomLoader x={50} color={"#484F78"}/>} */}
-    <CustomLoader x={50} color={"#484F78"}/>
+      ) : <CustomLoader x={50} color={"#484F78"}/>}
     </Animated.View>
   );
 };

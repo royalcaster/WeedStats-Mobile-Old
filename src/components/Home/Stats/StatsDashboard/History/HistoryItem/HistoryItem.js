@@ -1,6 +1,6 @@
 //React
 import React from "react";
-import { StyleSheet, View, Text, Image, Pressable } from "react-native";
+import { StyleSheet, View, Text, Image, Pressable, TouchableNativeFeedback } from "react-native";
 
 //Tools
 import toGermanDate from "../../../../../../data/DateConversion";
@@ -10,23 +10,26 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { responsiveFontSize } from "react-native-responsive-dimensions";
+import IconButton from "../../../../../common/IconButton";
 
 const HistoryTable = ({ event, showOnMap }) => {
 
   return (
+    <View style={{
+      flexDirection: "row",
+      width: "90%",
+      marginBottom: 5,
+      borderTopColor: "#121212",
+      borderTopWidth: 0,
+      alignSelf: "center",
+      backgroundColor: "#131520",
+      justifyContent: "center",
+      borderRadius: 10,
+      overflow: "hidden"
+    }}>
+    <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.25)", false)} onPress={() => showOnMap(event)} delayPressIn={50}>
     <View
-      style={{
-        flexDirection: "row",
-        width: "90%",
-        marginBottom: 15,
-        borderTopColor: "#121212",
-        borderTopWidth: 0,
-        alignSelf: "center",
-        backgroundColor: "#484F78",
-        justifyContent: "center",
-        padding: 10,
-        borderRadius: 10
-      }}
+      style={[styles.touchable]}
     >
       <View style={{ flex: 1 }}>
         {event.type == "joint" ? (
@@ -57,29 +60,23 @@ const HistoryTable = ({ event, showOnMap }) => {
           {new Date(event.timestamp).toLocaleTimeString("de-DE").substring(0,5)}
         </Text>
       </View>
-      <View style={{ flex: 1.5, borderRadius: 10 }}>
-        <Pressable
-          style={({ pressed }) => [
-            {
-              alignItems: "center",
-              backgroundColor: pressed ? "#1a1a1a" : "#131520",
-              flex: 1,
-              justifyContent: "center",
-              borderRadius: 10,
-            },
-          ]}
-          onPress={() => showOnMap(event)}
-        >
-          <AntDesign
+      {/* <View style={{ flex: 1.5, borderRadius: 10 }}>
+
+        <IconButton 
+          icon={<AntDesign
             name="enviromento"
             style={{
               color: "white",
-              fontSize: 25,
+              fontSize: responsiveFontSize(2.3),
               textAlignVertical: "center",
+              textAlign: "center"
             }}
-          />
-        </Pressable>
-      </View>
+          />}
+          onPress={() => showOnMap(event)}
+        />
+      </View> */}
+    </View>
+    </TouchableNativeFeedback>
     </View>
   );
 };
@@ -143,4 +140,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "white",
   },
+  touchable: {
+    flexDirection: "row",
+    width: "100%",
+    padding: 10
+  }
 });

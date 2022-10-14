@@ -206,7 +206,7 @@ const Main = ({ toggleCounter, toggleBorderColor }) => {
                 alignItems: "center",
               }}
             >
-              <CustomLoader x={50} color={"#0080FF"}/>
+              <CustomLoader x={50} color={"#484F78"}/>
             </View>
           ) : (
             <>

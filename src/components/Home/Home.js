@@ -20,12 +20,10 @@ import MenuButton from "./MenuButton";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Entypo from "react-native-vector-icons/Entypo";
 
-export default function Home({ handleLogOut, toggleCounter, toggleLanguage, deleteAccount, getFriendList, loadSettings }) {
+export default function Home({ handleLogOut, toggleCounter, toggleLanguage, deleteAccount, getFriendList, loadSettings, onSetBorderColor, borderColor}) {
 
   const [view, setView] = useState("main");
   const navSlide = useRef(new Animated.Value(0)).current;
-
-  const [borderColor, setBorderColor] = useState("#1E2132");
 
   const toggleNavbar = (x) => {
     x == 1 ? 
@@ -46,16 +44,15 @@ export default function Home({ handleLogOut, toggleCounter, toggleLanguage, dele
   }
 
   const toggleBorderColor = ( color ) => {
-    setBorderColor(color);
+    onSetBorderColor(color);
     StatusBar.setBackgroundColor(color);
-    setTimeout(() => {setBorderColor("#1E2132")}, 300);
   }
 
   return (
-    <Animated.View style={[{ opacity: 1, borderColor: borderColor }, styles.container]}>
+    <Animated.View style={[{ opacity: 1}, styles.container]}>
       <View style={styles.content_container}>
         {view == "main" ? (
-          <Main toggleCounter={toggleCounter} toggleBorderColor={toggleBorderColor}/>
+          <Main toggleCounter={toggleCounter} toggleBorderColor={toggleBorderColor} borderColor={borderColor}/>
         ) : null}
         {view == "stats" ? <Stats/> : null}
         {view == "map" ? <Map getFriendList={getFriendList}/> : null}
@@ -166,7 +163,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#1E2132",
     alignItems: "center",
     borderRadius: 40,
-    borderWidth: 2,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0
   },

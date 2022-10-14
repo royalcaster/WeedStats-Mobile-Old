@@ -9,8 +9,9 @@ import CustomLoader from "./CustomLoader";
 //Service
 import { LanguageContext } from "../../data/LanguageContext";
 import { responsiveFontSize } from "react-native-responsive-dimensions";
+import { LinearGradient } from "expo-linear-gradient";
 
-const CounterModal = ({ onExit, writeComplete, sayingNr }) => {
+const CounterModal = ({ onExit, writeComplete, sayingNr, borderColor}) => {
 
     const language = useContext(LanguageContext);
 
@@ -20,6 +21,8 @@ const CounterModal = ({ onExit, writeComplete, sayingNr }) => {
     },[]);
 
     return (
+      <>
+      <LinearGradient colors={[borderColor, "red"]} style={{position: "absolute", height: 200, width: "100%", zIndex: 1000, top: 0}}></LinearGradient>
         <View
             style={[styles.container, {
               alignItems: "center",
@@ -29,10 +32,11 @@ const CounterModal = ({ onExit, writeComplete, sayingNr }) => {
               height: screen_height
             }]}
           >
+            
             <View
                 style={{
-                  width: "90%",
-                  height: "80%",
+                  width: "100%",
+                  height: "100%",
                   backgroundColor: "rgba(0,0,0,0)",
                   alignSelf: "center",
                   borderRadius: 25,
@@ -72,6 +76,7 @@ const CounterModal = ({ onExit, writeComplete, sayingNr }) => {
             )}
             </View>
           </View>
+          </>
     );
 }
 

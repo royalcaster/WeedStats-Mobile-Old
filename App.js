@@ -64,6 +64,8 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [language, setLanguage] = useState(Languages.de);
 
+  const [borderColor, setBorderColor] = useState("#1E2132");
+
   const [friendList, setFriendList] = useState([]);
   const [sayingNr, setSayingNr] = useState(0);
 
@@ -620,6 +622,8 @@ export default function App() {
                               deleteAccount={deleteAccount}
                               getFriendList={getFriendList}
                               loadSettings={loadSettings}
+                              borderColor={borderColor}
+                              onSetBorderColor={color => setBorderColor(color)}
                               />
                           </FriendListContext.Provider>
                         </UserContext.Provider>

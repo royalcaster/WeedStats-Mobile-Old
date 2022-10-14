@@ -1,6 +1,6 @@
 //React
 import React, { useEffect, useRef, useState, useContext } from "react";
-import { Animated, Easing, View, StyleSheet, Dimensions, Modal, FlatList, Text } from "react-native";
+import { Animated, Easing, View, StyleSheet, Dimensions, Modal, FlatList, Text, Vibration } from "react-native";
 import { useBackHandler } from "@react-native-community/hooks";
 
 //Custom Components
@@ -21,10 +21,13 @@ import { mapStyle } from "../../../../../data/CustomMapStyle";
 
 //Service
 import { LanguageContext } from "../../../../../data/LanguageContext";
+import { UserContext } from "../../../../../data/UserContext";
 
 const History = ({ show, onExit, history}) => {
     
   const language = useContext(LanguageContext);
+
+  const user = useContext(UserContext);
 
   const screen_width = Dimensions.get("screen").width;
   const [loading, setLoading] = useState(true);
@@ -34,13 +37,7 @@ const History = ({ show, onExit, history}) => {
   const [mapType, setMapType] = useState("standard");
   const switch_icon = <AntDesign name={"picture"} style={{fontSize: 20, color: "white"}}/>
 
-  const pan = useRef(new Animated.Value(screen_width * -1)).current;
-
-  useEffect(() => {
-    if (!show) {
-    setLoading(true);
-    }
-  }, [show]);
+  const pan = useRef(new Animated.Value(screen_width * (-1))).current;
 
   useBackHandler(() => {
     hide();
@@ -48,17 +45,17 @@ const History = ({ show, onExit, history}) => {
   });
 
   const slide = () => {
+    Vibration.vibrate(25);
     Animated.timing(pan, {
       toValue: 0,
-      duration: 700,
+      duration: 400,
       useNativeDriver: true,
-      easing: Easing.bezier(0, 1.02, 0.21, 0.97),
     }).start();
   };
 
   const hide = () => {
     Animated.timing(pan, {
-      toValue: screen_width * -1,
+      toValue: screen_width * (-1),
       duration: 300,
       useNativeDriver: true
     }).start(({ finished }) => {
