@@ -169,7 +169,7 @@ const Map = ({ getFriendList }) => {
             style={{
               flex: 2,
               flexDirection: "column",
-              paddingLeft: 15,
+              padding: 5,
               height: "80%"
             }}
           >

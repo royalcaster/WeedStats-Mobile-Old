@@ -30,6 +30,7 @@
     "expo-linear-gradient": "~11.0.3",
     "expo-local-authentication": "^12.3.0",
     "expo-location": "~14.0.1",
+    "expo-splash-screen": "~0.14.1",
     "expo-status-bar": "~1.2.0",
     "firebase": "^9.6.7",
     "lottie-react-native": "^5.1.4",
@@ -66,8 +67,7 @@
     "react-native-vector-icons": "^9.0.0",
     "react-native-web": "0.17.1",
     "react-native-x2-carousel": "^1.0.1",
-    "recyclerlistview": "^3.0.5",
-    "expo-splash-screen": "~0.14.1"
+    "recyclerlistview": "^3.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

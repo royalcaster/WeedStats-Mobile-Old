@@ -11,6 +11,7 @@ import CustomLoader from "../../../common/CustomLoader";
 //Third Party
 import { responsiveHeight, responsiveFontSize, responsiveWidth } from "react-native-responsive-dimensions";
 import Antdesign from "react-native-vector-icons/AntDesign";
+import ImageColors from "react-native-image-colors";
 
 //Konstanten
 import levels from "../../../../data/Levels.json";
@@ -28,6 +29,7 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
   const language = useContext(LanguageContext);
 
   const realuser = useContext(UserContext);
+  const [gradientColor, setGradientColor] = useState(null);
     
   const screen_width = Dimensions.get("screen").width;
   const [user, setUser] = useState();
@@ -109,8 +111,15 @@ const FriendPage = ({ show, userid, onExit, refresh, toggleNavbar }) => {
             { type: "Edible", counter: docSnap.data().cookie_counter },
           ])
         });
-          setLoading(false);
-          slideCounters();
+
+        const result = await ImageColors.getColors(user.photoUrl, {
+          fallback: '#228B22',
+          cache: true,
+          key: 'unique_key',
+        })
+        setGradientColor(result.darkVibrant);
+        setLoading(false);
+        slideCounters();
       }
     } catch (e) {
       console.log("Error", e);

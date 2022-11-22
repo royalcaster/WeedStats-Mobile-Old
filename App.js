@@ -600,7 +600,7 @@ export default function App() {
         <Splash onExit={() => {setShowSplash(false);}}/>
         : 
         <>
-          {loading ? <View style={{justifyContent: "center", height: "100%"}}><CustomLoader color={"white"} x={80}/></View>
+          {loading ? <View style={{justifyContent: "center", height: "100%"}}><CustomLoader color={"#484F78"} x={80}/></View>
           :
           <>
             
